@@ -1,0 +1,55 @@
+.contenter {
+    min-width: 300px;
+    max-width: 100%;
+    min-height: 500px;
+    background-image: url(/Ifns/public/images/wood-pane.jpg);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  }
+  
+  .osnova {
+      display: table;
+      width: 100%;
+  }
+  
+  .text {
+      margin: 20px;
+      font-size: 25px;
+      font-style: italic;
+      color: black;
+  }
+  
+  .sidenav {
+    display: flex;
+    height: 100%;
+     margin: 10px;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+  
+  .tree-invisible {
+    display: none;
+  }
+  .mat-tree-node {
+      font-size: 25px;
+      font-style: italic;
+      color: black;
+  }
+  .tree ul,
+  .tree li {
+    margin-top: 0;
+    margin-bottom: 0;
+    list-style-type: none;
+  }
+  .user {
+      font-size: 20px;
+      font-style: italic;
+      color: black;
+      text-align: right;
+      display: table-cell;
+      vertical-align: top;
+  }
+  .contentpage {
+      padding: 20px;
+      width: auto;
+      height: auto;
+  }

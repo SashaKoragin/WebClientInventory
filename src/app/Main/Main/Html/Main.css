@@ -1,0 +1,46 @@
+.title-black {
+    background: #0066B3;
+    display: inline-block;
+    align-content: center;
+    text-align: center;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.shapka {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+}
+
+.title {
+   text-align: center;
+   font-style: italic;
+   align-content: center;
+   color: white;
+}
+
+.navigate1 {
+   text-align: left;
+   align-items: center;
+   display: grid;
+}
+.navigate2 {
+   display: grid;
+   text-align: left;
+   align-items: center;
+}
+.style {
+   font-style: italic;
+   color: white;
+   font-size: 20pt;
+   align-content: center;
+}
+.welcome {
+   align-content: right;
+   text-align: right;
+   font-size: 20pt;
+   color: darkblue;
+   font-style: italic;
+   font-weight: bold;
+}

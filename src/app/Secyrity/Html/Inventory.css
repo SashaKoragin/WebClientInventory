@@ -1,0 +1,44 @@
+.center{
+    background: white;
+    display: grid;
+}
+.registration{
+    background: red;
+    display: grid;
+    padding: 5px;
+    margin: 0 auto;
+    justify-content: center;
+}
+.head{
+text-align: center;    
+}
+.width {
+    width: 300px;
+}
+.errors{
+    padding-left: 15px
+}
+.body{
+    display: flex;
+}
+.input{
+    display: grid;
+}
+.stone{
+    display: flex;
+}
+
+#errors {
+    -webkit-animation: errors 2s linear infinite;
+    animation: errors 2s linear infinite;
+}
+@-webkit-keyframes errors {
+    0% { color: rgb(128, 0, 0);}
+    50% { color: rgb(183, 65, 14);}
+    100% { color: rgb(128, 0, 0);}
+}
+@keyframes errors {
+    0% { color: rgb(128, 0, 0);}
+    50% { color: rgb(183, 65, 14);}
+    100% { color: rgb(128, 0, 0);}
+}

@@ -1,0 +1,22 @@
+<div class="center">
+    <div class="registration">
+        <div class="head">
+            <h2>Вход в систему</h2>
+        </div>
+        <div class="body">
+            <div class="input">
+                <mat-form-field class="width">
+                    <input matInput placeholder="Введите логин:" type="text" [(ngModel)]="authService.logins" />
+                </mat-form-field>
+                <mat-form-field class="width">
+                    <input matInput placeholder="Введите пароль:" type="password" [(ngModel)]="authService.password" />
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="stone">
+            <button mat-button (click)="login()" *ngIf="!authService.isLoggedIn">Войти</button>
+            <button mat-button (click)="logout()" *ngIf="authService.isLoggedIn">Выйти</button>
+        </div>
+        <h3 id="errors">{{authService.error}}</h3>
+    </div>
+</div>
