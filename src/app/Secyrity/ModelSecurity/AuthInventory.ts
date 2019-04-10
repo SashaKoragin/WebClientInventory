@@ -23,6 +23,7 @@ export class AuthInventar implements CanActivate, CanActivateChild, CanLoad {
     }
 
     canLoad(route: Route): boolean {
+ 
         let url = `/${route.path}`;
         return this.checkLogin(url);
     }
@@ -30,7 +31,8 @@ export class AuthInventar implements CanActivate, CanActivateChild, CanLoad {
     checkLogin(url: string): boolean {
         if (this.authService.isLoggedIn) { return true; }
         this.authService.redirectUrl = url;
-        this.router.navigate(['/inventarlogin']);
+        this.router.navigate(['/InventoryLogin']);
+        console.log(this.router.url) //Сдесь должно быть /InventoryLogin 
         return false;
     }
 }

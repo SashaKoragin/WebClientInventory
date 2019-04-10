@@ -4,7 +4,7 @@
     "description": "Инвенторизация Web Client",
     "author": "Alexander Koragin",
     "scripts": {
-        "start": "webpack-dev-server ",
+        "start": "webpack-dev-server",
         "build": "webpack --mode production"
     },
     "dependencies": {

@@ -8,11 +8,13 @@ import { AppRoutingModule } from './RoutingMain';
 
 import { Root } from "../Main/ModelMain/Main";
 
+import { AuthModule } from './RouteLogin/RoutingAuth';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { AngularMaterialModule} from '../MaterialLibary/MaterialLibary';
 
 import { LoginInventarization } from '../../Secyrity/Security/Security';
+import { Test} from '../Test/Comp'
 
 
 @NgModule({
@@ -21,18 +23,19 @@ import { LoginInventarization } from '../../Secyrity/Security/Security';
         BrowserAnimationsModule,
         CommonModule,
         FormsModule,
+        AuthModule,
         AngularMaterialModule,
         HttpClientModule,
         AppRoutingModule,
     ],
     declarations: [
-        Root,  LoginInventarization
+        Root
     ],
-     bootstrap: [Root],
-   // providers:[AppRoutingModule]
+     bootstrap: [Root]
 })
 export class Maining {
     constructor(router: Router) {
+        console.log(router.url)
         //Для Debuger
     }
 
