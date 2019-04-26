@@ -12,6 +12,11 @@
                 "workspaceFolder = ${workspaceRoot}\\Client"
             ],
             "type": "shell"
+        },
+        {
+            "type": "npm",
+            "script": "start",
+            "problemMatcher": []
         }
     ]
 }

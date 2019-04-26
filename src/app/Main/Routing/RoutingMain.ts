@@ -4,7 +4,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { AuthInventar } from '../../Secyrity/ModelSecurity/AuthInventory';
 
 import { InventarModule } from '../Inventory/Inventory';
-import { Test} from '../Test/Comp'
 
 const appRoutes: Routes = [
     {

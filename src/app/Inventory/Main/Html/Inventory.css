@@ -1,11 +1,4 @@
-.contenter {
-    min-width: 300px;
-    max-width: 100%;
-    max-height: 700px;
-    background-image: url(/public/images/wood-pane.jpg);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-  }
-  
+
   .osnova {
       display: table;
       width: 100%;
@@ -17,10 +10,16 @@
       font-style: italic;
       color: black;
   }
-  
+  .contents{
+    width: 100%;
+    min-height: 500px;
+    display: block;
+    background-image: url(/public/images/wood-pane.jpg);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+      border: 1px solid rgba(0, 0, 0, 0.5);
+}
   .sidenav {
     display: flex;
-    height: 100%;
      margin: 10px;
     align-items: flex-start;
     justify-content: flex-start;
@@ -52,4 +51,5 @@
       padding: 20px;
       width: auto;
       height: auto;
+      min-height: 500px;
   }

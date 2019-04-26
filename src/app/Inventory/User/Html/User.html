@@ -1,7 +1,8 @@
 <h1>Пользователи</h1>
 <mat-tab-group>
     <mat-tab label="Все пользователи">
-        <table mat-table class="mat-elevation-z8" [dataSource]="user.dataSource">
+        <div class="mat-elevation-z8">
+        <table mat-table [dataSource]="user.dataSource">
 
             <ng-container matColumnDef="IdUser">
                 <th mat-header-cell *matHeaderCellDef>Id</th>
@@ -85,17 +86,24 @@
             </ng-container>
 
             <ng-container matColumnDef="ActionsColumn">
-                <th mat-header-cell *matHeaderCellDef>Проверка</th>
-                <td mat-cell *matCellDef="let row">
-                    <button mat-icon-button color="primary" focusable="false" (click)="user.add(row)">
-                        <i class="material-icons">clear</i>
+                <th mat-header-cell *matHeaderCellDef> 
+                    <button mat-icon-button color="primary" focusable="false" (click)="user.add()">
+                        <i class="material-icons">person_add</i>
                     </button>
-
-                </td>
-
-                <!--<mat-header-cell *matHeaderCellDef>
-                    <button mat-icon-button color="accent" (click)="dataSource.createNew()"><i class="fa fa-plus mat-icon"></i></button>
-                </mat-header-cell>
+                </th>
+                <td mat-cell *matCellDef="let row">
+                <button mat-icon-button *ngIf="!user.isEdit" color="accent" (click)="user.edit()">
+                    <i class="material-icons">edit</i>
+                </button>
+                <div *ngIf="user.isEdit" >
+                        <button  mat-icon-button color="primary" focusable="false" (click)="user.save()">
+                                <i class="material-icons">check</i>
+                       </button>
+                       <button mat-icon-button color="primary" focusable="false" (click)="user.cancel()">
+                            <i class="material-icons">cancel</i> 
+                        </button>
+                </div>
+                <!-- </mat-header-cell>
                 <mat-cell *matCellDef="let row">
                     <button *ngIf="!row.editing" mat-icon-button color="primary" focusable="false" (click)="row.startEdit()">
                         <i class="fa fa-pencil mat-icon"></i>
@@ -106,21 +114,27 @@
                     <button mat-icon-button color="primary" focusable="false" (click)="row.cancelOrDelete()">
                         <i class="fa fa-times mat-icon"></i>
                     </button>
-                </mat-cell>-->
+                </mat-cell> -->
+            </td>
             </ng-container>
             <tr mat-header-row *matHeaderRowDef="user.displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: user.displayedColumns;"></tr>
+            
         </table>
-        <i class="material-icons md-48">face</i>
-        <i class="material-icons">add</i>
-        <i class="material-icons">clear</i>
+        <mat-paginator #users [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons="true"></mat-paginator>
+    </div>
+         <i class="material-icons">check</i>
+        <i class="material-icons">person_add</i>
+        <i class="material-icons">edit</i>
+        <i class="material-icons">cancel</i> 
         <!--<mat-toolbar>
-
+<i class="fa fa-check mat-icon"></i>
         </mat-toolbar>
         <tablessql [(model)]="name"></tablessql>-->
 
 
 </mat-tab>
+
     <mat-tab label="Роли/Доступы"></mat-tab>
     
 

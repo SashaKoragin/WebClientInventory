@@ -33,14 +33,15 @@ module.exports = {
         loader: 'raw-loader'
     },
     {
-        test: /.*\.(png|woff|woff2|eot|ttf|svg|jpg)(\?|$)/,
+        test: /.*\.(png|svg|jpg)(\?|$)/,
         use: [
                 {
                     loader: 'file-loader',
-                    options: {
-                        outputPath: './images/',
-                        name: '[name].[ext]'
-                    }
+                     options: {
+                        loader:'image-webpack-loader',
+                         outputPath: './images/',
+                         name: '[name].[ext]'
+                     }
                 }
         ]
     }

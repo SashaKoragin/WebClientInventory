@@ -6,9 +6,9 @@
         <label class="text">{{welcome}}</label>
     </div>
 </div>
-<mat-drawer-container class="contenter" autosize>
-    <mat-drawer #drawer class="sidenav" mode="side">
-        <mat-tree [dataSource]="nestedDataSource" [treeControl]="nestedTreeControl" class="tree">
+<mat-drawer-container class="contents" autosize>
+    <mat-drawer #drawer class="sidenav" mode="side"> 
+         <mat-tree [dataSource]="nestedDataSource" [treeControl]="nestedTreeControl" class="tree">
             <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
                 <li class="mat-tree-node">
                     <nav>
@@ -29,10 +29,8 @@
                 </li>
             </mat-nested-tree-node>
         </mat-tree>
-    </mat-drawer>
-    <mat-drawer-content>
-        <div class="contentpage">
+     </mat-drawer>
+    <mat-drawer-content class="contentpage">
             <router-outlet></router-outlet>
-        </div>
     </mat-drawer-content>
-</mat-drawer-container>
+</mat-drawer-container> 

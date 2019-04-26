@@ -32,7 +32,6 @@ export class AuthInventar implements CanActivate, CanActivateChild, CanLoad {
         if (this.authService.isLoggedIn) { return true; }
         this.authService.redirectUrl = url;
         this.router.navigate(['/InventoryLogin']);
-        console.log(this.router.url) //Сдесь должно быть /InventoryLogin 
         return false;
     }
 }

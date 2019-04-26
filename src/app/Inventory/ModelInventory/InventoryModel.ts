@@ -1,5 +1,16 @@
 export interface ILogicaUser<T> {
-    add(user: T): void
+    //Добавление
+    add(): void;
+    //Редактирование
+    edit(user: T): void;
+    //Сохранение
+    save():void;
+    //Отмена
+    cancel():void;
+    //Добавляем
+    isAdd:boolean;
+    //Редактируем
+    isEdit:boolean;
 }
 
 

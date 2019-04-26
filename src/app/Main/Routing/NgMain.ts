@@ -14,7 +14,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { AngularMaterialModule} from '../MaterialLibary/MaterialLibary';
 
 import { LoginInventarization } from '../../Secyrity/Security/Security';
-import { Test} from '../Test/Comp'
 
 
 @NgModule({
