@@ -14,16 +14,27 @@ export interface ILogicaUser<T> {
 }
 
 
+export class FullSelectedModel{
+   Otdels: Otdels[];
+   AllUserSelected:AllUserSelected = null;
+}
 
-export class AllSelected {
+// export class AllOtdelsResult {
+//     Otdels: Otdels[];
+// }
+
+export class AllUserSelected {
     Users: Users[];
 }
 
-export class FullSelected {
+
+
+
+export class Autorization {
     Users: Users;
 }
 
-export class Users {
+export class Users{
     public IdUser?: number;
     public Name?: string;
     public IdOtdel?: number;
@@ -41,10 +52,11 @@ export class Users {
     public IdHistory?: string;
     public DataCreate?: Date;
     public FullInventarizations?: FullInventarization[];
-    public Rules?: Rules;
+    public Rules?: Rules = new Rules();
     public Position?: Position;
-    public Otdel?: Otdels;
+    public Otdel?: Otdels = new Otdels();
     public Kabinet?:Kabinet;
+    public ModelIsEdit?: boolean = false;
 }
 export class SysBlock {
     public IdSysBlock: number;

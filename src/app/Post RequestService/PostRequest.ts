@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Users, FullSelected } from '../Inventory/ModelInventory/InventoryModel';
+import { Users, Autorization } from '../Inventory/ModelInventory/InventoryModel';
 import { AdressInventarka } from '../AdressGetPost/AdressInventory';
 import { ModelParametr } from '../Inventory/ModelInventory/Parametr';
 
@@ -16,7 +16,7 @@ export class AuthIdentification {
 
     constructor(private http: HttpClient) { }
 
-    fullSelect: FullSelected;
+    fullSelect: Autorization;
     user:Users = new Users();
     error:string;
 
@@ -48,6 +48,10 @@ export class PostInventar {
     ///Выборка всего из БД в зависимостb от num пользователи
     alluser(num:number) {
         return this.http.post(url.alluser, new ModelParametr(num), httpOptionsJson);
+    }
+
+    allotdel(){
+        return this.http.get(url.allotdelget,httpOptionsJson)
     }
 }
 

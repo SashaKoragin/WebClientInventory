@@ -1,66 +1,62 @@
 <h1>Пользователи</h1>
 <mat-tab-group>
     <mat-tab label="Все пользователи">
-        <div class="mat-elevation-z8">
+ <div class="mat-elevation-z8">
         <table mat-table [dataSource]="user.dataSource">
 
             <ng-container matColumnDef="IdUser">
                 <th mat-header-cell *matHeaderCellDef>Id</th>
                 <td mat-cell *matCellDef="let row">
-                    {{row.IdUser}}
-                    <!--<mat-form-field>
-                    <input matInput [formControl]="row.validator.controls['IdUser']" [readonly]="!row.editing" placeholder="Id пользователя" [(ngModel)]="row.currentData.IdUser"/>
-                </mat-form-field>-->
+                 {{row.IdUser}}
                 </td>
             </ng-container>
-
             <ng-container matColumnDef="Name">
                 <th mat-header-cell *matHeaderCellDef>Имя пользователя</th>
                 <td mat-cell *matCellDef="let row">
-                    {{row.Name}}
-                    <!--<mat-form-field>
-                    <input matInput [formControl]="row.validator.controls['Name']" [readonly]="!row.editing" placeholder="Имя пользователя" [(ngModel)]="row.currentData.Name"/>
-                </mat-form-field>-->
+                <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.Name}}</Label> 
+                    <mat-form-field class="validation" [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            <input matInput [formControl]="user.uservalidation?.getRowValidatorUser.get('Name')" placeholder="Имя пользователя" [(ngModel)]="user.users.Name"/>
+                     </mat-form-field> 
                 </td>
             </ng-container>
 
             <ng-container matColumnDef="TabelNumber">
                 <th mat-header-cell *matHeaderCellDef>Табельный номер</th>
                 <td mat-cell *matCellDef="let row">
-                    {{row.TabelNumber}}
-                    <!--<mat-form-field>
-                    <input matInput [formControl]="row.validator.controls['TabelNumber']" [readonly]="!row.editing" placeholder="Табельный номер" [(ngModel)]="row.currentData.TabelNumber"/>
-                </mat-form-field>-->
+                   <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.TabelNumber}}</Label> 
+                    <mat-form-field class="number" [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            <input matInput  [formControl]="user.uservalidation?.getRowValidatorUser.get('TabelNumber')" placeholder="Табельный номер" [(ngModel)]="user.users.TabelNumber"/>
+                    </mat-form-field>
                 </td>
             </ng-container>
 
             <ng-container matColumnDef="Telephon">
                 <th mat-header-cell *matHeaderCellDef>Внутренний номер</th>
                 <td mat-cell *matCellDef="let row">
-                    {{row.Telephon}}
-                    <!--<mat-form-field >
-                    <input matInput [formControl]="row.validator.controls['Telephon']" [readonly]="!row.editing" placeholder="Внутренний номер" [(ngModel)]="row.currentData.Telephon"/>
-                </mat-form-field>-->
+                   <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Telephon}}</Label> 
+                    <mat-form-field class="number" [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            <input matInput  [formControl]="user.uservalidation?.getRowValidatorUser.get('Telephon')" placeholder="Внутренний номер" [(ngModel)]="user.users.Telephon"/>
+                    </mat-form-field>
                 </td>
             </ng-container>
 
             <ng-container matColumnDef="TelephonUndeground">
                 <th mat-header-cell *matHeaderCellDef>Городской номер</th>
                 <td mat-cell *matCellDef="let row">
-                    {{row.TelephonUndeground}}
-                    <!--<mat-form-field>
-                    <input matInput [formControl]="row.validator.controls['TelephonUndeground']" [readonly]="!row.editing" placeholder="Городской номер" [(ngModel)]="row.currentData.TelephonUndeground"/>
-                </mat-form-field>-->
+                   <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.TelephonUndeground}}</Label> 
+                    <mat-form-field class="number" [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            <input matInput  [formControl]="user.uservalidation?.getRowValidatorUser.get('TelephonUndeground')" placeholder="Городской номер" [(ngModel)]="user.users.TelephonUndeground"/>
+                    </mat-form-field>
                 </td>
             </ng-container>
 
             <ng-container matColumnDef="IpTelephon">
                 <th mat-header-cell *matHeaderCellDef>IP телефона</th>
                 <td mat-cell *matCellDef="let row">
-                    {{row.IpTelephon}}
-                    <!--<mat-form-field>
-                    <input matInput [formControl]="row.validator.controls['IpTelephon']" [readonly]="!row.editing" placeholder="Ip Телефона" [(ngModel)]="row.currentData.IpTelephon"/>
-                </mat-form-field>-->
+                   <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.IpTelephon}}</Label>
+                    <mat-form-field class="number" [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            <input matInput  [formControl]="user.uservalidation?.getRowValidatorUser.get('IpTelephon')" placeholder="IP телефона" [(ngModel)]="user.users.IpTelephon"/>
+                    </mat-form-field>
                 </td>
             </ng-container>
 
@@ -68,74 +64,50 @@
             <ng-container matColumnDef="NameOtdel">
                 <th mat-header-cell *matHeaderCellDef>Наименование отдела</th>
                 <td mat-cell *matCellDef="let row">
-                    {{row.Otdel?.NameOtdel}}
-                    <!--<mat-form-field >
-                    <input matInput [formControl]="row.validator.controls['NameOtdel']" [readonly]="!row.editing" placeholder="Наименование отдела" [(ngModel)]="row.currentData.Otdel.NameOtdel"/>
-                </mat-form-field>-->
+                   <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Otdel?.NameOtdel}}</Label>
+                   <mat-form-field class="validation" [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                        <mat-select [formControl]="user.uservalidation?.getRowValidatorUser.get('NameOtdel')" placeholder="Выбор отдела!" [(ngModel)]="user.users.Otdel.NameOtdel" name="otdel">
+                            <mat-option *ngFor="let otdel of select.Otdels" [value]="otdel.NameOtdel">
+                                {{otdel.NameOtdel}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
                 </td>
             </ng-container>
 
             <ng-container matColumnDef="NameRules">
                 <th mat-header-cell *matHeaderCellDef>Наименование роли</th>
                 <td mat-cell *matCellDef="let row">
-                    {{row.Rules?.NameRules}}
-                    <!--<mat-form-field >
-                    <input matInput [formControl]="row.validator.controls['NameRules']" [readonly]="!row.editing" placeholder="Наименование роли" [(ngModel)]="row.currentData.Rules.NameRules"/>
-                </mat-form-field>-->
+                  {{row.Rules?.NameRules}}
                 </td>
             </ng-container>
 
-            <ng-container matColumnDef="ActionsColumn">
-                <th mat-header-cell *matHeaderCellDef> 
+             <ng-container matColumnDef="ActionsColumn">
+                <th mat-header-cell *matHeaderCellDef>
                     <button mat-icon-button color="primary" focusable="false" (click)="user.add()">
                         <i class="material-icons">person_add</i>
                     </button>
                 </th>
                 <td mat-cell *matCellDef="let row">
-                <button mat-icon-button *ngIf="!user.isEdit" color="accent" (click)="user.edit()">
+                <button mat-icon-button *ngIf="!row.ModelIsEdit" color="accent" (click)="user.edit(row)">
                     <i class="material-icons">edit</i>
                 </button>
-                <div *ngIf="user.isEdit" >
-                        <button  mat-icon-button color="primary" focusable="false" (click)="user.save()">
+                <div *ngIf="row.ModelIsEdit" >
+                        <button  mat-icon-button type="submit" [disabled]="user.uservalidation.getRowValidatorUser.invalid" color="primary" focusable="false" (click)="user.save()">
                                 <i class="material-icons">check</i>
                        </button>
-                       <button mat-icon-button color="primary" focusable="false" (click)="user.cancel()">
-                            <i class="material-icons">cancel</i> 
+                       <button mat-icon-button color="primary" focusable="false" (click)="user.cancel(user.users)">
+                            <i class="material-icons">cancel</i>
                         </button>
                 </div>
-                <!-- </mat-header-cell>
-                <mat-cell *matCellDef="let row">
-                    <button *ngIf="!row.editing" mat-icon-button color="primary" focusable="false" (click)="row.startEdit()">
-                        <i class="fa fa-pencil mat-icon"></i>
-                    </button>
-                    <button *ngIf="row.editing" mat-icon-button color="primary" focusable="false" (click)="row.confirmEditCreate()">
-                        <i class="fa fa-check mat-icon"></i>
-                    </button>
-                    <button mat-icon-button color="primary" focusable="false" (click)="row.cancelOrDelete()">
-                        <i class="fa fa-times mat-icon"></i>
-                    </button>
-                </mat-cell> -->
-            </td>
+             </td>
             </ng-container>
             <tr mat-header-row *matHeaderRowDef="user.displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: user.displayedColumns;"></tr>
-            
         </table>
         <mat-paginator #users [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons="true"></mat-paginator>
     </div>
-         <i class="material-icons">check</i>
-        <i class="material-icons">person_add</i>
-        <i class="material-icons">edit</i>
-        <i class="material-icons">cancel</i> 
-        <!--<mat-toolbar>
-<i class="fa fa-check mat-icon"></i>
-        </mat-toolbar>
-        <tablessql [(model)]="name"></tablessql>-->
-
 
 </mat-tab>
-
     <mat-tab label="Роли/Доступы"></mat-tab>
-    
-
 </mat-tab-group>

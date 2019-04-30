@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router, NavigationExtras } from '@angular/router';
 import { AuthIdentification } from '../../Post RequestService/PostRequest';
-import { FullSelected } from '../../Inventory/ModelInventory/InventoryModel';
+import { Autorization } from '../../Inventory/ModelInventory/InventoryModel';
 import { deserialize } from 'class-transformer';
 @Component({
     // selector: 'inventarlogin',
@@ -18,7 +18,7 @@ export class LoginInventarization {
             (this.authService.logins !== null)) {
             this.authService.login().subscribe((model) => {
                 if (model) {
-                    this.authService.fullSelect = deserialize(FullSelected, model.toString());
+                    this.authService.fullSelect = deserialize(Autorization, model.toString());
                     let redirect = this.authService.redirectUrl ? this.authService.redirectUrl : '/Inventory';
                     this.authService.isLoggedIn = true;
                     let navigationExtras: NavigationExtras = {
