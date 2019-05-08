@@ -15,7 +15,7 @@
                 <td mat-cell *matCellDef="let row">
                 <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.Name}}</Label> 
                     <mat-form-field class="validation" [style.display]="!row.ModelIsEdit ? 'none':'block'">
-                            <input matInput [formControl]="user.uservalidation?.getRowValidatorUser.get('Name')" placeholder="Имя пользователя" [(ngModel)]="user.users.Name"/>
+                            <input matInput [formControl]="user.modelvalid?.getRowValidatorModel[0].get('Name')" placeholder="Имя пользователя" [ngModel]="user.model?.Name" (ngModelChange)="user.model.Name = $event"/>
                      </mat-form-field> 
                 </td>
             </ng-container>
@@ -25,7 +25,7 @@
                 <td mat-cell *matCellDef="let row">
                    <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.TabelNumber}}</Label> 
                     <mat-form-field class="number" [style.display]="!row.ModelIsEdit ? 'none':'block'">
-                            <input matInput  [formControl]="user.uservalidation?.getRowValidatorUser.get('TabelNumber')" placeholder="Табельный номер" [(ngModel)]="user.users.TabelNumber"/>
+                            <input matInput  [formControl]="user.modelvalid?.getRowValidatorModel[0].get('TabelNumber')" placeholder="Табельный номер" [ngModel]="user.model?.TabelNumber" (ngModelChange)="user.model.TabelNumber = $event"/>
                     </mat-form-field>
                 </td>
             </ng-container>
@@ -35,7 +35,7 @@
                 <td mat-cell *matCellDef="let row">
                    <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Telephon}}</Label> 
                     <mat-form-field class="number" [style.display]="!row.ModelIsEdit ? 'none':'block'">
-                            <input matInput  [formControl]="user.uservalidation?.getRowValidatorUser.get('Telephon')" placeholder="Внутренний номер" [(ngModel)]="user.users.Telephon"/>
+                            <input matInput  [formControl]="user.modelvalid?.getRowValidatorModel[0].get('Telephon')" placeholder="Внутренний номер" [ngModel]="user.model?.Telephon" (ngModelChange)="user.model.Telephon = $event"/>
                     </mat-form-field>
                 </td>
             </ng-container>
@@ -45,7 +45,7 @@
                 <td mat-cell *matCellDef="let row">
                    <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.TelephonUndeground}}</Label> 
                     <mat-form-field class="number" [style.display]="!row.ModelIsEdit ? 'none':'block'">
-                            <input matInput  [formControl]="user.uservalidation?.getRowValidatorUser.get('TelephonUndeground')" placeholder="Городской номер" [(ngModel)]="user.users.TelephonUndeground"/>
+                            <input matInput  [formControl]="user.modelvalid?.getRowValidatorModel[0].get('TelephonUndeground')" placeholder="Городской номер" [ngModel]="user.model?.TelephonUndeground" (ngModelChange)="user.model.TelephonUndeground = $event"/>
                     </mat-form-field>
                 </td>
             </ng-container>
@@ -55,7 +55,7 @@
                 <td mat-cell *matCellDef="let row">
                    <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.IpTelephon}}</Label>
                     <mat-form-field class="number" [style.display]="!row.ModelIsEdit ? 'none':'block'">
-                            <input matInput  [formControl]="user.uservalidation?.getRowValidatorUser.get('IpTelephon')" placeholder="IP телефона" [(ngModel)]="user.users.IpTelephon"/>
+                            <input matInput  [formControl]="user.modelvalid?.getRowValidatorModel[0].get('IpTelephon')" placeholder="IP телефона" [ngModel]="user.model?.IpTelephon" (ngModelChange)="user.model.IpTelephon = $event"/>
                     </mat-form-field>
                 </td>
             </ng-container>
@@ -66,7 +66,7 @@
                 <td mat-cell *matCellDef="let row">
                    <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Otdel?.NameOtdel}}</Label>
                    <mat-form-field class="validation" [style.display]="!row.ModelIsEdit ? 'none':'block'">
-                        <mat-select [formControl]="user.uservalidation?.getRowValidatorUser.get('NameOtdel')" placeholder="Выбор отдела!" [(ngModel)]="user.users.Otdel.NameOtdel" name="otdel">
+                        <mat-select [formControl]="user.modelvalid?.getRowValidatorModel[0].get('NameOtdel')" placeholder="Выбор отдела!" [(ngModel)]="user.model?.Otdel.NameOtdel" name="otdel" (ngModelChange)="user.model.Otdel.NameOtdel = $event">
                             <mat-option *ngFor="let otdel of select.Otdels" [value]="otdel.NameOtdel">
                                 {{otdel.NameOtdel}}
                             </mat-option>
@@ -84,19 +84,19 @@
 
              <ng-container matColumnDef="ActionsColumn">
                 <th mat-header-cell *matHeaderCellDef>
-                    <button mat-icon-button color="primary" focusable="false" (click)="user.add()">
+                    <button mat-icon-button color="primary" [disabled]="user.isAdd" focusable="false" (click)="user.add()">
                         <i class="material-icons">person_add</i>
                     </button>
                 </th>
                 <td mat-cell *matCellDef="let row">
-                <button mat-icon-button *ngIf="!row.ModelIsEdit" color="accent" (click)="user.edit(row)">
+                <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="user.isEdit" color="accent" (click)="user.edit(row)">
                     <i class="material-icons">edit</i>
                 </button>
                 <div *ngIf="row.ModelIsEdit" >
-                        <button  mat-icon-button type="submit" [disabled]="user.uservalidation.getRowValidatorUser.invalid" color="primary" focusable="false" (click)="user.save()">
+                        <button  mat-icon-button type="submit" [disabled]="user.modelvalid.getRowValidatorModel[0].invalid" color="primary" focusable="false" (click)="user.save()">
                                 <i class="material-icons">check</i>
                        </button>
-                       <button mat-icon-button color="primary" focusable="false" (click)="user.cancel(user.users)">
+                       <button mat-icon-button color="primary" focusable="false" (click)="user.cancel(row)">
                             <i class="material-icons">cancel</i>
                         </button>
                 </div>
