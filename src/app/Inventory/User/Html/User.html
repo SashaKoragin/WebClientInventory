@@ -2,16 +2,21 @@
 <mat-tab-group>
     <mat-tab label="Все пользователи">
  <div class="mat-elevation-z8">
-        <table mat-table [dataSource]="user.dataSource">
-
+        <form class="search">
+        <mat-form-field class="search_blok">
+                <span matPrefix><i class="material-icons">youtube_searched_for</i></span>
+                <input matInput (keyup)="user.filterstable($event.target.value)" placeholder="Поиск данных">
+        </mat-form-field>
+        </form>
+        <table mat-table [dataSource]="user.dataSource" matSort>
             <ng-container matColumnDef="IdUser">
-                <th mat-header-cell *matHeaderCellDef>Id</th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
                 <td mat-cell *matCellDef="let row">
                  {{row.IdUser}}
                 </td>
             </ng-container>
             <ng-container matColumnDef="Name">
-                <th mat-header-cell *matHeaderCellDef>Имя пользователя</th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Имя пользователя</th>
                 <td mat-cell *matCellDef="let row">
                 <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.Name}}</Label> 
                     <mat-form-field class="validation" [style.display]="!row.ModelIsEdit ? 'none':'block'">
@@ -21,7 +26,7 @@
             </ng-container>
 
             <ng-container matColumnDef="TabelNumber">
-                <th mat-header-cell *matHeaderCellDef>Табельный номер</th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Табельный номер</th>
                 <td mat-cell *matCellDef="let row">
                    <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.TabelNumber}}</Label> 
                     <mat-form-field class="number" [style.display]="!row.ModelIsEdit ? 'none':'block'">
@@ -31,7 +36,7 @@
             </ng-container>
 
             <ng-container matColumnDef="Telephon">
-                <th mat-header-cell *matHeaderCellDef>Внутренний номер</th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Внутренний номер</th>
                 <td mat-cell *matCellDef="let row">
                    <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Telephon}}</Label> 
                     <mat-form-field class="number" [style.display]="!row.ModelIsEdit ? 'none':'block'">
@@ -41,7 +46,7 @@
             </ng-container>
 
             <ng-container matColumnDef="TelephonUndeground">
-                <th mat-header-cell *matHeaderCellDef>Городской номер</th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Городской номер</th>
                 <td mat-cell *matCellDef="let row">
                    <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.TelephonUndeground}}</Label> 
                     <mat-form-field class="number" [style.display]="!row.ModelIsEdit ? 'none':'block'">
@@ -51,7 +56,7 @@
             </ng-container>
 
             <ng-container matColumnDef="IpTelephon">
-                <th mat-header-cell *matHeaderCellDef>IP телефона</th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>IP телефона</th>
                 <td mat-cell *matCellDef="let row">
                    <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.IpTelephon}}</Label>
                     <mat-form-field class="number" [style.display]="!row.ModelIsEdit ? 'none':'block'">
@@ -60,14 +65,32 @@
                 </td>
             </ng-container>
 
+            <ng-container matColumnDef="NamePosition">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Должность</th>
+                <td mat-cell *matCellDef="let row">
+                        <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Position?.NamePosition}}</Label>
+                        <mat-form-field class="validation" [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                                <mat-select (click)="user.calbackfiltersAll()" [formControl]="user.modelvalid?.getRowValidatorModel[0].get('NamePosition')" [placeholder]="user.model.Position.NamePosition" [(ngModel)]="user.model.Position" name="position">
+                                  <mat-select-filter class="filter" [placeholder]="user.model.Position.NamePosition" [displayMember]="'NamePosition'" [array]="user.position" (filteredReturn)="user.filteredPosition =$event">
+                                  </mat-select-filter>
+                                    <mat-option *ngFor="let position of user. filteredPosition" [value]="position">
+                                        {{position.NamePosition}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                </td>
+            </ng-container>
+
 
             <ng-container matColumnDef="NameOtdel">
-                <th mat-header-cell *matHeaderCellDef>Наименование отдела</th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Отдел</th>
                 <td mat-cell *matCellDef="let row">
                    <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Otdel?.NameOtdel}}</Label>
                    <mat-form-field class="validation" [style.display]="!row.ModelIsEdit ? 'none':'block'">
-                        <mat-select [formControl]="user.modelvalid?.getRowValidatorModel[0].get('NameOtdel')" placeholder="Выбор отдела!" [(ngModel)]="user.model?.Otdel.NameOtdel" name="otdel" (ngModelChange)="user.model.Otdel.NameOtdel = $event">
-                            <mat-option *ngFor="let otdel of select.Otdels" [value]="otdel.NameOtdel">
+                        <mat-select (click)="user.calbackfiltersAll()" [formControl]="user.modelvalid?.getRowValidatorModel[0].get('NameOtdel')" [placeholder]="user.model.Otdel.NameOtdel" [(ngModel)]="user.model.Otdel" name="otdel">
+                          <mat-select-filter class="filter" [placeholder]="user.model.Otdel.NameOtdel" [displayMember]="'NameOtdel'" [array]="user.otdels" (filteredReturn)="user.filteredOtdel =$event">
+                          </mat-select-filter>
+                            <mat-option *ngFor="let otdel of user.filteredOtdel" [value]="otdel">
                                 {{otdel.NameOtdel}}
                             </mat-option>
                         </mat-select>
@@ -75,14 +98,9 @@
                 </td>
             </ng-container>
 
-            <ng-container matColumnDef="NameRules">
-                <th mat-header-cell *matHeaderCellDef>Наименование роли</th>
-                <td mat-cell *matCellDef="let row">
-                  {{row.Rules?.NameRules}}
-                </td>
-            </ng-container>
+ 
 
-             <ng-container matColumnDef="ActionsColumn">
+             <ng-container matColumnDef="ActionsColumn">  
                 <th mat-header-cell *matHeaderCellDef>
                     <button mat-icon-button color="primary" [disabled]="user.isAdd" focusable="false" (click)="user.add()">
                         <i class="material-icons">person_add</i>

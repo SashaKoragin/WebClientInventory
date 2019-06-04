@@ -39,11 +39,13 @@ import {
 } from '@angular/material';
 import { CdkTableModule } from '@angular/cdk/table';
 import { CdkTreeModule } from '@angular/cdk/tree';
+import { MatSelectFilterModule} from 'mat-select-filter';
 
 
 
 @NgModule(({
     exports: [
+        MatSelectFilterModule,
         CdkTableModule,
         CdkTreeModule,
         MatAutocompleteModule,

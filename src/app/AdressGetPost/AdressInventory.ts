@@ -4,4 +4,6 @@ export class AdressInventarka {
     public autificationInventar = `http://${this.host}:8182/Inventarka/Authorization`;
     public alluser = `http://${this.host}:8182/Inventarka/AllUsers`;
     public allotdelget = `http://${this.host}:8182/Inventarka/AllOtdels`;
+    public addandedituser = `http://${this.host}:8182/Inventarka/AddAndEditUser`;
+    public allposition = `http://${this.host}:8182/Inventarka/AllPosition`;
 }

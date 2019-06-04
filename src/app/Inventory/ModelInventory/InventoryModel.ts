@@ -1,15 +1,22 @@
-
-export interface ILogicaUser<T> {
+import {MatPaginator, MatSort } from '@angular/material';
+import { DatePipe } from '@angular/common';
+export interface ILogicaTable<T> {
     //Добавление
     add(): void;
     //Редактирование
     edit(model: T): void;
     //Сохранение
-    save():void;
+    save(model: T):void;
     //Отмена
     cancel(model: T):void;
     //Создание новой модели
     newmodel():T;
+    //Фильтрация данных
+    filterstable(filterValue:string):void;
+    //Метод переноса модификаций моделей
+    modifimethod():void;
+
+    addtableModel(model:FullSelectedModel,paginator:MatPaginator,sort:MatSort):void
     //Добавление новой записи
     isAdd:boolean;
     //Редактируем
@@ -22,16 +29,12 @@ export interface ILogicaUser<T> {
     modeltable:T[];
 }
 
-
+///Очень важный класс для приемка DTO ответов
 export class FullSelectedModel{
    Otdels: Otdels[];
-   AllUserSelected:AllUserSelected = null;
+   Users: Users[];
+   Position:Position[];
 }
-
-export class AllUserSelected {
-    Users: Users[];
-}
-
 
 
 
@@ -54,11 +57,10 @@ export class Users{
     public Passwords?: string;
     public StatusActual?: boolean;
     public IdHistory?: string;
-    public DataCreate?: Date;
     public FullInventarizations?: FullInventarization[];
-    public Rules?: Rules = new Rules();
+    public Rules?: Rules;
     public Position?: Position;
-    public Otdel?: Otdels = new Otdels();
+    public Otdel?: Otdels;
     public ModelIsEdit?: boolean = false;
 }
 export class SysBlock {
@@ -73,23 +75,19 @@ export class SysBlock {
     public Coment: string;
     public IdStatus: number;
     public IdHistory: string;
-    public DataCreate: string;
     public Statusing: Statusing;
     public NameSysBlock: NameSysBlock;
     public Kabinet?:Kabinet;
-
 }
 export class Rules {
     public IdRule?: number;
     public NameRules?: string;
-    public DataCreate?: string;
 }
 
 export class Statusing {
     public IdStatus: number;
     public Name: string;
     public Color: string;
-    public DataCreate: string;
 }
 
 export class ScanerAndCamer {
@@ -105,12 +103,10 @@ export class ScanerAndCamer {
     public Coment: string;
     public IdStatus: number;
     public IdHistory: string;
-    public DataCreate: string;
     public Statusing: Statusing;
     public FullProizvoditel: FullProizvoditel;
     public FullModel:FullModel;
     public Kabinet?:Kabinet;
-
 }
 
 export class Printer {
@@ -126,7 +122,6 @@ export class Printer {
     public Coment: string;
     public IdStatus: number;
     public IdHistory: string;
-    public DataCreate: string;
     public Statusing: Statusing;
     public FullProizvoditel: FullProizvoditel;
     public FullModel:FullModel;
@@ -136,23 +131,19 @@ export class Printer {
 export class Position {
     public IdPosition: number;
     public NamePosition: string;
-    public DataCreate: string;
 }
 
 export class Otdels {
     public IdOtdel?: number;
     public NameOtdel?: string;
-    public DataCreate?: string;
 }
 export class NameSysBlock {
     public IdModelSysBlock: number;
     public NameComputer: string;
-    public DataCreate: string;
 }
 export class NameMonitor {
     public IdModelMonitor: number;
     public NameMonitor_: string;
-    public DataCreate: string;
 }
 export class Monitor {
     public IdMonitor: number;
@@ -163,12 +154,9 @@ export class Monitor {
     public Coment: string;
     public IdStatus: number;
     public IdHistory: string;
-    public DataCreate: string;
     public Statusing: Statusing;
     public NameMonitor: NameMonitor;
     public Kabinet?:Kabinet;
-
-
 }
 export class Mfu {
     public IdMfu: number;
@@ -184,7 +172,6 @@ export class Mfu {
     public Coment: string;
     public IdStatus: number;
     public IdHistory: string;
-    public DataCreate: string;
     public Statusing: Statusing;
     public FullProizvoditel: FullProizvoditel;
     public FullModel: FullModel;
@@ -194,14 +181,12 @@ export class Mfu {
 export class Kabinet {
     public IdNumberKabinet: number;
     public NumberKabinet: number;
-    public DataCreate: string;
 }
 export class InfoTable {
     public Id: number;
     public NameTable: string;
     public NameColumns: string;
     public InfoColumn: string;
-    public DataCreate: string;
 }
 
 export class InfoLogic {
@@ -209,31 +194,26 @@ export class InfoLogic {
     public InfoProcedure: string;
     public ParamProcedure: string;
     public NameProcedure: string;
-    public DataCreate: string;
 }
 export class History {
     public Id: number;
     public IdHistory: string;
     public IdUser: number;
     public UserProcess: string;
-    public DataCreate: string;
 }
 export class FullProizvoditel {
     public IdProizvoditel: number;
     public NameProizvoditel: string;
-    public DataCreate: string;
 }
 export class FullMonitorSysBlok {
     public Id: number;
     public InventarNumSysBlok: string;
     public InventarNumMonitor: string;
-    public DataCreate: string;
 }
 export class FullModel {
     public IdModel: number;
     public NameModel: string;
     public IdClasification: number;
-    public DataCreate: string;
 }
 export class FullInventarization {
     public Id: number;
@@ -247,7 +227,6 @@ export class FullInventarization {
     public IdStrih:number;
     public StatusActual: boolean;
     public Coment: string;
-    public DataCreate: string;
     public User: Users;
     public SysBlock: SysBlock;
     public Scaner: ScanerAndCamer;
@@ -260,11 +239,9 @@ export class CopySave {
     public NameCopySave: string;
     public SerNum: string;
     public InventarNum: string;
-    public DataCreate: string;
 }
 
 export class Classification {
     public IdClasification: number;
     public NameClass: string;
-    public DataCreate: string;
 }

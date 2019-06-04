@@ -46,12 +46,27 @@ export class PostInventar {
     constructor(private http: HttpClient) { }
 
     ///Выборка всего из БД в зависимостb от num пользователи
-    alluser(num:number) {
-        return this.http.post(url.alluser, new ModelParametr(num), httpOptionsJson);
+    alluser() {
+        return this.http.get(url.alluser, httpOptionsJson);
     }
-
+    //Вытащить все отделы из БД
     allotdel(){
         return this.http.get(url.allotdelget,httpOptionsJson)
     }
+    //Вытащить все должностя из БД
+    allposition(){
+        return this.http.get(url.allposition,httpOptionsJson)
+    }
+}
+
+@Injectable()
+export class EditAndAdd{
+    constructor(private http: HttpClient) { }
+     ///Обновление или добавление Users
+    addandedituser(user:Users){
+        return this.http.post(url.addandedituser, user, httpOptionsJson);
+    }    
+
+
 }
 
