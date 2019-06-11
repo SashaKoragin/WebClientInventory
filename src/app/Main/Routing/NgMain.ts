@@ -13,9 +13,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { AngularMaterialModule} from '../MaterialLibary/MaterialLibary';
 
-
-
-
 @NgModule({
     imports: [
         BrowserModule,
@@ -25,7 +22,7 @@ import { AngularMaterialModule} from '../MaterialLibary/MaterialLibary';
         AuthModule,
         AngularMaterialModule,
         HttpClientModule,
-        AppRoutingModule,
+        AppRoutingModule
     ],
     declarations: [
         Root
@@ -34,7 +31,7 @@ import { AngularMaterialModule} from '../MaterialLibary/MaterialLibary';
 })
 export class Maining {
     constructor(router: Router) {
-        console.log(router.url)
+        //console.log(router.url)
         //Для Debuger
     }
 

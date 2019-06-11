@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { Router, NavigationExtras } from '@angular/router';
-import { AuthIdentification } from '../../Post RequestService/PostRequest';
+import { AuthIdentification, PostInventar } from '../../Post RequestService/PostRequest';
 import { Autorization } from '../../Inventory/ModelInventory/InventoryModel';
 import { deserialize } from 'class-transformer';
+
 @Component({
     // selector: 'inventarlogin',
     templateUrl: '../Html/Inventory.html',
@@ -10,7 +11,7 @@ import { deserialize } from 'class-transformer';
 })
 export class LoginInventarization {
 
-    constructor(public authService: AuthIdentification, public router: Router) { }
+    constructor(public authService: AuthIdentification, public router: Router,public selectall:PostInventar) { }
 
     login() {
         try {
@@ -21,6 +22,7 @@ export class LoginInventarization {
                     this.authService.fullSelect = deserialize(Autorization, model.toString());
                     let redirect = this.authService.redirectUrl ? this.authService.redirectUrl : '/Inventory';
                     this.authService.isLoggedIn = true;
+                    this.selectall.fullreqvests()
                     let navigationExtras: NavigationExtras = {
                         queryParamsHandling: 'preserve',
                         preserveFragment: true

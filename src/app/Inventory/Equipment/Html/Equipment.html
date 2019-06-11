@@ -1,7 +1,806 @@
 <h1>Техника</h1>
-<mat-tab-group (selectedIndexChange)="select($event)">
-    <mat-tab *ngFor="let tab of tabs" [label]="tab">
-        <!--<tablessql [(userName)]="name"></tablessql>-->
-       
-    </mat-tab>
+<mat-tab-group>
+        <mat-tab label="Принтеры">
+            <div class="mat-elevation-z8">
+                <form class="search">
+                  <mat-form-field class="search_blok">
+                        <span matPrefix><i class="material-icons">youtube_searched_for</i></span>
+                        <input matInput (keyup)="printer.filterstable($event.target.value)" placeholder="Поиск данных">
+                  </mat-form-field>
+                </form>
+            <table mat-table [dataSource]="printer.dataSource" matSort>
+                <ng-container matColumnDef="IdModel">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
+                      <td mat-cell *matCellDef="let row">
+                             {{row.IdPrinter}}
+                      </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Proizvoditel">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Производитель</th>
+                    <td mat-cell *matCellDef="let row">
+                      <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.FullProizvoditel?.NameProizvoditel}}</Label>
+                          <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                              <mat-select (click)="printer.calbackfiltersAll()" [formControl]="printer.modelvalid?.getRowValidatorModel[1].get('Proizvoditel')" [placeholder]="printer.model.FullProizvoditel?.NameProizvoditel" [(ngModel)]="printer.model.FullProizvoditel" name="proizvoditel">
+                                 <mat-select-filter class="filter" [placeholder]="printer.model.FullProizvoditel?.NameProizvoditel" [displayMember]="'NameProizvoditel'" [array]="printer.proizvoditel" (filteredReturn)="printer.filteredProizvoditel =$event">
+                                  </mat-select-filter>
+                                    <mat-option *ngFor="let proizvoditel of printer.filteredProizvoditel" [value]="proizvoditel">
+                                      {{proizvoditel.NameProizvoditel}}
+                                    </mat-option>
+                              </mat-select>
+                          </mat-form-field>
+                    </td>
+              </ng-container>
+          
+              <ng-container matColumnDef="Model">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Модель</th>
+                        <td mat-cell *matCellDef="let row">
+                          <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.FullModel?.NameModel}}</Label>
+                              <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                                  <mat-select (click)="printer.calbackfiltersAll()" [formControl]="printer.modelvalid?.getRowValidatorModel[1].get('Model')" [placeholder]="printer.model.FullModel?.NameModel" [(ngModel)]="printer.model.FullModel" name="models">
+                                     <mat-select-filter class="filter" [placeholder]="printer.model.FullModel?.NameModel" [displayMember]="'NameModel'" [array]="printer.models" (filteredReturn)="printer.filteredModels =$event">
+                                      </mat-select-filter>
+                                        <mat-option *ngFor="let models of printer.filteredModels" [value]="models">
+                                          {{models.NameModel}}
+                                        </mat-option>
+                                  </mat-select>
+                              </mat-form-field>
+                        </td>
+                  </ng-container>
+
+
+                 <ng-container matColumnDef="ZavNum">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Зав.Номер</th>
+                      <td mat-cell *matCellDef="let row">
+                        <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.ZavNumber}}</Label> 
+                            <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                                <input matInput [formControl]="printer.modelvalid?.getRowValidatorModel[1].get('ZavNum')" placeholder="Заводской номер" [ngModel]="printer.model?.ZavNumber" (ngModelChange)="printer.model.ZavNumber = $event"/>
+                            </mat-form-field> 
+                      </td>
+                </ng-container>
+            
+                <ng-container matColumnDef="ServiceNum">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Сервисный номер</th>
+                      <td mat-cell *matCellDef="let row">
+                        <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.ServiceNumber}}</Label> 
+                            <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                                <input matInput  [formControl]="printer.modelvalid?.getRowValidatorModel[1].get('ServiceNum')" placeholder="Сервисный номер" [ngModel]="printer.model?.ServiceNumber" (ngModelChange)="printer.model.ServiceNumber = $event"/>
+                            </mat-form-field>
+                        </td>
+                </ng-container>
+            
+                <ng-container matColumnDef="InventarNum">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Инвентарный номер</th>
+                      <td mat-cell *matCellDef="let row">
+                        <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.InventarNumber}}</Label> 
+                            <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                                <input matInput  [formControl]="printer.modelvalid?.getRowValidatorModel[1].get('InventarNum')" placeholder="Инвентарный номер" [ngModel]="printer.model?.InventarNumber" (ngModelChange)="printer.model.InventarNumber = $event"/>
+                            </mat-form-field>
+                      </td>
+                </ng-container>
+            
+                <ng-container matColumnDef="IzmInventar">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Измененный №</th>
+                      <td mat-cell *matCellDef="let row">
+                        <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.IzmInventarNumber}}</Label> 
+                            <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                                <input matInput placeholder="Измененый номер" [ngModel]="printer.model?.IzmInventarNumber" (ngModelChange)="printer.model.IzmInventarNumber = $event"/>
+                            </mat-form-field>
+                      </td>
+                </ng-container>
+            
+                <ng-container matColumnDef="Ip">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>IP адрес</th>
+                      <td mat-cell *matCellDef="let row">
+                        <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.IpAdress}}</Label>
+                            <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                                <input matInput placeholder="IP принтера" [ngModel]="printer.model?.IpAdress" (ngModelChange)="printer.model.IpAdress = $event"/>
+                            </mat-form-field>
+                      </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Coment">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Коментарий</th>
+                      <td mat-cell *matCellDef="let row">
+                        <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Coment}}</Label>
+                            <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                                <input matInput placeholder="Коментарий" [ngModel]="printer.model?.Coment" (ngModelChange)="printer.model.Coment = $event"/>
+                            </mat-form-field>
+                      </td>
+                </ng-container>
+
+                     <ng-container matColumnDef="Kabinet">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Кабинет</th>
+                              <td mat-cell *matCellDef="let row">
+                                <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Kabinet?.NumberKabinet}}</Label>
+                                    <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                                        <mat-select (click)="printer.calbackfiltersAll()" [formControl]="printer.modelvalid?.getRowValidatorModel[1].get('Kabinet')" [placeholder]="printer.model.Kabinet?.NumberKabinet" [(ngModel)]="printer.model.Kabinet" name="kabinet">
+                                           <mat-select-filter class="filter" [placeholder]="printer.model.Kabinet?.NumberKabinet"  [displayMember]="'NumberKabinet'" [array]="printer.kabinet" (filteredReturn)="printer.filteredKabinet =$event">
+                                            </mat-select-filter>
+                                              <mat-option *ngFor="let kabinet of printer.filteredKabinet" [value]="kabinet">
+                                                {{kabinet.NumberKabinet}}
+                                              </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                              </td>
+                        </ng-container> 
+
+                        <ng-container matColumnDef="Status">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header>Статус</th>
+                                  <td mat-cell *matCellDef="let row">
+                                    <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Statusing?.Name}}</Label>
+                                        <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                                            <mat-select (click)="printer.calbackfiltersAll()" [placeholder]="printer.model.Statusing?.Name" [(ngModel)]="printer.model.Statusing" name="status">
+                                               <mat-select-filter class="filter" [placeholder]="printer.model.Statusing?.Name" [array]="printer.statusing" (filteredReturn)="printer.filteredStatusing =$event">
+                                                </mat-select-filter>
+                                                  <mat-option *ngFor="let status of printer.filteredStatusing" [value]="status">
+                                                    {{status.Name}}
+                                                  </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                  </td>
+                            </ng-container> -->
+
+                         <ng-container matColumnDef="ActionsColumn">  
+                            <th mat-header-cell *matHeaderCellDef>
+                                <button mat-icon-button color="primary" [disabled]="printer.isAdd" focusable="false" (click)="printer.add()">
+                                    <i class="material-icons">person_add</i>
+                                </button>
+                            </th>
+                            <td mat-cell *matCellDef="let row">
+                            <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="printer.isEdit" color="accent" (click)="printer.edit(row)">
+                                <i class="material-icons">edit</i>
+                            </button>
+                            <div *ngIf="row.ModelIsEdit" >
+                                    <button  mat-icon-button type="submit" [disabled]="printer.modelvalid.getRowValidatorModel[1].invalid" color="primary" focusable="false" (click)="printer.save()">
+                                            <i class="material-icons">check</i>
+                                   </button>
+                                   <button mat-icon-button color="primary" focusable="false" (click)="printer.cancel(row)">
+                                        <i class="material-icons">cancel</i>
+                                    </button>
+                            </div>
+                         </td>
+                         </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="printer.displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: printer.displayedColumns;"></tr>
+                    </table>
+                    <mat-paginator #printers [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons="true"></mat-paginator>
+                  </div>
+
+        </mat-tab>
+        <mat-tab label="Сканеры и камеры">
+          <div class="mat-elevation-z8">
+            <form class="search">
+              <mat-form-field class="search_blok">
+                    <span matPrefix><i class="material-icons">youtube_searched_for</i></span>
+                    <input matInput (keyup)="scaner.filterstable($event.target.value)" placeholder="Поиск данных">
+              </mat-form-field>
+            </form>
+        <table mat-table [dataSource]="scaner.dataSource" matSort>
+            <ng-container matColumnDef="IdModel">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
+                  <td mat-cell *matCellDef="let row">
+                         {{row.IdScaner}}
+                  </td>
+            </ng-container>
+
+            <ng-container matColumnDef="Proizvoditel">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Производитель</th>
+                <td mat-cell *matCellDef="let row">
+                  <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.FullProizvoditel?.NameProizvoditel}}</Label>
+                      <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                          <mat-select (click)="scaner.calbackfiltersAll()" [formControl]="scaner.modelvalid?.getRowValidatorModel[1].get('Proizvoditel')" [placeholder]="scaner.model.FullProizvoditel?.NameProizvoditel" [(ngModel)]="scaner.model.FullProizvoditel" name="proizvoditel">
+                             <mat-select-filter class="filter" [placeholder]="scaner.model.FullProizvoditel?.NameProizvoditel" [displayMember]="'NameProizvoditel'" [array]="scaner.proizvoditel" (filteredReturn)="scaner.filteredProizvoditel =$event">
+                              </mat-select-filter>
+                                <mat-option *ngFor="let proizvoditel of scaner.filteredProizvoditel" [value]="proizvoditel">
+                                  {{proizvoditel.NameProizvoditel}}
+                                </mat-option>
+                          </mat-select>
+                      </mat-form-field>
+                </td>
+          </ng-container>
+      
+          <ng-container matColumnDef="Model">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Модель</th>
+                    <td mat-cell *matCellDef="let row">
+                      <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.FullModel?.NameModel}}</Label>
+                          <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                              <mat-select (click)="scaner.calbackfiltersAll()" [formControl]="scaner.modelvalid?.getRowValidatorModel[1].get('Model')" [placeholder]="scaner.model.FullModel?.NameModel" [(ngModel)]="scaner.model.FullModel" name="models">
+                                 <mat-select-filter class="filter" [placeholder]="scaner.model.FullModel?.NameModel" [displayMember]="'NameModel'" [array]="scaner.models" (filteredReturn)="scaner.filteredModels =$event">
+                                  </mat-select-filter>
+                                    <mat-option *ngFor="let models of scaner.filteredModels" [value]="models">
+                                      {{models.NameModel}}
+                                    </mat-option>
+                              </mat-select>
+                          </mat-form-field>
+                    </td>
+              </ng-container>
+
+
+             <ng-container matColumnDef="ZavNum">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Зав.Номер</th>
+                  <td mat-cell *matCellDef="let row">
+                    <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.ZavNumber}}</Label> 
+                        <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            <input matInput [formControl]="scaner.modelvalid?.getRowValidatorModel[1].get('ZavNum')" placeholder="Заводской номер" [ngModel]="scaner.model?.ZavNumber" (ngModelChange)="scaner.model.ZavNumber = $event"/>
+                        </mat-form-field> 
+                  </td>
+            </ng-container>
+        
+            <ng-container matColumnDef="ServiceNum">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Сервисный номер</th>
+                  <td mat-cell *matCellDef="let row">
+                    <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.ServiceNumber}}</Label> 
+                        <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            <input matInput  [formControl]="scaner.modelvalid?.getRowValidatorModel[1].get('ServiceNum')" placeholder="Сервисный номер" [ngModel]="scaner.model?.ServiceNumber" (ngModelChange)="scaner.model.ServiceNumber = $event"/>
+                        </mat-form-field>
+                    </td>
+            </ng-container>
+        
+            <ng-container matColumnDef="InventarNum">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Инвентарный номер</th>
+                  <td mat-cell *matCellDef="let row">
+                    <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.InventarNumber}}</Label> 
+                        <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            <input matInput  [formControl]="scaner.modelvalid?.getRowValidatorModel[1].get('InventarNum')" placeholder="Инвентарный номер" [ngModel]="scaner.model?.InventarNumber" (ngModelChange)="scaner.model.InventarNumber = $event"/>
+                        </mat-form-field>
+                  </td>
+            </ng-container>
+        
+            <ng-container matColumnDef="IzmInventar">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Измененный №</th>
+                  <td mat-cell *matCellDef="let row">
+                    <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.IzmInventarNumber}}</Label> 
+                        <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            <input matInput placeholder="Измененый номер" [ngModel]="scaner.model?.IzmInventarNumber" (ngModelChange)="scaner.model.IzmInventarNumber = $event"/>
+                        </mat-form-field>
+                  </td>
+            </ng-container>
+        
+            <ng-container matColumnDef="Ip">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>IP адрес</th>
+                  <td mat-cell *matCellDef="let row">
+                    <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.IpAdress}}</Label>
+                        <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            <input matInput placeholder="IP принтера" [ngModel]="scaner.model?.IpAdress" (ngModelChange)="scaner.model.IpAdress = $event"/>
+                        </mat-form-field>
+                  </td>
+            </ng-container>
+
+            <ng-container matColumnDef="Coment">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Коментарий</th>
+                  <td mat-cell *matCellDef="let row">
+                    <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Coment}}</Label>
+                        <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            <input matInput placeholder="Коментарий" [ngModel]="scaner.model?.Coment" (ngModelChange)="scaner.model.Coment = $event"/>
+                        </mat-form-field>
+                  </td>
+            </ng-container>
+
+                 <ng-container matColumnDef="Kabinet">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Кабинет</th>
+                          <td mat-cell *matCellDef="let row">
+                            <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Kabinet?.NumberKabinet}}</Label>
+                                <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                                    <mat-select (click)="scaner.calbackfiltersAll()" [formControl]="scaner.modelvalid?.getRowValidatorModel[1].get('Kabinet')" [placeholder]="scaner.model.Kabinet?.NumberKabinet" [(ngModel)]="scaner.model.Kabinet" name="kabinet">
+                                       <mat-select-filter class="filter" [placeholder]="scaner.model.Kabinet?.NumberKabinet"  [displayMember]="'NumberKabinet'" [array]="scaner.kabinet" (filteredReturn)="scaner.filteredKabinet =$event">
+                                        </mat-select-filter>
+                                          <mat-option *ngFor="let kabinet of scaner.filteredKabinet" [value]="kabinet">
+                                            {{kabinet.NumberKabinet}}
+                                          </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                          </td>
+                    </ng-container> 
+
+                    <ng-container matColumnDef="Status">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Статус</th>
+                              <td mat-cell *matCellDef="let row">
+                                <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Statusing?.Name}}</Label>
+                                    <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                                        <mat-select (click)="scaner.calbackfiltersAll()" [placeholder]="scaner.model.Statusing?.Name" [(ngModel)]="scaner.model.Statusing" name="status">
+                                           <mat-select-filter class="filter" [placeholder]="scaner.model.Statusing?.Name" [array]="scaner.statusing" (filteredReturn)="scaner.filteredStatusing =$event">
+                                            </mat-select-filter>
+                                              <mat-option *ngFor="let status of scaner.filteredStatusing" [value]="status">
+                                                {{status.Name}}
+                                              </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                              </td>
+                        </ng-container> -->
+
+                     <ng-container matColumnDef="ActionsColumn">  
+                        <th mat-header-cell *matHeaderCellDef>
+                            <button mat-icon-button color="primary" [disabled]="scaner.isAdd" focusable="false" (click)="scaner.add()">
+                                <i class="material-icons">person_add</i>
+                            </button>
+                        </th>
+                        <td mat-cell *matCellDef="let row">
+                        <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="scaner.isEdit" color="accent" (click)="scaner.edit(row)">
+                            <i class="material-icons">edit</i>
+                        </button>
+                        <div *ngIf="row.ModelIsEdit" >
+                                <button  mat-icon-button type="submit" [disabled]="scaner.modelvalid.getRowValidatorModel[1].invalid" color="primary" focusable="false" (click)="scaner.save()">
+                                        <i class="material-icons">check</i>
+                               </button>
+                               <button mat-icon-button color="primary" focusable="false" (click)="scaner.cancel(row)">
+                                    <i class="material-icons">cancel</i>
+                                </button>
+                        </div>
+                     </td>
+                     </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="scaner.displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: scaner.displayedColumns;"></tr>
+                </table>
+                <mat-paginator #scaners [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons="true"></mat-paginator>
+              </div>
+
+
+        </mat-tab>
+        <mat-tab label="МФУ">
+
+          <div class="mat-elevation-z8">
+            <form class="search">
+              <mat-form-field class="search_blok">
+                    <span matPrefix><i class="material-icons">youtube_searched_for</i></span>
+                    <input matInput (keyup)="mfu.filterstable($event.target.value)" placeholder="Поиск данных">
+              </mat-form-field>
+            </form>
+
+        <table mat-table [dataSource]="mfu.dataSource" matSort>
+
+            <ng-container matColumnDef="IdModel">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
+                  <td mat-cell *matCellDef="let row">
+                         {{row.IdMfu}}
+                  </td>
+            </ng-container>
+
+            <ng-container matColumnDef="Proizvoditel">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Производитель</th>
+                <td mat-cell *matCellDef="let row">
+                  <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.FullProizvoditel?.NameProizvoditel}}</Label>
+                      <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                          <mat-select (click)="mfu.calbackfiltersAll()" [formControl]="mfu.modelvalid?.getRowValidatorModel[1].get('Proizvoditel')" [placeholder]="mfu.model.FullProizvoditel?.NameProizvoditel" [(ngModel)]="mfu.model.FullProizvoditel" name="proizvoditel">
+                             <mat-select-filter class="filter" [placeholder]="mfu.model.FullProizvoditel?.NameProizvoditel" [displayMember]="'NameProizvoditel'" [array]="mfu.proizvoditel" (filteredReturn)="mfu.filteredProizvoditel =$event">
+                              </mat-select-filter>
+                                <mat-option *ngFor="let proizvoditel of mfu.filteredProizvoditel" [value]="proizvoditel">
+                                  {{proizvoditel.NameProizvoditel}}
+                                </mat-option>
+                          </mat-select>
+                      </mat-form-field>
+                </td>
+          </ng-container>
+      
+          <ng-container matColumnDef="Model">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Модель</th>
+                    <td mat-cell *matCellDef="let row">
+                      <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.FullModel?.NameModel}}</Label>
+                          <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                              <mat-select (click)="mfu.calbackfiltersAll()" [formControl]="mfu.modelvalid?.getRowValidatorModel[1].get('Model')" [placeholder]="mfu.model.FullModel?.NameModel" [(ngModel)]="mfu.model.FullModel" name="models">
+                                 <mat-select-filter class="filter" [placeholder]="mfu.model.FullModel?.NameModel" [displayMember]="'NameModel'" [array]="mfu.models" (filteredReturn)="mfu.filteredModels =$event">
+                                  </mat-select-filter>
+                                    <mat-option *ngFor="let models of mfu.filteredModels" [value]="models">
+                                      {{models.NameModel}}
+                                    </mat-option>
+                              </mat-select>
+                          </mat-form-field>
+                    </td>
+              </ng-container>
+
+
+             <ng-container matColumnDef="ZavNum">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Зав.Номер</th>
+                  <td mat-cell *matCellDef="let row">
+                    <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.ZavNumber}}</Label> 
+                        <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            <input matInput [formControl]="mfu.modelvalid?.getRowValidatorModel[1].get('ZavNum')" placeholder="Заводской номер" [ngModel]="mfu.model?.ZavNumber" (ngModelChange)="mfu.model.ZavNumber = $event"/>
+                        </mat-form-field> 
+                  </td>
+            </ng-container>
+        
+            <ng-container matColumnDef="ServiceNum">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Сервисный номер</th>
+                  <td mat-cell *matCellDef="let row">
+                    <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.ServiceNumber}}</Label> 
+                        <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            <input matInput  [formControl]="mfu.modelvalid?.getRowValidatorModel[1].get('ServiceNum')" placeholder="Сервисный номер" [ngModel]="mfu.model?.ServiceNumber" (ngModelChange)="mfu.model.ServiceNumber = $event"/>
+                        </mat-form-field>
+                    </td>
+            </ng-container>
+        
+            <ng-container matColumnDef="InventarNum">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Инвентарный номер</th>
+                  <td mat-cell *matCellDef="let row">
+                    <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.InventarNumber}}</Label> 
+                        <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            <input matInput  [formControl]="mfu.modelvalid?.getRowValidatorModel[1].get('InventarNum')" placeholder="Инвентарный номер" [ngModel]="mfu.model?.InventarNumber" (ngModelChange)="mfu.model.InventarNumber = $event"/>
+                        </mat-form-field>
+                  </td>
+            </ng-container>
+        
+            <ng-container matColumnDef="IzmInventar">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Измененный №</th>
+                  <td mat-cell *matCellDef="let row">
+                    <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.IzmInventarNumber}}</Label> 
+                        <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            <input matInput placeholder="Измененый номер" [ngModel]="mfu.model?.IzmInventarNumber" (ngModelChange)="mfu.model.IzmInventarNumber = $event"/>
+                        </mat-form-field>
+                  </td>
+            </ng-container>
+        
+            <ng-container matColumnDef="Ip">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>IP адрес</th>
+                  <td mat-cell *matCellDef="let row">
+                    <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.IpAdress}}</Label>
+                        <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            <input matInput placeholder="IP принтера" [ngModel]="mfu.model?.IpAdress" (ngModelChange)="mfu.model.IpAdress = $event"/>
+                        </mat-form-field>
+                  </td>
+            </ng-container>
+            <ng-container matColumnDef="CopySave">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>CopySave</th>
+                  <td mat-cell *matCellDef="let row">
+                    <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.CopySave?.NameCopySave}} - {{row.CopySave?.SerNum}}</Label>
+                        <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                              <mat-select (click)="mfu.calbackfiltersAll()" [placeholder]="mfu.model.CopySave?.NameCopySave" [(ngModel)]="mfu.model.CopySave" name="copysave">
+                               <mat-select-filter class="filter" [placeholder]="mfu.model.CopySave?.NameCopySave"  [displayMember]="'NameCopySave'" [array]="mfu.copySave" (filteredReturn)="mfu.filteredCopySave =$event">
+                                </mat-select-filter>
+                                  <mat-option *ngFor="let copysave of mfu.filteredCopySave" [value]="copysave">
+                                    {{copysave.NameCopySave}} - {{copysave.SerNum}}
+                                  </mat-option> 
+                            </mat-select> 
+                        </mat-form-field>
+                  </td>
+            </ng-container> 
+
+            <ng-container matColumnDef="Coment">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Коментарий</th>
+                  <td mat-cell *matCellDef="let row">
+                    <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Coment}}</Label>
+                        <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            <input matInput placeholder="Коментарий" [ngModel]="mfu.model?.Coment" (ngModelChange)="mfu.model.Coment = $event"/>
+                        </mat-form-field>
+                  </td>
+            </ng-container>
+
+                 <ng-container matColumnDef="Kabinet">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Кабинет</th>
+                          <td mat-cell *matCellDef="let row">
+                            <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Kabinet?.NumberKabinet}}</Label>
+                                <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                                    <mat-select (click)="mfu.calbackfiltersAll()" [formControl]="mfu.modelvalid?.getRowValidatorModel[1].get('Kabinet')" [placeholder]="mfu.model.Kabinet?.NumberKabinet" [(ngModel)]="mfu.model.Kabinet" name="kabinet">
+                                       <mat-select-filter class="filter" [placeholder]="mfu.model.Kabinet?.NumberKabinet"  [displayMember]="'NumberKabinet'" [array]="mfu.kabinet" (filteredReturn)="mfu.filteredKabinet =$event">
+                                        </mat-select-filter>
+                                          <mat-option *ngFor="let kabinet of mfu.filteredKabinet" [value]="kabinet">
+                                            {{kabinet.NumberKabinet}}
+                                          </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                          </td>
+                    </ng-container> 
+
+                    <ng-container matColumnDef="Status">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Статус</th>
+                              <td mat-cell *matCellDef="let row">
+                                <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Statusing?.Name}}</Label>
+                                    <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                                        <mat-select (click)="mfu.calbackfiltersAll()" [placeholder]="mfu.model.Statusing?.Name" [(ngModel)]="mfu.model.Statusing" name="status">
+                                           <mat-select-filter class="filter" [placeholder]="mfu.model.Statusing?.Name" [array]="mfu.statusing" (filteredReturn)="mfu.filteredStatusing =$event">
+                                            </mat-select-filter>
+                                              <mat-option *ngFor="let status of mfu.filteredStatusing" [value]="status">
+                                                {{status.Name}}
+                                              </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                              </td>
+                        </ng-container> -->
+
+                     <ng-container matColumnDef="ActionsColumn">  
+                        <th mat-header-cell *matHeaderCellDef>
+                            <button mat-icon-button color="primary" [disabled]="mfu.isAdd" focusable="false" (click)="mfu.add()">
+                                <i class="material-icons">person_add</i>
+                            </button>
+                        </th>
+                        <td mat-cell *matCellDef="let row">
+                        <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="mfu.isEdit" color="accent" (click)="mfu.edit(row)">
+                            <i class="material-icons">edit</i>
+                        </button>
+                        <div *ngIf="row.ModelIsEdit" >
+                                <button  mat-icon-button type="submit" [disabled]="mfu.modelvalid.getRowValidatorModel[1].invalid" color="primary" focusable="false" (click)="mfu.save()">
+                                        <i class="material-icons">check</i>
+                               </button>
+                               <button mat-icon-button color="primary" focusable="false" (click)="mfu.cancel(row)">
+                                    <i class="material-icons">cancel</i>
+                                </button>
+                        </div>
+                     </td>
+                     </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="mfu.displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: mfu.displayedColumns;"></tr>
+                </table>
+                <mat-paginator #mfus [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons="true"></mat-paginator>
+              </div>
+        </mat-tab>
+        <mat-tab label="Системные блоки">
+
+            <div class="mat-elevation-z8">
+                <form class="search">
+                  <mat-form-field class="search_blok">
+                        <span matPrefix><i class="material-icons">youtube_searched_for</i></span>
+                        <input matInput (keyup)="sysblok.filterstable($event.target.value)" placeholder="Поиск данных">
+                  </mat-form-field>
+                </form>
+    
+            <table mat-table [dataSource]="sysblok.dataSource" matSort>
+    
+                <ng-container matColumnDef="IdModel">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
+                      <td mat-cell *matCellDef="let row">
+                             {{row.IdSysBlock}}
+                      </td>
+                </ng-container>
+    
+                <ng-container matColumnDef="Model">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Модель</th>
+                    <td mat-cell *matCellDef="let row">
+                      <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.NameSysBlock?.NameComputer}}</Label>
+                          <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                              <mat-select (click)="sysblok.calbackfiltersAll()" [formControl]="sysblok.modelvalid?.getRowValidatorModel[2].get('Model')" [placeholder]="sysblok.model.NameSysBlock?.NameComputer" [(ngModel)]="sysblok.model.NameSysBlock" name="model">
+                                 <mat-select-filter class="filter" [placeholder]="sysblok.model.NameSysBlock?.NameComputer" [displayMember]="'NameComputer'" [array]="sysblok.models" (filteredReturn)="sysblok.filteredModels =$event">
+                                  </mat-select-filter>
+                                    <mat-option *ngFor="let model of sysblok.filteredModels" [value]="model">
+                                      {{model.NameComputer}}
+                                    </mat-option>
+                              </mat-select>
+                          </mat-form-field>
+                    </td>
+              </ng-container>
+          
+    
+                 <ng-container matColumnDef="ServiceNum">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Сервисный номер</th>
+                      <td mat-cell *matCellDef="let row">
+                        <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.ServiceNum}}</Label> 
+                            <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                                <input matInput placeholder="Сервисный номер" [ngModel]="sysblok.model?.ServiceNum" (ngModelChange)="sysblok.model.ServiceNum = $event"/>
+                            </mat-form-field> 
+                      </td>
+                </ng-container>
+            
+                <ng-container matColumnDef="SerNum">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Сирийный номер</th>
+                      <td mat-cell *matCellDef="let row">
+                        <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.SerNum}}</Label> 
+                            <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                                <input matInput  [formControl]="sysblok.modelvalid?.getRowValidatorModel[2].get('SerNum')" placeholder="Сирийный номер" [ngModel]="sysblok.model?.SerNum" (ngModelChange)="sysblok.model.SerNum = $event"/>
+                            </mat-form-field>
+                        </td>
+                </ng-container>
+            
+                <ng-container matColumnDef="InventarNum">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Инвентарный номер</th>
+                      <td mat-cell *matCellDef="let row">
+                        <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.InventarNumSysBlok}}</Label> 
+                            <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                                <input matInput  [formControl]="sysblok.modelvalid?.getRowValidatorModel[2].get('InventarNum')" placeholder="Инвентарный номер" [ngModel]="sysblok.model?.InventarNumSysBlok" (ngModelChange)="sysblok.model.InventarNumSysBlok = $event"/>
+                            </mat-form-field>
+                      </td>
+                </ng-container>
+            
+                <ng-container matColumnDef="NameComputer">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Имя компьютера</th>
+                      <td mat-cell *matCellDef="let row">
+                        <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.NameComputer}}</Label> 
+                            <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                                <input matInput  [formControl]="sysblok.modelvalid?.getRowValidatorModel[2].get('NameComputer')" placeholder="Имя компьютера" [ngModel]="sysblok.model?.NameComputer" (ngModelChange)="sysblok.model.NameComputer = $event"/>
+                            </mat-form-field>
+                      </td>
+                </ng-container>
+            
+                <ng-container matColumnDef="Ip">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>IP адрес</th>
+                      <td mat-cell *matCellDef="let row">
+                        <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.IpAdress}}</Label>
+                            <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                                <input matInput placeholder="IP компьютера" [ngModel]="sysblok.model?.IpAdress" (ngModelChange)="sysblok.model.IpAdress = $event"/>
+                            </mat-form-field>
+                      </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Kabinet">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Кабинет</th>
+                      <td mat-cell *matCellDef="let row">
+                        <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Kabinet?.NumberKabinet}}</Label>
+                            <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                                <mat-select (click)="sysblok.calbackfiltersAll()" [placeholder]="sysblok.model.Kabinet?.NumberKabinet" [(ngModel)]="sysblok.model.Kabinet" name="kabinet">
+                                   <mat-select-filter class="filter" [placeholder]="sysblok.model.Kabinet?.NumberKabinet"  [displayMember]="'NumberKabinet'" [array]="sysblok.kabinet" (filteredReturn)="sysblok.filteredKabinet =$event">
+                                    </mat-select-filter>
+                                      <mat-option *ngFor="let kabinet of sysblok.filteredKabinet" [value]="kabinet">
+                                        {{kabinet.NumberKabinet}}
+                                      </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                      </td>
+                </ng-container> 
+    
+                <ng-container matColumnDef="Coment">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Коментарий</th>
+                      <td mat-cell *matCellDef="let row">
+                        <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Coment}}</Label>
+                            <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                                <input matInput placeholder="Коментарий" [ngModel]="sysblok.model?.Coment" (ngModelChange)="sysblok.model.Coment = $event"/>
+                            </mat-form-field>
+                      </td>
+                </ng-container>
+    
+
+    
+                        <ng-container matColumnDef="Status">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header>Статус</th>
+                                  <td mat-cell *matCellDef="let row">
+                                    <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Statusing?.Name}}</Label>
+                                        <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                                            <mat-select (click)="sysblok.calbackfiltersAll()" [placeholder]="sysblok.model.Statusing?.Name" [(ngModel)]="sysblok.model.Statusing" name="status">
+                                               <mat-select-filter class="filter" [placeholder]="sysblok.model.Statusing?.Name" [array]="sysblok.statusing" (filteredReturn)="sysblok.filteredStatusing =$event">
+                                                </mat-select-filter>
+                                                  <mat-option *ngFor="let status of sysblok.filteredStatusing" [value]="status">
+                                                    {{status.Name}}
+                                                  </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                  </td>
+                            </ng-container> 
+    
+                         <ng-container matColumnDef="ActionsColumn">  
+                            <th mat-header-cell *matHeaderCellDef>
+                                <button mat-icon-button color="primary" [disabled]="sysblok.isAdd" focusable="false" (click)="sysblok.add()">
+                                    <i class="material-icons">person_add</i>
+                                </button>
+                            </th>
+                            <td mat-cell *matCellDef="let row">
+                            <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="sysblok.isEdit" color="accent" (click)="sysblok.edit(row)">
+                                <i class="material-icons">edit</i>
+                            </button>
+                            <div *ngIf="row.ModelIsEdit" >
+                                    <button  mat-icon-button type="submit" [disabled]="sysblok.modelvalid.getRowValidatorModel[2].invalid" color="primary" focusable="false" (click)="sysblok.save()">
+                                            <i class="material-icons">check</i>
+                                   </button>
+                                   <button mat-icon-button color="primary" focusable="false" (click)="sysblok.cancel(row)">
+                                        <i class="material-icons">cancel</i>
+                                    </button>
+                            </div>
+                         </td>
+                         </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="sysblok.displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: sysblok.displayedColumns;"></tr>
+                    </table>
+                    <mat-paginator #sysbloks [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons="true"></mat-paginator>
+                  </div>
+
+
+        </mat-tab>
+        <mat-tab label="Мониторы">
+
+          <div class="mat-elevation-z8">
+            <form class="search">
+              <mat-form-field class="search_blok">
+                    <span matPrefix><i class="material-icons">youtube_searched_for</i></span>
+                    <input matInput (keyup)="monitor.filterstable($event.target.value)" placeholder="Поиск данных">
+              </mat-form-field>
+            </form>
+
+        <table mat-table [dataSource]="monitor.dataSource" matSort>
+
+            <ng-container matColumnDef="IdModel">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
+                  <td mat-cell *matCellDef="let row">
+                         {{row.IdMonitor}}
+                  </td>
+            </ng-container>
+
+            <ng-container matColumnDef="Model">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Модель</th>
+                <td mat-cell *matCellDef="let row">
+                  <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.NameMonitor?.NameMonitor_}}</Label>
+                      <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                          <mat-select (click)="monitor.calbackfiltersAll()" [formControl]="monitor.modelvalid?.getRowValidatorModel[3].get('Model')" [placeholder]="monitor.model.NameMonitor?.NameMonitor_" [(ngModel)]="monitor.model.NameMonitor" name="model">
+                             <mat-select-filter class="filter" [placeholder]="monitor.model.NameMonitor?.NameMonitor_" [displayMember]="'NameMonitor_'" [array]="monitor.models" (filteredReturn)="monitor.filteredModels =$event">
+                              </mat-select-filter>
+                                <mat-option *ngFor="let model of monitor.filteredModels" [value]="model">
+                                  {{model.NameMonitor_}}
+                                </mat-option>
+                          </mat-select>
+                      </mat-form-field>
+                </td>
+          </ng-container>
+      
+            <ng-container matColumnDef="SerNum">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Сирийный номер</th>
+                  <td mat-cell *matCellDef="let row">
+                    <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.SerNum}}</Label> 
+                        <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            <input matInput  [formControl]="monitor.modelvalid?.getRowValidatorModel[3].get('SerNum')" placeholder="Сирийный номер" [ngModel]="monitor.model?.SerNum" (ngModelChange)="monitor.model.SerNum = $event"/>
+                        </mat-form-field>
+                    </td>
+            </ng-container>
+        
+            <ng-container matColumnDef="InventarNum">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Инвентарный номер</th>
+                  <td mat-cell *matCellDef="let row">
+                    <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.InventarNumMonitor}}</Label> 
+                        <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            <input matInput  [formControl]="monitor.modelvalid?.getRowValidatorModel[3].get('InventarNum')" placeholder="Инвентарный номер" [ngModel]="monitor.model?.InventarNumMonitor" (ngModelChange)="monitor.model.InventarNumMonitor = $event"/>
+                        </mat-form-field>
+                  </td>
+            </ng-container>
+
+            <ng-container matColumnDef="Kabinet">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Кабинет</th>
+                  <td mat-cell *matCellDef="let row">
+                    <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Kabinet?.NumberKabinet}}</Label>
+                        <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            <mat-select (click)="monitor.calbackfiltersAll()" [placeholder]="monitor.model.Kabinet?.NumberKabinet" [(ngModel)]="monitor.model.Kabinet" name="kabinet">
+                               <mat-select-filter class="filter" [placeholder]="monitor.model.Kabinet?.NumberKabinet"  [displayMember]="'NumberKabinet'" [array]="monitor.kabinet" (filteredReturn)="monitor.filteredKabinet =$event">
+                                </mat-select-filter>
+                                  <mat-option *ngFor="let kabinet of monitor.filteredKabinet" [value]="kabinet">
+                                    {{kabinet.NumberKabinet}}
+                                  </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                  </td>
+            </ng-container> 
+
+            <ng-container matColumnDef="Coment">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Коментарий</th>
+                  <td mat-cell *matCellDef="let row">
+                    <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Coment}}</Label>
+                        <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            <input matInput placeholder="Коментарий" [ngModel]="monitor.model?.Coment" (ngModelChange)="monitor.model.Coment = $event"/>
+                        </mat-form-field>
+                  </td>
+            </ng-container>
+
+                    <ng-container matColumnDef="Status">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Статус</th>
+                              <td mat-cell *matCellDef="let row">
+                                <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Statusing?.Name}}</Label>
+                                    <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                                        <mat-select (click)="monitor.calbackfiltersAll()" [placeholder]="monitor.model.Statusing?.Name" [(ngModel)]="monitor.model.Statusing" name="status">
+                                           <mat-select-filter class="filter" [placeholder]="monitor.model.Statusing?.Name" [array]="monitor.statusing" (filteredReturn)="monitor.filteredStatusing =$event">
+                                            </mat-select-filter>
+                                              <mat-option *ngFor="let status of monitor.filteredStatusing" [value]="status">
+                                                {{status.Name}}
+                                              </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                              </td>
+                        </ng-container> 
+
+                     <ng-container matColumnDef="ActionsColumn">  
+                        <th mat-header-cell *matHeaderCellDef>
+                            <button mat-icon-button color="primary" [disabled]="monitor.isAdd" focusable="false" (click)="monitor.add()">
+                                <i class="material-icons">person_add</i>
+                            </button>
+                        </th>
+                        <td mat-cell *matCellDef="let row">
+                        <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="monitor.isEdit" color="accent" (click)="monitor.edit(row)">
+                            <i class="material-icons">edit</i>
+                        </button>
+                        <div *ngIf="row.ModelIsEdit" >
+                                <button  mat-icon-button type="submit" [disabled]="monitor.modelvalid.getRowValidatorModel[3].invalid" color="primary" focusable="false" (click)="monitor.save()">
+                                        <i class="material-icons">check</i>
+                               </button>
+                               <button mat-icon-button color="primary" focusable="false" (click)="monitor.cancel(row)">
+                                    <i class="material-icons">cancel</i>
+                                </button>
+                        </div>
+                     </td>
+                     </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="monitor.displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: monitor.displayedColumns;"></tr>
+                </table>
+                <mat-paginator #monitors [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons="true"></mat-paginator>
+              </div>
+        </mat-tab>
 </mat-tab-group>

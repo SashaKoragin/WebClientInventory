@@ -70,8 +70,8 @@
                 <td mat-cell *matCellDef="let row">
                         <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Position?.NamePosition}}</Label>
                         <mat-form-field class="validation" [style.display]="!row.ModelIsEdit ? 'none':'block'">
-                                <mat-select (click)="user.calbackfiltersAll()" [formControl]="user.modelvalid?.getRowValidatorModel[0].get('NamePosition')" [placeholder]="user.model.Position.NamePosition" [(ngModel)]="user.model.Position" name="position">
-                                  <mat-select-filter class="filter" [placeholder]="user.model.Position.NamePosition" [displayMember]="'NamePosition'" [array]="user.position" (filteredReturn)="user.filteredPosition =$event">
+                                <mat-select (click)="user.calbackfiltersAll()" [formControl]="user.modelvalid?.getRowValidatorModel[0].get('NamePosition')" [placeholder]="user.model.Position?.NamePosition" [(ngModel)]="user.model.Position" name="position">
+                                  <mat-select-filter class="filter" [placeholder]="user.model.Position?.NamePosition" [displayMember]="'NamePosition'" [array]="user.position" (filteredReturn)="user.filteredPosition =$event">
                                   </mat-select-filter>
                                     <mat-option *ngFor="let position of user. filteredPosition" [value]="position">
                                         {{position.NamePosition}}
@@ -87,8 +87,8 @@
                 <td mat-cell *matCellDef="let row">
                    <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Otdel?.NameOtdel}}</Label>
                    <mat-form-field class="validation" [style.display]="!row.ModelIsEdit ? 'none':'block'">
-                        <mat-select (click)="user.calbackfiltersAll()" [formControl]="user.modelvalid?.getRowValidatorModel[0].get('NameOtdel')" [placeholder]="user.model.Otdel.NameOtdel" [(ngModel)]="user.model.Otdel" name="otdel">
-                          <mat-select-filter class="filter" [placeholder]="user.model.Otdel.NameOtdel" [displayMember]="'NameOtdel'" [array]="user.otdels" (filteredReturn)="user.filteredOtdel =$event">
+                        <mat-select (click)="user.calbackfiltersAll()" [formControl]="user.modelvalid?.getRowValidatorModel[0].get('NameOtdel')" [placeholder]="user.model.Otdel?.NameOtdel" [(ngModel)]="user.model.Otdel" name="otdel">
+                          <mat-select-filter class="filter" [placeholder]="user.model.Otdel?.NameOtdel" [displayMember]="'NameOtdel'" [array]="user.otdels" (filteredReturn)="user.filteredOtdel =$event">
                           </mat-select-filter>
                             <mat-option *ngFor="let otdel of user.filteredOtdel" [value]="otdel">
                                 {{otdel.NameOtdel}}

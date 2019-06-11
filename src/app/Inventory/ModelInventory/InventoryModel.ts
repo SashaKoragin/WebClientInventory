@@ -1,5 +1,5 @@
 import {MatPaginator, MatSort } from '@angular/material';
-import { DatePipe } from '@angular/common';
+
 export interface ILogicaTable<T> {
     //Добавление
     add(): void;
@@ -17,6 +17,9 @@ export interface ILogicaTable<T> {
     modifimethod():void;
 
     addtableModel(model:FullSelectedModel,paginator:MatPaginator,sort:MatSort):void
+
+    isEditAndAddTrue():void;
+    isEditAndAddFalse():void;
     //Добавление новой записи
     isAdd:boolean;
     //Редактируем
@@ -34,7 +37,25 @@ export class FullSelectedModel{
    Otdels: Otdels[];
    Users: Users[];
    Position:Position[];
+   Printer:Printer[];
+   Scaner:ScanerAndCamer[];
+   Mfu:Mfu[];
+   SysBlok:SysBlock[];
+   Monitors:Monitor[];
+   NameMonitors:NameMonitor[];
+   CopySave:CopySave[];
+   Kabinet:Kabinet[];
+   Model:FullModel[];
+   Statusing:Statusing[];
+   Proizvoditel:FullProizvoditel[];
+   ModelSysBlok:NameSysBlock[];
 }
+///Модель отвертов с сервера
+export class ModelReturn{
+    public Guid:string;
+    public Message:string;
+}
+
 
 
 
@@ -78,6 +99,7 @@ export class SysBlock {
     public Statusing: Statusing;
     public NameSysBlock: NameSysBlock;
     public Kabinet?:Kabinet;
+    public ModelIsEdit?: boolean = false;
 }
 export class Rules {
     public IdRule?: number;
@@ -107,25 +129,28 @@ export class ScanerAndCamer {
     public FullProizvoditel: FullProizvoditel;
     public FullModel:FullModel;
     public Kabinet?:Kabinet;
+    public ModelIsEdit?: boolean = false;
 }
 
 export class Printer {
-    public IdPrinter: number;
-    public IdProizvoditel: number;
-    public IdModel: number;
+    public IdPrinter?: number;
+    public IdProizvoditel?: number;
+    public IdModel?: number;
     public IdNumberKabinet?: number;
-    public ZavNumber: string;
-    public ServiceNumber: string;
-    public InventarNumber: string;
-    public IzmInventarNumber:string;
-    public IpAdress:string;
-    public Coment: string;
-    public IdStatus: number;
-    public IdHistory: string;
-    public Statusing: Statusing;
-    public FullProizvoditel: FullProizvoditel;
-    public FullModel:FullModel;
+    public ZavNumber?: string;
+    public ServiceNumber?: string;
+    public InventarNumber?: string;
+    public IzmInventarNumber?:string;
+    public IpAdress?:string;
+    public Coment?: string;
+    public IdStatus?: number;
+    public IdHistory?: string;
+    public FullInventarizations?: FullInventarization[];
+    public FullModel?:FullModel;
+    public FullProizvoditel?: FullProizvoditel;
     public Kabinet?:Kabinet;
+    public Statusing?: Statusing;
+    public ModelIsEdit?: boolean = false;
 }
 
 export class Position {
@@ -157,6 +182,7 @@ export class Monitor {
     public Statusing: Statusing;
     public NameMonitor: NameMonitor;
     public Kabinet?:Kabinet;
+    public ModelIsEdit?: boolean = false;
 }
 export class Mfu {
     public IdMfu: number;
@@ -177,10 +203,11 @@ export class Mfu {
     public FullModel: FullModel;
     public CopySave:CopySave;
     public Kabinet?:Kabinet;
+    public ModelIsEdit?: boolean = false;
 }
 export class Kabinet {
     public IdNumberKabinet: number;
-    public NumberKabinet: number;
+    public NumberKabinet: string;
 }
 export class InfoTable {
     public Id: number;
@@ -211,9 +238,9 @@ export class FullMonitorSysBlok {
     public InventarNumMonitor: string;
 }
 export class FullModel {
-    public IdModel: number;
-    public NameModel: string;
-    public IdClasification: number;
+    public IdModel?: number;
+    public NameModel?: string;
+    public IdClasification?: number;
 }
 export class FullInventarization {
     public Id: number;
