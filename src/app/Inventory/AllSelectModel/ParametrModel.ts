@@ -1,31 +1,30 @@
 export class ModelSelect{
-    constructor( public idselect:number){
-
-    }
-    ParametrsSelect:ParametrsSelect = new ParametrsSelect(this.idselect);
-    LogicaSelect:LogicaSelect = null;
-    Parametrs:Parametrs[] = null;
+    constructor( public idselect:number){}
+    public parametrsSelectField:ParametrsSelect = new ParametrsSelect(this.idselect)
+    public logicaSelectField:LogicaSelect = null
+    public parametrsField:Parametrs[] = null
 }
 
 class ParametrsSelect{
     constructor(public idselect:number){
-     this.Id = idselect;
+     this.idField = idselect;
     }
-  Id?:number;
+    public idField:number;
 }
 
-class LogicaSelect{
-    Id?:number;
-    SelectInfo?:string;
-    SelectedParametr?:string;
-    SelectUser?:string;
-    DataCreate?:Date;
+export class LogicaSelect{
+    public idField:number;  
+    public selectInfoField:string;
+    public selectedParametrField:string;
+    public selectUserField:string;
+    public dataCreateField:Date;
 }
 
 class Parametrs{
-    Value?:string;
-    NameTable?:string;
-    NameColumn?:string;
-    Info?:string;
-    Type?:string;
+    public valueField:string;  
+    public nameTableField:string;
+    public nameColumnField:string;
+    public infoField:string;
+    public typeColumnField:string;
+
 }
