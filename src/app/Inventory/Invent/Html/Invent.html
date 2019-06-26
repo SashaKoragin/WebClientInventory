@@ -97,8 +97,7 @@
                                   {{nestedTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
                                </mat-icon>
                         </button>
-                        <span matBadge="{{node.Children.length}}">{{node.Name}}</span>
-                                   
+                        <span matBadge="{{node.Children[0].Children.length===0 ? node.Children[0].Types.length : node.Children.length }}">{{node.Name}}</span>
                         </div>
                     <ul [class.example-tree-invisible]="!nestedTreeControl.isExpanded(node)">
                       <ng-container matTreeNodeOutlet>
@@ -175,6 +174,7 @@
 <div class="mat-app-background basic-container" [style.display]="logica1?.date ? 'none' : 'grid'">
   <div class="button"><button mat-button (click)="back1()">Назад</button></div>
     <mat-tree  [dataSource]="nestedDataSource1" [treeControl]="nestedTreeControl1" class="tree">
+      
         <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
               <li class="mat-tree-node">
                     <table class="table table-striped">
@@ -211,7 +211,7 @@
                               {{nestedTreeControl1.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
                            </mat-icon>
                     </button>
-                    <span matBadge="{{node.Children.length}}">{{node.Name}}</span>
+                    <span matBadge="{{node.Children[0].Children.length===0 ? node.Children[0].Types.length : node.Children.length }}">{{node.Name}}</span>
                     <div [style.display]="node.InputServer ?'inline':'none'" class="button"><button mat-button (click)="upload(node)">Выгрузить модель</button></div>
                     </div>
                 <ul [class.example-tree-invisible]="!nestedTreeControl1.isExpanded(node)">

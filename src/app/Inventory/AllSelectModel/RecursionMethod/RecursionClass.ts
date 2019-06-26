@@ -18,81 +18,56 @@ export class Recursion{
              use.Types =null;
              if(user.Monitors !=null||typeof user.Monitors!='undefined')
              {
-              use.Children.push({Name:"Монитор",Types:null,InputServer:false,Children:[]})
+              use.Children.push({Name:"Монитор",Types:null,InputServer:false,Children:[{Children:[],Name:null,Types:[],InputServer:false}]})
                  for (const monitor of user.Monitors) {
-                     var mo =new ModelUserAndEquipment()
-                     mo.Children = []
-                     mo.Name = null;
-                     mo.Types = [];
-                     mo.Types.push({Name:monitor.NameMonitor.Name ,NameModel:null,SerNumber:monitor.SerNum,
-                                    ServiceNumber:null,InventerNumber:monitor.InventarNumMonitor,
-                                    Kabinet:monitor.Kabinet.NumberKabinet,
-                                    NameComputer:null,IpAdress:null})
-                     use.Children[i].Children.push(mo);
+                     use.Children[i].Children[0].Types.push({Name:monitor.NameMonitor.Name ,NameModel:null,SerNumber:monitor.SerNum,
+                        ServiceNumber:null,InventerNumber:monitor.InventarNumMonitor,
+                        Kabinet:monitor.Kabinet.NumberKabinet,
+                        NameComputer:null,IpAdress:null});
                  }
                  i++;
              }
              if(user.Mfu!=null||typeof user.Mfu!='undefined')
              {
-              use.Children.push({Name:"МФУ",Types:null,InputServer:false,Children:[]})
+              use.Children.push({Name:"МФУ",Types:null,InputServer:false,Children:[{Children:[],Name:null,Types:[],InputServer:false}]})
                  for (const mfu of user.Mfu) {
-                     var mo =new ModelUserAndEquipment()
-                     mo.Children = []
-                     mo.Name = null;
-                     mo.Types = [];
-                     mo.Types.push({Name:mfu.FullProizvoditel.NameProizvoditel ,NameModel:mfu.FullModel.NameModel,
-                                    SerNumber:mfu.ZavNumber,ServiceNumber:mfu.ServiceNumber,InventerNumber:null,
-                                    Kabinet:mfu.Kabinet.NumberKabinet,NameComputer:null,IpAdress:null
-                                    })
-                     use.Children[i].Children.push(mo);
+                     use.Children[i].Children[0].Types.push({Name:mfu.FullProizvoditel.NameProizvoditel ,NameModel:mfu.FullModel.NameModel,
+                        SerNumber:mfu.ZavNumber,ServiceNumber:mfu.ServiceNumber,InventerNumber:null,
+                        Kabinet:mfu.Kabinet.NumberKabinet,NameComputer:null,IpAdress:null
+                        });
                  }
                  i++;
              }
              if(user.Printer!=null||typeof user.Printer!='undefined')
              {
-              use.Children.push({Name:"Принтер",Types:null,InputServer:false,Children:[]})
+              use.Children.push({Name:"Принтер",Types:null,InputServer:false,Children:[{Children:[],Name:null,Types:[],InputServer:false}]})
                  for (const printer of user.Printer) {
-                     var mo =new ModelUserAndEquipment()
-                     mo.Children = []
-                     mo.Name = null;
-                     mo.Types = [];
-                     mo.Types.push({Name:printer.FullProizvoditel.NameProizvoditel ,NameModel:printer.FullModel.NameModel,
-                                    SerNumber:printer.ZavNumber,ServiceNumber:printer.ServiceNumber,InventerNumber:null,
-                                    Kabinet:printer.Kabinet.NumberKabinet,NameComputer:null,IpAdress:null
-                                    })
-                     use.Children[i].Children.push(mo);
+                     use.Children[i].Children[0].Types.push({Name:printer.FullProizvoditel.NameProizvoditel ,NameModel:printer.FullModel.NameModel,
+                        SerNumber:printer.ZavNumber,ServiceNumber:printer.ServiceNumber,InventerNumber:null,
+                        Kabinet:printer.Kabinet.NumberKabinet,NameComputer:null,IpAdress:null
+                        });
                  }
                  i++;
              }
              if(user.ScanerAndCamer!=null||typeof user.ScanerAndCamer!='undefined')
              {
-              use.Children.push({Name:"Сканеры и камеры",Types:null,InputServer:false,Children:[]})
+              use.Children.push({Name:"Сканеры и камеры",Types:null,InputServer:false,Children:[{Children:[],Name:null,Types:[],InputServer:false}]})
                  for (const scaner of user.ScanerAndCamer) {
-                     var mo =new ModelUserAndEquipment()
-                     mo.Children = []
-                     mo.Name = null;
-                     mo.Types = [];
-                     mo.Types.push({Name:scaner.FullProizvoditel.NameProizvoditel ,NameModel:scaner.FullModel.NameModel,
-                                    SerNumber:scaner.ZavNumber,ServiceNumber:scaner.ServiceNumber,InventerNumber:scaner.InventarNumber,
-                                    Kabinet:scaner.Kabinet.NumberKabinet,NameComputer:null,IpAdress:null
-                                    })
-                     use.Children[i].Children.push(mo);
+                     use.Children[i].Children[0].Types.push({Name:scaner.FullProizvoditel.NameProizvoditel ,NameModel:scaner.FullModel.NameModel,
+                        SerNumber:scaner.ZavNumber,ServiceNumber:scaner.ServiceNumber,InventerNumber:scaner.InventarNumber,
+                        Kabinet:scaner.Kabinet.NumberKabinet,NameComputer:null,IpAdress:null
+                        });
                  }
                  i++;
              }
              if(user.SysBlock!=null||typeof user.SysBlock!='undefined')
              {
-              use.Children.push({Name:"Системные блоки",Types:null,InputServer:false,Children:[]})
+              use.Children.push({Name:"Системные блоки",Types:null,InputServer:false,Children:[{Children:[],Name:null,Types:[],InputServer:false}]})
                  for (const sysblok of user.SysBlock) {
-                     var mo =new ModelUserAndEquipment()
-                     mo.Children = []
-                     mo.Name = null;
-                     mo.Types = [];
-                     mo.Types.push({Name:sysblok.NameSysBlock.NameComputer ,NameModel:null,
-                                    SerNumber:sysblok.SerNum,ServiceNumber:sysblok.ServiceNum,InventerNumber:sysblok.InventarNumSysBlok,
-                                    Kabinet:sysblok.Kabinet.NumberKabinet,NameComputer:sysblok.NameComputer,IpAdress:sysblok.IpAdress
-                                    })
-                     use.Children[i].Children.push(mo);
+                     use.Children[i].Children[0].Types.push({Name:sysblok.NameSysBlock.NameComputer ,NameModel:null,
+                        SerNumber:sysblok.SerNum,ServiceNumber:sysblok.ServiceNum,InventerNumber:sysblok.InventarNumSysBlok,
+                        Kabinet:sysblok.Kabinet.NumberKabinet,NameComputer:sysblok.NameComputer,IpAdress:sysblok.IpAdress
+                        });
                  }
                  i++;
              }
@@ -125,81 +100,56 @@ export class Recursion{
               otd.Children.push({ Name:user.Name,InputServer:true,Types:null,Children:[] })
              if(user.Monitors !=null||typeof user.Monitors!='undefined')
              {
-             otd.Children[j].Children.push({Name:"Монитор",Types:null,InputServer:false,Children:[]})
+             otd.Children[j].Children.push({Name:"Монитор",Types:null,InputServer:false,Children:[{Children:[],Name:null,Types:[],InputServer:false}]});
                  for (const monitor of user.Monitors) {
-                     var mo =new ModelUserAndEquipment()
-                     mo.Children = []
-                     mo.Name = null;
-                     mo.Types = [];
-                     mo.Types.push({Name:monitor.NameMonitor.Name ,NameModel:null,SerNumber:monitor.SerNum,
-                                    ServiceNumber:null,InventerNumber:monitor.InventarNumMonitor,
-                                    Kabinet:monitor.Kabinet.NumberKabinet,
-                                    NameComputer:null,IpAdress:null})
-                 otd.Children[j].Children[i].Children.push(mo);
+                 otd.Children[j].Children[i].Children[0].Types.push({Name:monitor.NameMonitor.Name ,NameModel:null,SerNumber:monitor.SerNum,
+                    ServiceNumber:null,InventerNumber:monitor.InventarNumMonitor,
+                    Kabinet:monitor.Kabinet.NumberKabinet,
+                    NameComputer:null,IpAdress:null});
                  }
                  i++;
              }
              if(user.Mfu!=null||typeof user.Mfu!='undefined')
              {
-                otd.Children[j].Children.push({Name:"МФУ",Types:null,InputServer:false,Children:[]})
+                otd.Children[j].Children.push({Name:"МФУ",Types:null,InputServer:false,Children:[{Children:[],Name:null,Types:[],InputServer:false}]});
                  for (const mfu of user.Mfu) {
-                     var mo =new ModelUserAndEquipment()
-                     mo.Children = []
-                     mo.Name = null;
-                     mo.Types = [];
-                     mo.Types.push({Name:mfu.FullProizvoditel.NameProizvoditel ,NameModel:mfu.FullModel.NameModel,
-                                    SerNumber:mfu.ZavNumber,ServiceNumber:mfu.ServiceNumber,InventerNumber:null,
-                                    Kabinet:mfu.Kabinet.NumberKabinet,NameComputer:null,IpAdress:null
-                                    })
-                    otd.Children[j].Children[i].Children.push(mo);
+                    otd.Children[j].Children[i].Children[0].Types.push({Name:mfu.FullProizvoditel.NameProizvoditel ,NameModel:mfu.FullModel.NameModel,
+                        SerNumber:mfu.ZavNumber,ServiceNumber:mfu.ServiceNumber,InventerNumber:null,
+                        Kabinet:mfu.Kabinet.NumberKabinet,NameComputer:null,IpAdress:null
+                        });
                  }
                  i++;
              }
              if(user.Printer!=null||typeof user.Printer!='undefined')
              {
-            otd.Children[j].Children.push({Name:"Принтер",Types:null,InputServer:false,Children:[]});
+            otd.Children[j].Children.push({Name:"Принтер",Types:null,InputServer:false,Children:[{Children:[],Name:null,Types:[],InputServer:false}]});
                  for (const printer of user.Printer) {
-                     var mo =new ModelUserAndEquipment()
-                     mo.Children = []
-                     mo.Name = null;
-                     mo.Types = [];
-                     mo.Types.push({Name:printer.FullProizvoditel.NameProizvoditel ,NameModel:printer.FullModel.NameModel,
-                                    SerNumber:printer.ZavNumber,ServiceNumber:printer.ServiceNumber,InventerNumber:null,
-                                    Kabinet:printer.Kabinet.NumberKabinet,NameComputer:null,IpAdress:null
-                                    })
-                    otd.Children[j].Children[i].Children.push(mo);
+                    otd.Children[j].Children[i].Children[0].Types.push({Name:printer.FullProizvoditel.NameProizvoditel ,NameModel:printer.FullModel.NameModel,
+                        SerNumber:printer.ZavNumber,ServiceNumber:printer.ServiceNumber,InventerNumber:null,
+                        Kabinet:printer.Kabinet.NumberKabinet,NameComputer:null,IpAdress:null
+                        });
                  }
                  i++;
              }
              if(user.ScanerAndCamer!=null||typeof user.ScanerAndCamer!='undefined')
              {
-                otd.Children[j].Children.push({Name:"Сканеры и камеры",Types:null,InputServer:false,Children:[]});
+                otd.Children[j].Children.push({Name:"Сканеры и камеры",Types:null,InputServer:false,Children:[{Children:[],Name:null,Types:[],InputServer:false}]});
                  for (const scaner of user.ScanerAndCamer) {
-                     var mo =new ModelUserAndEquipment()
-                     mo.Children = []
-                     mo.Name = null;
-                     mo.Types = [];
-                     mo.Types.push({Name:scaner.FullProizvoditel.NameProizvoditel ,NameModel:scaner.FullModel.NameModel,
-                                    SerNumber:scaner.ZavNumber,ServiceNumber:scaner.ServiceNumber,InventerNumber:scaner.InventarNumber,
-                                    Kabinet:scaner.Kabinet.NumberKabinet,NameComputer:null,IpAdress:null
-                                    })
-                otd.Children[j].Children[i].Children.push(mo);
+                otd.Children[j].Children[i].Children[0].Types.push({Name:scaner.FullProizvoditel.NameProizvoditel ,NameModel:scaner.FullModel.NameModel,
+                    SerNumber:scaner.ZavNumber,ServiceNumber:scaner.ServiceNumber,InventerNumber:scaner.InventarNumber,
+                    Kabinet:scaner.Kabinet.NumberKabinet,NameComputer:null,IpAdress:null
+                    });
                  }
                  i++;
              }
              if(user.SysBlock!=null||typeof user.SysBlock!='undefined')
              {
-                otd.Children[j].Children.push({Name:"Системные блоки",Types:null,InputServer:false,Children:[]});
+                otd.Children[j].Children.push({Name:"Системные блоки",Types:null,InputServer:false,Children:[{Children:[],Name:null,Types:[],InputServer:false}]});
                  for (const sysblok of user.SysBlock) {
-                     var mo =new ModelUserAndEquipment()
-                     mo.Children = []
-                     mo.Name = null;
-                     mo.Types = [];
-                     mo.Types.push({Name:sysblok.NameSysBlock.NameComputer ,NameModel:null,
-                                    SerNumber:sysblok.SerNum,ServiceNumber:sysblok.ServiceNum,InventerNumber:sysblok.InventarNumSysBlok,
-                                    Kabinet:sysblok.Kabinet.NumberKabinet,NameComputer:sysblok.NameComputer,IpAdress:sysblok.IpAdress
-                                    })
-                     otd.Children[j].Children[i].Children.push(mo);
+                     otd.Children[j].Children[i].Children[0].Types.push({Name:sysblok.NameSysBlock.NameComputer ,NameModel:null,
+                        SerNumber:sysblok.SerNum,ServiceNumber:sysblok.ServiceNum,InventerNumber:sysblok.InventarNumSysBlok,
+                        Kabinet:sysblok.Kabinet.NumberKabinet,NameComputer:sysblok.NameComputer,IpAdress:sysblok.IpAdress
+                        });
                  }
                  i++;
              }
