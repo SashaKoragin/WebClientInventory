@@ -32,14 +32,37 @@ export class Equipment implements OnInit {
    public monitor:MonitorsTableModel = new MonitorsTableModel(this.editandadd);
 
   ngOnInit(): void {
-   this.loadtable();
+    this.printer.addtableModel(this.selectAll.select,this.paginatorptinter,this.sortprinter);
   }
 
- loadtable(){
-   this.printer.addtableModel(this.selectAll.select,this.paginatorptinter,this.sortprinter);
-   this.scaner.addtableModel(this.selectAll.select,this.paginatorscaner,this.sortscaner);
-   this.mfu.addtableModel(this.selectAll.select,this.paginatormfu,this.sortmfu);
-   this.sysblok.addtableModel(this.selectAll.select,this.paginatorsysblok,this.sortsysblok);
-   this.monitor.addtableModel(this.selectAll.select,this.paginatormonitors,this.sortmonitors);
+  index(index:any){
+    switch(index.index){
+      case 0:
+        if(this.printer.dataSource.data){
+          this.printer.addtableModel(this.selectAll.select,this.paginatorptinter,this.sortprinter);
+        }
+        break;
+      case 1:
+        if(this.scaner.dataSource.data){
+          this.scaner.addtableModel(this.selectAll.select,this.paginatorscaner,this.sortscaner);
+        }
+        break;
+      case 2:
+        if(this.mfu.dataSource.data){
+          this.mfu.addtableModel(this.selectAll.select,this.paginatormfu,this.sortmfu);
+        }
+        break;
+      case 3:
+        if(this.sysblok.dataSource.data){
+          this.sysblok.addtableModel(this.selectAll.select,this.paginatorsysblok,this.sortsysblok);
+        }
+        break;
+      case 4:
+          if(this.sysblok.dataSource.data){
+            this.monitor.addtableModel(this.selectAll.select,this.paginatormonitors,this.sortmonitors);
+          }
+        break;
+    }
   }
+
 }

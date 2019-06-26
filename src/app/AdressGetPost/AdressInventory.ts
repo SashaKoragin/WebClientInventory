@@ -10,6 +10,7 @@ export class AdressInventarka {
     public addandeditmfu = `http://${this.host}:8182/Inventarka/AddAndEditMfu`
     public addandeditsysblock = `http://${this.host}:8182/Inventarka/AddAndEditSysBlok`
     public addandeditmonitor = `http://${this.host}:8182/Inventarka/AddAndEditMonitor`
+    public addandeditotdel = `http://${this.host}:8182/Inventarka/AddAndEditOtdel`
 
     public allsysblock = `http://${this.host}:8182/Inventarka/AllSysBlok`;
     public allmonitor = `http://${this.host}:8182/Inventarka/AllMonitors`;
@@ -26,4 +27,5 @@ export class AdressInventarka {
     public allnamemonitor = `http://${this.host}:8182/Inventarka/AllNameMonitor`;
 
     public selectparametr = `http://${this.host}:8182/Inventarka/GenerateSqlSelect`
+    public selectxml = `http://${this.host}:8182/Inventarka/SelectXml`
 }

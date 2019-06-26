@@ -1,10 +1,118 @@
-import { Users, ILogicaTable, FullSelectedModel, Otdels, Position, Printer, Mfu, ScanerAndCamer, SysBlock, CopySave,
+import { Users, ILogicaTable, FullSelectedModel, Otdel, Position, Printer, Mfu, ScanerAndCamer, SysBlock, CopySave,
    Monitor,NameSysBlock,
   Kabinet,FullModel,Statusing,FullProizvoditel, ModelReturn, NameMonitor } from '../../ModelInventory/InventoryModel';
 import { MatTableDataSource,MatPaginator,MatSort } from '@angular/material';
 import { ModelValidation } from '../ValidationModel/UserValidation';
 import { EditAndAdd } from '../../../Post RequestService/PostRequest';
+import { User } from '../../User/View/User';
 
+
+export class OtdelTableModel implements ILogicaTable<Otdel>{
+  constructor(public editandadd:EditAndAdd){
+
+  }
+  public displayedColumns = ['IdOtdel','NameOtdel','NameRuk','ActionsColumn'];
+  public dataSource: MatTableDataSource<Otdel> = new MatTableDataSource<Otdel>();
+
+  public isEdit: boolean = false;
+  public isAdd: boolean = false;
+  public model: Otdel;
+  public index: number;
+  public modeltable: Otdel[];
+  public user:Users[];
+
+  public filteredUser:any;
+ 
+  filterstable(filterValue: string): void {
+    filterValue = filterValue.trim(); // Remove whitespace
+    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
+    this.dataSource.filter = filterValue;
+  }
+
+  calbackfiltersAll(){
+    this.filteredUser = this.user.slice();
+  }
+
+  add(): void {
+    this.isEditAndAddTrue();
+    var newmodel = this.newmodel();
+    this.dataSource.paginator.lastPage();
+    this.dataSource.data.push(newmodel); 
+    this.modeltable.push(newmodel); 
+    this.index = this.dataSource.data.length;
+    this.model = newmodel;
+    this.dataSource._updateChangeSubscription();
+  }
+
+  edit(model: Otdel): void {
+    model.ModelIsEdit = true;
+    this.model =JSON.parse(JSON.stringify(model));
+    this.isEditAndAddTrue();
+  }
+
+  save(model: Otdel): void {
+    this.modifimethod();
+    this.isEditAndAddFalse();
+     this.editandadd.addandeditotdel(this.model).subscribe((model:ModelReturn)=>{
+       console.log(model.Message);
+       this.dataSource._updateChangeSubscription();
+     });
+    //Запрос на сохранение и обновление данных
+  }
+
+  cancel(model: Otdel): void {
+    model.ModelIsEdit = false;
+    this.isEditAndAddFalse(); 
+    if(this.index>0)
+    {
+      this.dataSource.data.pop();
+      this.index = 0;
+    }
+    else{
+      var otdeldefault = this.modeltable.find(x=>x.IdOtdel ===this.model.IdOtdel);
+      this.dataSource.data[this.modeltable.indexOf(otdeldefault)] = model;
+      this.index = 0;
+    }
+    this.dataSource._updateChangeSubscription();
+  }
+
+  newmodel(): Otdel {
+    var newotdel: Otdel = new Otdel()
+    newotdel.ModelIsEdit = true;
+    newotdel.IdOtdel = this.dataSource.data.length +1;
+    return newotdel;
+  }
+
+  modifimethod(): void {
+    if(this.model.User){this.model.IdUser = this.model.User.IdUser;}
+    this.isEdit = true;
+    this.model.ModelIsEdit = false;
+    //Поиск индекса и замена модели по индексу в таблице
+    var otdeldefault = this.modeltable.find(x=>x.IdOtdel ===this.model.IdOtdel);
+    var indexold = this.modeltable.indexOf(otdeldefault);
+    this.dataSource.data[indexold] = this.model;
+    this.index = 0;
+  }
+
+  addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort): void {
+    this.modeltable =JSON.parse(JSON.stringify(model.Otdels));
+    this.model = JSON.parse(JSON.stringify(model.Otdels[0]));
+    this.dataSource.data = model.Otdels;
+    this.user = model.Users;
+    this.filteredUser = this.user.slice();
+  }
+
+
+  isEditAndAddTrue(): void {
+    this.isEdit = true;
+    this.isAdd = true;
+  }
+  isEditAndAddFalse(): void {
+    this.isAdd = false;
+    this.isEdit = false;
+  }
+
+}
 
 export class UserTableModel implements ILogicaTable<Users>  {
   constructor(public editandadd:EditAndAdd){
@@ -13,7 +121,7 @@ export class UserTableModel implements ILogicaTable<Users>  {
   public displayedColumns = ['IdUser','Name','TabelNumber','Telephon','TelephonUndeground','IpTelephon','NamePosition','NameOtdel','ActionsColumn'];
   public dataSource: MatTableDataSource<Users> = new MatTableDataSource<Users>();
   public modelvalid:ModelValidation = new ModelValidation()
-  public otdels: Otdels[];
+  public otdels: Otdel[];
   public position: Position[];
   public modeltable: Users[];
   public isEdit: boolean = false;
@@ -128,13 +236,14 @@ export class UserTableModel implements ILogicaTable<Users>  {
 export class PrinterTableModel implements ILogicaTable<Printer> {
   constructor(public editandadd:EditAndAdd){ }
 
-  public displayedColumns = ['IdModel','Proizvoditel','Model','ZavNum','ServiceNum','InventarNum','IzmInventar','Ip','Coment','Kabinet','Status','ActionsColumn'];
+  public displayedColumns = ['IdModel','IdUser','Proizvoditel','Model','ZavNum','ServiceNum','InventarNum','IzmInventar','Ip','Coment','Kabinet','Status','ActionsColumn'];
   public dataSource: MatTableDataSource<Printer> = new MatTableDataSource<Printer>();
   public modelvalid:ModelValidation = new ModelValidation()
   public kabinet:Kabinet[];
   public models:FullModel[];
   public statusing:Statusing[];
   public proizvoditel:FullProizvoditel[];
+  public user:Users[];
 
   isAdd: boolean;
   isEdit: boolean;
@@ -146,12 +255,14 @@ export class PrinterTableModel implements ILogicaTable<Printer> {
   public filteredModels:any;
   public filteredStatusing:any;
   public filteredProizvoditel:any;
+  public filteredUser:any;
 
   calbackfiltersAll(){
     this.filteredKabinet = this.kabinet.slice();
     this.filteredModels = this.models.slice();
     this.filteredStatusing = this.statusing.slice();
     this.filteredProizvoditel = this.proizvoditel.slice();
+    this.filteredUser = this.user.slice();
   }
 
 
@@ -217,6 +328,7 @@ export class PrinterTableModel implements ILogicaTable<Printer> {
     if(this.model.FullModel) { this.model.IdModel = this.model.FullModel.IdModel};
     if(this.model.Statusing) { this.model.IdStatus = this.model.Statusing.IdStatus};
     if(this.model.Kabinet) {this.model.IdNumberKabinet = this.model.Kabinet.IdNumberKabinet};
+    if(this.model.User) {this.model.IdUser = this.model.User.IdUser};
     this.isEdit = true;
     this.model.ModelIsEdit = false;
     //Поиск индекса и замена модели по индексу в таблице
@@ -235,10 +347,12 @@ export class PrinterTableModel implements ILogicaTable<Printer> {
     this.models = model.Model;
     this.statusing = model.Statusing;
     this.proizvoditel = model.Proizvoditel;
+    this.user = model.Users;
     this.filteredKabinet = this.kabinet.slice();
     this.filteredModels = this.models.slice();
     this.filteredStatusing = this.statusing.slice();
     this.filteredProizvoditel = this.proizvoditel.slice();
+    this.filteredUser = this.user.slice();
   }
 
   public isEditAndAddTrue():void{
@@ -255,13 +369,14 @@ export class ScanerAndCamerTableModel implements ILogicaTable<ScanerAndCamer> {
   
   constructor(public editandadd:EditAndAdd){ }
 
-  public displayedColumns = ['IdModel','Proizvoditel','Model','ZavNum','ServiceNum','InventarNum','IzmInventar','Ip','Coment','Kabinet','Status','ActionsColumn'];
+  public displayedColumns = ['IdModel','IdUser','Proizvoditel','Model','ZavNum','ServiceNum','InventarNum','IzmInventar','Ip','Coment','Kabinet','Status','ActionsColumn'];
   public dataSource: MatTableDataSource<ScanerAndCamer> = new MatTableDataSource<ScanerAndCamer>();
   public modelvalid:ModelValidation = new ModelValidation()
   public kabinet:Kabinet[];
   public models:FullModel[];
   public statusing:Statusing[];
   public proizvoditel:FullProizvoditel[];
+  public user:Users[];
 
   isAdd: boolean;
   isEdit: boolean;
@@ -273,12 +388,14 @@ export class ScanerAndCamerTableModel implements ILogicaTable<ScanerAndCamer> {
   public filteredModels:any;
   public filteredStatusing:any;
   public filteredProizvoditel:any;
+  public filteredUser:any;
 
   calbackfiltersAll(){
     this.filteredKabinet = this.kabinet.slice();
     this.filteredModels = this.models.slice();
     this.filteredStatusing = this.statusing.slice();
     this.filteredProizvoditel = this.proizvoditel.slice();
+    this.filteredUser = this.user.slice();
   }
 
   add(): void {
@@ -340,6 +457,7 @@ export class ScanerAndCamerTableModel implements ILogicaTable<ScanerAndCamer> {
     if(this.model.FullModel) { this.model.IdModel = this.model.FullModel.IdModel};
     if(this.model.Statusing) { this.model.IdStatus = this.model.Statusing.IdStatus};
     if(this.model.Kabinet) {this.model.IdNumberKabinet = this.model.Kabinet.IdNumberKabinet};
+    if(this.model.User) {this.model.IdUser = this.model.User.IdUser};
     this.isEdit = true;
     this.model.ModelIsEdit = false;
     //Поиск индекса и замена модели по индексу в таблице
@@ -351,17 +469,19 @@ export class ScanerAndCamerTableModel implements ILogicaTable<ScanerAndCamer> {
   addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort): void {
     this.modeltable =JSON.parse(JSON.stringify(model.Scaner));
     this.model = JSON.parse(JSON.stringify(model.Scaner[0]));
-   this.dataSource.paginator = paginator;
-   this.dataSource.sort = sort
+    this.dataSource.paginator = paginator;
+    this.dataSource.sort = sort
     this.dataSource.data = model.Scaner;
     this.kabinet = model.Kabinet;
     this.models = model.Model;
     this.statusing = model.Statusing;
     this.proizvoditel = model.Proizvoditel;
+    this.user = model.Users;
     this.filteredKabinet = this.kabinet.slice();
     this.filteredModels = this.models.slice();
     this.filteredStatusing = this.statusing.slice();
     this.filteredProizvoditel = this.proizvoditel.slice();
+    this.filteredUser = this.user.slice();
   }
   isEditAndAddTrue(): void {
     this.isEdit = true;
@@ -377,7 +497,7 @@ export class MfuTableModel implements ILogicaTable<Mfu> {
  
   constructor(public editandadd:EditAndAdd){ }
 
-  public displayedColumns = ['IdModel','Proizvoditel','Model','ZavNum','ServiceNum','InventarNum','IzmInventar','Ip','CopySave','Coment','Kabinet','Status','ActionsColumn'];
+  public displayedColumns = ['IdModel','IdUser','Proizvoditel','Model','ZavNum','ServiceNum','InventarNum','IzmInventar','Ip','CopySave','Coment','Kabinet','Status','ActionsColumn'];
   public dataSource: MatTableDataSource<Mfu> = new MatTableDataSource<Mfu>();
   public modelvalid:ModelValidation = new ModelValidation()
   public kabinet:Kabinet[];
@@ -385,6 +505,7 @@ export class MfuTableModel implements ILogicaTable<Mfu> {
   public statusing:Statusing[];
   public proizvoditel:FullProizvoditel[];
   public copySave:CopySave[];
+  public user:Users[];
 
   isAdd: boolean;
   isEdit: boolean;
@@ -397,6 +518,7 @@ export class MfuTableModel implements ILogicaTable<Mfu> {
   public filteredStatusing:any;
   public filteredProizvoditel:any;
   public filteredCopySave:any;
+  public filteredUser:any;
 
   calbackfiltersAll(){
     this.filteredKabinet = this.kabinet.slice();
@@ -404,6 +526,7 @@ export class MfuTableModel implements ILogicaTable<Mfu> {
     this.filteredStatusing = this.statusing.slice();
     this.filteredProizvoditel = this.proizvoditel.slice();
     this.filteredCopySave = this.copySave.slice();
+    this.filteredUser = this.user.slice();
   }
 
   add(): void {
@@ -472,6 +595,7 @@ export class MfuTableModel implements ILogicaTable<Mfu> {
     if(this.model.Statusing) { this.model.IdStatus = this.model.Statusing.IdStatus};
     if(this.model.Kabinet) {this.model.IdNumberKabinet = this.model.Kabinet.IdNumberKabinet};
     if(this.model.CopySave) {this.model.IdCopySave = this.model.CopySave.IdCopySave};
+    if(this.model.User) {this.model.IdUser = this.model.User.IdUser};
     this.isEdit = true;
     this.model.ModelIsEdit = false;
     //Поиск индекса и замена модели по индексу в таблице
@@ -492,11 +616,13 @@ export class MfuTableModel implements ILogicaTable<Mfu> {
     this.statusing = model.Statusing;
     this.proizvoditel = model.Proizvoditel;
     this.copySave = model.CopySave;
+    this.user = model.Users;
     this.filteredKabinet = this.kabinet.slice();
     this.filteredModels = this.models.slice();
     this.filteredStatusing = this.statusing.slice();
     this.filteredProizvoditel = this.proizvoditel.slice();
     this.filteredCopySave = this.copySave.slice()
+    this.filteredUser = this.user.slice();
   }
 
   isEditAndAddTrue(): void {
@@ -513,12 +639,13 @@ export class MfuTableModel implements ILogicaTable<Mfu> {
 export class SysBlockTableModel implements ILogicaTable<SysBlock> {
   constructor(public editandadd:EditAndAdd){ }
 
-  public displayedColumns = ['IdModel','Model','ServiceNum','SerNum','InventarNum','NameComputer','Ip','Kabinet','Coment','Status','ActionsColumn'];
+  public displayedColumns = ['IdModel','IdUser','Model','ServiceNum','SerNum','InventarNum','NameComputer','Ip','Kabinet','Coment','Status','ActionsColumn'];
   public dataSource: MatTableDataSource<SysBlock> = new MatTableDataSource<SysBlock>();
   public modelvalid:ModelValidation = new ModelValidation()
   public models:NameSysBlock[];
   public kabinet:Kabinet[];
   public statusing:Statusing[];
+  public user:Users[];
 
   isAdd: boolean;
   isEdit: boolean;
@@ -529,11 +656,13 @@ export class SysBlockTableModel implements ILogicaTable<SysBlock> {
   public filteredKabinet:any;
   public filteredModels:any;
   public filteredStatusing:any;
+  public filteredUser:any;
 
   calbackfiltersAll(){
     this.filteredKabinet = this.kabinet.slice();
     this.filteredModels = this.models.slice();
     this.filteredStatusing = this.statusing.slice();
+    this.filteredUser = this.user.slice();
   }
 
   add(): void {
@@ -600,6 +729,7 @@ export class SysBlockTableModel implements ILogicaTable<SysBlock> {
     if(this.model.NameSysBlock) {this.model.IdModelSysBlock = this.model.NameSysBlock.IdModelSysBlock};
     if(this.model.Statusing) { this.model.IdStatus = this.model.Statusing.IdStatus};
     if(this.model.Kabinet) {this.model.IdNumberKabinet = this.model.Kabinet.IdNumberKabinet};
+    if(this.model.User) {this.model.IdUser = this.model.User.IdUser};
     this.isEdit = true;
     this.model.ModelIsEdit = false;
     //Поиск индекса и замена модели по индексу в таблице
@@ -618,9 +748,11 @@ export class SysBlockTableModel implements ILogicaTable<SysBlock> {
     this.kabinet = model.Kabinet;
     this.models = model.ModelSysBlok;
     this.statusing = model.Statusing;
+    this.user = model.Users;
     this.filteredKabinet = this.kabinet.slice();
     this.filteredModels = this.models.slice();
     this.filteredStatusing = this.statusing.slice();
+    this.filteredUser = this.user.slice();
   }
 
   isEditAndAddTrue(): void {
@@ -638,12 +770,13 @@ export class SysBlockTableModel implements ILogicaTable<SysBlock> {
 export class MonitorsTableModel implements ILogicaTable<Monitor> {
   constructor(public editandadd:EditAndAdd){ }
 
-  public displayedColumns = ['IdModel','Model','SerNum','InventarNum','Kabinet','Coment','Status','ActionsColumn'];
+  public displayedColumns = ['IdModel','IdUser','Model','SerNum','InventarNum','Kabinet','Coment','Status','ActionsColumn'];
   public dataSource: MatTableDataSource<Monitor> = new MatTableDataSource<Monitor>();
   public modelvalid:ModelValidation = new ModelValidation()
   public models:NameMonitor[];
   public kabinet:Kabinet[];
   public statusing:Statusing[];
+  public user:Users[];
 
   isAdd: boolean;
   isEdit: boolean;
@@ -654,11 +787,13 @@ export class MonitorsTableModel implements ILogicaTable<Monitor> {
   public filteredKabinet:any;
   public filteredModels:any;
   public filteredStatusing:any;
+  public filteredUser:any;
 
   calbackfiltersAll(){
     this.filteredKabinet = this.kabinet.slice();
     this.filteredModels = this.models.slice();
     this.filteredStatusing = this.statusing.slice();
+    this.filteredUser = this.user.slice();
   }
   
   add(): void {
@@ -725,6 +860,7 @@ export class MonitorsTableModel implements ILogicaTable<Monitor> {
     if(this.model.NameMonitor) {this.model.IdModelMonitor = this.model.NameMonitor.IdModelMonitor};
     if(this.model.Statusing) { this.model.IdStatus = this.model.Statusing.IdStatus};
     if(this.model.Kabinet) {this.model.IdNumberKabinet = this.model.Kabinet.IdNumberKabinet};
+    if(this.model.User) {this.model.IdUser = this.model.User.IdUser};
     this.isEdit = true;
     this.model.ModelIsEdit = false;
     //Поиск индекса и замена модели по индексу в таблице
@@ -743,9 +879,11 @@ export class MonitorsTableModel implements ILogicaTable<Monitor> {
     this.kabinet = model.Kabinet;
     this.models = model.NameMonitors;
     this.statusing = model.Statusing;
+    this.user = model.Users;
     this.filteredKabinet = this.kabinet.slice();
     this.filteredModels = this.models.slice();
     this.filteredStatusing = this.statusing.slice();
+    this.filteredUser = this.user.slice();
    }
 
   isEditAndAddTrue(): void {

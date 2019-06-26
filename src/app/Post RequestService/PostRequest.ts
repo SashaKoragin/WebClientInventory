@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Users, Autorization, Printer, Kabinet, ModelReturn, ScanerAndCamer, Mfu, SysBlock, Monitor,
-    FullSelectedModel, NameMonitor, FullProizvoditel, Statusing, FullModel, CopySave, NameSysBlock  } from '../Inventory/ModelInventory/InventoryModel';
+    FullSelectedModel, NameMonitor, FullProizvoditel, Statusing, FullModel, CopySave, NameSysBlock, Otdel,Position  } from '../Inventory/ModelInventory/InventoryModel';
 import { AdressInventarka } from '../AdressGetPost/AdressInventory';
 import { ModelParametr } from '../Inventory/ModelInventory/Parametr';
 import { deserializeArray } from 'class-transformer';
-import { ModelSelect } from '../Inventory/AllSelectModel/ParametrModel';
+import { ModelSelect, LogicaSelect } from '../Inventory/AllSelectModel/ParametrModel';
 
 const url: AdressInventarka = new AdressInventarka();
 const httpOptionsJson = {
@@ -122,18 +122,18 @@ export class PostInventar {
        try {
         this.allotdel().subscribe((model)=>{
             if(model){
-                this.select.Otdels = JSON.parse(model.toString());
+                this.select.Otdels = deserializeArray<Otdel>(Otdel,model.toString());
             }
         });
         this.allposition().subscribe((model)=>{
             if (model) {
-                this.select.Position = JSON.parse(model.toString());
+                this.select.Position =  deserializeArray<Position>(Position,model.toString());
             }
         });
         this.alluser().subscribe((model)=> {
             if (model) {
                 
-                this.select.Users = JSON.parse(model.toString());
+                this.select.Users =  deserializeArray<Users>(Users,model.toString());
             }});
         this.allnamemonitor().subscribe((model)=>{
             if(model){
@@ -229,6 +229,10 @@ export class EditAndAdd{
     addandeditmonitor(monutor:Monitor){
         return this.http.post(url.addandeditmonitor, monutor, httpOptionsJson);
     }     
+    ///Редактирование или добавление отдела
+    addandeditotdel(otdel:Otdel){
+        return this.http.post(url.addandeditotdel,otdel,httpOptionsJson)
+    }
 }
 @Injectable()
 export class SelectAllParametrs{
@@ -237,4 +241,9 @@ export class SelectAllParametrs{
     addselectallparametrs(model:ModelSelect){
         return this.http.post(url.selectparametr,model,httpOptionsJson)
     }
+
+    selectusersql(model:LogicaSelect){
+        return this.http.post(url.selectxml,model,httpOptionsJson)
+    }
+      
 }

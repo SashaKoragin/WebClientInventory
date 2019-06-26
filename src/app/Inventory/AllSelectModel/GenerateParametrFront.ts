@@ -2,6 +2,7 @@ import { FormControl,ValidatorFn, AbstractControl } from '@angular/forms';
 import { ModelSelect, LogicaSelect } from './ParametrModel';
 import * as _moment from 'moment';
 import * as _rollupMoment from 'moment';
+import { DatePipe } from '@angular/common';
 
 export const moment = _rollupMoment || _moment;
 
@@ -53,32 +54,16 @@ export class SelectParam {
     formTemplate: FormControl;
 }
 
-export class GenerateParametrs{
-    constructor(public model:ModelSelect){
-        this.parametrs = this.generateparametrs(model);
-        this.selectedtoserver = model.logicaSelectField;
-     }
 
-
-     public parametrs:SelectParam[];
-     public selectedtoserver: LogicaSelect;
-     //Select выборка
-     select: boolean = true;
-     progress: boolean = true;
-    //Проверка Валидации всего блока при нажатии Обновить
-    public errorModel():boolean {
-        for (var sel of this.parametrs) {
-            if (sel.select !== null && sel.select.num !== 0) {
-                if (sel.formTemplate.invalid) {
-                    return false;
-                }
-            }
-        }
-       return true;
-   }
-
+export class LogicaDataBase{
+    
+    //Select выборка
+    select: boolean = true;
+    progress: boolean = true;
+    date: boolean = true;
+    
     //Переключение выборки select
-   public logicaselect() {
+    public logicaselect() {
         if (this.select) {
             this.select = false;
         } else {
@@ -94,6 +79,39 @@ export class GenerateParametrs{
             this.progress = true;
         }
     }
+    //Логика данных 
+   public logicadatabase(){
+    if (this.date) {
+        this.date = false;
+    } else {
+        this.date = true;
+    }
+   }
+}
+
+export class GenerateParametrs{
+    constructor(public model:ModelSelect){
+        this.parametrs = this.generateparametrs(model);
+        this.selectedtoserver = model.logicaSelectField;
+     }
+
+
+     public parametrs:SelectParam[];
+     public selectedtoserver: LogicaSelect;
+
+    //Проверка Валидации всего блока при нажатии Обновить
+    public errorModel():boolean {
+        for (var sel of this.parametrs) {
+            if (sel.select !== null && sel.select.num !== 0) {
+                if (sel.formTemplate.invalid) {
+                    return false;
+                }
+            }
+        }
+       return true;
+   }
+
+
 
   private generateparametrs(modelselect:ModelSelect):SelectParam[]{
         var parametrs:SelectParam[] = [];
@@ -156,9 +174,11 @@ export class GenerateParametrs{
     ];
 
     ///Генерит команду и БД на которой выполнить команду
-    generatecommand() {
-         var generate = new GenerateFullCommand();
-         generate.generateCommand(generate.generateVisible(this.selectedtoserver, this.parametrs),this.parametrs);
+    generatecommand():LogicaSelect {
+        var generate = new GenerateFullCommand();
+        var logica = generate.generateCommand(generate.generateVisible(this.selectedtoserver, this.parametrs),this.parametrs);
+        logica.idField = this.selectedtoserver.idField;
+        return logica;
     }
 
 }
@@ -186,7 +206,6 @@ class GenerateFullCommand {
       if(str ==''){
         str = str.concat(' * ')
       }
-      alert(countend+"  "+countparam)
       command.selectUserField = logica.selectUserField.replace('{0}', str);
       return command;
     }
@@ -214,9 +233,9 @@ class GenerateFullCommand {
         } else {
             logica.selectUserField = logica.selectUserField.replace('{1}','');
         }
-        alert(logica.selectUserField);
+        logica.selectInfoField = null;
+        logica.selectedParametrField = null;
         return logica;
-    
      }
 
     ///Генерация Даты c кавычками по другой логике нужно писать логику на дату т ам по другому

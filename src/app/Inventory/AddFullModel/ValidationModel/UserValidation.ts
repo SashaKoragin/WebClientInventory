@@ -1,12 +1,12 @@
 import { FormGroup, FormControl, Validators,AbstractControl,ValidationErrors,ValidatorFn } from '@angular/forms';
-import { Otdels, Position, FullProizvoditel, FullModel, Kabinet, NameSysBlock, NameMonitor } from '../../ModelInventory/InventoryModel';
+import { Otdel, Position, FullProizvoditel, FullModel, Kabinet, NameSysBlock, NameMonitor } from '../../ModelInventory/InventoryModel';
 
 
 export class ModelValidation  {
 
     //Валидация наименование отдела
     public validationNameOtdel(control: AbstractControl): ValidationErrors  {
-        var nameNameOtdel = control.value as Otdels;
+        var nameNameOtdel = control.value as Otdel;
         return  (nameNameOtdel == undefined || nameNameOtdel.NameOtdel) == undefined   ? { 'error': true  } : null
     };
 
@@ -29,7 +29,7 @@ export class ModelValidation  {
     //Валидация производителя мониторов
     public validationFullNameMonitor(control: AbstractControl): ValidationErrors  {
         var nameProizvoditel = control.value as NameMonitor;
-        return  (nameProizvoditel == undefined || nameProizvoditel.NameMonitor_) == undefined   ? { 'error': true  } : null
+        return  (nameProizvoditel == undefined || nameProizvoditel.Name) == undefined   ? { 'error': true  } : null
     };
 
     //Валидация Модели
@@ -53,7 +53,7 @@ export class ModelValidation  {
                 'TelephonUndeground': new FormControl(null, Validators.required),
                 'IpTelephon': new FormControl(null, Validators.required),
                 'NamePosition': new FormControl({value: new Position()}, [Validators.required,this.validationNamePosition]),
-                'NameOtdel': new FormControl({value: new Otdels()}, [Validators.required,this.validationNameOtdel]),
+                'NameOtdel': new FormControl({value: new Otdel()}, [Validators.required,this.validationNameOtdel]),
             }
             ),
          new FormGroup({

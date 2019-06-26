@@ -37,3 +37,35 @@ button:hover {
 .select {
     width: 350px; 
 }
+
+.example-tree-invisible {
+    display: none;
+  }
+.tree ul,
+.tree li {
+    margin-top: 0;
+    margin-bottom: 0;
+    list-style-type: none;
+  }
+  
+.content {
+    margin: 10px;
+    background-color: white;
+    cursor: pointer;
+}
+
+table.table {
+    vertical-align: top;
+    font-family: Georgia, serif;
+    border: 6px ridge #24943A;
+    background-color: #D4EED1;
+    text-align: center; 
+  }
+  table.table td, table.table th {
+    border: 1px solid #24943A;
+    padding: 3px 2px;
+  }
+
+  table.table tbody td {
+    font-size: 16px;
+  }

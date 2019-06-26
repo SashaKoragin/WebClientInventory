@@ -1,5 +1,5 @@
 <h1>Техника</h1>
-<mat-tab-group>
+<mat-tab-group (selectedTabChange)="index($event)">
         <mat-tab label="Принтеры">
             <div class="mat-elevation-z8">
                 <form class="search">
@@ -15,6 +15,23 @@
                              {{row.IdPrinter}}
                       </td>
                 </ng-container>
+
+                <ng-container matColumnDef="IdUser">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Пользователь</th>
+                    <td mat-cell *matCellDef="let row">
+                      <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.User?.Name}}</Label>
+                          <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                              <mat-select (click)="printer.calbackfiltersAll()" [placeholder]="row.User?.Name" [(ngModel)]="printer.model.User" name="user">
+                                 <mat-select-filter class="filter" [placeholder]="row.User?.Name" [displayMember]="'Name'" [array]="printer.user" (filteredReturn)="printer.filteredUser =$event">
+                                  </mat-select-filter>
+                                    <mat-option *ngFor="let user of printer.filteredUser" [value]="user">
+                                      {{user.Name}}
+                                    </mat-option>
+                              </mat-select>
+                          </mat-form-field>
+                    </td>
+              </ng-container>
+
 
                 <ng-container matColumnDef="Proizvoditel">
                   <th mat-header-cell *matHeaderCellDef mat-sort-header>Производитель</th>
@@ -181,6 +198,23 @@
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
                   <td mat-cell *matCellDef="let row">
                          {{row.IdScaner}}
+                  </td>
+            </ng-container>
+
+
+            <ng-container matColumnDef="IdUser">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Пользователь</th>
+                  <td mat-cell *matCellDef="let row">
+                    <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.User?.Name}}</Label>
+                        <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            <mat-select (click)="printer.calbackfiltersAll()" [placeholder]="row.User?.Name" [(ngModel)]="scaner.model.User" name="user">
+                               <mat-select-filter class="filter" [placeholder]="row.User?.Name" [displayMember]="'Name'" [array]="scaner.user" (filteredReturn)="scaner.filteredUser =$event">
+                                </mat-select-filter>
+                                  <mat-option *ngFor="let user of scaner.filteredUser" [value]="user">
+                                    {{user.Name}}
+                                  </mat-option>
+                            </mat-select>
+                        </mat-form-field>
                   </td>
             </ng-container>
 
@@ -355,6 +389,23 @@
                          {{row.IdMfu}}
                   </td>
             </ng-container>
+
+            <ng-container matColumnDef="IdUser">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Пользователь</th>
+                  <td mat-cell *matCellDef="let row">
+                    <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.User?.Name}}</Label>
+                        <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            <mat-select (click)="printer.calbackfiltersAll()" [placeholder]="row.User?.Name" [(ngModel)]="mfu.model.User" name="user">
+                               <mat-select-filter class="filter" [placeholder]="row.User?.Name" [displayMember]="'Name'" [array]="mfu.user" (filteredReturn)="mfu.filteredUser =$event">
+                                </mat-select-filter>
+                                  <mat-option *ngFor="let user of mfu.filteredUser" [value]="user">
+                                    {{user.Name}}
+                                  </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                  </td>
+            </ng-container>
+
 
             <ng-container matColumnDef="Proizvoditel">
               <th mat-header-cell *matHeaderCellDef mat-sort-header>Производитель</th>
@@ -541,6 +592,22 @@
                       </td>
                 </ng-container>
     
+                <ng-container matColumnDef="IdUser">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Пользователь</th>
+                      <td mat-cell *matCellDef="let row">
+                        <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.User?.Name}}</Label>
+                            <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                                <mat-select (click)="printer.calbackfiltersAll()" [placeholder]="row.User?.Name" [(ngModel)]="sysblok.model.User" name="user">
+                                   <mat-select-filter class="filter" [placeholder]="row.User?.Name" [displayMember]="'Name'" [array]="sysblok.user" (filteredReturn)="sysblok.filteredUser =$event">
+                                    </mat-select-filter>
+                                      <mat-option *ngFor="let user of sysblok.filteredUser" [value]="user">
+                                        {{user.Name}}
+                                      </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                      </td>
+                </ng-container>
+
                 <ng-container matColumnDef="Model">
                   <th mat-header-cell *matHeaderCellDef mat-sort-header>Модель</th>
                     <td mat-cell *matCellDef="let row">
@@ -699,22 +766,38 @@
                   </td>
             </ng-container>
 
+            <ng-container matColumnDef="IdUser">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Пользователь</th>
+                  <td mat-cell *matCellDef="let row">
+                    <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.User?.Name}}</Label>
+                        <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            <mat-select (click)="printer.calbackfiltersAll()" [placeholder]="row.User?.Name" [(ngModel)]="monitor.model.User" name="user">
+                               <mat-select-filter class="filter" [placeholder]="row.User?.Name" [displayMember]="'Name'" [array]="monitor.user" (filteredReturn)="monitor.filteredUser =$event">
+                                </mat-select-filter>
+                                  <mat-option *ngFor="let user of monitor.filteredUser" [value]="user">
+                                    {{user.Name}}
+                                  </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                  </td>
+            </ng-container>
+
+
             <ng-container matColumnDef="Model">
               <th mat-header-cell *matHeaderCellDef mat-sort-header>Модель</th>
                 <td mat-cell *matCellDef="let row">
-                  <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.NameMonitor?.NameMonitor_}}</Label>
+                  <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.NameMonitor?.Name}}</Label>
                       <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
-                          <mat-select (click)="monitor.calbackfiltersAll()" [formControl]="monitor.modelvalid?.getRowValidatorModel[3].get('Model')" [placeholder]="monitor.model.NameMonitor?.NameMonitor_" [(ngModel)]="monitor.model.NameMonitor" name="model">
-                             <mat-select-filter class="filter" [placeholder]="monitor.model.NameMonitor?.NameMonitor_" [displayMember]="'NameMonitor_'" [array]="monitor.models" (filteredReturn)="monitor.filteredModels =$event">
+                          <mat-select (click)="monitor.calbackfiltersAll()" [formControl]="monitor.modelvalid?.getRowValidatorModel[3].get('Model')" [placeholder]="monitor.model.NameMonitor?.Name" [(ngModel)]="monitor.model.NameMonitor" name="model">
+                             <mat-select-filter class="filter" [placeholder]="monitor.model.NameMonitor?.Name" [displayMember]="'Name'" [array]="monitor.models" (filteredReturn)="monitor.filteredModels =$event">
                               </mat-select-filter>
                                 <mat-option *ngFor="let model of monitor.filteredModels" [value]="model">
-                                  {{model.NameMonitor_}}
+                                  {{model.Name}}
                                 </mat-option>
                           </mat-select>
                       </mat-form-field>
                 </td>
           </ng-container>
-      
             <ng-container matColumnDef="SerNum">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Сирийный номер</th>
                   <td mat-cell *matCellDef="let row">

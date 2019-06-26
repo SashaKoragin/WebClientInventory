@@ -17,7 +17,6 @@ export class LogicaSelect{
     public selectInfoField:string;
     public selectedParametrField:string;
     public selectUserField:string;
-    public dataCreateField:Date;
 }
 
 class Parametrs{
