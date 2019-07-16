@@ -7,7 +7,8 @@ import {  deserialize } from 'class-transformer';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { Recursion,ModelUserAndEquipment } from '../../AllSelectModel/RecursionMethod/RecursionClass';
-
+import { AuthIdentification } from '../../../Post RequestService/PostRequest';
+import { DocumentReport } from '../../AllSelectModel/Report/ReportModel';
 
 
 
@@ -19,7 +20,7 @@ import { Recursion,ModelUserAndEquipment } from '../../AllSelectModel/RecursionM
 }) as any)
 
 export class Invent implements OnInit {
-    constructor(public select:SelectAllParametrs) { }
+    constructor(public select:SelectAllParametrs, public authService: AuthIdentification) { }
     
     modelUserAndEquipment:Recursion = new Recursion();
 
@@ -109,6 +110,19 @@ nestedDataSource1: MatTreeNestedDataSource<ModelUserAndEquipment> = new MatTreeN
      }
 
      upload(model:ModelUserAndEquipment){
-         console.log(model);
+         console.log(this.authService.fullSelect.Users.IdUser);
+         var idOut = this.authService.fullSelect.Users.IdUser;
+         console.log(model.IdUser);
+         this.select.generatedocument(new DocumentReport(3,idOut,model.IdUser,1)).subscribe(data =>{
+            var blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+            var url = window.URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = model.Name;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+         });
      }
 }

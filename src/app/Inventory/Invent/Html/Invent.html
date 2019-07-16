@@ -93,11 +93,9 @@
                   <li>
                         <div class="mat-tree-node">
                         <button class="content" mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.Name">
-                              <mat-icon class="mat-icon-rtl-mirror">
-                                  {{nestedTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-                               </mat-icon>
+                                {{node.Children[0].Children.length===0 ? node.Children[0].Types.length : node.Children.length }}
                         </button>
-                        <span matBadge="{{node.Children[0].Children.length===0 ? node.Children[0].Types.length : node.Children.length }}">{{node.Name}}</span>
+                        <span>{{node.Name}}</span>
                         </div>
                     <ul [class.example-tree-invisible]="!nestedTreeControl.isExpanded(node)">
                       <ng-container matTreeNodeOutlet>
@@ -206,12 +204,10 @@
             <mat-nested-tree-node *matTreeNodeDef="let node; when: hasNestedChild1" matTreeNodePadding>
               <li>
                     <div class="mat-tree-node">
-                    <button class="content" mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.Name">
-                          <mat-icon class="mat-icon-rtl-mirror">
-                              {{nestedTreeControl1.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-                           </mat-icon>
-                    </button>
-                    <span matBadge="{{node.Children[0].Children.length===0 ? node.Children[0].Types.length : node.Children.length }}">{{node.Name}}</span>
+                        <button class="content" mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.Name">
+                                {{node.Children[0].Children.length===0 ? node.Children[0].Types.length : node.Children.length }}
+                        </button>
+                    <span>{{node.Name}}</span>
                     <div [style.display]="node.InputServer ?'inline':'none'" class="button"><button mat-button (click)="upload(node)">Выгрузить модель</button></div>
                     </div>
                 <ul [class.example-tree-invisible]="!nestedTreeControl1.isExpanded(node)">

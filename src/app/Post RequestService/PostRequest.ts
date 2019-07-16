@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Users, Autorization, Printer, Kabinet, ModelReturn, ScanerAndCamer, Mfu, SysBlock, Monitor,
-    FullSelectedModel, NameMonitor, FullProizvoditel, Statusing, FullModel, CopySave, NameSysBlock, Otdel,Position  } from '../Inventory/ModelInventory/InventoryModel';
+    FullSelectedModel, NameMonitor, FullProizvoditel, Statusing, FullModel, CopySave, NameSysBlock, Otdel,Position,Document   } from '../Inventory/ModelInventory/InventoryModel';
 import { AdressInventarka } from '../AdressGetPost/AdressInventory';
 import { ModelParametr } from '../Inventory/ModelInventory/Parametr';
 import { deserializeArray } from 'class-transformer';
 import { ModelSelect, LogicaSelect } from '../Inventory/AllSelectModel/ParametrModel';
+import { DocumentReport } from '../Inventory/AllSelectModel/Report/ReportModel';
+import { UploadFile } from '../Inventory/AddFullModel/ModelTable/FileModel';
 
 const url: AdressInventarka = new AdressInventarka();
 const httpOptionsJson = {
@@ -49,7 +51,12 @@ export class AuthIdentification {
 })
 export class PostInventar {
     constructor(private http: HttpClient) { }
-
+ 
+    public select: FullSelectedModel = new FullSelectedModel();
+    
+    actualusersmodel(){
+        return this.http.post(url.actualstatusModel,null,httpOptionsJson);
+    }
     ///Выборка всего из БД в зависимостb от num пользователи
     alluser() {
         return this.http.get(url.alluser, httpOptionsJson);
@@ -115,7 +122,7 @@ export class PostInventar {
         return this.http.get(url.allnamemonitor,httpOptionsJson);
     }
 
-    public select: FullSelectedModel = new FullSelectedModel();
+
 
  ///Все запросы для заполнение данных
     fullreqvests(){
@@ -231,19 +238,40 @@ export class EditAndAdd{
     }     
     ///Редактирование или добавление отдела
     addandeditotdel(otdel:Otdel){
-        return this.http.post(url.addandeditotdel,otdel,httpOptionsJson)
+        return this.http.post(url.addandeditotdel,otdel,httpOptionsJson);
     }
 }
 @Injectable()
 export class SelectAllParametrs{
     constructor(private http: HttpClient) { }
     
+
+
+
     addselectallparametrs(model:ModelSelect){
-        return this.http.post(url.selectparametr,model,httpOptionsJson)
+        return this.http.post(url.selectparametr,model,httpOptionsJson);
     }
 
     selectusersql(model:LogicaSelect){
-        return this.http.post(url.selectxml,model,httpOptionsJson)
+        return this.http.post(url.selectxml,model,httpOptionsJson);
     }
-      
+
+   public deletedocument(iddocument:number){
+       return this.http.post(url.deletedocument,iddocument,httpOptionsJson)
+   }
+
+   public selectdocument(iddocument:number){
+    return this.http.post(url.selectdocument,iddocument,
+        { responseType: 'arraybuffer', headers: new HttpHeaders({ 'Content-Type': 'application/json' }) })
+   }
+
+   public generatedocument(modeldoc:DocumentReport){
+        return this.http.post(url.generatedocument,modeldoc,
+            { responseType: 'arraybuffer', headers: new HttpHeaders({ 'Content-Type': 'application/json' }) })
+    }
+
+    public addfiledb(upload:UploadFile){
+        return this.http.post(url.addfiledb,upload,httpOptionsJson);
+    }
+      //arraybuffer,blob
 }

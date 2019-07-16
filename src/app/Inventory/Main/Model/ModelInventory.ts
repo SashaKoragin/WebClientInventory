@@ -16,15 +16,32 @@ export class Inventar {
         otdelfunc: 'Инвентаризация',
         children: [{
             otdelfunc: 'Пользователи',
-            children: null, types: 'Все пользователи', pages: './users', fullpath: 'Пользователи\\Все пользователи', model: 'Все пользователи'
+            children: [{
+                otdelfunc: null,
+                children: null, types: 'Все пользователи', pages: './users', fullpath: 'Пользователи\\Все пользователи', model: 'Все пользователи'
+            }], types: null, pages: null, fullpath: null, model: null
         },
         {
             otdelfunc: 'Техника',
-            children: null, types: 'Вся техника', pages: './techical', fullpath: 'Техника\\Вся техника', model: 'Вся техника'
+            children:  [{
+                otdelfunc: null,
+                children: null, types: 'Вся техника', pages: './techical', fullpath: 'Техника\\Вся техника', model: 'Вся техника'
+            }], types: null, pages: null, fullpath: null, model: null
         },
         {
-            otdelfunc: 'Общая',
-            children: null, types: 'Общая инвентаризация', pages: './inventar', fullpath: 'Общая\\Общая инвентаризация', model: 'Инвентаризация'
-        }], types: null, pages: null, fullpath: null, model: null
+            otdelfunc: 'Статистика',
+            children:  [{
+                otdelfunc: null,
+                children: null, types: 'Общая инвентаризация', pages: './inventar', fullpath: 'Статистика\\Общая инвентаризация', model: 'Инвентаризация'
+            }], types: null, pages: null, fullpath: null, model: null
+        },
+        {
+            otdelfunc: 'Документы',
+            children:  [{
+                otdelfunc: null,
+                children: null, types: 'Документы', pages: './documents', fullpath: 'Документы\\Документы', model: 'Документы'
+            }], types: null, pages: null, fullpath: null, model: null
+        },  
+    ], types: null, pages: null, fullpath: null, model: null
     }]);
 }

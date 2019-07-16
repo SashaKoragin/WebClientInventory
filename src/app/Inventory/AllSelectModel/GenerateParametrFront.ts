@@ -62,6 +62,9 @@ export class LogicaDataBase{
     progress: boolean = true;
     date: boolean = true;
     
+    //Ошибка если нет данных
+    errornull: boolean = true;
+
     //Переключение выборки select
     public logicaselect() {
         if (this.select) {
@@ -145,7 +148,7 @@ export class GenerateParametrs{
         return parametrs; 
     }
 
-    //Выборка по числам и датам
+    //Выборка по числам и датам  "Ошибка по int нет IS NULL и  IS NOT NULL"
   public selectparamNumber: SelectCompanent[] = [
         { value: '', viewValue: 'Без условия', num: 0 },
         { value: ' = ', viewValue: 'Равно', num: 1 },

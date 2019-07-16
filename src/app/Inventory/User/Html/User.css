@@ -46,3 +46,13 @@ td.mat-cell{
 .search{
   width: 50%;
 }
+
+.actual {
+  background-color: green;
+  cursor: pointer;
+  align-items: center;
+  margin: 10px;
+}
+.actual:hover {
+     background-color: orange;
+}

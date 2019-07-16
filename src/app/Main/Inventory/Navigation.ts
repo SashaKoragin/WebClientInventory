@@ -5,6 +5,8 @@ import { AuthInventar  } from '../../Secyrity/ModelSecurity/AuthInventory';
 import { Equipment } from '../../Inventory/Equipment/View/Equepment';
 import { Invent } from '../../Inventory/Invent/View/Invent';
 import { User } from '../../Inventory/User/View/User';
+import { DocumentSelect } from '../../Inventory/Documents/View/DocumentsSelect';
+
 const appRoutes: Routes = [
 {
     path: '',
@@ -22,7 +24,12 @@ const appRoutes: Routes = [
         {
             path: 'users',
             component: User
-        }]
+        },
+        {
+            path: 'documents',
+            component: DocumentSelect
+        }
+    ]
     }
 ];
 

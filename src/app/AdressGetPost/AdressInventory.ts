@@ -6,11 +6,11 @@ export class AdressInventarka {
     public allotdelget = `http://${this.host}:8182/Inventarka/AllOtdels`;
     public addandedituser = `http://${this.host}:8182/Inventarka/AddAndEditUser`;
     public addandeditprinter = `http://${this.host}:8182/Inventarka/AddAndEditPrinter`;
-    public addandeditscaner = `http://${this.host}:8182/Inventarka/AddAndEditScaner`
-    public addandeditmfu = `http://${this.host}:8182/Inventarka/AddAndEditMfu`
-    public addandeditsysblock = `http://${this.host}:8182/Inventarka/AddAndEditSysBlok`
-    public addandeditmonitor = `http://${this.host}:8182/Inventarka/AddAndEditMonitor`
-    public addandeditotdel = `http://${this.host}:8182/Inventarka/AddAndEditOtdel`
+    public addandeditscaner = `http://${this.host}:8182/Inventarka/AddAndEditScaner`;
+    public addandeditmfu = `http://${this.host}:8182/Inventarka/AddAndEditMfu`;
+    public addandeditsysblock = `http://${this.host}:8182/Inventarka/AddAndEditSysBlok`;
+    public addandeditmonitor = `http://${this.host}:8182/Inventarka/AddAndEditMonitor`;
+    public addandeditotdel = `http://${this.host}:8182/Inventarka/AddAndEditOtdel`;
 
     public allsysblock = `http://${this.host}:8182/Inventarka/AllSysBlok`;
     public allmonitor = `http://${this.host}:8182/Inventarka/AllMonitors`;
@@ -26,6 +26,14 @@ export class AdressInventarka {
     public allnamesysblok = `http://${this.host}:8182/Inventarka/AllNameSysBlock`;
     public allnamemonitor = `http://${this.host}:8182/Inventarka/AllNameMonitor`;
 
-    public selectparametr = `http://${this.host}:8182/Inventarka/GenerateSqlSelect`
-    public selectxml = `http://${this.host}:8182/Inventarka/SelectXml`
+    public selectparametr = `http://${this.host}:8182/Inventarka/GenerateSqlSelect`;
+    public selectxml = `http://${this.host}:8182/Inventarka/SelectXml`;
+    
+    public deletedocument = `http://${this.host}:8182/Inventarka/DeleteDocument`;
+
+    public generatedocument = `http://${this.host}:8182/Inventarka/Invoice`;
+    public addfiledb = `http://${this.host}:8182/Inventarka/AddFileDb`;
+    public selectdocument = `http://${this.host}:8182/Inventarka/LoadDocument`;
+
+    public actualstatusModel = `http://${this.host}:8182/Inventarka/ActualUsers`
 }

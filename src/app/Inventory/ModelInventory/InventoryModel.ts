@@ -1,4 +1,13 @@
 import {MatPaginator, MatSort } from '@angular/material';
+import { User } from '../User/View/User';
+import { DataSource } from '@angular/cdk/table';
+
+
+
+
+
+
+
 
 export interface ILogicaTable<T> {
     //Добавление
@@ -34,10 +43,14 @@ export interface ILogicaTable<T> {
 ///Десериализация json ответов
 export class DesirilizeXml{
     Tehnical:TehnicalSql = new TehnicalSql();
+    Documents:Documents = new Documents();
 }
 export class TehnicalSql{
     Users:Users[] = null;
     Otdel:Otdel[] =null;
+}
+export class Documents{
+    Document:Document[] = null;
 }
 
 ///Очень важный класс для приемка DTO ответов
@@ -71,6 +84,7 @@ export class Autorization {
 export class Users{
     public IdUser?: number;
     public Name?: string;
+    public SmallName?: string;
     public IdOtdel?: number;
     public IdPosition?: number;
     public IdRule?: number;
@@ -287,4 +301,20 @@ export class CopySave {
 export class Classification {
     public IdClasification: number;
     public NameClass: string;
+}
+
+export class Document{
+    public Id: number;
+    public IdNamedocument?:number;
+    public IdUser?:number;
+    public InfoUserFile:string;
+    public IsFileExists:boolean;
+    public Namefile:string;
+    public TypeFile:string;
+    public Namedocument:Namedocument;
+    public User:User;
+}
+export class Namedocument{
+   public IdNamedocument:number;
+   public NameDocument:string;
 }

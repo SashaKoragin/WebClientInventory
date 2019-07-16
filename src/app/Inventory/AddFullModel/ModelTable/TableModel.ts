@@ -4,7 +4,8 @@ import { Users, ILogicaTable, FullSelectedModel, Otdel, Position, Printer, Mfu, 
 import { MatTableDataSource,MatPaginator,MatSort } from '@angular/material';
 import { ModelValidation } from '../ValidationModel/UserValidation';
 import { EditAndAdd } from '../../../Post RequestService/PostRequest';
-import { User } from '../../User/View/User';
+
+
 
 
 export class OtdelTableModel implements ILogicaTable<Otdel>{
@@ -97,6 +98,7 @@ export class OtdelTableModel implements ILogicaTable<Otdel>{
   addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort): void {
     this.modeltable =JSON.parse(JSON.stringify(model.Otdels));
     this.model = JSON.parse(JSON.stringify(model.Otdels[0]));
+    this.dataSource.paginator = paginator;
     this.dataSource.data = model.Otdels;
     this.user = model.Users;
     this.filteredUser = this.user.slice();
@@ -216,7 +218,7 @@ export class UserTableModel implements ILogicaTable<Users>  {
         this.model = JSON.parse(JSON.stringify(model.Users[0]));
         this.dataSource.paginator = paginator;
         this.dataSource.sort = sort
-        this.dataSource.data = model.Users;
+        this.dataSource.data = model.Users
         this.otdels = model.Otdels;
         this.position = model.Position;
         this.filteredOtdel = this.otdels.slice()
