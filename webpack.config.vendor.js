@@ -57,6 +57,7 @@ module.exports = {
         path: Path.join(__dirname, 'public'),
         filename: '[name].js',
         library: '[name]_[hash]'
+        
     },
     plugins: [
         ExtractCss,
@@ -64,10 +65,11 @@ module.exports = {
         new Webpack.optimize.OccurrenceOrderPlugin(),
         new Webpack.DllPlugin({
             path: Path.join(__dirname, 'public', '[name]-manifest.json'),
-            name: '[name]_[hash]'
+            name: '[name]_[hash]',
+            
         })
     ].concat(IsDevBuild ? [] : [
-        new Webpack.optimize.UglifyJsPlugin({ compress: { warnings: false } })
+        new Webpack.optimize.UglifyJsPlugin({ compress: { warnings: false, ascii: true, } })
     ]),
 
 };

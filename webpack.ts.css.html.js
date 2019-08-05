@@ -5,7 +5,8 @@ module.exports = {
     devServer: {
         contentBase: Path.join(__dirname, 'Client'),
         compress: true,
-        port: 8990
+        port: 8990,
+        overlay: true
       },
     entry: {
         'polyfills': './src/polyfills.ts',
@@ -56,6 +57,7 @@ module.exports = {
     publicPath: '/public/',
     filename: '[name].js', // название создаваемого файла,
     sourceMapFilename: "[name].js.map",
+    
 },
 plugins: [
     new Webpack.ContextReplacementPlugin(

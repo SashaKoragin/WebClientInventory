@@ -1,6 +1,6 @@
 export class AdressInventarka {
-    //public host = 'i7751-w00000745';
-    public host = 'localhost';
+    public host = 'i7751-w00000745';
+   // public host = 'localhost';
     public autificationInventar = `http://${this.host}:8182/Inventarka/Authorization`;
     public alluser = `http://${this.host}:8182/Inventarka/AllUsers`;
     public allotdelget = `http://${this.host}:8182/Inventarka/AllOtdels`;
@@ -11,7 +11,10 @@ export class AdressInventarka {
     public addandeditsysblock = `http://${this.host}:8182/Inventarka/AddAndEditSysBlok`;
     public addandeditmonitor = `http://${this.host}:8182/Inventarka/AddAndEditMonitor`;
     public addandeditotdel = `http://${this.host}:8182/Inventarka/AddAndEditOtdel`;
-
+    public addandedittelephon = ` http://${this.host}:8182/Inventarka/AddAndEditTelephone`;
+    public addandeditblockpower = ` http://${this.host}:8182/Inventarka/AddAndEditBlockPower`;
+    
+    public allstatistics =`http://${this.host}:8182/Inventarka/AllActualsProcedureUsers`
     public allsysblock = `http://${this.host}:8182/Inventarka/AllSysBlok`;
     public allmonitor = `http://${this.host}:8182/Inventarka/AllMonitors`;
     public allmfu = `http://${this.host}:8182/Inventarka/AllMfu`;
@@ -25,6 +28,12 @@ export class AdressInventarka {
     public allstatusing = `http://${this.host}:8182/Inventarka/AllStatusing`;
     public allnamesysblok = `http://${this.host}:8182/Inventarka/AllNameSysBlock`;
     public allnamemonitor = `http://${this.host}:8182/Inventarka/AllNameMonitor`;
+    public alltelephon = `http://${this.host}:8182/Inventarka/AllTelephon`;
+    public allblockpower = `http://${this.host}:8182/Inventarka/AllBlockPower`;
+    public allsupply = `http://${this.host}:8182/Inventarka/AllSupply`;
+    public allmodelblockpower = `http://${this.host}:8182/Inventarka/AllModelBlockPower`;
+    public allproizvoditelblockpower = `http://${this.host}:8182/Inventarka/AllProizvoditelBlockPower`;
+    public allclasification= `http://${this.host}:8182/Inventarka/AllClasification`
 
     public selectparametr = `http://${this.host}:8182/Inventarka/GenerateSqlSelect`;
     public selectxml = `http://${this.host}:8182/Inventarka/SelectXml`;
@@ -35,5 +44,18 @@ export class AdressInventarka {
     public addfiledb = `http://${this.host}:8182/Inventarka/AddFileDb`;
     public selectdocument = `http://${this.host}:8182/Inventarka/LoadDocument`;
 
-    public actualstatusModel = `http://${this.host}:8182/Inventarka/ActualUsers`
+    public actualstatusModel = `http://${this.host}:8182/Inventarka/ActualUsers`;
+
+    ///Вспомогательные таблицы маршруты к ним
+    public addAndEditNameSysBlock = `http://${this.host}:8182/Inventarka/AddAndEditNameSysBlock`;
+    public addAndEditNameMonitor =`http://${this.host}:8182/Inventarka/AddAndEditNameMonitor`;
+    public addAndEditNameModelBlokPower = `http://${this.host}:8182/Inventarka/AddAndEditNameModelBlokPower`;
+    public addAndEditNameProizvoditelBlockPower = `http://${this.host}:8182/Inventarka/AddAndEditNameProizvoditelBlockPower`;
+    public addAndEditNameSupply = `http://${this.host}:8182/Inventarka/AddAndEditNameSupply`;
+    public addAndEditNameStatus = `http://${this.host}:8182/Inventarka/AddAndEditNameStatus`;
+    public addAndEditNameKabinet = `http://${this.host}:8182/Inventarka/AddAndEditNameKabinet`;
+    public addAndEditNameFullModel = `http://${this.host}:8182/Inventarka/AddAndEditNameFullModel`;
+    public addAndEditNameClassification = `http://${this.host}:8182/Inventarka/AddAndEditNameClassification`;
+    public addAndEditNameFullProizvoditel = `http://${this.host}:8182/Inventarka/AddAndEditNameFullProizvoditel`;
+    public addAndEditNameCopySave = `http://${this.host}:8182/Inventarka/AddAndEditNameCopySave`;
 }

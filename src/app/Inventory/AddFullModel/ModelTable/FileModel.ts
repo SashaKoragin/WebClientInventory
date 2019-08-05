@@ -89,10 +89,17 @@ export class AddFile{
     }
 
    donloadsServers(){
-       console.log(this.UploadFile);
+     if(this.UploadFile.Upload.length>0){
+      console.log(this.UploadFile);
       this.select.addfiledb(this.UploadFile).subscribe(model=>{
           console.log(model);
+          this.dataSource = null;
+          this.UploadFile.Upload = [];
       })
+    }
+      else{
+        alert("Не чего не выбрано нечего выгружать!!!")
+      }
    }
 
 }

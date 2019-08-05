@@ -71,13 +71,12 @@ nestedDataSource1: MatTreeNestedDataSource<ModelUserAndEquipment> = new MatTreeN
         }
     }
 
-    hasNestedChild = (_: number, node: ModelUserAndEquipment) =>  node.Children.length>0;
+    hasNestedChild = (_: number, node: ModelUserAndEquipment) =>node.Children.length>0;
     back() {
-             this.logica.logicadatabase();; //Закрываем логику Данных
+             this.logica.logicadatabase(); //Закрываем логику Данных
              this.logica.logicaselect(); //Открываем логику загрузки
              this.modelUserAndEquipment.userEcvipment = [];
              this.nestedDataSource.data = null;
- 
      }
 
     update1(){
@@ -87,7 +86,7 @@ nestedDataSource1: MatTreeNestedDataSource<ModelUserAndEquipment> = new MatTreeN
             this.logica1.logicaprogress();  //Открываем логику загрузки
             this.select.selectusersql(this.selecting1.generatecommand()).subscribe((model)=>{
               this.selectsql1.Tehnical = deserialize<TehnicalSql>(TehnicalSql,model.toString()); //Динамический язык
-              this.modelUserAndEquipment.methodEquipmentOtdelAndUserRecursion(this.selectsql1.Tehnical.Otdel)
+              this.modelUserAndEquipment.methodEquipmentOtdelAndUserRecursion(this.selectsql1.Tehnical.Otdel);
               this.nestedDataSource1.data = this.modelUserAndEquipment.otdelandUserEcvipment;
               this.logica1.logicaprogress();
               this.logica1.logicadatabase();
@@ -101,7 +100,7 @@ nestedDataSource1: MatTreeNestedDataSource<ModelUserAndEquipment> = new MatTreeN
         }
     }
 
-    hasNestedChild1 = (_: number, node: ModelUserAndEquipment) =>  node.Children.length>0;
+    hasNestedChild1 = (_: number, node: ModelUserAndEquipment) => node.Children.length>0;
     back1() {
              this.logica1.logicadatabase();; //Закрываем логику Данных
              this.logica1.logicaselect(); //Открываем логику загрузки
@@ -110,10 +109,8 @@ nestedDataSource1: MatTreeNestedDataSource<ModelUserAndEquipment> = new MatTreeN
      }
 
      upload(model:ModelUserAndEquipment){
-         console.log(this.authService.fullSelect.Users.IdUser);
-         var idOut = this.authService.fullSelect.Users.IdUser;
-         console.log(model.IdUser);
-         this.select.generatedocument(new DocumentReport(3,idOut,model.IdUser,1)).subscribe(data =>{
+         if(model.IdUserOtdel){
+         this.select.generatedocument(new DocumentReport(3,this.authService.fullSelect.Users.IdUser,model.IdUser,1)).subscribe(data =>{
             var blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
             var url = window.URL.createObjectURL(blob);
             var a = document.createElement('a');
@@ -124,5 +121,11 @@ nestedDataSource1: MatTreeNestedDataSource<ModelUserAndEquipment> = new MatTreeN
             document.body.removeChild(a);
             window.URL.revokeObjectURL(url);
          });
+        }
+         else{
+             alert("У отдела отсутствует начальник!!!");
+         }
      }
+
+     
 }

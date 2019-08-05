@@ -22,11 +22,17 @@ export class Inventar {
             }], types: null, pages: null, fullpath: null, model: null
         },
         {
+            
             otdelfunc: 'Техника',
             children:  [{
                 otdelfunc: null,
                 children: null, types: 'Вся техника', pages: './techical', fullpath: 'Техника\\Вся техника', model: 'Вся техника'
-            }], types: null, pages: null, fullpath: null, model: null
+            },
+            {
+                otdelfunc: null,
+                children: null, types: 'Дополнительная к технике', pages: './techicalComplement', fullpath: 'Техника\\Дополнительная к технике', model: 'Дополнительная к технике'
+            }
+        ], types: null, pages: null, fullpath: null, model: null
         },
         {
             otdelfunc: 'Статистика',
@@ -40,6 +46,13 @@ export class Inventar {
             children:  [{
                 otdelfunc: null,
                 children: null, types: 'Документы', pages: './documents', fullpath: 'Документы\\Документы', model: 'Документы'
+            }], types: null, pages: null, fullpath: null, model: null
+        },
+        {
+            otdelfunc: 'Ошибки',
+            children:  [{
+                otdelfunc: null,
+                children: null, types: 'Ошибки', pages: './error', fullpath: 'Ошибки\\Ошибки', model: 'Ошибки'
             }], types: null, pages: null, fullpath: null, model: null
         },  
     ], types: null, pages: null, fullpath: null, model: null

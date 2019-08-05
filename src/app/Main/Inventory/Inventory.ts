@@ -9,7 +9,10 @@ import { Invent } from '../../Inventory/Invent/View/Invent';
 import { User } from '../../Inventory/User/View/User';
 import { FormsModule } from '@angular/forms';
 import { DocumentSelect } from '../../Inventory/Documents/View/DocumentsSelect';
-
+import { ErrorInventory } from '../../Inventory/ErrorInventory/View/ErrorInventory';
+import { Select } from '../../Inventory/AddFullModel/ModelViewSelect/View/SelectView';
+import { ComplimentTableEquipment } from '../../Inventory/ComplimentTableEquipment/View/ComplimentTableEquipment';
+import { MccColorPickerModule} from 'material-community-components';
 
 @NgModule(({
     imports: [
@@ -17,10 +20,14 @@ import { DocumentSelect } from '../../Inventory/Documents/View/DocumentsSelect';
         CommonModule,
         AngularMaterialModule,
         ReactiveFormsModule,
-        AppRoutingModule
+        AppRoutingModule,
+        MccColorPickerModule.forRoot({
+            empty_color: 'transparent',
+            used_colors: ['#000000', '#FFF555']
+          }),
     ],
     declarations: [
-        MainInventar, Equipment, Invent, User,DocumentSelect
+        MainInventar, Equipment, Invent, User,DocumentSelect,ErrorInventory,Select,ComplimentTableEquipment
     ]
 }) as any)
 

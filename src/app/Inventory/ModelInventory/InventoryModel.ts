@@ -1,6 +1,8 @@
 import {MatPaginator, MatSort } from '@angular/material';
 import { User } from '../User/View/User';
 import { DataSource } from '@angular/cdk/table';
+import { async } from 'rxjs/internal/scheduler/async';
+import { DatePipe } from '@angular/common';
 
 
 
@@ -25,7 +27,7 @@ export interface ILogicaTable<T> {
     //Метод переноса модификаций моделей
     modifimethod():void;
 
-    addtableModel(model:FullSelectedModel,paginator:MatPaginator,sort:MatSort):void
+    addtableModel(model:FullSelectedModel,paginator:MatPaginator,sort:MatSort):Promise<string>
 
     isEditAndAddTrue():void;
     isEditAndAddFalse():void;
@@ -70,10 +72,19 @@ export class FullSelectedModel{
    Statusing:Statusing[];
    Proizvoditel:FullProizvoditel[];
    ModelSysBlok:NameSysBlock[];
+   Telephon:Telephon[];
+   BlockPower:BlockPower[];
+   Supply:Supply[];
+   ModelBlockPower:ModelBlockPower[];
+   ProizvoditelBlockPower:ProizvoditelBlockPower[];
+   UsersIsActualsStats:UsersIsActualsStats[];
+   Classification:Classification[];
+
 }
 ///Модель отвертов с сервера
 export class ModelReturn{
     public Guid:string;
+    public Index:number;
     public Message:string;
 }
 
@@ -89,19 +100,19 @@ export class Users{
     public IdPosition?: number;
     public IdRule?: number;
     public TabelNumber?: string;
-    public Telephon?: string;
-    public TelephonUndeground?: string;
-    public IpTelephon?: string;
-    public MacTelephon?: string;
+    public IdTelephon?: number;
     public NameUser?: string;
     public Passwords?: string;
     public StatusActual?: boolean;
     public IdHistory?: string;
-    public Mfu?:Mfu[]
-    public Monitors?:Monitor[]
-    public SysBlock?:SysBlock[]
-    public Printer?:Printer[]
-    public ScanerAndCamer?:ScanerAndCamer[]
+    public Mfu?:Mfu[];
+    public Monitors?:Monitor[];
+    public SysBlock?:SysBlock[];
+    public Printer?:Printer[];
+    public ScanerAndCamer?:ScanerAndCamer[];
+    public BlockPower?:BlockPower[];
+    public Document?:Document;
+    public Telephon?:Telephon;
     public Rules?: Rules;
     public Position?: Position;
     public Otdel?: Otdel;
@@ -110,8 +121,9 @@ export class Users{
 export class SysBlock {
     public IdSysBlock: number;
     public IdUser?: number;
-    public IdModelSysBlock: number;
+    public IdModelSysBlock?: number;
     public IdNumberKabinet?: number;
+    public IdSupply?:number;
     public ServiceNum: string;
     public SerNum: string;
     public InventarNumSysBlok: string;
@@ -123,6 +135,7 @@ export class SysBlock {
     public Statusing: Statusing;
     public NameSysBlock: NameSysBlock;
     public Kabinet?:Kabinet;
+    public Supply?:Supply;
     public User?:Users;
     public ModelIsEdit?: boolean = false;
 }
@@ -136,6 +149,7 @@ export class Statusing {
     public IdStatus: number;
     public Name: string;
     public Color: string;
+    public ModelIsEdit?: boolean = false;
 }
 
 export class ScanerAndCamer {
@@ -144,6 +158,7 @@ export class ScanerAndCamer {
     public IdProizvoditel: number;
     public IdModel: number;
     public IdNumberKabinet?: number;
+    public IdSupply?:number;
     public ZavNumber: string;
     public ServiceNumber: string;
     public InventarNumber: string;
@@ -156,6 +171,7 @@ export class ScanerAndCamer {
     public FullProizvoditel: FullProizvoditel;
     public FullModel:FullModel;
     public Kabinet?:Kabinet;
+    public Supply?:Supply;
     public User?:Users;
     public ModelIsEdit?: boolean = false;
 }
@@ -166,6 +182,7 @@ export class Printer {
     public IdProizvoditel?: number;
     public IdModel?: number;
     public IdNumberKabinet?: number;
+    public IdSupply?:number;
     public ZavNumber?: string;
     public ServiceNumber?: string;
     public InventarNumber?: string;
@@ -178,6 +195,7 @@ export class Printer {
     public FullProizvoditel?: FullProizvoditel;
     public Kabinet?:Kabinet;
     public Statusing?: Statusing;
+    public Supply?:Supply;
     public User?:Users;
     public ModelIsEdit?: boolean = false;
 }
@@ -200,11 +218,13 @@ export class Otdel {
 export class NameSysBlock {
     public IdModelSysBlock: number;
     public NameComputer: string;
+    public ModelIsEdit?: boolean = false;
 }
 
 export class NameMonitor {
     public IdModelMonitor: number;
     public Name: string;
+    public ModelIsEdit?: boolean = false;
 }
 
 export class Monitor {
@@ -212,6 +232,7 @@ export class Monitor {
     public IdUser?: number;
     public IdModelMonitor: number;
     public IdNumberKabinet?: number;
+    public IdSupply?:number;
     public SerNum: string;
     public InventarNumMonitor: string;
     public Coment: string;
@@ -220,6 +241,7 @@ export class Monitor {
     public Statusing: Statusing;
     public NameMonitor: NameMonitor;
     public Kabinet?:Kabinet;
+    public Supply?:Supply;
     public User?:Users;
     public ModelIsEdit?: boolean = false;
 }
@@ -230,6 +252,7 @@ export class Mfu {
     public IdProizvoditel: number;
     public IdModel: number;
     public IdNumberKabinet?: number;
+    public IdSupply?:number;
     public ZavNumber: string;
     public ServiceNumber: string;
     public InventarNumber: string;
@@ -244,6 +267,7 @@ export class Mfu {
     public FullModel: FullModel;
     public CopySave:CopySave;
     public Kabinet?:Kabinet;
+    public Supply?:Supply;
     public User?:Users;
     public ModelIsEdit?: boolean = false;
 }
@@ -251,6 +275,7 @@ export class Mfu {
 export class Kabinet {
     public IdNumberKabinet: number;
     public NumberKabinet: string;
+    public ModelIsEdit?: boolean = false;
 }
 
 export class InfoTable {
@@ -277,18 +302,22 @@ export class History {
 export class FullProizvoditel {
     public IdProizvoditel: number;
     public NameProizvoditel: string;
+    public ModelIsEdit?: boolean = false;
 }
 
 export class FullMonitorSysBlok {
     public Id: number;
     public InventarNumSysBlok: string;
     public InventarNumMonitor: string;
+    
 }
 
 export class FullModel {
     public IdModel?: number;
     public NameModel?: string;
     public IdClasification?: number;
+    public ModelIsEdit?: boolean = false;
+    public Classification?:Classification;
 }
 
 export class CopySave {
@@ -296,11 +325,13 @@ export class CopySave {
     public NameCopySave: string;
     public SerNum: string;
     public InventarNum: string;
+    public ModelIsEdit?: boolean = false;
 }
 
 export class Classification {
     public IdClasification: number;
     public NameClass: string;
+    public ModelIsEdit?: boolean = false;
 }
 
 export class Document{
@@ -311,10 +342,84 @@ export class Document{
     public IsFileExists:boolean;
     public Namefile:string;
     public TypeFile:string;
+    public IsActual:boolean;
     public Namedocument:Namedocument;
     public User:User;
 }
 export class Namedocument{
    public IdNamedocument:number;
    public NameDocument:string;
+}
+
+export class BlockPower{
+ public IdBlockPowers:number;
+ public IdUser?:number;
+ public IdProizvoditelBP?:number;
+ public IdModelBP?:number;
+ public IdSupply?:number;
+ public IdNumberKabinet?: number;
+ public ZavNumber?:string;
+ public ServiceNumber?:string;
+ public InventarNumber?:string;
+ public Coment?:string;
+ public IdStatus?:number;
+ public IdHistory?:string;
+ public Kabinet?:Kabinet;
+ public ModelBlockPower?:ModelBlockPower;
+ public ProizvoditelBlockPower?:ProizvoditelBlockPower;
+ public Statusing?:Statusing;
+ public Supply?:Supply;
+ public User?:Users;
+ public ModelIsEdit?: boolean = false;
+}
+
+export class ModelBlockPower{
+    public IdModelBP:number;
+    public Name:string;
+    public ModelIsEdit?: boolean = false;
+}
+
+export class ProizvoditelBlockPower{
+    public IdProizvoditelBP:number;
+    public Name:string;
+    public ModelIsEdit?: boolean = false;
+}
+
+export class Supply{
+    public IdSupply:number;
+    public NameSupply:string;
+    public NameKontract:string;
+    public DatePostavki:string;
+    public DataCreate:string;
+    public ModelIsEdit?: boolean = false;
+}
+
+export class Telephon{
+    public IdTelephon:number;
+    public IdSupply?:number;
+    public IdNumberKabinet?:number;
+    public NameTelephone:string;
+    public Telephon_:string;
+    public TelephonUndeground:string;
+    public SerNumber:string;
+    public IpTelephon:string;
+    public MacTelephon:string;
+    public Coment:string;
+    public IdStatus: number;
+    public Statusing?:Statusing;
+    public Supply:Supply;
+    public Kabinet?:Kabinet;
+    public ModelIsEdit?: boolean = false;
+}
+
+export class UsersIsActualsStats{
+    public Id:number;
+    public ChangeType:string;
+    public IdUser:number;
+    public NameUsers:string;
+    public SmallNameUsers:string;
+    public IdOtdel:number;
+    public IdPosition:number;
+    public TabelNumber:string;
+    public StatusActual:boolean;
 }

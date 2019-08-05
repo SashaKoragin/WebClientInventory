@@ -36,10 +36,6 @@ td.mat-cell{
 }
 
 
-.head {
-    width:max-content;
-}
-
 .delete{
     background-color: red;
 }
@@ -59,6 +55,13 @@ button {
 button:hover {
        background-color: orange;
 }
+
+
+.head {
+    width:max-content;
+}
+
+
 .grid-container2 {
     display: grid;
     padding: 3px;

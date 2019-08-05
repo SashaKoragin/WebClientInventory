@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {PostInventar, EditAndAdd } from '../../../Post RequestService/PostRequest';
-import { PrinterTableModel, ScanerAndCamerTableModel, MfuTableModel, SysBlockTableModel, MonitorsTableModel } from '../../AddFullModel/ModelTable/TableModel';
+import { PrinterTableModel, ScanerAndCamerTableModel, MfuTableModel, SysBlockTableModel, MonitorsTableModel, TelephonsTableModel, BlockPowerTableModel } from '../../AddFullModel/ModelTable/TableModel';
 import {MatPaginator, MatSort} from '@angular/material';
+
 
 @Component(({
     selector: 'equepment',
@@ -14,55 +15,73 @@ import {MatPaginator, MatSort} from '@angular/material';
 export class Equipment implements OnInit {
   constructor(public editandadd:EditAndAdd,public selectAll:PostInventar) { }
 
-     @ViewChild('printers') paginatorptinter: MatPaginator;
-     @ViewChild(MatSort) sortprinter: MatSort;
-     @ViewChild('scaners') paginatorscaner: MatPaginator;
-     @ViewChild(MatSort) sortscaner: MatSort;
-     @ViewChild('mfus') paginatormfu: MatPaginator;
-     @ViewChild(MatSort) sortmfu: MatSort;
-     @ViewChild('sysbloks') paginatorsysblok: MatPaginator;
-     @ViewChild(MatSort) sortsysblok: MatSort;
-     @ViewChild('monitors') paginatormonitors: MatPaginator;
-     @ViewChild(MatSort) sortmonitors: MatSort;
+     isload:boolean = true;
+     loadMessage:string[] = []
+     @ViewChild('printers',{static: false}) paginatorptinter: MatPaginator;
+     @ViewChild(MatSort,{static: false}) sortprinter: MatSort;
+     @ViewChild('scaners',{static: false}) paginatorscaner: MatPaginator;
+     @ViewChild(MatSort,{static: false}) sortscaner: MatSort;
+     @ViewChild('mfus',{static: false}) paginatormfu: MatPaginator;
+     @ViewChild(MatSort,{static: false}) sortmfu: MatSort;
+     @ViewChild('sysbloks',{static: false}) paginatorsysblok: MatPaginator;
+     @ViewChild(MatSort,{static: false}) sortsysblok: MatSort;
+     @ViewChild('monitors',{static: false}) paginatormonitors: MatPaginator;
+     @ViewChild(MatSort,{static: false}) sortmonitors: MatSort;
+     @ViewChild('telephones',{static: false}) paginatortelephones: MatPaginator;
+     @ViewChild(MatSort,{static: false}) sorttelephones: MatSort;
+     @ViewChild('blockpowers',{static: false}) paginatorblockpower: MatPaginator;
+     @ViewChild(MatSort,{static: false}) sortblockpower: MatSort;
+
 
    public printer: PrinterTableModel = new PrinterTableModel(this.editandadd);  
    public scaner: ScanerAndCamerTableModel = new ScanerAndCamerTableModel(this.editandadd); 
    public mfu: MfuTableModel = new MfuTableModel(this.editandadd); 
    public sysblok:SysBlockTableModel = new SysBlockTableModel(this.editandadd);
    public monitor:MonitorsTableModel = new MonitorsTableModel(this.editandadd);
-
+   public telephone:TelephonsTableModel = new TelephonsTableModel(this.editandadd);
+   public blockpower:BlockPowerTableModel = new BlockPowerTableModel(this.editandadd);
   ngOnInit(): void {
-    this.printer.addtableModel(this.selectAll.select,this.paginatorptinter,this.sortprinter);
+    this.start()
+  }
+  
+
+ async start(){
+     var message = null;  
+     await this.sendserver();
+     await this.selectAll.allprinters();
+     message = await this.printer.addtableModel(this.selectAll.select,this.paginatorptinter,this.sortprinter);;
+     this.loadMessage.push(message);
+     await this.selectAll.allscaners();
+     message = await this.scaner.addtableModel(this.selectAll.select,this.paginatorscaner,this.sortscaner);
+     this.loadMessage.push(message);
+     await this.selectAll.allmfu();
+     message = await this.mfu.addtableModel(this.selectAll.select,this.paginatormfu,this.sortmfu);
+     this.loadMessage.push(message);
+     await this.selectAll.allsysblok();
+     message = await this.sysblok.addtableModel(this.selectAll.select,this.paginatorsysblok,this.sortsysblok);
+     this.loadMessage.push(message);
+     await this.selectAll.allmonitor();
+     message = await this.monitor.addtableModel(this.selectAll.select,this.paginatormonitors,this.sortmonitors);
+     this.loadMessage.push(message);
+     await this.selectAll.alltelephone();
+     message = await this.telephone.addtableModel(this.selectAll.select,this.paginatortelephones,this.sorttelephones);
+     this.loadMessage.push(message);
+     await this.selectAll.allblockpower();
+     message = await this.blockpower.addtableModel(this.selectAll.select,this.paginatorblockpower,this.sortblockpower);
+     this.loadMessage.push(message);
+     this.isload = false;
   }
 
-  index(index:any){
-    switch(index.index){
-      case 0:
-        if(this.printer.dataSource.data){
-          this.printer.addtableModel(this.selectAll.select,this.paginatorptinter,this.sortprinter);
-        }
-        break;
-      case 1:
-        if(this.scaner.dataSource.data){
-          this.scaner.addtableModel(this.selectAll.select,this.paginatorscaner,this.sortscaner);
-        }
-        break;
-      case 2:
-        if(this.mfu.dataSource.data){
-          this.mfu.addtableModel(this.selectAll.select,this.paginatormfu,this.sortmfu);
-        }
-        break;
-      case 3:
-        if(this.sysblok.dataSource.data){
-          this.sysblok.addtableModel(this.selectAll.select,this.paginatorsysblok,this.sortsysblok);
-        }
-        break;
-      case 4:
-          if(this.sysblok.dataSource.data){
-            this.monitor.addtableModel(this.selectAll.select,this.paginatormonitors,this.sortmonitors);
-          }
-        break;
-    }
+ async sendserver(){
+   await this.selectAll.allnamemonitor();
+   await this.selectAll.allcopysave();
+   await this.selectAll.allkabinet();
+   await this.selectAll.allmodel();
+   await this.selectAll.allnamesysblok();
+   await this.selectAll.allstatysing();
+   await this.selectAll.allproizvoditel();
+   await this.selectAll.allsupply();
+   await this.selectAll.allproizvoditelblockpower();
+   await this.selectAll.allmodelblockpower();
   }
-
 }

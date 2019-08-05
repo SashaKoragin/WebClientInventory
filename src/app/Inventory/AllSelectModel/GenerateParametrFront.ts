@@ -56,7 +56,8 @@ export class SelectParam {
 
 
 export class LogicaDataBase{
-    
+    ///Индекс вкладки
+    indextab:number;
     //Select выборка
     select: boolean = true;
     progress: boolean = true;
@@ -65,6 +66,13 @@ export class LogicaDataBase{
     //Ошибка если нет данных
     errornull: boolean = true;
 
+    public default(){
+        this.select= true;
+        this.progress = true;
+        this.date = true;
+        this.errornull = true;
+    }
+    
     //Переключение выборки select
     public logicaselect() {
         if (this.select) {

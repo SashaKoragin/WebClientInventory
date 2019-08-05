@@ -6,6 +6,8 @@ import { Equipment } from '../../Inventory/Equipment/View/Equepment';
 import { Invent } from '../../Inventory/Invent/View/Invent';
 import { User } from '../../Inventory/User/View/User';
 import { DocumentSelect } from '../../Inventory/Documents/View/DocumentsSelect';
+import { ErrorInventory } from '../../Inventory/ErrorInventory/View/ErrorInventory';
+import { ComplimentTableEquipment } from '../../Inventory/ComplimentTableEquipment/View/ComplimentTableEquipment';
 
 const appRoutes: Routes = [
 {
@@ -18,6 +20,10 @@ const appRoutes: Routes = [
             component: Equipment
         },
         {
+            path: 'techicalComplement',
+            component: ComplimentTableEquipment
+        },
+        {
             path: 'inventar',
             component: Invent
         },
@@ -28,6 +34,10 @@ const appRoutes: Routes = [
         {
             path: 'documents',
             component: DocumentSelect
+        },
+        {
+            path:'error',
+            component:ErrorInventory
         }
     ]
     }

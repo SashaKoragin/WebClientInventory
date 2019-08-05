@@ -22,7 +22,7 @@ export class LoginInventarization {
                     this.authService.fullSelect = deserialize(Autorization, model.toString());
                     let redirect = this.authService.redirectUrl ? this.authService.redirectUrl : '/Inventory';
                     this.authService.isLoggedIn = true;
-                    this.selectall.fullreqvests()
+                    this.selectall.fullusers()
                     let navigationExtras: NavigationExtras = {
                         queryParamsHandling: 'preserve',
                         preserveFragment: true

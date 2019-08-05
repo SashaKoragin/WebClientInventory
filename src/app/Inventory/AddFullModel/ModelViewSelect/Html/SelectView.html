@@ -1,0 +1,84 @@
+<div class="head" [style.display]="logica?.select ? 'grid' : 'none'">
+        <div class="button"><button mat-button (click)="update()">Обновить</button></div>
+            <div class="grid-container2" *ngFor="let selectvalue of selecting?.parametrs">
+                <div class="grid-item2">
+                    <label>{{selectvalue.name}}</label>
+                </div>
+                <div class="grid-item2">
+                    <mat-checkbox [(ngModel)]="selectvalue.isvisible"></mat-checkbox>
+                </div>
+                <div class="grid-item2" [style.display]="selectvalue.template===2 ? 'grid' : 'none'">
+                    <mat-form-field>
+                        <mat-select placeholder="Отбор данных!" [(ngModel)]="selectvalue.select" name="sel">
+                            <mat-option *ngFor="let sel of selecting.selectparamString" [value]="sel">
+                                {{sel.viewValue}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="grid-item2" [style.display]="selectvalue.template !== 2 ? 'grid' : 'none'">
+                    <mat-form-field>
+                        <mat-select placeholder="Отбор данных!" [(ngModel)]="selectvalue.select" name="sel">
+                            <mat-option *ngFor="let sel of selecting.selectparamNumber" [value]="sel">
+                                {{sel.viewValue}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                    <div class="grid-item2" [style.display]="selectvalue.template === 1 ? 'grid' : 'none'">
+                        <mat-form-field class="select">
+                            <input matInput type="text" 
+                                   #tooltip1="matTooltip"
+                                   matTooltip={{selectvalue.paramvalue}}
+                                   matTooltipPosition="right"
+                                   [(ngModel)]="selectvalue.paramvalue" [formControl]="selectvalue.formTemplate" >
+                            <label class="lableerror" *ngIf="selectvalue.formTemplate.invalid" [ngClass]="'error'">Не соответствует формату дате</label>
+                        </mat-form-field>
+                    </div>
+                    <div class="grid-item2" [style.display]="selectvalue.template === 2 ? 'grid' : 'none'">
+                        <mat-form-field class="select">
+                            <input matInput type="text" 
+                                   #tooltip2="matTooltip"
+                                   matTooltip={{selectvalue.paramvalue}}
+                                   matTooltipPosition="right"
+                                   [(ngModel)]="selectvalue.paramvalue" [formControl]="selectvalue.formTemplate">
+                            <label class="lableerror" *ngIf="selectvalue.formTemplate.invalid" [ngClass]="'error'">Не соответствует формату строке</label>
+                        </mat-form-field>
+                    </div>
+                <div class="grid-item2" [style.display]="selectvalue.template === 3 ? 'grid' : 'none'">
+                    <mat-form-field class="select">
+                        <input matInput type="text" 
+                               #tooltip3="matTooltip"
+                               matTooltip={{selectvalue.paramvalue}}
+                               matTooltipPosition="right" [(ngModel)]="selectvalue.paramvalue" [formControl]="selectvalue.formTemplate">
+                        <label class="lableerror" *ngIf="selectvalue.formTemplate.invalid" [ngClass]="'error'">Не соответствует формату цифр</label>
+                    </mat-form-field>
+                </div>
+                </div>
+           </div>
+    <div class="mat-app-background basic-container" [style.display]="logica?.date ? 'none' : 'grid'">
+      <div class="button"><button mat-button (click)="back()">Назад</button></div>
+      
+    <div *ngIf="logica.errornull; else notfound">
+                <button mat-button (click)="ExportTOExcel()">Выгрузить ошибки</button>
+        <div class="mat-elevation-z8" #TABLE >
+            <table mat-table   #table [dataSource]="dataSource">
+                <ng-container *ngFor="let column of columns.Colums" [matColumnDef]="column.columnDef">
+                    <th mat-header-cell [style.background]="column.color" *matHeaderCellDef>{{ column.header }}</th>
+                    <td mat-cell [style.background]="column.color" *matCellDef="let row">{{ column.cell(row) }}</td>
+                </ng-container>
+                <tr  mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                <tr  mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+        </div>
+        <mat-paginator #tables [pageSizeOptions]="[10, 50, 100,allcountproblem]" showFirstLastButtons ="true"></mat-paginator>
+    </div>
+    </div>
+<div [style.display]="logica?.progress ? 'none':'inline'">
+    <p>Идет загрузка данных подождите пожалуйста!!!</p>
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+</div>
+
+<ng-template #notfound>
+        <h4>По данной выборки нет данных!!!</h4>
+</ng-template>

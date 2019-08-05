@@ -42,9 +42,9 @@ import { CdkTreeModule } from '@angular/cdk/tree';
 import { MatSelectFilterModule} from 'mat-select-filter';
 
 
-
 @NgModule(({
     exports: [
+
         MatSelectFilterModule,
         CdkTableModule,
         CdkTreeModule,

@@ -99,10 +99,14 @@
                                 <th mat-header-cell *matHeaderCellDef>Имя файла</th>
                                 <td mat-cell *matCellDef="let row">{{row.Namefile}} </td>
                             </ng-container>
-        
                             <ng-container matColumnDef="TypeFile">
                                 <th mat-header-cell *matHeaderCellDef>Тип файла</th>
                                 <td mat-cell *matCellDef="let row">{{row.TypeFile}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="IsActual">
+                                    <th mat-header-cell *matHeaderCellDef>Актуальность документа</th>
+                                    <td mat-cell *matCellDef="let row">{{row.IsActual}} </td>
                             </ng-container>
 
                             <ng-container matColumnDef="Download">

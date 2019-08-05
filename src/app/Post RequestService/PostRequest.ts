@@ -1,13 +1,17 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Users, Autorization, Printer, Kabinet, ModelReturn, ScanerAndCamer, Mfu, SysBlock, Monitor,
-    FullSelectedModel, NameMonitor, FullProizvoditel, Statusing, FullModel, CopySave, NameSysBlock, Otdel,Position,Document   } from '../Inventory/ModelInventory/InventoryModel';
+import { Users, Autorization, Printer, Kabinet, 
+         ScanerAndCamer, Mfu, SysBlock, Monitor,
+         BlockPower, UsersIsActualsStats, Classification,
+         FullSelectedModel, NameMonitor, FullProizvoditel, Statusing, 
+         FullModel, CopySave, NameSysBlock, Otdel,Position,
+         Telephon,Supply,ModelBlockPower,ProizvoditelBlockPower } from '../Inventory/ModelInventory/InventoryModel';
 import { AdressInventarka } from '../AdressGetPost/AdressInventory';
-import { ModelParametr } from '../Inventory/ModelInventory/Parametr';
 import { deserializeArray } from 'class-transformer';
 import { ModelSelect, LogicaSelect } from '../Inventory/AllSelectModel/ParametrModel';
 import { DocumentReport } from '../Inventory/AllSelectModel/Report/ReportModel';
 import { UploadFile } from '../Inventory/AddFullModel/ModelTable/FileModel';
+
 
 const url: AdressInventarka = new AdressInventarka();
 const httpOptionsJson = {
@@ -53,155 +57,198 @@ export class PostInventar {
     constructor(private http: HttpClient) { }
  
     public select: FullSelectedModel = new FullSelectedModel();
-    
+    ///Актулизация пользователей в БД
     actualusersmodel(){
         return this.http.post(url.actualstatusModel,null,httpOptionsJson);
     }
-    ///Выборка всего из БД в зависимостb от num пользователи
-    alluser() {
-        return this.http.get(url.alluser, httpOptionsJson);
+    ///Выборка всего из БД в всех пользователей
+    async alluser() {
+    this.select.Users = await this.http.get(url.alluser, httpOptionsJson).toPromise().then((model)=>{
+            if(model){
+                return  deserializeArray<Users>(Users,model.toString());
+            }
+         });
     }
     //Вытащить все отделы из БД
-    allotdel(){
-        return this.http.get(url.allotdelget,httpOptionsJson);
+    async allotdel(){
+    this.select.Otdels = await this.http.get(url.allotdelget,httpOptionsJson).toPromise().then((model)=>{
+            if(model){
+                return deserializeArray<Otdel>(Otdel,model.toString());
+            }
+         });
     }
     //Вытащить все должностя из БД
-    allposition(){
-        return this.http.get(url.allposition,httpOptionsJson);
-
+    async allposition(){
+     this.select.Position = await this.http.get(url.allposition,httpOptionsJson).toPromise().then(model=>{
+            if(model){
+                return deserializeArray<Position>(Position,model.toString());
+            }
+         });
     }
     //Запрос на все принтера
-    allprinters(){
-        return this.http.get(url.allprinters,httpOptionsJson);
+    async allprinters(){
+        this.select.Printer = await this.http.get(url.allprinters,httpOptionsJson).toPromise().then(model=>{
+            if(model){
+                 return deserializeArray<Printer>(Printer,model.toString())
+               }
+         });
     }
     //Запрос на все сканеры
-    allscaners(){
-        return this.http.get(url.allscaners,httpOptionsJson);
+    async allscaners(){
+        this.select.Scaner = await this.http.get(url.allscaners,httpOptionsJson).toPromise().then(model=>{
+            if(model){
+                 return deserializeArray<ScanerAndCamer>(ScanerAndCamer,model.toString())
+               }
+         });;
     }
-
     //Запрос на все мфу
-    allmfu(){
-        return this.http.get(url.allmfu,httpOptionsJson);
+    async allmfu(){
+        this.select.Mfu = await this.http.get(url.allmfu,httpOptionsJson).toPromise().then(model=>{
+            if(model){
+                return deserializeArray<Mfu>(Mfu,model.toString())
+               }
+         });
     }
 
     //Запрос на все системные блоки
-    allsysblok(){
-        return this.http.get(url.allsysblock,httpOptionsJson);
+    async allsysblok(){
+        this.select.SysBlok = await this.http.get(url.allsysblock,httpOptionsJson).toPromise().then(model=>{
+            if(model){
+                return deserializeArray<SysBlock>(SysBlock,model.toString())
+               }
+         });;
+    }
+    //Получить всю класификацию
+    async allclassification(){
+        this.select.Classification =await this.http.get(url.allclasification,httpOptionsJson).toPromise().then(model=>{
+            if(model){
+                return deserializeArray<Classification>(Classification,model.toString());
+            }
+        })
     }
 
     //Запрос на все мониторы
-    allmonitor(){
-        return this.http.get(url.allmonitor,httpOptionsJson);
+    async allmonitor(){
+        this.select.Monitors =await this.http.get(url.allmonitor,httpOptionsJson).toPromise().then(model=>{
+            if(model){
+                return deserializeArray<Monitor>(Monitor,model.toString())
+               }
+         });
     }
     //Запрос на все copySave
-    allcopysave(){
-        return this.http.get(url.allcopysave,httpOptionsJson);
+    async allcopysave(){
+        this.select.CopySave =await this.http.get(url.allcopysave,httpOptionsJson).toPromise().then(model=>{
+            if(model){
+              return deserializeArray<CopySave>(CopySave,model.toString());
+             }
+         });
     }
     //Запрос на все производители принтеров
-    allproizvoditel(){
-        return this.http.get(url.allproizvoditel,httpOptionsJson);
+    async allproizvoditel(){
+        this.select.Proizvoditel = await this.http.get(url.allproizvoditel,httpOptionsJson).toPromise().then(model=>{
+            if(model){
+              return deserializeArray<FullProizvoditel>(FullProizvoditel,model.toString());
+             }
+         });
     }
     //Запрос на все модели принтеров
-    allmodel(){
-        return this.http.get(url.allmodel,httpOptionsJson);
+    async allmodel(){
+        this.select.Model = await this.http.get(url.allmodel,httpOptionsJson).toPromise().then(model=>{
+            if(model){
+              return deserializeArray<FullModel>(FullModel,model.toString());
+             }
+         });
     }
     //Запрос на все кабинеты
-    allkabinet(){
-        return this.http.get(url.allkabinet,httpOptionsJson);
+    async allkabinet(){
+        this.select.Kabinet = await this.http.get(url.allkabinet,httpOptionsJson).toPromise().then(model=>{
+            if(model){
+              return deserializeArray<Kabinet>(Kabinet,model.toString());
+             }
+         });
     }
     //Запрос на все статусы
-    allstatysing(){
-        return this.http.get(url.allstatusing,httpOptionsJson);
+    async allstatysing(){
+        this.select.Statusing = await this.http.get(url.allstatusing,httpOptionsJson).toPromise().then(model=>{
+            if(model){
+              return deserializeArray<Statusing>(Statusing,model.toString());
+             }
+         });
     }
     //Запрос на все модели системных блоков
-    allnamesysblok(){
-        return this.http.get(url.allnamesysblok,httpOptionsJson);
+    async allnamesysblok(){
+        this.select.ModelSysBlok = await this.http.get(url.allnamesysblok,httpOptionsJson).toPromise().then(model=>{
+            if(model){
+              return deserializeArray<NameSysBlock>(NameSysBlock,model.toString());
+             }
+         });;
     }
     //Запрос на все модели мониторов
-    allnamemonitor(){
-        return this.http.get(url.allnamemonitor,httpOptionsJson);
+    async allnamemonitor(){
+        this.select.NameMonitors = await this.http.get(url.allnamemonitor,httpOptionsJson).toPromise().then(model=>{
+            if(model){
+                return deserializeArray<NameMonitor>(NameMonitor,model.toString())
+               }
+         });
+    }  
+    async alltelephone(){
+        this.select.Telephon = await this.http.get(url.alltelephon,httpOptionsJson).toPromise().then(model=>{
+            if(model){
+                return deserializeArray<Telephon>(Telephon,model.toString())
+               }
+         });
+    }
+
+    async allblockpower(){
+        this.select.BlockPower = await this.http.get(url.allblockpower,httpOptionsJson).toPromise().then(model=>{
+            if(model){
+                return deserializeArray<BlockPower>(BlockPower,model.toString())
+               }
+         });
+    }
+    async allsupply(){
+        this.select.Supply = await this.http.get(url.allsupply,httpOptionsJson).toPromise().then(model=>{
+            if(model){
+                return deserializeArray<Supply>(Supply,model.toString())
+               }
+         });
+    }
+
+    async allmodelblockpower(){
+        this.select.ModelBlockPower = await this.http.get(url.allmodelblockpower,httpOptionsJson).toPromise().then(model=>{
+            if(model){
+                return deserializeArray<ModelBlockPower>(ModelBlockPower,model.toString())
+               }
+         });
+    }
+    //Статистика процедуры
+    async allstatisticsusers(){
+        this.select.UsersIsActualsStats = await this.http.get(url.allstatistics,httpOptionsJson).toPromise().then(model=>{
+            if(model){
+                return deserializeArray<UsersIsActualsStats>(UsersIsActualsStats,model.toString())
+            }
+        })
+    }
+
+    async allproizvoditelblockpower(){
+        this.select.ProizvoditelBlockPower = await this.http.get(url.allproizvoditelblockpower,httpOptionsJson).toPromise().then(model=>{
+            if(model){
+                return deserializeArray<ProizvoditelBlockPower>(ProizvoditelBlockPower,model.toString())
+               }
+         });
     }
 
 
 
- ///Все запросы для заполнение данных
-    fullreqvests(){
+
+ ///Все запросы для заполнение данных по пользователю
+ async fullusers(){
        try {
-        this.allotdel().subscribe((model)=>{
-            if(model){
-                this.select.Otdels = deserializeArray<Otdel>(Otdel,model.toString());
-            }
-        });
-        this.allposition().subscribe((model)=>{
-            if (model) {
-                this.select.Position =  deserializeArray<Position>(Position,model.toString());
-            }
-        });
-        this.alluser().subscribe((model)=> {
-            if (model) {
-                
-                this.select.Users =  deserializeArray<Users>(Users,model.toString());
-            }});
-        this.allnamemonitor().subscribe((model)=>{
-            if(model){
-                this.select.NameMonitors = deserializeArray<NameMonitor>(NameMonitor,model.toString())
-               }
-           });
-             this.allcopysave().subscribe((model)=>{
-              if(model){
-                this.select.CopySave = deserializeArray<CopySave>(CopySave,model.toString());
-               }
-             });
-             this.allkabinet().subscribe((model)=>{
-              if(model){
-                this.select.Kabinet = deserializeArray<Kabinet>(Kabinet,model.toString());
-               }
-             });
-             this.allmodel().subscribe((model)=>{
-              if(model){
-                this.select.Model = deserializeArray<FullModel>(FullModel,model.toString());
-               }
-             });
-             this.allnamesysblok().subscribe((model)=>{
-              if(model){
-                this.select.ModelSysBlok = deserializeArray<NameSysBlock>(NameSysBlock,model.toString());
-               }
-             });
-             this.allstatysing().subscribe((model)=>{
-              if(model){
-                this.select.Statusing = deserializeArray<Statusing>(Statusing,model.toString());
-               }
-             });
-             this.allproizvoditel().subscribe((model)=>{
-              if(model){
-                this.select.Proizvoditel = deserializeArray<FullProizvoditel>(FullProizvoditel,model.toString());
-               }
-             });
-             this.allprinters().subscribe((model)=>{
-              if(model){
-                  this.select.Printer = deserializeArray<Printer>(Printer,model.toString())
-                 }
-             });
-            this.allscaners().subscribe((model)=>{
-              if(model){
-                  this.select.Scaner = deserializeArray<ScanerAndCamer>(ScanerAndCamer,model.toString())
-                 }
-             });
-            this.allmfu().subscribe((model)=>{
-              if(model){
-                  this.select.Mfu = deserializeArray<Mfu>(Mfu,model.toString())
-                 }
-             });
-             this.allsysblok().subscribe((model)=>{
-              if(model){
-                  this.select.SysBlok = deserializeArray<SysBlock>(SysBlock,model.toString())
-                 }
-             });
-             this.allmonitor().subscribe((model)=>{
-              if(model){
-                  this.select.Monitors = deserializeArray<Monitor>(Monitor,model.toString())
-                 }
-             });
+       await this.alluser();
+       await this.allposition();
+       await this.allotdel();
+       await this.alltelephone();
+       await this.allstatisticsusers();
        } catch (error) {
            console.log(error);
        }
@@ -239,6 +286,58 @@ export class EditAndAdd{
     ///Редактирование или добавление отдела
     addandeditotdel(otdel:Otdel){
         return this.http.post(url.addandeditotdel,otdel,httpOptionsJson);
+    }
+    ///Редактирование или добавление телефонов
+    addandedittelephon(telephon:Telephon){
+        return this.http.post(url.addandedittelephon,telephon,httpOptionsJson);
+    }
+    ///Редактирование или добавление ИБП
+    addandeditblockpower(blockpower:BlockPower){
+        return this.http.post(url.addandeditblockpower,blockpower,httpOptionsJson);
+    }
+    ///Редактирование или добавление Наименование системного блока
+    addAndEditNameSysBlock(nameSysBlock:NameSysBlock){
+        return this.http.post(url.addAndEditNameSysBlock,nameSysBlock,httpOptionsJson);
+    }
+    ///Редактирование или добавление Наименование монитора
+    addAndEditNameMonitor(nameMonitor:NameMonitor){
+        return this.http.post(url.addAndEditNameMonitor,nameMonitor,httpOptionsJson);
+    }
+    ///Редактирование или добавление Наименование модели ИБП
+    addAndEditNameModelBlokPower(nameModelBlokPower:ModelBlockPower){
+        return this.http.post(url.addAndEditNameModelBlokPower,nameModelBlokPower,httpOptionsJson);
+    }
+    ///Редактирование или добавление Наименование производителя ИБП
+    addAndEditNameProizvoditelBlockPower(nameProizvoditelBlockPower:ProizvoditelBlockPower){
+        return this.http.post(url.addAndEditNameProizvoditelBlockPower,nameProizvoditelBlockPower,httpOptionsJson);
+    }
+    ///Редактирование или добавление Наименование партии
+    addAndEditNameSupply(nameSupply:Supply){
+        return this.http.post(url.addAndEditNameSupply,nameSupply,httpOptionsJson);
+    }
+    ///Редактирование или добавление Наименование статуса
+    addAndEditNameStatus(nameStatusing:Statusing){
+        return this.http.post(url.addAndEditNameStatus,nameStatusing,httpOptionsJson);
+    }
+    ///Редактирование или добавление Номера кабинета
+    addAndEditNameKabinet(nameKabinet:Kabinet){
+        return this.http.post(url.addAndEditNameStatus,nameKabinet,httpOptionsJson);
+    }
+    ///Редактирование или добавление модели принтера (МФУ)
+    addAndEditNameFullModel(nameFullModel:FullModel){
+        return this.http.post(url.addAndEditNameFullModel,nameFullModel,httpOptionsJson);
+    }
+    ///Редактирование или добавление классификации принтера (МФУ)
+    addAndEditNameClassification(nameClassification:Classification){
+        return this.http.post(url.addAndEditNameClassification,nameClassification,httpOptionsJson);
+    }
+    ///Редактирование или добавление производителя принтера (МФУ)
+    addAndEditNameFullProizvoditel(nameFullProizvoditel:FullProizvoditel){
+        return this.http.post(url.addAndEditNameFullProizvoditel,nameFullProizvoditel,httpOptionsJson);
+    }
+    ///Редактирование или добавление CopySave
+    addAndEditNameCopySave(nameCopySave:CopySave){
+        return this.http.post(url.addAndEditNameCopySave,nameCopySave,httpOptionsJson);
     }
 }
 @Injectable()

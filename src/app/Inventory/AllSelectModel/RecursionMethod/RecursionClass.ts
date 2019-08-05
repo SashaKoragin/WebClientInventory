@@ -1,14 +1,16 @@
-import { Users, SysBlock, Otdel } from '../../ModelInventory/InventoryModel';
-import { MainInventar } from '../../Main/Main/MainInventory';
-
+import { Users, Otdel } from '../../ModelInventory/InventoryModel';
 
 export class Recursion{
 
   public userEcvipment:ModelUserAndEquipment[] = [];
   public otdelandUserEcvipment:ModelUserAndEquipment[] = [];
   ///Разкладка пользователей в рекурсию
+
+
+  
   public methodEquipmentUserRecursion(Users:Users[]){
         var i =0;
+        console.log(Users)
         for (const user of Users) {
             i = 0;
             var use =new ModelUserAndEquipment();
@@ -23,7 +25,7 @@ export class Recursion{
                  for (const monitor of user.Monitors) {
                      use.Children[i].Children[0].Types.push({Name:monitor.NameMonitor.Name ,NameModel:null,SerNumber:monitor.SerNum,
                         ServiceNumber:null,InventerNumber:monitor.InventarNumMonitor,
-                        Kabinet:monitor.Kabinet.NumberKabinet,
+                        Kabinet:monitor.Kabinet?monitor.Kabinet.NumberKabinet:null,
                         NameComputer:null,IpAdress:null});
                  }
                  i++;
@@ -34,7 +36,7 @@ export class Recursion{
                  for (const mfu of user.Mfu) {
                      use.Children[i].Children[0].Types.push({Name:mfu.FullProizvoditel.NameProizvoditel ,NameModel:mfu.FullModel.NameModel,
                         SerNumber:mfu.ZavNumber,ServiceNumber:mfu.ServiceNumber,InventerNumber:null,
-                        Kabinet:mfu.Kabinet.NumberKabinet,NameComputer:null,IpAdress:null
+                        Kabinet:mfu.Kabinet?mfu.Kabinet.NumberKabinet:null,NameComputer:null,IpAdress:null
                         });
                  }
                  i++;
@@ -45,7 +47,7 @@ export class Recursion{
                  for (const printer of user.Printer) {
                      use.Children[i].Children[0].Types.push({Name:printer.FullProizvoditel.NameProizvoditel ,NameModel:printer.FullModel.NameModel,
                         SerNumber:printer.ZavNumber,ServiceNumber:printer.ServiceNumber,InventerNumber:null,
-                        Kabinet:printer.Kabinet.NumberKabinet,NameComputer:null,IpAdress:null
+                        Kabinet:printer.Kabinet?printer.Kabinet.NumberKabinet:null,NameComputer:null,IpAdress:null
                         });
                  }
                  i++;
@@ -56,7 +58,7 @@ export class Recursion{
                  for (const scaner of user.ScanerAndCamer) {
                      use.Children[i].Children[0].Types.push({Name:scaner.FullProizvoditel.NameProizvoditel ,NameModel:scaner.FullModel.NameModel,
                         SerNumber:scaner.ZavNumber,ServiceNumber:scaner.ServiceNumber,InventerNumber:scaner.InventarNumber,
-                        Kabinet:scaner.Kabinet.NumberKabinet,NameComputer:null,IpAdress:null
+                        Kabinet:scaner.Kabinet?scaner.Kabinet.NumberKabinet:null,NameComputer:null,IpAdress:null
                         });
                  }
                  i++;
@@ -67,10 +69,30 @@ export class Recursion{
                  for (const sysblok of user.SysBlock) {
                      use.Children[i].Children[0].Types.push({Name:sysblok.NameSysBlock.NameComputer ,NameModel:null,
                         SerNumber:sysblok.SerNum,ServiceNumber:sysblok.ServiceNum,InventerNumber:sysblok.InventarNumSysBlok,
-                        Kabinet:sysblok.Kabinet.NumberKabinet,NameComputer:sysblok.NameComputer,IpAdress:sysblok.IpAdress
+                        Kabinet:sysblok.Kabinet?sysblok.Kabinet.NumberKabinet:null,NameComputer:sysblok.NameComputer,IpAdress:sysblok.IpAdress
                         });
                  }
                  i++;
+             }
+             if(user.BlockPower!=null||typeof user.BlockPower!='undefined')
+             {
+                  use.Children.push({Name:"ИБП",IdUser:null,Types:null,InputServer:false,Children:[{Children:[],Name:null,IdUser:null,Types:[],InputServer:false}]})
+                     for (const blok of user.BlockPower) {
+                         use.Children[i].Children[0].Types.push({Name:blok.ProizvoditelBlockPower.Name ,NameModel:blok.ModelBlockPower.Name,
+                            SerNumber:blok.ZavNumber,ServiceNumber:blok.ServiceNumber,InventerNumber:blok.InventarNumber,
+                            Kabinet:blok.Kabinet?blok.Kabinet.NumberKabinet:null,NameComputer:null,IpAdress:null
+                            });
+                     }
+                     i++;
+             }
+             if(user.Telephon!=null||typeof user.Telephon!='undefined')
+             {
+                  use.Children.push({Name:"Телефон",IdUser:null,Types:null,InputServer:false,Children:[{Children:[],Name:null,IdUser:null,Types:[],InputServer:false}]})
+                                 use.Children[i].Children[0].Types.push({Name:user.Telephon.NameTelephone ,NameModel:null,
+                                    SerNumber:user.Telephon.SerNumber,ServiceNumber:null,InventerNumber:null,
+                                    Kabinet:user.Telephon.Kabinet?user.Telephon.Kabinet.NumberKabinet:null,NameComputer:user.Telephon.MacTelephon,IpAdress:user.Telephon.IpTelephon
+                                    });
+                             i++;
              }
              if(use.Children.length>0)
              {
@@ -81,13 +103,13 @@ export class Recursion{
 
       ///Разкладка отделов в рекурсию
       public methodEquipmentOtdelAndUserRecursion(Otdel:Otdel[]){
+        console.log(Otdel)
         var i =0;
         var j =0;
         for (const otdel of Otdel) {
             j = 0;
             var otd =new ModelUserAndEquipment();
             otd.Name = otdel.NameOtdel;
-            otd.IdUser = null;
             otd.Children =[];
             otd.InputServer = false;
             otd.Types =null;
@@ -97,16 +119,19 @@ export class Recursion{
               ||(user.Mfu!=null||typeof user.Mfu!='undefined')
               ||(user.Printer!=null||typeof user.Printer!='undefined')
               ||(user.ScanerAndCamer!=null||typeof user.ScanerAndCamer!='undefined')
-              ||(user.SysBlock!=null||typeof user.SysBlock!='undefined')){  
+              ||(user.SysBlock!=null||typeof user.SysBlock!='undefined')
+              ||(user.BlockPower!=null||typeof user.BlockPower!='undefined')
+              ||(user.Telephon!=null||typeof user.Telephon!='undefined')
+              ){  
 
-              otd.Children.push({ Name:user.Name, IdUser:user.IdUser, InputServer:true,Types:null,Children:[] })
+              otd.Children.push({ Name:user.Name, IdUser:user.IdUser,IdUserOtdel:otdel.IdUser, InputServer:true,Types:null,Children:[] })
              if(user.Monitors !=null||typeof user.Monitors!='undefined')
              {
              otd.Children[j].Children.push({Name:"Монитор",IdUser:null,Types:null,InputServer:false,Children:[{Children:[],Name:null,IdUser:null,Types:[],InputServer:false}]});
                  for (const monitor of user.Monitors) {
                  otd.Children[j].Children[i].Children[0].Types.push({Name:monitor.NameMonitor.Name ,NameModel:null,SerNumber:monitor.SerNum,
                     ServiceNumber:null,InventerNumber:monitor.InventarNumMonitor,
-                    Kabinet:monitor.Kabinet.NumberKabinet,
+                    Kabinet:monitor.Kabinet?monitor.Kabinet.NumberKabinet:null,
                     NameComputer:null,IpAdress:null});
                  }
                  i++;
@@ -117,7 +142,7 @@ export class Recursion{
                  for (const mfu of user.Mfu) {
                     otd.Children[j].Children[i].Children[0].Types.push({Name:mfu.FullProizvoditel.NameProizvoditel ,NameModel:mfu.FullModel.NameModel,
                         SerNumber:mfu.ZavNumber,ServiceNumber:mfu.ServiceNumber,InventerNumber:null,
-                        Kabinet:mfu.Kabinet.NumberKabinet,NameComputer:null,IpAdress:null
+                        Kabinet:mfu.Kabinet?mfu.Kabinet.NumberKabinet:null,NameComputer:null,IpAdress:null
                         });
                  }
                  i++;
@@ -128,7 +153,7 @@ export class Recursion{
                  for (const printer of user.Printer) {
                     otd.Children[j].Children[i].Children[0].Types.push({Name:printer.FullProizvoditel.NameProizvoditel ,NameModel:printer.FullModel.NameModel,
                         SerNumber:printer.ZavNumber,ServiceNumber:printer.ServiceNumber,InventerNumber:null,
-                        Kabinet:printer.Kabinet.NumberKabinet,NameComputer:null,IpAdress:null
+                        Kabinet:printer.Kabinet?printer.Kabinet.NumberKabinet:null,NameComputer:null,IpAdress:null
                         });
                  }
                  i++;
@@ -139,7 +164,7 @@ export class Recursion{
                  for (const scaner of user.ScanerAndCamer) {
                 otd.Children[j].Children[i].Children[0].Types.push({Name:scaner.FullProizvoditel.NameProizvoditel ,NameModel:scaner.FullModel.NameModel,
                     SerNumber:scaner.ZavNumber,ServiceNumber:scaner.ServiceNumber,InventerNumber:scaner.InventarNumber,
-                    Kabinet:scaner.Kabinet.NumberKabinet,NameComputer:null,IpAdress:null
+                    Kabinet:scaner.Kabinet?scaner.Kabinet.NumberKabinet:null,NameComputer:null,IpAdress:null
                     });
                  }
                  i++;
@@ -150,11 +175,32 @@ export class Recursion{
                  for (const sysblok of user.SysBlock) {
                      otd.Children[j].Children[i].Children[0].Types.push({Name:sysblok.NameSysBlock.NameComputer ,NameModel:null,
                         SerNumber:sysblok.SerNum,ServiceNumber:sysblok.ServiceNum,InventerNumber:sysblok.InventarNumSysBlok,
-                        Kabinet:sysblok.Kabinet.NumberKabinet,NameComputer:sysblok.NameComputer,IpAdress:sysblok.IpAdress
+                        Kabinet:sysblok.Kabinet?sysblok.Kabinet.NumberKabinet:null,NameComputer:sysblok.NameComputer,IpAdress:sysblok.IpAdress
                         });
                  }
                  i++;
              }
+             if(user.BlockPower!=null||typeof user.BlockPower!='undefined')
+             {
+                otd.Children[j].Children.push({Name:"ИБП",IdUser:null,Types:null,InputServer:false,Children:[{Children:[],Name:null,IdUser:null,Types:[],InputServer:false}]})
+                     for (const blok of user.BlockPower) {
+                        otd.Children[j].Children[i].Children[0].Types.push({Name:blok.ProizvoditelBlockPower.Name ,NameModel:blok.ModelBlockPower.Name,
+                            SerNumber:blok.ZavNumber,ServiceNumber:blok.ServiceNumber,InventerNumber:blok.InventarNumber,
+                            Kabinet:blok.Kabinet?blok.Kabinet.NumberKabinet:null,NameComputer:null,IpAdress:null
+                            });
+                     }
+                     i++;
+             }
+             if(user.Telephon!=null||typeof user.Telephon!='undefined')
+             {
+                otd.Children[j].Children.push({Name:"Телефон",IdUser:null,Types:null,InputServer:false,Children:[{Children:[],Name:null,IdUser:null,Types:[],InputServer:false}]})
+                    otd.Children[j].Children[i].Children[0].Types.push({Name:user.Telephon.NameTelephone,NameModel:null,
+                                    SerNumber:user.Telephon.SerNumber,ServiceNumber:null,InventerNumber:null,
+                                    Kabinet:user.Telephon.Kabinet?user.Telephon.Kabinet.NumberKabinet:null,NameComputer:user.Telephon.MacTelephon,IpAdress:user.Telephon.IpTelephon
+                                    });
+                     i++;
+             }
+
              j++;
             }
            }
@@ -171,6 +217,7 @@ export class Recursion{
 export class ModelUserAndEquipment{
     public Name: string;  //Имя пользователя
     public IdUser: number; //Ун пользователя
+    public IdUserOtdel?: number = null; //Ун пользователя
     public InputServer:boolean; //Кнопка отправки на сервер 
     public Types: Equipment[];
     public Children: ModelUserAndEquipment[];

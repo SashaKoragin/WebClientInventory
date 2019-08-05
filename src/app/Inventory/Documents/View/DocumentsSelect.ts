@@ -17,16 +17,16 @@ export class DocumentSelect implements OnInit {
 
     constructor(public select:SelectAllParametrs) { }
 
-    @ViewChild('myInput') ref: ElementRef;
+    @ViewChild('myInput',{static: false}) ref: ElementRef;
 
 
     selecting:GenerateParametrs
     logica:LogicaDataBase = new LogicaDataBase();
     selectsql:DesirilizeXml = new DesirilizeXml();
     addfile:AddFile = new AddFile(this.select);
-    displaydataSource: string[] = ['Id', 'IdNamedocument','IdUser','NameDocument', 'InfoUserFile', 'IsFileExists', 'Namefile', 'TypeFile','Download'];
+    displaydataSource: string[] = ['Id', 'IdNamedocument','IdUser','NameDocument', 'InfoUserFile', 'IsFileExists', 'Namefile', 'TypeFile','IsActual','Download'];
     dataSource: MatTableDataSource<Document>;
-    @ViewChild(MatPaginator) paginatordataSource: MatPaginator;
+    @ViewChild(MatPaginator,{static: false}) paginatordataSource: MatPaginator;
 
 
     ngOnInit(): void {
@@ -82,6 +82,7 @@ export class DocumentSelect implements OnInit {
     }
 
     delete(element:Document){
+    if(element.IsActual ===false){
     this.select.deletedocument(element.Id).subscribe((model:ModelReturn) =>{
           if(model.Message){
             console.log(model.Message);
@@ -94,6 +95,10 @@ export class DocumentSelect implements OnInit {
             console.log("Отсутствует документ на сервере за номером "+element.Id);
           }
        });
+    }
+    else{
+        alert('Нельзя удалить Актуальный документ!!!')
+    }
     }
 
     back() {
