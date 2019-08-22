@@ -7,9 +7,11 @@
                 <span matPrefix><i class="material-icons">youtube_searched_for</i></span>
                 <input matInput (keyup)="user.filterstable($event.target.value)" placeholder="Поиск данных">
         </mat-form-field>
+           <button class="actual" mat-button (click)="excel.ExportTOExcel(tableusers)">Выгрузить пользователей</button>
            <button class="actual" mat-button (click)="actualUsers()">Актулизация пользователей</button>
            <label >{{serveranswer}}</label>
         </form>
+    <div class="tables" #TABLEUSERS >
         <table mat-table [dataSource]="user.dataSource" matSort>
             <ng-container matColumnDef="IdUser">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
@@ -20,10 +22,10 @@
             <ng-container matColumnDef="Name">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Имя пользователя</th>
                 <td mat-cell *matCellDef="let row">
-                <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.Name}}</Label> 
-                    <mat-form-field class="validation" [style.display]="!row.ModelIsEdit ? 'none':'block'">
-                            <input matInput [formControl]="user.modelvalid?.getRowValidatorModel[0].get('Name')" placeholder="Имя пользователя" [ngModel]="user.model?.Name" (ngModelChange)="user.model.Name = $event"/>
-                     </mat-form-field> 
+                <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Name}}</Label> 
+                     <mat-form-field class="validation" [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            <input class="input" matInput [formControl]="user.modelvalid?.getRowValidatorModel[0].get('Name')" placeholder="Имя пользователя" [ngModel]="user.model?.Name" (ngModelChange)="user.model.Name = $event"/>
+                     </mat-form-field>  
                 </td>
             </ng-container>
 
@@ -37,7 +39,7 @@
                 </td>
             </ng-container>
 
-            <ng-container matColumnDef="Telephon">
+            <ng-container matColumnDef="Telephon.Telephon_">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header>Внутренний номер</th>
                     <td mat-cell *matCellDef="let row">
                        <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Telephon?.Telephon_}}</Label> 
@@ -55,7 +57,7 @@
                 </ng-container>
               
 
-                 <ng-container matColumnDef="TelephonUndeground">
+                 <ng-container matColumnDef="Telephon.TelephonUndeground">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>Городской номер</th>
                         <td mat-cell *matCellDef="let row">
                          <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Telephon?.TelephonUndeground}}</Label> 
@@ -63,7 +65,7 @@
                         </td>
                 </ng-container> 
 
-            <ng-container matColumnDef="NamePosition">
+            <ng-container matColumnDef="Position.NamePosition">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Должность</th>
                 <td mat-cell *matCellDef="let row">
                         <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Position?.NamePosition}}</Label>
@@ -81,7 +83,7 @@
             </ng-container>
 
 
-            <ng-container matColumnDef="NameOtdel">
+            <ng-container matColumnDef="Otdel.NameOtdel">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Отдел</th>
                 <td mat-cell *matCellDef="let row">
                    <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Otdel?.NameOtdel}}</Label>
@@ -98,6 +100,12 @@
                 </td>
             </ng-container>
 
+            <ng-container matColumnDef="StatusActual">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Актуальность</th>
+                <td mat-cell *matCellDef="let row">
+                        {{(row.StatusActual) ? "Работает" : "Уволен" }}
+                </td>
+            </ng-container>
  
 
              <ng-container matColumnDef="ActionsColumn">  
@@ -123,7 +131,8 @@
             <tr mat-header-row *matHeaderRowDef="user.displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: user.displayedColumns;"></tr>
         </table>
-        <mat-paginator #users [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons="true"></mat-paginator>
+    </div>
+        <mat-paginator #users [pageSizeOptions]="[10, 20, 50, paginator.length]" showFirstLastButtons="true"></mat-paginator>
         <div class="procedure">
             <label>Последняя актулизация:</label>
         <table mat-table [dataSource]="dataSource" *ngIf="dataSource.data.length > 0">
@@ -177,9 +186,10 @@
                         <span matPrefix><i class="material-icons">youtube_searched_for</i></span>
                         <input matInput (keyup)="otdel.filterstable($event.target.value)" placeholder="Поиск данных">
                 </mat-form-field>
+                    <button class="actual" mat-button (click)="excel.ExportTOExcel(tableotdels)">Выгрузить отделы и начальников</button>
                 </form>
+            <div class="tables" #TABLEOTDELS >     
                 <table mat-table [dataSource]="otdel.dataSource">
-                   
                     <ng-container matColumnDef="IdOtdel">
                         <th mat-header-cell *matHeaderCellDef>Id</th>
                         <td mat-cell *matCellDef="let row">
@@ -237,7 +247,8 @@
                     <tr mat-header-row *matHeaderRowDef="otdel.displayedColumns"></tr>
                     <tr mat-row *matRowDef="let row; columns: otdel.displayedColumns;"></tr>
                 </table>
-                <mat-paginator #otdels [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons="true"></mat-paginator>
+            </div>
+                <mat-paginator #otdels [pageSizeOptions]="[10, 20, 50, paginatorotdels.length]" showFirstLastButtons="true"></mat-paginator>
             </div>
     </mat-tab>
     <mat-tab label="Роли/Доступы"></mat-tab>

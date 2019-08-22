@@ -1,9 +1,12 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild,ElementRef, Renderer2  } from '@angular/core';
 import {PostInventar, EditAndAdd } from '../../../Post RequestService/PostRequest';
 import {MatTableDataSource,MatPaginator, MatSort } from '@angular/material';
-import { UserTableModel,OtdelTableModel } from '../../AddFullModel/ModelTable/TableModel';
+import { UserTableModel, OtdelTableModel } from '../../AddFullModel/ModelTable/TableModel';
 import { UsersIsActualsStats } from '../../ModelInventory/InventoryModel';
-import { strict } from 'assert';
+import { ImportToExcel } from '../../AddFullModel/ModelTable/PublicFunction';
+import * as XLSX from 'xlsx';
+
+
 
 @Component(({
     selector: 'equepment',
@@ -14,13 +17,16 @@ import { strict } from 'assert';
 
 export class User implements OnInit {
 
-    constructor(public selectall: PostInventar,public editandadd:EditAndAdd) { }
+    constructor(public selectall: PostInventar,public editandadd:EditAndAdd,private renderer: Renderer2) { }
     public serveranswer:string = null; //Ответ с сервера
+    @ViewChild('TABLEUSERS',{static: false}) tableusers: ElementRef;
+    @ViewChild('TABLEOTDELS',{static: false}) tableotdels: ElementRef;
     @ViewChild('users',{static: true}) paginator: MatPaginator;
     @ViewChild('otdels',{static: true}) paginatorotdels: MatPaginator;
     @ViewChild(MatSort,{static: true}) sort: MatSort;
     user:UserTableModel = new UserTableModel(this.editandadd);
     otdel:OtdelTableModel = new OtdelTableModel(this.editandadd);
+    excel:ImportToExcel = new ImportToExcel();
   
     public displayedColumns = ['Id','ChangeType','IdUser','NameUsers','SmallNameUsers','IdOtdel','IdPosition','TabelNumber','StatusActual'];
     public dataSource: MatTableDataSource<UsersIsActualsStats> = new MatTableDataSource<UsersIsActualsStats>(this.selectall.select.UsersIsActualsStats);

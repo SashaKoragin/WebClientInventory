@@ -3,6 +3,7 @@ import { ModelSelect, LogicaSelect } from './ParametrModel';
 import * as _moment from 'moment';
 import * as _rollupMoment from 'moment';
 import { DatePipe } from '@angular/common';
+import { Table } from '../AddFullModel/ModelTable/DynamicTableModel';
 
 export const moment = _rollupMoment || _moment;
 
@@ -131,7 +132,7 @@ export class GenerateParametrs{
             newparam.name = param.valueField;
             newparam.nameparametr = param.infoField;
             newparam.paramvalue = '';
-            newparam.isvisible = true;
+            newparam.isvisible = param.isVisibleField;
             newparam.select = null;
             if(param.typeColumnField == 'varchar' || param.typeColumnField == 'smalldatetime'){
                 newparam.numеrtemplate = true;
@@ -192,6 +193,13 @@ export class GenerateParametrs{
         return logica;
     }
 
+        ///Генерит команду в бд для схемы xml
+        generatecommandxml(columnDynamic:Table = null):LogicaSelect {
+            var generate = new GenerateFullCommand();
+            var logica = generate.generateCommand(generate.generateVisibleDynamic(this.selectedtoserver, this.parametrs, columnDynamic),this.parametrs);
+            logica.idField = this.selectedtoserver.idField;
+            return logica;
+        }
 }
 
 class GenerateFullCommand {
@@ -199,7 +207,30 @@ class GenerateFullCommand {
     //Параметр не подставляется тогда и только тогда когда все
     // параметры SelectCompanent.num равны 0!!! Вожно!!!
     where: string = 'Where ';
+   ///Динамическая генерация раскладка xml без названия (Новый образец генерится с параметрами)
+    generateVisibleDynamic(logica:LogicaSelect, parametrs: SelectParam[],columnDynamic:Table = null):LogicaSelect{
+        var command:LogicaSelect = new LogicaSelect()
+        var str:string = '';
+        var countparam:number = parametrs.filter(sel=>sel.isvisible ===true).length
+        var countend:number = 0;
+        for (const param of parametrs.filter(sel=>sel.isvisible ===true)) {
+            countend++;
+            if (countend === countparam){
+                str = str.concat(param.nameparametr)
+            }
+            else{
+                str = str.concat(param.nameparametr+', ')
+            }
+            columnDynamic.Colums.push({columnDef:param.nameparametr,header:param.name.trim(),cell:(element:  any) => `${element[param.nameparametr.split('.')[1]]}`,color:(param.nameparametr.split('.')[1].search('Error')==-1)?'null':'red'})
+      }
+      if(str ==''){
+        str = str.concat(' * ')
+      }
+      command.selectUserField = logica.selectUserField.replace('{0}', str);
+      return command;
+    }
 
+    ///Генерация другая по параметрам с названиями (Старый образец но еще используется)
     generateVisible(logica:LogicaSelect, parametrs: SelectParam[]):LogicaSelect{
         var command:LogicaSelect = new LogicaSelect()
         var str:string = '';

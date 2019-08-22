@@ -3,6 +3,7 @@ import {GenerateParametrs, LogicaDataBase } from '../../../AllSelectModel/Genera
 import { MatPaginator,MatTableDataSource} from '@angular/material';
 import { SelectAllParametrs } from '../../../../Post RequestService/PostRequest';
 import * as XLSX from 'xlsx';
+import { Table } from '../../ModelTable/DynamicTableModel';
 
 @Component(({
     selector: 'selectsql',
@@ -14,7 +15,7 @@ export class Select{
 
     @ViewChild('TABLE',{static: false}) table: ElementRef;
     @Input() logica:LogicaDataBase;
-    @Input() columns:any;
+    @Input() columns:Table;
     @Input() selecting:GenerateParametrs;
     @Input() select:SelectAllParametrs;
     @ViewChild('tables',{static: false}) paginator: MatPaginator;
@@ -23,30 +24,32 @@ export class Select{
     dataSource:MatTableDataSource<any> = new MatTableDataSource<any>();
     update(){
        try {
-           if(this.selecting.errorModel()){
+           if(this.selecting.errorModel())
+           {
             this.logica.logicaselect(); //Закрываем логику выбора
             this.logica.logicaprogress();  //Открываем логику загрузки
-            this.select.selectusersql(this.selecting.generatecommand()).subscribe((model:string)=>{
-             this.logica.errornull = true;
-             if(model !== "null")
-             {
-              this.dataSource.data =(JSON.parse(model)[this.columns.Type]);
+            this.columns.Colums = [];    //Обнулить колонки
+            this.select.selectusersql(this.selecting.generatecommandxml(this.columns)).subscribe((model:string)=>{
+            this.logica.errornull = true;
+              if(model !== "null")
+              {
+               this.dataSource.data =(JSON.parse(model)[this.columns.Type]);
+               this.displayedColumns = this.columns.Colums.map(c => c.columnDef);
+               this.allcountproblem = this.dataSource.data.length;
+              }
+              else{
+                 this.logica.errornull = false;  //Показать ошибку пустых данных
+              }
               this.dataSource.paginator = this.paginator;
-              this.displayedColumns = this.columns.Colums.map((c: { columnDef: any; }) => c.columnDef);
-              this.allcountproblem = this.dataSource.data.length;
-             }
-             else{
-                this.logica.errornull = false;  //Показать ошибку пустых данных
-             }
-             this.logica.logicaprogress();    //Открываем логику данных
-             this.logica.logicadatabase();    //Закрываем логику загрузки
-            })
-            }
-           else{
-               alert('Существуют ошибки в выборке!!!');
-            }
-        } catch (e) {
-        alert(e.toString());
+              this.logica.logicaprogress();    //Открываем логику данных
+              this.logica.logicadatabase();    //Закрываем логику загрузки
+             })
+              }
+            else{
+                alert('Существуют ошибки в выборке!!!');
+         }
+         } catch (e) {
+         alert(e.toString());
         }
     }
 
@@ -54,7 +57,6 @@ export class Select{
     back() {
         this.logica.logicadatabase();; //Закрываем логику Данных
         this.logica.logicaselect(); //Открываем логику загрузки
-        this.dataSource.data = null;
         this.displayedColumns = null;
     }
 
@@ -62,7 +64,7 @@ ExportTOExcel()
 {
   const ws: XLSX.WorkSheet=XLSX.utils.table_to_sheet(this.table.nativeElement);
   const wb: XLSX.WorkBook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'Ошибки');
-  XLSX.writeFile(wb, 'Отчет ошибок.xlsx');
+  XLSX.utils.book_append_sheet(wb, ws, 'Таблица');
+  XLSX.writeFile(wb, 'Отчет.xlsx');
 }
 }

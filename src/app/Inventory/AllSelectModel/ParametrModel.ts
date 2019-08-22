@@ -25,5 +25,5 @@ class Parametrs{
     public nameColumnField:string;
     public infoField:string;
     public typeColumnField:string;
-
+    public isVisibleField:boolean;
 }

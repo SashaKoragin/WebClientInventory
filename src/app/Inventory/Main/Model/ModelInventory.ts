@@ -49,6 +49,13 @@ export class Inventar {
             }], types: null, pages: null, fullpath: null, model: null
         },
         {
+            otdelfunc: 'Аналитика',
+            children:  [{
+                otdelfunc: null,
+                children: null, types: 'Аналитика', pages: './analitics', fullpath: 'Аналитика\\Аналитика', model: 'Аналитика'
+            }], types: null, pages: null, fullpath: null, model: null
+        },
+        {
             otdelfunc: 'Ошибки',
             children:  [{
                 otdelfunc: null,
@@ -58,3 +65,4 @@ export class Inventar {
     ], types: null, pages: null, fullpath: null, model: null
     }]);
 }
+

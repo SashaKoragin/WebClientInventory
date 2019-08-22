@@ -321,7 +321,7 @@ export class EditAndAdd{
     }
     ///Редактирование или добавление Номера кабинета
     addAndEditNameKabinet(nameKabinet:Kabinet){
-        return this.http.post(url.addAndEditNameStatus,nameKabinet,httpOptionsJson);
+        return this.http.post(url.addAndEditNameKabinet,nameKabinet,httpOptionsJson);
     }
     ///Редактирование или добавление модели принтера (МФУ)
     addAndEditNameFullModel(nameFullModel:FullModel){

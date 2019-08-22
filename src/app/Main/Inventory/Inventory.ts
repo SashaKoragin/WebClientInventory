@@ -13,6 +13,7 @@ import { ErrorInventory } from '../../Inventory/ErrorInventory/View/ErrorInvento
 import { Select } from '../../Inventory/AddFullModel/ModelViewSelect/View/SelectView';
 import { ComplimentTableEquipment } from '../../Inventory/ComplimentTableEquipment/View/ComplimentTableEquipment';
 import { MccColorPickerModule} from 'material-community-components';
+import { Analitics } from '../../Inventory/Analitics/View/Analitics';
 
 @NgModule(({
     imports: [
@@ -27,7 +28,7 @@ import { MccColorPickerModule} from 'material-community-components';
           }),
     ],
     declarations: [
-        MainInventar, Equipment, Invent, User,DocumentSelect,ErrorInventory,Select,ComplimentTableEquipment
+        MainInventar, Equipment, Invent, User,DocumentSelect,ErrorInventory,Select,ComplimentTableEquipment,Analitics
     ]
 }) as any)
 

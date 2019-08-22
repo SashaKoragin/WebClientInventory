@@ -60,7 +60,7 @@
       <div class="button"><button mat-button (click)="back()">Назад</button></div>
       
     <div *ngIf="logica.errornull; else notfound">
-                <button mat-button (click)="ExportTOExcel()">Выгрузить ошибки</button>
+                <button mat-button (click)="ExportTOExcel()">Выгрузить</button>
         <div class="mat-elevation-z8" #TABLE >
             <table mat-table   #table [dataSource]="dataSource">
                 <ng-container *ngFor="let column of columns.Colums" [matColumnDef]="column.columnDef">

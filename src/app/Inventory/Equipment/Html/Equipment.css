@@ -16,6 +16,19 @@ table {
   table-layout: fixed;
 }
 
+.tables {
+  position: relative;
+  max-height: 600px;
+  overflow: auto;
+}
+
+.actual {
+  background-color: green;
+  cursor: pointer;
+  align-items: center;
+  margin: 10px;
+}
+
 th, td {
   overflow: hidden;
   text-overflow: ellipsis;

@@ -130,7 +130,7 @@ export class UserTableModel implements ILogicaTable<Users>  {
   constructor(public editandadd:EditAndAdd){
 
   }
-  public displayedColumns = ['IdUser','Name','TabelNumber','Telephon','TelephonUndeground','NamePosition','NameOtdel','ActionsColumn'];
+  public displayedColumns = ['IdUser','Name','TabelNumber','Telephon.Telephon_','Telephon.TelephonUndeground','Position.NamePosition','Otdel.NameOtdel','StatusActual','ActionsColumn'];
   public dataSource: MatTableDataSource<Users> = new MatTableDataSource<Users>();
   public modelvalid:ModelValidation = new ModelValidation()
   public otdels: Otdel[];
@@ -235,7 +235,6 @@ export class UserTableModel implements ILogicaTable<Users>  {
         this.dataSource.sort = sort
         this.dataSource.data = model.Users
         this.otdels = model.Otdels;
-        console.log(model.Telephon);
         this.telephone = model.Telephon;
         this.position = model.Position;
         this.filteredOtdel = this.otdels.slice();
@@ -257,7 +256,7 @@ export class UserTableModel implements ILogicaTable<Users>  {
 export class PrinterTableModel implements ILogicaTable<Printer> {
   constructor(public editandadd:EditAndAdd){ }
 
-  public displayedColumns = ['IdModel','IdUser','Partion','Proizvoditel','Model','ZavNum','ServiceNum','InventarNum','IzmInventar','Ip','Coment','Kabinet','Status','ActionsColumn'];
+  public displayedColumns = ['IdModel','User.Name','Supply.DatePostavki','FullProizvoditel.NameProizvoditel','FullModel.NameModel','ZavNumber','ServiceNumber','InventarNumber','IpAdress','Coment','Kabinet.NumberKabinet','Statusing.Name','ActionsColumn'];
   public dataSource: MatTableDataSource<Printer> = new MatTableDataSource<Printer>();
   public modelvalid:ModelValidation = new ModelValidation()
   public kabinet:Kabinet[];
@@ -270,6 +269,7 @@ export class PrinterTableModel implements ILogicaTable<Printer> {
   isAdd: boolean;
   isEdit: boolean;
   model: Printer;
+  modelToServer: Printer;
   index: number;
   modeltable: Printer[];
 
@@ -280,6 +280,32 @@ export class PrinterTableModel implements ILogicaTable<Printer> {
   public filteredUser:any;
   public filteredSupples:any;
   
+
+  castomefiltermodel() {
+    this.dataSource.filterPredicate = (data, filter) => {
+      var tot = false;
+      for (let column of this.displayedColumns) {
+        if(typeof data[column]!=='undefined'){
+          if ((column in data) && (new Date(data[column].toString()).toString() == "Invalid Date")) {
+          tot = (tot || data[column].toString().trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+       } else {
+         var date = new Date(data[column].toString());
+         var m = date.toDateString().slice(4, 7) + " " + date.getDate() + " " + date.getFullYear();
+         tot = (tot || m.toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1); 
+       }
+       }
+       else{
+         if( typeof(data[column.split('.')[0]]) ==='object'){
+           tot = (tot || data[column.split('.')[0]][column.split('.')[1]].trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+         }
+       }
+      }
+      return tot;
+    }
+  }
+
+
+
   calbackfiltersAll(){
     this.filteredKabinet = this.kabinet.slice();
     this.filteredModels = this.models.slice();
@@ -309,7 +335,12 @@ export class PrinterTableModel implements ILogicaTable<Printer> {
   save(model: Printer): void {
     this.modifimethod();
     this.isEditAndAddFalse();
-     this.editandadd.addandeditprinter(this.model).subscribe((model:ModelReturn)=>{
+    this.modelToServer = JSON.parse(JSON.stringify(this.model));
+    if(this.modelToServer.Supply)
+    {
+      this.modelToServer.Supply.DatePostavki = null;
+    }
+     this.editandadd.addandeditprinter(this.modelToServer).subscribe((model:ModelReturn)=>{
       if(model.Guid)
       {
         this.dataSource.data.find(x=>x.IdPrinter===0).IdHistory = model.Guid;
@@ -357,7 +388,6 @@ export class PrinterTableModel implements ILogicaTable<Printer> {
     if(this.model.Supply)
     {this.model.IdSupply = this.model.Supply.IdSupply
       this.model.Supply.DataCreate = null;
-      this.model.Supply.DatePostavki = null;
     }
     else{
       this.model.IdSupply=null;
@@ -380,6 +410,7 @@ export class PrinterTableModel implements ILogicaTable<Printer> {
     this.modeltable =JSON.parse(JSON.stringify(model.Printer));
     this.dataSource.paginator = paginator;
     this.dataSource.sort = sort
+    this.castomefiltermodel();
     this.dataSource.data = model.Printer;
     this.kabinet = model.Kabinet;
     this.models = model.Model.filter(x=>x.IdClasification===1);
@@ -410,7 +441,8 @@ export class ScanerAndCamerTableModel implements ILogicaTable<ScanerAndCamer> {
   
   constructor(public editandadd:EditAndAdd){ }
 
-  public displayedColumns = ['IdModel','IdUser','Partion','Proizvoditel','Model','ZavNum','ServiceNum','InventarNum','IzmInventar','Ip','Coment','Kabinet','Status','ActionsColumn'];
+  public displayedColumns = ['IdModel','User.Name','Supply.DatePostavki','FullProizvoditel.NameProizvoditel','FullModel.NameModel',
+  'ZavNumber','ServiceNumber','InventarNumber','IpAdress','Coment','Kabinet.NumberKabinet','Statusing.Name','ActionsColumn'];
   public dataSource: MatTableDataSource<ScanerAndCamer> = new MatTableDataSource<ScanerAndCamer>();
   public modelvalid:ModelValidation = new ModelValidation()
   public kabinet:Kabinet[];
@@ -423,6 +455,7 @@ export class ScanerAndCamerTableModel implements ILogicaTable<ScanerAndCamer> {
   isAdd: boolean;
   isEdit: boolean;
   model: ScanerAndCamer;
+  modelToServer: ScanerAndCamer;
   index: number;
   modeltable: ScanerAndCamer[];
 
@@ -432,6 +465,30 @@ export class ScanerAndCamerTableModel implements ILogicaTable<ScanerAndCamer> {
   public filteredProizvoditel:any;
   public filteredUser:any;
   public filteredSupples:any;
+
+  castomefiltermodel() {
+    this.dataSource.filterPredicate = (data, filter) => {
+      var tot = false;
+      for (let column of this.displayedColumns) {
+        if(typeof data[column]!=='undefined'){
+          if ((column in data) && (new Date(data[column].toString()).toString() == "Invalid Date")) {
+          tot = (tot || data[column].toString().trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+       } else {
+         var date = new Date(data[column].toString());
+         var m = date.toDateString().slice(4, 7) + " " + date.getDate() + " " + date.getFullYear();
+         tot = (tot || m.toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1); 
+       }
+       }
+       else{
+         if( typeof(data[column.split('.')[0]]) ==='object'){
+           tot = (tot || data[column.split('.')[0]][column.split('.')[1]].trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+         }
+       }
+      }
+      return tot;
+    }
+  }
+
 
   calbackfiltersAll(){
     this.filteredKabinet = this.kabinet.slice();
@@ -460,7 +517,12 @@ export class ScanerAndCamerTableModel implements ILogicaTable<ScanerAndCamer> {
   save(model: ScanerAndCamer): void {
     this.modifimethod();
     this.isEditAndAddFalse();
-     this.editandadd.addandeditscaner(this.model).subscribe((model:ModelReturn)=>{
+    this.modelToServer = JSON.parse(JSON.stringify(this.model));
+    if(this.modelToServer.Supply)
+    {
+      this.modelToServer.Supply.DatePostavki = null;
+    }
+     this.editandadd.addandeditscaner(this.modelToServer).subscribe((model:ModelReturn)=>{
       if(model.Guid)
       {
         this.dataSource.data.find(x=>x.IdScaner===0).IdHistory = model.Guid;
@@ -504,9 +566,8 @@ export class ScanerAndCamerTableModel implements ILogicaTable<ScanerAndCamer> {
     this.model.Kabinet?this.model.IdNumberKabinet = this.model.Kabinet.IdNumberKabinet:this.model.IdNumberKabinet=null;
     this.model.User?this.model.IdUser = this.model.User.IdUser:this.model.IdUser=null;
     if(this.model.Supply)
-    {this.model.IdSupply = this.model.Supply.IdSupply
+    { this.model.IdSupply = this.model.Supply.IdSupply
       this.model.Supply.DataCreate = null;
-      this.model.Supply.DatePostavki = null;
     }
     else{
       this.model.IdSupply=null;
@@ -530,6 +591,7 @@ export class ScanerAndCamerTableModel implements ILogicaTable<ScanerAndCamer> {
     this.dataSource.paginator = paginator;
     this.dataSource.sort = sort
     this.dataSource.data = model.Scaner;
+    this.castomefiltermodel();
     this.kabinet = model.Kabinet;
     this.models = model.Model.filter(x=>[2,4].includes(x.IdClasification));;
     this.statusing = model.Statusing;
@@ -558,7 +620,7 @@ export class MfuTableModel implements ILogicaTable<Mfu> {
  
   constructor(public editandadd:EditAndAdd){ }
 
-  public displayedColumns = ['IdModel','IdUser','Partion','Proizvoditel','Model','ZavNum','ServiceNum','InventarNum','IzmInventar','Ip','CopySave','Coment','Kabinet','Status','ActionsColumn'];
+  public displayedColumns = ['IdModel','User.Name','Supply.DatePostavki','FullProizvoditel.NameProizvoditel','FullModel.NameModel','ZavNumber','ServiceNumber','InventarNumber','IpAdress','CopySave.SerNum','Coment','Kabinet.NumberKabinet','Statusing.Name','ActionsColumn'];
   public dataSource: MatTableDataSource<Mfu> = new MatTableDataSource<Mfu>();
   public modelvalid:ModelValidation = new ModelValidation()
   public kabinet:Kabinet[];
@@ -572,6 +634,7 @@ export class MfuTableModel implements ILogicaTable<Mfu> {
   isAdd: boolean;
   isEdit: boolean;
   model: Mfu;
+  modelToServer:Mfu;
   index: number;
   modeltable: Mfu[];
  
@@ -582,6 +645,30 @@ export class MfuTableModel implements ILogicaTable<Mfu> {
   public filteredCopySave:any;
   public filteredUser:any;
   public filteredSupples:any;
+
+  castomefiltermodel() {
+    this.dataSource.filterPredicate = (data, filter) => {
+      var tot = false;
+      for (let column of this.displayedColumns) {
+        if(typeof data[column]!=='undefined'){
+          if ((column in data) && (new Date(data[column].toString()).toString() == "Invalid Date")) {
+          tot = (tot || data[column].toString().trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+       } else {
+         var date = new Date(data[column].toString());
+         var m = date.toDateString().slice(4, 7) + " " + date.getDate() + " " + date.getFullYear();
+         tot = (tot || m.toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1); 
+       }
+       }
+       else{
+         if( typeof(data[column.split('.')[0]]) ==='object'){
+           tot = (tot || data[column.split('.')[0]][column.split('.')[1]].trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+         }
+       }
+      }
+      return tot;
+    }
+  }
+
 
   calbackfiltersAll(){
     this.filteredKabinet = this.kabinet.slice();
@@ -613,7 +700,12 @@ export class MfuTableModel implements ILogicaTable<Mfu> {
   save(model: Mfu): void {
     this.modifimethod();
     this.isEditAndAddFalse();
-     this.editandadd.addandeditmfu(this.model).subscribe((model:ModelReturn)=>{
+    this.modelToServer = JSON.parse(JSON.stringify(this.model));
+    if(this.modelToServer.Supply)
+    {
+      this.modelToServer.Supply.DatePostavki = null;
+    }
+     this.editandadd.addandeditmfu(this.modelToServer).subscribe((model:ModelReturn)=>{
       if(model.Guid)
       {
         this.dataSource.data.find(x=>x.IdMfu===0).IdHistory = model.Guid;
@@ -662,9 +754,8 @@ export class MfuTableModel implements ILogicaTable<Mfu> {
     this.model.CopySave?this.model.IdCopySave = this.model.CopySave.IdCopySave:this.model.IdCopySave=null;
     this.model.User?this.model.IdUser = this.model.User.IdUser:this.model.IdUser=null;
     if(this.model.Supply)
-    {this.model.IdSupply = this.model.Supply.IdSupply
+    { this.model.IdSupply = this.model.Supply.IdSupply
       this.model.Supply.DataCreate = null;
-      this.model.Supply.DatePostavki = null;
     }
     else{
       this.model.IdSupply=null;
@@ -689,6 +780,7 @@ export class MfuTableModel implements ILogicaTable<Mfu> {
     this.dataSource.paginator = paginator;
     this.dataSource.sort = sort
     this.dataSource.data = model.Mfu;
+    this.castomefiltermodel();
     this.kabinet = model.Kabinet;
     this.models = model.Model.filter(x=>x.IdClasification===3);;
     this.statusing = model.Statusing;
@@ -720,7 +812,7 @@ export class MfuTableModel implements ILogicaTable<Mfu> {
 export class SysBlockTableModel implements ILogicaTable<SysBlock> {
   constructor(public editandadd:EditAndAdd){ }
 
-  public displayedColumns = ['IdModel','IdUser','Partion','Model','ServiceNum','SerNum','InventarNum','NameComputer','Ip','Kabinet','Coment','Status','ActionsColumn'];
+  public displayedColumns = ['IdModel','User.Name','Supply.DatePostavki','NameSysBlock.NameComputer','ServiceNum','SerNum','InventarNumSysBlok','NameComputer','IpAdress','Kabinet.NumberKabinet','Coment','Statusing.Name','ActionsColumn'];
   public dataSource: MatTableDataSource<SysBlock> = new MatTableDataSource<SysBlock>();
   public modelvalid:ModelValidation = new ModelValidation()
   public models:NameSysBlock[];
@@ -732,6 +824,7 @@ export class SysBlockTableModel implements ILogicaTable<SysBlock> {
   isAdd: boolean;
   isEdit: boolean;
   model: SysBlock;
+  modelToServer:SysBlock;
   index: number;
   modeltable: SysBlock[];
  
@@ -740,6 +833,29 @@ export class SysBlockTableModel implements ILogicaTable<SysBlock> {
   public filteredStatusing:any;
   public filteredUser:any;
   public filteredSupples:any;
+
+  castomefiltermodel() {
+    this.dataSource.filterPredicate = (data, filter) => {
+      var tot = false;
+      for (let column of this.displayedColumns) {
+        if(typeof data[column]!=='undefined'){
+          if ((column in data) && (new Date(data[column].toString()).toString() == "Invalid Date")) {
+          tot = (tot || data[column].toString().trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+       } else {
+         var date = new Date(data[column].toString());
+         var m = date.toDateString().slice(4, 7) + " " + date.getDate() + " " + date.getFullYear();
+         tot = (tot || m.toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1); 
+       }
+       }
+       else{
+         if( typeof(data[column.split('.')[0]]) ==='object'){
+           tot = (tot || data[column.split('.')[0]][column.split('.')[1]].trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+         }
+       }
+      }
+      return tot;
+    }
+  }
 
   calbackfiltersAll(){
     this.filteredKabinet = this.kabinet.slice();
@@ -769,7 +885,12 @@ export class SysBlockTableModel implements ILogicaTable<SysBlock> {
   save(model: SysBlock): void {
     this.modifimethod();
     this.isEditAndAddFalse();
-     this.editandadd.addandeditsysblok(this.model).subscribe((model:ModelReturn)=>{
+    this.modelToServer = JSON.parse(JSON.stringify(this.model));
+    if(this.modelToServer.Supply)
+    {
+      this.modelToServer.Supply.DatePostavki = null;
+    }
+     this.editandadd.addandeditsysblok(this.modelToServer).subscribe((model:ModelReturn)=>{
       if(model.Guid)
       {
         this.dataSource.data.find(x=>x.IdSysBlock===0).IdHistory = model.Guid;
@@ -816,9 +937,8 @@ export class SysBlockTableModel implements ILogicaTable<SysBlock> {
     this.model.Kabinet?this.model.IdNumberKabinet = this.model.Kabinet.IdNumberKabinet:this.model.IdNumberKabinet=null;
     this.model.User?this.model.IdUser = this.model.User.IdUser:this.model.IdUser=null;
     if(this.model.Supply)
-    {this.model.IdSupply = this.model.Supply.IdSupply
+    { this.model.IdSupply = this.model.Supply.IdSupply
       this.model.Supply.DataCreate = null;
-      this.model.Supply.DatePostavki = null;
     }
     else{
       this.model.IdSupply=null;
@@ -839,10 +959,12 @@ export class SysBlockTableModel implements ILogicaTable<SysBlock> {
   else{
     this.model = null;
   }
+   console.log(model.SysBlok);
     this.modeltable =JSON.parse(JSON.stringify(model.SysBlok));
     this.dataSource.paginator = paginator;
     this.dataSource.sort = sort
     this.dataSource.data = model.SysBlok;
+    this.castomefiltermodel();
     this.kabinet = model.Kabinet;
     this.models = model.ModelSysBlok;
     this.statusing = model.Statusing;
@@ -871,7 +993,7 @@ export class SysBlockTableModel implements ILogicaTable<SysBlock> {
 export class MonitorsTableModel implements ILogicaTable<Monitor> {
   constructor(public editandadd:EditAndAdd){ }
 
-  public displayedColumns = ['IdModel','IdUser','Partion','Model','SerNum','InventarNum','Kabinet','Coment','Status','ActionsColumn'];
+  public displayedColumns = ['IdModel','User.Name','Supply.DatePostavki','NameMonitor.Name','SerNum','InventarNumMonitor','Kabinet.NumberKabinet','Coment','Statusing.Name','ActionsColumn'];
   public dataSource: MatTableDataSource<Monitor> = new MatTableDataSource<Monitor>();
   public modelvalid:ModelValidation = new ModelValidation()
   public models:NameMonitor[];
@@ -884,6 +1006,7 @@ export class MonitorsTableModel implements ILogicaTable<Monitor> {
   isAdd: boolean;
   isEdit: boolean;
   model: Monitor;
+  modelToServer:Monitor;
   index: number;
   modeltable: Monitor[];
   
@@ -892,6 +1015,29 @@ export class MonitorsTableModel implements ILogicaTable<Monitor> {
   public filteredStatusing:any;
   public filteredUser:any;
   public filteredSupples:any;
+
+  castomefiltermodel() {
+    this.dataSource.filterPredicate = (data, filter) => {
+      var tot = false;
+      for (let column of this.displayedColumns) {
+        if(typeof data[column]!=='undefined'){
+          if ((column in data) && (new Date(data[column].toString()).toString() == "Invalid Date")) {
+          tot = (tot || data[column].toString().trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+       } else {
+         var date = new Date(data[column].toString());
+         var m = date.toDateString().slice(4, 7) + " " + date.getDate() + " " + date.getFullYear();
+         tot = (tot || m.toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1); 
+       }
+       }
+       else{
+         if( typeof(data[column.split('.')[0]]) ==='object'){
+           tot = (tot || data[column.split('.')[0]][column.split('.')[1]].trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+         }
+       }
+      }
+      return tot;
+    }
+  }
 
   calbackfiltersAll(){
     this.filteredKabinet = this.kabinet.slice();
@@ -921,7 +1067,12 @@ export class MonitorsTableModel implements ILogicaTable<Monitor> {
   save(model: Monitor): void {
     this.modifimethod();
     this.isEditAndAddFalse();
-     this.editandadd.addandeditmonitor(this.model).subscribe((model:ModelReturn)=>{
+    this.modelToServer = JSON.parse(JSON.stringify(this.model));
+    if(this.modelToServer.Supply)
+    {
+      this.modelToServer.Supply.DatePostavki = null;
+    }
+     this.editandadd.addandeditmonitor(this.modelToServer).subscribe((model:ModelReturn)=>{
       if(model.Guid)
       {
         this.dataSource.data.find(x=>x.IdMonitor===0).IdHistory = model.Guid;
@@ -968,9 +1119,8 @@ export class MonitorsTableModel implements ILogicaTable<Monitor> {
     this.model.Kabinet?this.model.IdNumberKabinet = this.model.Kabinet.IdNumberKabinet:this.model.IdNumberKabinet=null;
     this.model.User?this.model.IdUser = this.model.User.IdUser:this.model.IdUser=null;
     if(this.model.Supply)
-    {this.model.IdSupply = this.model.Supply.IdSupply
+    { this.model.IdSupply = this.model.Supply.IdSupply
       this.model.Supply.DataCreate = null;
-      this.model.Supply.DatePostavki = null;
     }
     else{
       this.model.IdSupply=null;
@@ -995,6 +1145,7 @@ export class MonitorsTableModel implements ILogicaTable<Monitor> {
    this.dataSource.paginator = paginator;
    this.dataSource.sort = sort
     this.dataSource.data = model.Monitors;
+    this.castomefiltermodel();
     this.kabinet = model.Kabinet;
     this.models = model.NameMonitors;
     this.statusing = model.Statusing;
@@ -1022,7 +1173,7 @@ export class MonitorsTableModel implements ILogicaTable<Monitor> {
 export class TelephonsTableModel implements ILogicaTable<Telephon> {
  
   constructor(public editandadd:EditAndAdd){ }
-  public displayedColumns = ['IdTelephone','Partion','NameTelephone','Telephone','TelephoneUndeground','SerNumber','IpTelephone','MacTelephone','Kabinet','Coment','Status','ActionsColumn'];
+  public displayedColumns = ['IdTelephone','Supply.DatePostavki','NameTelephone','Telephon_','TelephonUndeground','SerNumber','IpTelephon','MacTelephon','Kabinet.NumberKabinet','Coment','Statusing.Name','ActionsColumn'];
   public dataSource: MatTableDataSource<Telephon> = new MatTableDataSource<Telephon>();
   public modelvalid:ModelValidation = new ModelValidation()
   public supples:Supply[]
@@ -1035,10 +1186,33 @@ export class TelephonsTableModel implements ILogicaTable<Telephon> {
   model: Telephon;
   index: number;
   modeltable: Telephon[];
-
+  modelToServer: Telephon;
   public filteredKabinet:any;
   public filteredSupples:any;
   public filteredStatusing:any;
+
+  castomefiltermodel() {
+    this.dataSource.filterPredicate = (data, filter) => {
+      var tot = false;
+      for (let column of this.displayedColumns) {
+        if(typeof data[column]!=='undefined'){
+          if ((column in data) && (new Date(data[column].toString()).toString() == "Invalid Date")) {
+          tot = (tot || data[column].toString().trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+       } else {
+         var date = new Date(data[column].toString());
+         var m = date.toDateString().slice(4, 7) + " " + date.getDate() + " " + date.getFullYear();
+         tot = (tot || m.toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1); 
+       }
+       }
+       else{
+         if( typeof(data[column.split('.')[0]]) ==='object'){
+           tot = (tot || data[column.split('.')[0]][column.split('.')[1]].trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+         }
+       }
+      }
+      return tot;
+    }
+  }
 
   calbackfiltersAll(){
     this.filteredKabinet = this.kabinet.slice();
@@ -1067,7 +1241,12 @@ export class TelephonsTableModel implements ILogicaTable<Telephon> {
   save(model: Telephon): void {
     this.modifimethod();
     this.isEditAndAddFalse();
-     this.editandadd.addandedittelephon(this.model).subscribe((model:ModelReturn)=>{
+    this.modelToServer = JSON.parse(JSON.stringify(this.model));
+    if(this.modelToServer.Supply)
+    {
+      this.modelToServer.Supply.DatePostavki = null;
+    }
+     this.editandadd.addandedittelephon(this.modelToServer).subscribe((model:ModelReturn)=>{
       if(model.Index!==0)
       {
         this.dataSource.data.find(x=>x.IdTelephon===0).IdTelephon = model.Index;
@@ -1113,7 +1292,6 @@ export class TelephonsTableModel implements ILogicaTable<Telephon> {
     if(this.model.Supply)
     {this.model.IdSupply = this.model.Supply.IdSupply
       this.model.Supply.DataCreate = null;
-      this.model.Supply.DatePostavki = null;
     }
     else{
       this.model.IdSupply=null;
@@ -1137,6 +1315,7 @@ export class TelephonsTableModel implements ILogicaTable<Telephon> {
     this.dataSource.data = model.Telephon;
     this.dataSource.paginator = paginator;
     this.dataSource.sort = sort
+    this.castomefiltermodel();
     this.kabinet = model.Kabinet;
     this.statusing = model.Statusing;
     this.supples = model.Supply;
@@ -1159,8 +1338,9 @@ export class TelephonsTableModel implements ILogicaTable<Telephon> {
 
 export class BlockPowerTableModel implements ILogicaTable<BlockPower> {
  
-  constructor(public editandadd:EditAndAdd){ }
-  public displayedColumns = ['IdBlockPowers','IdUser','Partion','Proizvoditel','Model','ZavNum','ServiceNum','InventarNum','Coment','Kabinet','Status','ActionsColumn'];
+  constructor(public editandadd:EditAndAdd){ }  
+  
+  public displayedColumns = ['IdBlockPowers','User.Name','Supply.DatePostavki','ProizvoditelBlockPower.Name','ModelBlockPower.Name','ZavNumber','ServiceNumber','InventarNumber','Coment','Kabinet.NumberKabinet','Statusing.Name','ActionsColumn'];
   public dataSource: MatTableDataSource<BlockPower> = new MatTableDataSource<BlockPower>();
   public modelvalid:ModelValidation = new ModelValidation()
 
@@ -1170,11 +1350,12 @@ export class BlockPowerTableModel implements ILogicaTable<BlockPower> {
   public proizvoditel:ProizvoditelBlockPower[];
   public user:Users[];
   public supples:Supply[]
-
+ 
 
   isAdd: boolean;
   isEdit: boolean;
   model: BlockPower;
+  modelToServer: BlockPower;
   index: number;
   modeltable: BlockPower[];
 
@@ -1184,6 +1365,29 @@ export class BlockPowerTableModel implements ILogicaTable<BlockPower> {
   public filteredUser:any;
   public filteredSupples:any;
   public filteredProizvoditel:any;
+
+  castomefiltermodel() {
+    this.dataSource.filterPredicate = (data, filter) => {
+      var tot = false;
+      for (let column of this.displayedColumns) {
+        if(typeof data[column]!=='undefined'){
+          if ((column in data) && (new Date(data[column].toString()).toString() == "Invalid Date")) {
+          tot = (tot || data[column].toString().trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+       } else {
+         var date = new Date(data[column].toString());
+         var m = date.toDateString().slice(4, 7) + " " + date.getDate() + " " + date.getFullYear();
+         tot = (tot || m.toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1); 
+       }
+       }
+       else{
+         if( typeof(data[column.split('.')[0]]) ==='object'){
+           tot = (tot || data[column.split('.')[0]][column.split('.')[1]].trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+         }
+       }
+      }
+      return tot;
+    }
+  }
 
   calbackfiltersAll(){
     this.filteredUser = this.user.slice();
@@ -1221,7 +1425,12 @@ export class BlockPowerTableModel implements ILogicaTable<BlockPower> {
   save(model: BlockPower): void {
     this.modifimethod();
     this.isEditAndAddFalse();
-     this.editandadd.addandeditblockpower(this.model).subscribe((model:ModelReturn)=>{
+    this.modelToServer = JSON.parse(JSON.stringify(this.model));
+    if(this.modelToServer.Supply)
+    {
+      this.modelToServer.Supply.DatePostavki = null;
+    }
+     this.editandadd.addandeditblockpower(this.modelToServer).subscribe((model:ModelReturn)=>{
       if(model.Index!==0)
       {
         this.dataSource.data.find(x=>x.IdBlockPowers===0).IdHistory = model.Guid;
@@ -1265,7 +1474,6 @@ export class BlockPowerTableModel implements ILogicaTable<BlockPower> {
     if(this.model.Supply)
     {this.model.IdSupply = this.model.Supply.IdSupply
       this.model.Supply.DataCreate = null;
-      this.model.Supply.DatePostavki = null;
     }
     else{
       this.model.IdSupply=null;
@@ -1289,7 +1497,8 @@ public async  addtableModel(model: FullSelectedModel, paginator: MatPaginator, s
   this.modeltable =JSON.parse(JSON.stringify(model.BlockPower));
   this.dataSource.data = model.BlockPower;
   this.dataSource.paginator = paginator;
-  this.dataSource.sort = sort
+  this.dataSource.sort = sort;
+  this.castomefiltermodel();
   this.kabinet = model.Kabinet;
   this.statusing = model.Statusing;
   this.supples = model.Supply;

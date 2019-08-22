@@ -8,6 +8,7 @@ import { User } from '../../Inventory/User/View/User';
 import { DocumentSelect } from '../../Inventory/Documents/View/DocumentsSelect';
 import { ErrorInventory } from '../../Inventory/ErrorInventory/View/ErrorInventory';
 import { ComplimentTableEquipment } from '../../Inventory/ComplimentTableEquipment/View/ComplimentTableEquipment';
+import { Analitics } from '../../Inventory/Analitics/View/Analitics';
 
 const appRoutes: Routes = [
 {
@@ -34,6 +35,10 @@ const appRoutes: Routes = [
         {
             path: 'documents',
             component: DocumentSelect
+        },
+        {
+            path:'analitics',
+            component:Analitics
         },
         {
             path:'error',

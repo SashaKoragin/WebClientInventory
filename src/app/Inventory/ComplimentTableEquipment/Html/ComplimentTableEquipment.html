@@ -405,11 +405,11 @@
                                      </ng-container>
              
                                      <ng-container matColumnDef="SerNum">
-                                            <th mat-header-cell *matHeaderCellDef>Серийный номер</th>
+                                            <th mat-header-cell *matHeaderCellDef>Сирийный номер</th>
                                               <td mat-cell *matCellDef="let row">
                                                 <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.SerNum}}</Label> 
                                                     <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
-                                                        <input matInput placeholder="Серийный номер" [formControl]="nameCopySave.modelvalid?.getRowValidatorModel[6].get('SerNum')" [ngModel]="nameCopySave.model?.SerNum" (ngModelChange)="nameCopySave.model.SerNum = $event"/>
+                                                        <input matInput placeholder="Сирийный номер" [formControl]="nameCopySave.modelvalid?.getRowValidatorModel[6].get('SerNum')" [ngModel]="nameCopySave.model?.SerNum" (ngModelChange)="nameCopySave.model.SerNum = $event"/>
                                                     </mat-form-field> 
                                               </td>
                                     </ng-container>
@@ -591,7 +591,7 @@
                         </ng-container>
 
                         <ng-container matColumnDef="NameKontract">
-                                <th mat-header-cell *matHeaderCellDef>Номер контракта</th>
+                                <th mat-header-cell *matHeaderCellDef>Номер и дата контракта</th>
                                   <td mat-cell *matCellDef="let row">
                                     <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.NameKontract}}</Label> 
                                         <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
@@ -601,7 +601,7 @@
                         </ng-container>
 
                         <ng-container matColumnDef="DatePostavki">
-                                <th mat-header-cell *matHeaderCellDef>Дата контракта</th>
+                                <th mat-header-cell *matHeaderCellDef>Фактиктическая дата поставки</th>
                                   <td mat-cell *matCellDef="let row">
                                     <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.DatePostavki}}</Label> 
                                         <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">

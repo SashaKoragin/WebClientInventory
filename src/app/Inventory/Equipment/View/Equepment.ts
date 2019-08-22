@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import {PostInventar, EditAndAdd } from '../../../Post RequestService/PostRequest';
 import { PrinterTableModel, ScanerAndCamerTableModel, MfuTableModel, SysBlockTableModel, MonitorsTableModel, TelephonsTableModel, BlockPowerTableModel } from '../../AddFullModel/ModelTable/TableModel';
 import {MatPaginator, MatSort} from '@angular/material';
-
+import { ImportToExcel } from '../../AddFullModel/ModelTable/PublicFunction';
 
 @Component(({
     selector: 'equepment',
@@ -15,23 +15,40 @@ import {MatPaginator, MatSort} from '@angular/material';
 export class Equipment implements OnInit {
   constructor(public editandadd:EditAndAdd,public selectAll:PostInventar) { }
 
+
+  dateconverters(date:any){
+    if(date){
+      var dateOut = new Date(date);
+      return dateOut;
+    }
+    return null;
+  }
+
      isload:boolean = true;
      loadMessage:string[] = []
-     @ViewChild('printers',{static: false}) paginatorptinter: MatPaginator;
-     @ViewChild(MatSort,{static: false}) sortprinter: MatSort;
-     @ViewChild('scaners',{static: false}) paginatorscaner: MatPaginator;
-     @ViewChild(MatSort,{static: false}) sortscaner: MatSort;
-     @ViewChild('mfus',{static: false}) paginatormfu: MatPaginator;
-     @ViewChild(MatSort,{static: false}) sortmfu: MatSort;
-     @ViewChild('sysbloks',{static: false}) paginatorsysblok: MatPaginator;
-     @ViewChild(MatSort,{static: false}) sortsysblok: MatSort;
-     @ViewChild('monitors',{static: false}) paginatormonitors: MatPaginator;
-     @ViewChild(MatSort,{static: false}) sortmonitors: MatSort;
-     @ViewChild('telephones',{static: false}) paginatortelephones: MatPaginator;
-     @ViewChild(MatSort,{static: false}) sorttelephones: MatSort;
-     @ViewChild('blockpowers',{static: false}) paginatorblockpower: MatPaginator;
-     @ViewChild(MatSort,{static: false}) sortblockpower: MatSort;
+      @ViewChild('printers',{static: true}) paginatorptinter: MatPaginator;
+      @ViewChild(MatSort,{static: false}) sortprinter: MatSort;
+     @ViewChild('scaners',{static: true}) paginatorscaner: MatPaginator;
+     @ViewChild(MatSort,{static: true}) sortscaner: MatSort;
+     @ViewChild('mfus',{static: true}) paginatormfu: MatPaginator;
+     @ViewChild(MatSort,{static: true}) sortmfu: MatSort;
+     @ViewChild('sysbloks',{static: true}) paginatorsysblok: MatPaginator;
+     @ViewChild(MatSort,{static: true}) sortsysblok: MatSort;
+     @ViewChild('monitors',{static: true}) paginatormonitors: MatPaginator;
+     @ViewChild(MatSort,{static: true}) sortmonitors: MatSort;
+     @ViewChild('telephones',{static: true}) paginatortelephones: MatPaginator;
+     @ViewChild(MatSort,{static: true}) sorttelephones: MatSort;
+     @ViewChild('blockpowers',{static: true}) paginatorblockpower: MatPaginator;
+     @ViewChild(MatSort,{static: true}) sortblockpower: MatSort;
 
+     @ViewChild('TABLEPRINTERS',{static: false}) tableprinters: ElementRef;
+     @ViewChild('TABLESCANERS',{static: false}) tablescaners: ElementRef;
+     @ViewChild('TABLEMFUS',{static: false}) tablemfus: ElementRef;
+     @ViewChild('TABLESYSBLOKS',{static: false}) tablesysbloks: ElementRef;
+     @ViewChild('TABLEMONITORS',{static: false}) tablemonitors: ElementRef;
+     @ViewChild('TABLETELEPHONES',{static: false}) tabletelephones: ElementRef;
+     @ViewChild('TABLEBLOCKPOWERS',{static: false}) tableblockpowers: ElementRef;
+     excel:ImportToExcel = new ImportToExcel();
 
    public printer: PrinterTableModel = new PrinterTableModel(this.editandadd);  
    public scaner: ScanerAndCamerTableModel = new ScanerAndCamerTableModel(this.editandadd); 

@@ -5,8 +5,9 @@ module.exports = {
     devServer: {
         contentBase: Path.join(__dirname, 'Client'),
         compress: true,
-        port: 8990,
-        overlay: true
+        port: 8990,   
+        //overlay: true
+     
       },
     entry: {
         'polyfills': './src/polyfills.ts',

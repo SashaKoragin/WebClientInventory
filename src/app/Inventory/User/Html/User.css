@@ -44,6 +44,13 @@ td.mat-cell{
  font-weight: bold;
 }
 
+.tables {
+  position: relative;
+  max-height: 600px;
+  overflow: auto;
+}
+
+
 .material-icons.md-48 {
   font-size: 48px;
 }

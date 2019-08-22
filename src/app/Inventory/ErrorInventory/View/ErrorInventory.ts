@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { SelectAllParametrs } from '../../../Post RequestService/PostRequest';
 import { GenerateParametrs,LogicaDataBase } from '../../AllSelectModel/GenerateParametrFront';
 import { ModelSelect } from '../../AllSelectModel/ParametrModel';
-import { DynamicTableColumnModel } from '../../AddFullModel/ModelTable/DynamicTableModel';
+import { DynamicTableColumnModel, Table } from '../../AddFullModel/ModelTable/DynamicTableModel';
 
 @Component(({
     selector: 'error',
@@ -17,7 +17,7 @@ export class ErrorInventory implements OnInit {
     dinamicmodel:DynamicTableColumnModel = new DynamicTableColumnModel();
     logica:LogicaDataBase = new LogicaDataBase();
     selecting:GenerateParametrs;
-    columns:any = this.dinamicmodel.columns[this.dinamicmodel.mainselect.indexcolumnmodel];
+    columns:Table= this.dinamicmodel.columns[this.dinamicmodel.mainselect.indexcolumnmodel];
     ngOnInit(): void {
         this.errorserver(null)
     }

@@ -63,7 +63,6 @@ export class ModelValidation  {
             ),
          new FormGroup({
             'ZavNum':new FormControl(null, Validators.required),
-            'ServiceNum':new FormControl(null, Validators.required),
             'InventarNum':new FormControl(null, Validators.required),
             'Proizvoditel':new FormControl({value: new FullProizvoditel()}, [Validators.required, this.validationFullProizvodite]),
             'Model':new FormControl({value: new FullModel()}, [Validators.required, this.validationFullModel])
