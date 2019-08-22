@@ -51,6 +51,5 @@ export class User implements OnInit {
     message = await this.otdel.addtableModel(this.selectall.select,this.paginatorotdels,null);
     console.log(message);    
     this.dataSource.data = this.selectall.select.UsersIsActualsStats;
-    console.log(this.dataSource.data.length);
 }
 }
