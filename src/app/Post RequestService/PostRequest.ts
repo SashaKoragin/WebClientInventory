@@ -242,16 +242,16 @@ export class PostInventar {
 
 
  ///Все запросы для заполнение данных по пользователю
- async fullusers(){
-       try {
+ public async fullusers(){
+
        await this.alluser();
        await this.allposition();
        await this.allotdel();
        await this.alltelephone();
        await this.allstatisticsusers();
-       } catch (error) {
-           console.log(error);
-       }
+       await this.allkabinet();
+       await this.allstatysing();
+       await this.allsupply();
     }
 
 }

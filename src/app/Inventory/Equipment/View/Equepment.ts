@@ -35,9 +35,7 @@ export class Equipment implements OnInit {
      @ViewChild('sysbloks',{static: true}) paginatorsysblok: MatPaginator;
      @ViewChild(MatSort,{static: true}) sortsysblok: MatSort;
      @ViewChild('monitors',{static: true}) paginatormonitors: MatPaginator;
-     @ViewChild(MatSort,{static: true}) sortmonitors: MatSort;
-     @ViewChild('telephones',{static: true}) paginatortelephones: MatPaginator;
-     @ViewChild(MatSort,{static: true}) sorttelephones: MatSort;
+      @ViewChild(MatSort,{static: true}) sortmonitors: MatSort;
      @ViewChild('blockpowers',{static: true}) paginatorblockpower: MatPaginator;
      @ViewChild(MatSort,{static: true}) sortblockpower: MatSort;
 
@@ -46,7 +44,6 @@ export class Equipment implements OnInit {
      @ViewChild('TABLEMFUS',{static: false}) tablemfus: ElementRef;
      @ViewChild('TABLESYSBLOKS',{static: false}) tablesysbloks: ElementRef;
      @ViewChild('TABLEMONITORS',{static: false}) tablemonitors: ElementRef;
-     @ViewChild('TABLETELEPHONES',{static: false}) tabletelephones: ElementRef;
      @ViewChild('TABLEBLOCKPOWERS',{static: false}) tableblockpowers: ElementRef;
      excel:ImportToExcel = new ImportToExcel();
 
@@ -55,7 +52,6 @@ export class Equipment implements OnInit {
    public mfu: MfuTableModel = new MfuTableModel(this.editandadd); 
    public sysblok:SysBlockTableModel = new SysBlockTableModel(this.editandadd);
    public monitor:MonitorsTableModel = new MonitorsTableModel(this.editandadd);
-   public telephone:TelephonsTableModel = new TelephonsTableModel(this.editandadd);
    public blockpower:BlockPowerTableModel = new BlockPowerTableModel(this.editandadd);
   ngOnInit(): void {
     this.start()
@@ -80,9 +76,6 @@ export class Equipment implements OnInit {
      await this.selectAll.allmonitor();
      message = await this.monitor.addtableModel(this.selectAll.select,this.paginatormonitors,this.sortmonitors);
      this.loadMessage.push(message);
-     await this.selectAll.alltelephone();
-     message = await this.telephone.addtableModel(this.selectAll.select,this.paginatortelephones,this.sorttelephones);
-     this.loadMessage.push(message);
      await this.selectAll.allblockpower();
      message = await this.blockpower.addtableModel(this.selectAll.select,this.paginatorblockpower,this.sortblockpower);
      this.loadMessage.push(message);
@@ -90,13 +83,14 @@ export class Equipment implements OnInit {
   }
 
  async sendserver(){
+   await this.selectAll.alluser();
    await this.selectAll.allnamemonitor();
    await this.selectAll.allcopysave();
-   await this.selectAll.allkabinet();
    await this.selectAll.allmodel();
    await this.selectAll.allnamesysblok();
-   await this.selectAll.allstatysing();
    await this.selectAll.allproizvoditel();
+   await this.selectAll.allkabinet();
+   await this.selectAll.allstatysing();
    await this.selectAll.allsupply();
    await this.selectAll.allproizvoditelblockpower();
    await this.selectAll.allmodelblockpower();

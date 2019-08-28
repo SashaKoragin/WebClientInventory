@@ -14,6 +14,7 @@ import { Select } from '../../Inventory/AddFullModel/ModelViewSelect/View/Select
 import { ComplimentTableEquipment } from '../../Inventory/ComplimentTableEquipment/View/ComplimentTableEquipment';
 import { MccColorPickerModule} from 'material-community-components';
 import { Analitics } from '../../Inventory/Analitics/View/Analitics';
+import { TemplateUsers } from '../../Inventory/TemplateTableEditors/Wiew/TemplateUser';
 
 @NgModule(({
     imports: [

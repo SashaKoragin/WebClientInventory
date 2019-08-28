@@ -5,15 +5,15 @@ import { MatTableDataSource,MatPaginator,MatSort } from '@angular/material';
 import { ModelValidation } from '../ValidationModel/UserValidation';
 import { EditAndAdd } from '../../../Post RequestService/PostRequest';
 import { Classification } from '../../ModelInventory/InventoryModel';
-import {FormControl} from '@angular/forms';
 import * as _moment from 'moment';
 import * as _rollupMoment from 'moment';
 import {MatDatepickerInputEvent} from '@angular/material/datepicker';
+import { ElementRef } from '@angular/core';
 const moment = _rollupMoment || _moment;
 
 
-
-export class OtdelTableModel implements ILogicaTable<Otdel>{
+//implements ILogicaTable<Otdel>
+export class OtdelTableModel {
   constructor(public editandadd:EditAndAdd){
 
   }
@@ -22,12 +22,18 @@ export class OtdelTableModel implements ILogicaTable<Otdel>{
 
   public isEdit: boolean = false;
   public isAdd: boolean = false;
-  public model: Otdel;
+  public model: Otdel = new Otdel();
   public index: number;
   public modeltable: Otdel[];
   public user:Users[];
 
   public filteredUser:any;
+
+  //Шаблоны для манипулирования DOM
+   private temlateList:any //Заложенный шаблон Массив
+   private rowList:any    //Строка по номеру из БД Массив 
+   private fulltemplate:ElementRef  //Полный шаблон для манипуляции
+   private table:ElementRef  //Полный шаблон для манипуляции
  
   filterstable(filterValue: string): void {
     filterValue = filterValue.trim(); // Remove whitespace
@@ -48,17 +54,20 @@ export class OtdelTableModel implements ILogicaTable<Otdel>{
     this.index = this.dataSource.data.length;
     this.model = newmodel;
     this.dataSource._updateChangeSubscription();
+    this.addtemplate(newmodel.IdOtdel)
   }
 
   edit(model: Otdel): void {
     model.ModelIsEdit = true;
     this.model =JSON.parse(JSON.stringify(model));
+    this.addtemplate(model.IdOtdel)
     this.isEditAndAddTrue();
   }
 
-  save(model: Otdel): void {
+  save(): void {
     this.modifimethod();
     this.isEditAndAddFalse();
+    this.removetemplate();
      this.editandadd.addandeditotdel(this.model).subscribe((model:ModelReturn)=>{
       if(model.Index!==0)
       {
@@ -67,6 +76,7 @@ export class OtdelTableModel implements ILogicaTable<Otdel>{
        console.log(model.Message);
        this.dataSource._updateChangeSubscription();
      });
+     
     //Запрос на сохранение и обновление данных
   }
 
@@ -84,6 +94,7 @@ export class OtdelTableModel implements ILogicaTable<Otdel>{
       this.index = 0;
     }
     this.dataSource._updateChangeSubscription();
+    this.removetemplate();
   }
 
   newmodel(): Otdel {
@@ -92,6 +103,35 @@ export class OtdelTableModel implements ILogicaTable<Otdel>{
     newotdel.IdOtdel = 0;
     return newotdel;
   }
+
+  //Костыль дожидаемся обновление DOM
+ private async delay(ms: number) {
+  await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log("Задержка подгрузки DOM!!!"));
+}
+
+///Добавить шаблон в строку это просто жесть
+ private async addtemplate(index:number){
+  var i = 0;
+  await this.delay(10);
+  this.temlateList = this.fulltemplate.nativeElement.querySelectorAll("mat-form-field[id=template]");
+  this.rowList = this.table.nativeElement.querySelectorAll("div[class='"+index+"']");
+  for (var row of this.rowList){
+      row.append(this.temlateList[i])
+      i++;
+   }
+}
+
+///Удалить шаблон из строки и востановить текущий шаблон
+ private removetemplate(){
+  var i = 0;
+  for (var row of this.rowList){
+     row.removeChild(this.temlateList[i]);
+     this.fulltemplate.nativeElement.append(this.temlateList[i])
+    i++;
+  }
+}
+
+
 
   modifimethod(): void {
     this.model.User?this.model.IdUser = this.model.User.IdUser:this.model.IdUser=null;
@@ -104,16 +144,17 @@ export class OtdelTableModel implements ILogicaTable<Otdel>{
     this.index = 0;
   }
 
- async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort): Promise<string> {
+ async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort,table:ElementRef,template:ElementRef): Promise<string> {
     this.modeltable =JSON.parse(JSON.stringify(model.Otdels));
-    this.model = JSON.parse(JSON.stringify(model.Otdels[0]));
+    this.table = table;  //Таблица
+    this.fulltemplate = template; //Заложенный шаблон
+    this.dataSource.sort = sort;
     this.dataSource.paginator = paginator;
     this.dataSource.data = model.Otdels;
     this.user = model.Users;
     this.filteredUser = this.user.slice();
     return "Модель отделов заполнена";
   }
-
 
   isEditAndAddTrue(): void {
     this.isEdit = true;
@@ -125,26 +166,35 @@ export class OtdelTableModel implements ILogicaTable<Otdel>{
   }
 
 }
+//implements ILogicaTable<Users> 
+export class UserTableModel  {
+  constructor(public editandadd:EditAndAdd){}
 
-export class UserTableModel implements ILogicaTable<Users>  {
-  constructor(public editandadd:EditAndAdd){
-
-  }
   public displayedColumns = ['IdUser','Name','TabelNumber','Telephon.Telephon_','Telephon.TelephonUndeground','Position.NamePosition','Otdel.NameOtdel','StatusActual','ActionsColumn'];
   public dataSource: MatTableDataSource<Users> = new MatTableDataSource<Users>();
   public modelvalid:ModelValidation = new ModelValidation()
   public otdels: Otdel[];
+  public model: Users = new Users();
+
+
   public position: Position[];
   public modeltable: Users[];
   public telephone:Telephon[];
   public isEdit: boolean = false;
   public isAdd: boolean = false;
-  public model: Users;
   public index: number = 0;
 
+  ///Класс замены обратно
+  public anyclassdiv:any;
   public filteredOtdel:any;
   public filteredPosition:any;
   public filteredTelephone:any;
+
+//Шаблоны для манипулирования DOM
+private temlateList:any //Заложенный шаблон Массив
+private rowList:any    //Строка по номеру из БД Массив 
+private fulltemplate:ElementRef  //Полный шаблон для манипуляции
+private table:ElementRef  //Полный шаблон для манипуляции
 
   //Метод для выноса всех костылей на модель
   public modifimethod():void{
@@ -179,17 +229,46 @@ export class UserTableModel implements ILogicaTable<Users>  {
     newuser.StatusActual = true;
     return newuser;
   }
+//Костыль дожидаемся обновление DOM
+ private async delay(ms: number) {
+    await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log("Задержка подгрузки DOM!!!"));
+}
 
+///Добавить шаблон в строку это просто жесть
+  private async addtemplate(index:number){
+    var i = 0;
+    await this.delay(10);
+    this.temlateList = this.fulltemplate.nativeElement.querySelectorAll("mat-form-field[id=template]");
+    this.rowList = this.table.nativeElement.querySelectorAll("div[class='"+index+"']");
+    for (var row of this.rowList){
+        row.append(this.temlateList[i])
+        i++;
+     }
+  }
+
+///Удалить шаблон из строки и востановить текущий шаблон
+  private removetemplate(){
+    var i = 0;
+    for (var row of this.rowList){
+       row.removeChild(this.temlateList[i]);
+       this.fulltemplate.nativeElement.append(this.temlateList[i])
+      i++;
+    }
+  }
+
+  ///Редактирование 
   public edit(user: Users): void {
         user.ModelIsEdit = true;
         this.model =JSON.parse(JSON.stringify(user));
         this.isEditAndAddTrue();
+        this.addtemplate(user.IdUser)
     }
 
     public save(): void {
       this.modifimethod();
       this.isEditAndAddFalse();
-       this.editandadd.addandedituser(this.model).subscribe((model:ModelReturn)=>{
+      this.removetemplate();
+      this.editandadd.addandedituser(this.model).subscribe((model:ModelReturn)=>{
         if(model.Guid)
         {
            this.dataSource.data.find(x=>x.IdUser===0).IdHistory = model.Guid;
@@ -198,6 +277,7 @@ export class UserTableModel implements ILogicaTable<Users>  {
         console.log(model.Message);
          this.dataSource._updateChangeSubscription();
        });
+      
       //Запрос на сохранение и обновление данных
     }
 
@@ -208,6 +288,7 @@ export class UserTableModel implements ILogicaTable<Users>  {
       {
         this.dataSource.data.pop();
         this.index = 0;
+        
       }
       else{
         var userdefault = this.modeltable.find(x=>x.IdUser ===this.model.IdUser);
@@ -215,9 +296,10 @@ export class UserTableModel implements ILogicaTable<Users>  {
         this.index = 0;
       }
       this.dataSource._updateChangeSubscription();
+      this.removetemplate();
     }
 
-  public add(): void {
+  public add(template:ElementRef): void {
         this.isEditAndAddTrue();
         var newmodel = this.newmodel();
         this.dataSource.paginator.lastPage();
@@ -226,11 +308,13 @@ export class UserTableModel implements ILogicaTable<Users>  {
         this.index = this.dataSource.data.length;
         this.model = newmodel;
         this.dataSource._updateChangeSubscription();
+        this.addtemplate(newmodel.IdUser)
     }
 
-    public async addtableModel(model:FullSelectedModel,paginator:MatPaginator,sort:MatSort):Promise<string> {
+    public async addtableModel(model:FullSelectedModel,paginator:MatPaginator,sort:MatSort,table:ElementRef,template:ElementRef):Promise<string> {
         this.modeltable =JSON.parse(JSON.stringify(model.Users));
-        this.model = JSON.parse(JSON.stringify(model.Users[0]));
+        this.table = table;  //Таблица
+        this.fulltemplate = template; //Заложенный шаблон
         this.dataSource.paginator = paginator;
         this.dataSource.sort = sort
         this.dataSource.data = model.Users
@@ -243,7 +327,6 @@ export class UserTableModel implements ILogicaTable<Users>  {
         return "Модель пользователей заполнена";
     }
 
-    
   public isEditAndAddTrue():void{
     this.isEdit = true;
     this.isAdd = true;
@@ -959,7 +1042,6 @@ export class SysBlockTableModel implements ILogicaTable<SysBlock> {
   else{
     this.model = null;
   }
-   console.log(model.SysBlok);
     this.modeltable =JSON.parse(JSON.stringify(model.SysBlok));
     this.dataSource.paginator = paginator;
     this.dataSource.sort = sort
@@ -1169,8 +1251,8 @@ export class MonitorsTableModel implements ILogicaTable<Monitor> {
     this.isEdit = false;
   }
 }
-
-export class TelephonsTableModel implements ILogicaTable<Telephon> {
+//implements ILogicaTable<Telephon> 
+export class TelephonsTableModel {
  
   constructor(public editandadd:EditAndAdd){ }
   public displayedColumns = ['IdTelephone','Supply.DatePostavki','NameTelephone','Telephon_','TelephonUndeground','SerNumber','IpTelephon','MacTelephon','Kabinet.NumberKabinet','Coment','Statusing.Name','ActionsColumn'];
@@ -1183,13 +1265,20 @@ export class TelephonsTableModel implements ILogicaTable<Telephon> {
 
   isAdd: boolean;
   isEdit: boolean;
-  model: Telephon;
+  model: Telephon = new Telephon();
   index: number;
   modeltable: Telephon[];
   modelToServer: Telephon;
   public filteredKabinet:any;
   public filteredSupples:any;
   public filteredStatusing:any;
+
+  //Шаблоны для манипулирования DOM
+  private temlateList:any //Заложенный шаблон Массив
+  private rowList:any    //Строка по номеру из БД Массив 
+  private fulltemplate:ElementRef  //Полный шаблон для манипуляции
+  private table:ElementRef  //Полный шаблон для манипуляции
+
 
   castomefiltermodel() {
     this.dataSource.filterPredicate = (data, filter) => {
@@ -1220,6 +1309,40 @@ export class TelephonsTableModel implements ILogicaTable<Telephon> {
     this.filteredStatusing = this.statusing.slice();
   }
 
+
+  newmodel(): Telephon {
+    var newuser: Telephon = new Telephon()
+    newuser.ModelIsEdit = true;
+    newuser.IdTelephon = 0;
+    return newuser;
+  }
+
+  //Костыль дожидаемся обновление DOM
+  private async delay(ms: number) {
+    await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log("Задержка подгрузки DOM!!!"));
+  }
+
+///Добавить шаблон в строку это просто жесть
+  private async addtemplate(index:number){
+    var i = 0;
+    await this.delay(10);
+    this.temlateList = this.fulltemplate.nativeElement.querySelectorAll("mat-form-field[id=template]");
+    this.rowList = this.table.nativeElement.querySelectorAll("div[class='"+index+"']");
+    for (var row of this.rowList){
+      row.append(this.temlateList[i])
+      i++;
+    }
+  }
+
+///Удалить шаблон из строки и востановить текущий шаблон
+  private removetemplate(){
+    var i = 0;
+    for (var row of this.rowList){
+       row.removeChild(this.temlateList[i]);
+       this.fulltemplate.nativeElement.append(this.temlateList[i])
+     i++;
+   }
+  }
  
   add(): void {
     this.isEditAndAddTrue();
@@ -1230,17 +1353,20 @@ export class TelephonsTableModel implements ILogicaTable<Telephon> {
     this.index = this.dataSource.data.length;
     this.model = newmodel;
     this.dataSource._updateChangeSubscription();
+    this.addtemplate(newmodel.IdTelephon)
   }  
   
   edit(model: Telephon): void {
     model.ModelIsEdit = true;
     this.model =JSON.parse(JSON.stringify(model));
+    this.addtemplate(model.IdTelephon)
     this.isEditAndAddTrue();
   }
 
-  save(model: Telephon): void {
+  save(): void {
     this.modifimethod();
     this.isEditAndAddFalse();
+    this.removetemplate();
     this.modelToServer = JSON.parse(JSON.stringify(this.model));
     if(this.modelToServer.Supply)
     {
@@ -1254,6 +1380,7 @@ export class TelephonsTableModel implements ILogicaTable<Telephon> {
       console.log(model.Message);
       this.dataSource._updateChangeSubscription();
      });
+     
     //Запрос на сохранение и обновление данных
   }
 
@@ -1271,14 +1398,10 @@ export class TelephonsTableModel implements ILogicaTable<Telephon> {
       this.index = 0;
     }
     this.dataSource._updateChangeSubscription();
+    this.removetemplate();
   }
 
-  newmodel(): Telephon {
-    var newuser: Telephon = new Telephon()
-    newuser.ModelIsEdit = true;
-    newuser.IdTelephon = 0;
-    return newuser;
-  }
+
 
   filterstable(filterValue: string): void {
     filterValue = filterValue.trim(); // Remove whitespace
@@ -1304,13 +1427,10 @@ export class TelephonsTableModel implements ILogicaTable<Telephon> {
     this.dataSource.data[indexold] = this.model;
     this.index = 0;
   }
-  public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort): Promise<string> {
-    if(model.Telephon.length!==0) {
-      this.model = JSON.parse(JSON.stringify(model.Telephon[0]));
-    } 
-    else{
-      this.model = null;
-    }
+
+  public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort,table:ElementRef,template:ElementRef): Promise<string> {
+    this.table = table;  //Таблица
+    this.fulltemplate = template; //Заложенный шаблон
     this.modeltable =JSON.parse(JSON.stringify(model.Telephon));
     this.dataSource.data = model.Telephon;
     this.dataSource.paginator = paginator;

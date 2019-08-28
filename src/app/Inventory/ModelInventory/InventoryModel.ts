@@ -36,7 +36,7 @@ export interface ILogicaTable<T> {
     //Редактируем
     isEdit:boolean;
     //Модель расширения
-    model:T;
+   // model:T;
     //Индекс
     index:number;
     //Модели расширения
