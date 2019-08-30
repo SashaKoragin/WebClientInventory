@@ -3,27 +3,37 @@ import {PostInventar, EditAndAdd } from '../../../Post RequestService/PostReques
 import { PrinterTableModel, ScanerAndCamerTableModel, MfuTableModel, SysBlockTableModel, MonitorsTableModel, TelephonsTableModel, BlockPowerTableModel } from '../../AddFullModel/ModelTable/TableModel';
 import {MatPaginator, MatSort} from '@angular/material';
 import { ImportToExcel } from '../../AddFullModel/ModelTable/PublicFunction';
+import { DatePipe } from '@angular/common';
 
 @Component(({
     selector: 'equepment',
     templateUrl: '../Html/Equipment.html',
     styleUrls: ['../Html/Equipment.css'],
-    providers: [EditAndAdd]
+    providers: [EditAndAdd,DatePipe]
 
 }) as any)
 
 export class Equipment implements OnInit {
-  constructor(public editandadd:EditAndAdd,public selectAll:PostInventar) { }
+  constructor(public editandadd:EditAndAdd,public selectAll:PostInventar,private dp: DatePipe) { }
 
+   
+   datetemplate(date:any){
+      if(date){
+        if(date.length>10){
+        return this.dp.transform(date,'dd-MM-yyyy')
+        }
+      }
+      return date;
+   }
 
-  dateconverters(date:any){
-    if(date){
-      var dateOut = new Date(date);
-      return dateOut;
-    }
-    return null;
-  }
-
+   ///Шаблоны
+   @ViewChild('TEMPLATEPRINTER',{static: true}) templatePrinter: ElementRef;
+   @ViewChild('TEMPLATESCANER',{static: true}) templateScaner: ElementRef;
+   @ViewChild('TEMPLATEMFU',{static: true}) templateMfu: ElementRef;
+   @ViewChild('TEMPLATESYSBLOK',{static: true}) templateSysblok: ElementRef;
+   @ViewChild('TEMPLATEMONITOR',{static: true}) templateMonitor: ElementRef;
+   @ViewChild('TEMPLATEBLOCKPOWER',{static: true}) templateBlockpower: ElementRef;
+   
      isload:boolean = true;
      loadMessage:string[] = []
       @ViewChild('printers',{static: true}) paginatorptinter: MatPaginator;
@@ -53,8 +63,8 @@ export class Equipment implements OnInit {
    public sysblok:SysBlockTableModel = new SysBlockTableModel(this.editandadd);
    public monitor:MonitorsTableModel = new MonitorsTableModel(this.editandadd);
    public blockpower:BlockPowerTableModel = new BlockPowerTableModel(this.editandadd);
-  ngOnInit(): void {
-    this.start()
+  public async ngOnInit():Promise<void> {
+   await this.start()
   }
   
 
@@ -62,22 +72,22 @@ export class Equipment implements OnInit {
      var message = null;  
      await this.sendserver();
      await this.selectAll.allprinters();
-     message = await this.printer.addtableModel(this.selectAll.select,this.paginatorptinter,this.sortprinter);;
+     message = await this.printer.addtableModel(this.selectAll.select,this.paginatorptinter,this.sortprinter,this.tableprinters,this.templatePrinter);;
      this.loadMessage.push(message);
      await this.selectAll.allscaners();
-     message = await this.scaner.addtableModel(this.selectAll.select,this.paginatorscaner,this.sortscaner);
+     message = await this.scaner.addtableModel(this.selectAll.select,this.paginatorscaner,this.sortscaner,this.tablescaners,this.templateScaner);
      this.loadMessage.push(message);
      await this.selectAll.allmfu();
-     message = await this.mfu.addtableModel(this.selectAll.select,this.paginatormfu,this.sortmfu);
+     message = await this.mfu.addtableModel(this.selectAll.select,this.paginatormfu,this.sortmfu,this.tablemfus,this.templateMfu);
      this.loadMessage.push(message);
      await this.selectAll.allsysblok();
-     message = await this.sysblok.addtableModel(this.selectAll.select,this.paginatorsysblok,this.sortsysblok);
+     message = await this.sysblok.addtableModel(this.selectAll.select,this.paginatorsysblok,this.sortsysblok,this.tablesysbloks,this.templateSysblok);
      this.loadMessage.push(message);
      await this.selectAll.allmonitor();
-     message = await this.monitor.addtableModel(this.selectAll.select,this.paginatormonitors,this.sortmonitors);
+     message = await this.monitor.addtableModel(this.selectAll.select,this.paginatormonitors,this.sortmonitors,this.tablemonitors,this.templateMonitor);
      this.loadMessage.push(message);
      await this.selectAll.allblockpower();
-     message = await this.blockpower.addtableModel(this.selectAll.select,this.paginatorblockpower,this.sortblockpower);
+     message = await this.blockpower.addtableModel(this.selectAll.select,this.paginatorblockpower,this.sortblockpower,this.tableblockpowers,this.templateBlockpower);
      this.loadMessage.push(message);
      this.isload = false;
   }

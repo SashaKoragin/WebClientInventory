@@ -3,8 +3,60 @@ import { User } from '../User/View/User';
 import { DataSource } from '@angular/cdk/table';
 import { async } from 'rxjs/internal/scheduler/async';
 import { DatePipe } from '@angular/common';
+import { ElementRef } from '@angular/core';
 
 
+
+export interface INewLogicaTable<T> {
+  //В связи с неоправдано низкой скоростью обработки таблиц выносим шаблоны редактирования отдельно отсюда 3 новых приватных метода
+  //Задержка является костылем надо думать как исправить
+    //Добавление новой записи
+    isAdd:boolean;
+    //Редактируем
+    isEdit:boolean;
+    //Модель расширения
+    model:T;
+    //Индекс
+    index:number;
+    //Модели расширения
+    modeltable:T[];
+    //ListNode кусочков шаблона подстановки
+    temlateList:any 
+    //ListNode кусочков ячеек в строке для подстановки
+    rowList:any    //Строка по номеру из БД Массив 
+    //Полный шаблон для манипуляции
+    fulltemplate:ElementRef  
+    //Таблица для манипуляции
+    table:ElementRef  
+    //Костыль с задержкой 
+    delay(ms: number):Promise<void>
+    //Добавление шаблона подстановки
+    addtemplate(index:number):Promise<void>
+    //Удаление шаблона подстановки
+    removetemplate():void
+
+    //Добавление
+    add(): Promise<void> ;
+    //Редактирование
+    edit(model: T): void;
+    //Сохранение
+    save(model: T):void;
+    //Отмена
+    cancel(model: T):void;
+    //Создание новой модели
+    newmodel():T;
+    //Фильтрация данных
+    filterstable(filterValue:string):void;
+    //Возврат из фильтра
+    calbackfiltersAll():void;
+    //Метод переноса модификаций моделей
+    modifimethod():void;
+    //Метод входа в модель
+    addtableModel(model:FullSelectedModel,paginator:MatPaginator,sort:MatSort,table:ElementRef,template:ElementRef):Promise<string>
+
+    isEditAndAddTrue():void;
+    isEditAndAddFalse():void;
+}
 
 
 

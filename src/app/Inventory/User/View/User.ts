@@ -1,10 +1,10 @@
 import { Component, OnInit, ViewChild,ElementRef  } from '@angular/core';
 import {PostInventar, EditAndAdd } from '../../../Post RequestService/PostRequest';
 import {MatTableDataSource,MatPaginator, MatSort } from '@angular/material';
-import { UserTableModel, OtdelTableModel, TelephonsTableModel } from '../../AddFullModel/ModelTable/TableModel';
+import { UserTableModel, TelephonsTableModel, OtdelTableModel } from '../../AddFullModel/ModelTable/TableModel';
 import { UsersIsActualsStats } from '../../ModelInventory/InventoryModel';
 import { ImportToExcel } from '../../AddFullModel/ModelTable/PublicFunction';
-import { TemplateUsers } from '../../TemplateTableEditors/Wiew/TemplateUser';
+
 
 @Component(({
     selector: 'equepment',

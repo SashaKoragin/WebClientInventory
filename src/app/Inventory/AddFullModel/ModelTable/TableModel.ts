@@ -1,6 +1,6 @@
 import { Users, ILogicaTable, FullSelectedModel, Otdel, Position, Printer, Mfu, ScanerAndCamer, SysBlock, CopySave,
    Monitor,NameSysBlock,Supply,
-  Kabinet,FullModel,Statusing,FullProizvoditel, ModelReturn, NameMonitor, Telephon,BlockPower,ModelBlockPower,ProizvoditelBlockPower } from '../../ModelInventory/InventoryModel';
+  Kabinet,FullModel,Statusing,FullProizvoditel, ModelReturn, NameMonitor, Telephon,BlockPower,ModelBlockPower,ProizvoditelBlockPower, INewLogicaTable } from '../../ModelInventory/InventoryModel';
 import { MatTableDataSource,MatPaginator,MatSort } from '@angular/material';
 import { ModelValidation } from '../ValidationModel/UserValidation';
 import { EditAndAdd } from '../../../Post RequestService/PostRequest';
@@ -11,12 +11,10 @@ import {MatDatepickerInputEvent} from '@angular/material/datepicker';
 import { ElementRef } from '@angular/core';
 const moment = _rollupMoment || _moment;
 
+export class OtdelTableModel implements INewLogicaTable<Otdel>{
+ 
+  constructor(public editandadd:EditAndAdd){}
 
-//implements ILogicaTable<Otdel>
-export class OtdelTableModel {
-  constructor(public editandadd:EditAndAdd){
-
-  }
   public displayedColumns = ['IdOtdel','NameOtdel','NameRuk','ActionsColumn'];
   public dataSource: MatTableDataSource<Otdel> = new MatTableDataSource<Otdel>();
 
@@ -30,44 +28,43 @@ export class OtdelTableModel {
   public filteredUser:any;
 
   //Шаблоны для манипулирования DOM
-   private temlateList:any //Заложенный шаблон Массив
-   private rowList:any    //Строка по номеру из БД Массив 
-   private fulltemplate:ElementRef  //Полный шаблон для манипуляции
-   private table:ElementRef  //Полный шаблон для манипуляции
+    temlateList:any //Заложенный шаблон Массив
+    rowList:any    //Строка по номеру из БД Массив 
+    fulltemplate:ElementRef<any>  //Полный шаблон для манипуляции
+    table:ElementRef<any>  //Полный шаблон для манипуляции
  
-  filterstable(filterValue: string): void {
+ public filterstable(filterValue: string): void {
     filterValue = filterValue.trim(); // Remove whitespace
     filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
     this.dataSource.filter = filterValue;
   }
 
-  calbackfiltersAll(){
+  public calbackfiltersAll():void{
     this.filteredUser = this.user.slice();
   }
 
-  add(): void {
+  public async add():Promise<void> {
     this.isEditAndAddTrue();
     var newmodel = this.newmodel();
-    this.dataSource.paginator.lastPage();
     this.dataSource.data.push(newmodel); 
     this.modeltable.push(newmodel); 
     this.index = this.dataSource.data.length;
     this.model = newmodel;
-    this.dataSource._updateChangeSubscription();
+  await this.dataSource._updateChangeSubscription();
+  await this.dataSource.paginator.lastPage();
     this.addtemplate(newmodel.IdOtdel)
   }
 
-  edit(model: Otdel): void {
+  public edit(model: Otdel): void {
     model.ModelIsEdit = true;
     this.model =JSON.parse(JSON.stringify(model));
     this.addtemplate(model.IdOtdel)
     this.isEditAndAddTrue();
   }
 
-  save(): void {
+  public save(): void {
     this.modifimethod();
     this.isEditAndAddFalse();
-    this.removetemplate();
      this.editandadd.addandeditotdel(this.model).subscribe((model:ModelReturn)=>{
       if(model.Index!==0)
       {
@@ -76,11 +73,11 @@ export class OtdelTableModel {
        console.log(model.Message);
        this.dataSource._updateChangeSubscription();
      });
-     
+     this.removetemplate();
     //Запрос на сохранение и обновление данных
   }
 
-  cancel(model: Otdel): void {
+  public cancel(model: Otdel): void {
     model.ModelIsEdit = false;
     this.isEditAndAddFalse(); 
     if(this.index>0)
@@ -105,12 +102,12 @@ export class OtdelTableModel {
   }
 
   //Костыль дожидаемся обновление DOM
- private async delay(ms: number) {
+  async delay(ms: number):Promise<void> {
   await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log("Задержка подгрузки DOM!!!"));
 }
 
 ///Добавить шаблон в строку это просто жесть
- private async addtemplate(index:number){
+ async addtemplate(index:number):Promise<void>{
   var i = 0;
   await this.delay(10);
   this.temlateList = this.fulltemplate.nativeElement.querySelectorAll("mat-form-field[id=template]");
@@ -122,7 +119,7 @@ export class OtdelTableModel {
 }
 
 ///Удалить шаблон из строки и востановить текущий шаблон
- private removetemplate(){
+  removetemplate():void{
   var i = 0;
   for (var row of this.rowList){
      row.removeChild(this.temlateList[i]);
@@ -133,7 +130,7 @@ export class OtdelTableModel {
 
 
 
-  modifimethod(): void {
+ modifimethod(): void {
     this.model.User?this.model.IdUser = this.model.User.IdUser:this.model.IdUser=null;
     this.isEdit = true;
     this.model.ModelIsEdit = false;
@@ -144,7 +141,7 @@ export class OtdelTableModel {
     this.index = 0;
   }
 
- async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort,table:ElementRef,template:ElementRef): Promise<string> {
+ public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort,table:ElementRef,template:ElementRef): Promise<string> {
     this.modeltable =JSON.parse(JSON.stringify(model.Otdels));
     this.table = table;  //Таблица
     this.fulltemplate = template; //Заложенный шаблон
@@ -164,10 +161,10 @@ export class OtdelTableModel {
     this.isAdd = false;
     this.isEdit = false;
   }
-
 }
-//implements ILogicaTable<Users> 
-export class UserTableModel  {
+
+
+export class UserTableModel implements INewLogicaTable<Users>  {
   constructor(public editandadd:EditAndAdd){}
 
   public displayedColumns = ['IdUser','Name','TabelNumber','Telephon.Telephon_','Telephon.TelephonUndeground','Position.NamePosition','Otdel.NameOtdel','StatusActual','ActionsColumn'];
@@ -191,10 +188,10 @@ export class UserTableModel  {
   public filteredTelephone:any;
 
 //Шаблоны для манипулирования DOM
-private temlateList:any //Заложенный шаблон Массив
-private rowList:any    //Строка по номеру из БД Массив 
-private fulltemplate:ElementRef  //Полный шаблон для манипуляции
-private table:ElementRef  //Полный шаблон для манипуляции
+ temlateList:any //Заложенный шаблон Массив
+ rowList:any    //Строка по номеру из БД Массив 
+ fulltemplate:ElementRef  //Полный шаблон для манипуляции
+ table:ElementRef  //Полный шаблон для манипуляции
 
   //Метод для выноса всех костылей на модель
   public modifimethod():void{
@@ -210,19 +207,19 @@ private table:ElementRef  //Полный шаблон для манипуляц�
     this.index = 0;
   }
 
-  filterstable(filterValue: string): void {
+  public filterstable(filterValue: string): void {
     filterValue = filterValue.trim(); // Remove whitespace
     filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
     this.dataSource.filter = filterValue;
   }
 
-  calbackfiltersAll(){
+  public calbackfiltersAll():void{
     this.filteredOtdel = this.otdels.slice();
     this.filteredPosition = this.position.slice();
     this.filteredTelephone = this.telephone.slice();
   }
   
- public newmodel(): Users {
+  newmodel(): Users {
     var newuser: Users = new Users()
     newuser.ModelIsEdit = true;
     newuser.IdUser = 0;
@@ -230,12 +227,12 @@ private table:ElementRef  //Полный шаблон для манипуляц�
     return newuser;
   }
 //Костыль дожидаемся обновление DOM
- private async delay(ms: number) {
+  async delay(ms: number):Promise<void> {
     await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log("Задержка подгрузки DOM!!!"));
-}
+  }
 
 ///Добавить шаблон в строку это просто жесть
-  private async addtemplate(index:number){
+  async addtemplate(index:number):Promise<void>{
     var i = 0;
     await this.delay(10);
     this.temlateList = this.fulltemplate.nativeElement.querySelectorAll("mat-form-field[id=template]");
@@ -244,10 +241,10 @@ private table:ElementRef  //Полный шаблон для манипуляц�
         row.append(this.temlateList[i])
         i++;
      }
-  }
+   }
 
 ///Удалить шаблон из строки и востановить текущий шаблон
-  private removetemplate(){
+  removetemplate():void{
     var i = 0;
     for (var row of this.rowList){
        row.removeChild(this.temlateList[i]);
@@ -264,10 +261,9 @@ private table:ElementRef  //Полный шаблон для манипуляц�
         this.addtemplate(user.IdUser)
     }
 
-    public save(): void {
+  public save(): void {
       this.modifimethod();
       this.isEditAndAddFalse();
-      this.removetemplate();
       this.editandadd.addandedituser(this.model).subscribe((model:ModelReturn)=>{
         if(model.Guid)
         {
@@ -277,11 +273,11 @@ private table:ElementRef  //Полный шаблон для манипуляц�
         console.log(model.Message);
          this.dataSource._updateChangeSubscription();
        });
-      
+       this.removetemplate();
       //Запрос на сохранение и обновление данных
     }
 
-    public cancel(user: Users): void {
+  public cancel(user: Users): void {
       user.ModelIsEdit = false;
       this.isEditAndAddFalse(); 
       if(this.index>0)
@@ -299,15 +295,15 @@ private table:ElementRef  //Полный шаблон для манипуляц�
       this.removetemplate();
     }
 
-  public add(template:ElementRef): void {
+  public async add():Promise<void> {
         this.isEditAndAddTrue();
         var newmodel = this.newmodel();
-        this.dataSource.paginator.lastPage();
         this.dataSource.data.push(newmodel); 
         this.modeltable.push(newmodel); 
         this.index = this.dataSource.data.length;
         this.model = newmodel;
-        this.dataSource._updateChangeSubscription();
+       await this.dataSource._updateChangeSubscription();
+       await this.dataSource.paginator.lastPage();
         this.addtemplate(newmodel.IdUser)
     }
 
@@ -327,16 +323,18 @@ private table:ElementRef  //Полный шаблон для манипуляц�
         return "Модель пользователей заполнена";
     }
 
-  public isEditAndAddTrue():void{
+  isEditAndAddTrue():void{
     this.isEdit = true;
     this.isAdd = true;
    }
-   public isEditAndAddFalse():void{
+
+  isEditAndAddFalse():void{
     this.isAdd = false;
     this.isEdit = false;
    }
 }
-export class PrinterTableModel implements ILogicaTable<Printer> {
+
+export class PrinterTableModel implements INewLogicaTable<Printer> {
   constructor(public editandadd:EditAndAdd){ }
 
   public displayedColumns = ['IdModel','User.Name','Supply.DatePostavki','FullProizvoditel.NameProizvoditel','FullModel.NameModel','ZavNumber','ServiceNumber','InventarNumber','IpAdress','Coment','Kabinet.NumberKabinet','Statusing.Name','ActionsColumn'];
@@ -351,7 +349,7 @@ export class PrinterTableModel implements ILogicaTable<Printer> {
 
   isAdd: boolean;
   isEdit: boolean;
-  model: Printer;
+  model: Printer = new Printer();
   modelToServer: Printer;
   index: number;
   modeltable: Printer[];
@@ -363,33 +361,47 @@ export class PrinterTableModel implements ILogicaTable<Printer> {
   public filteredUser:any;
   public filteredSupples:any;
   
+  //Шаблоны для манипулирования DOM
+  temlateList:any //Заложенный шаблон Массив
+  rowList:any    //Строка по номеру из БД Массив 
+  fulltemplate:ElementRef<any>  //Полный шаблон для манипуляции
+  table:ElementRef<any>  //Полный шаблон для манипуляции
 
   castomefiltermodel() {
     this.dataSource.filterPredicate = (data, filter) => {
-      var tot = false;
-      for (let column of this.displayedColumns) {
-        if(typeof data[column]!=='undefined'){
-          if ((column in data) && (new Date(data[column].toString()).toString() == "Invalid Date")) {
-          tot = (tot || data[column].toString().trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
-       } else {
-         var date = new Date(data[column].toString());
-         var m = date.toDateString().slice(4, 7) + " " + date.getDate() + " " + date.getFullYear();
-         tot = (tot || m.toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1); 
-       }
-       }
-       else{
-         if( typeof(data[column.split('.')[0]]) ==='object'){
-           tot = (tot || data[column.split('.')[0]][column.split('.')[1]].trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
-         }
-       }
-      }
+        var tot = false;
+        for (let column of this.displayedColumns) {
+            if(typeof data[column]!=='undefined'){
+              if ((column in data) && (new Date(data[column].toString()).toString() == "Invalid Date")) {
+                tot = (tot || data[column].toString().trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+              } else {
+   
+                 var date = new Date(data[column].toString());
+                 var m = date.toDateString().slice(4, 7) + " " + date.getDate() + " " + date.getFullYear();
+                 tot = (tot || m.toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1); 
+                }
+            }
+            else{
+              if(data[column.split('.')[0]]!==null){
+                if( typeof(data[column.split('.')[0]]) ==='object'){
+                  if(data[column.split('.')[0]][column.split('.')[1]]){
+                    tot = (tot || data[column.split('.')[0]][column.split('.')[1]].trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+                  }
+                }
+              }
+              }
+            }
       return tot;
     }
   }
 
+  public filterstable(filterValue: string): void {
+    filterValue = filterValue.trim(); // Remove whitespace
+    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
+    this.dataSource.filter = filterValue;
+  }
 
-
-  calbackfiltersAll(){
+  public calbackfiltersAll():void{
     this.filteredKabinet = this.kabinet.slice();
     this.filteredModels = this.models.slice();
     this.filteredStatusing = this.statusing.slice();
@@ -398,24 +410,26 @@ export class PrinterTableModel implements ILogicaTable<Printer> {
     this.filteredSupples = this.supples.slice();
   }
 
-
-  add(): void {
+  public async add():Promise<void> {
     this.isEditAndAddTrue();
     var newmodel = this.newmodel();
-    this.dataSource.paginator.lastPage();
     this.dataSource.data.push(newmodel); 
     this.modeltable.push(newmodel); 
     this.index = this.dataSource.data.length;
     this.model = newmodel;
-    this.dataSource._updateChangeSubscription();
+   await this.dataSource._updateChangeSubscription();
+   await this.dataSource.paginator.lastPage();
+    this.addtemplate(newmodel.IdPrinter)
   }  
 
-  edit(model: Printer): void {
+  public edit(model: Printer): void {
     model.ModelIsEdit = true;
     this.model =JSON.parse(JSON.stringify(model));
+    this.addtemplate(model.IdPrinter)
     this.isEditAndAddTrue();
   }
-  save(model: Printer): void {
+
+ public save(): void {
     this.modifimethod();
     this.isEditAndAddFalse();
     this.modelToServer = JSON.parse(JSON.stringify(this.model));
@@ -432,23 +446,25 @@ export class PrinterTableModel implements ILogicaTable<Printer> {
       console.log(model.Message);
       this.dataSource._updateChangeSubscription();
      });
+     this.removetemplate();
     //Запрос на сохранение и обновление данных
   }
-  
-  cancel(model: Printer): void {
-      model.ModelIsEdit = false;
-      this.isEditAndAddFalse(); 
-      if(this.index>0)
-      {
-        this.dataSource.data.pop();
-        this.index = 0;
-      }
-      else{
-        var userdefault = this.modeltable.find(x=>x.IdPrinter ===this.model.IdPrinter);
-        this.dataSource.data[this.modeltable.indexOf(userdefault)] = model;
-        this.index = 0;
-      }
-      this.dataSource._updateChangeSubscription();
+
+  public cancel(model: Printer): void {
+    model.ModelIsEdit = false;
+    this.isEditAndAddFalse(); 
+    if(this.index>0)
+    {
+      this.dataSource.data.pop();
+      this.index = 0;
+    }
+    else{
+      var userdefault = this.modeltable.find(x=>x.IdPrinter ===this.model.IdPrinter);
+      this.dataSource.data[this.modeltable.indexOf(userdefault)] = model;
+      this.index = 0;
+    }
+    this.dataSource._updateChangeSubscription();
+    this.removetemplate();
   }
 
   newmodel(): Printer {
@@ -457,20 +473,46 @@ export class PrinterTableModel implements ILogicaTable<Printer> {
     newuser.IdPrinter = 0;
     return newuser;
   }
-  filterstable(filterValue: string): void {
-    filterValue = filterValue.trim(); // Remove whitespace
-    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
-    this.dataSource.filter = filterValue;
-  }
+
+    //Костыль дожидаемся обновление DOM
+    async delay(ms: number):Promise<void> {
+      await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log("Задержка подгрузки DOM!!!"));
+    }
+    
+    ///Добавить шаблон в строку это просто жесть
+     async addtemplate(index:number):Promise<void>{
+      var i = 0;
+      await this.delay(10);
+      this.temlateList = this.fulltemplate.nativeElement.querySelectorAll("mat-form-field[id=template]");
+      this.rowList = this.table.nativeElement.querySelectorAll("div[class='"+index+"']");
+      for (var row of this.rowList){
+          row.append(this.temlateList[i])
+          i++;
+       }
+    }
+    
+    ///Удалить шаблон из строки и востановить текущий шаблон
+      removetemplate():void{
+      var i = 0;
+      for (var row of this.rowList){
+         row.removeChild(this.temlateList[i]);
+         this.fulltemplate.nativeElement.append(this.temlateList[i])
+        i++;
+      }
+    }
+
   modifimethod(): void {
     this.model.FullProizvoditel?this.model.IdProizvoditel = this.model.FullProizvoditel.IdProizvoditel:this.model.IdProizvoditel=null;
     this.model.FullModel?this.model.IdModel = this.model.FullModel.IdModel:this.model.IdModel=null;
     this.model.Statusing?this.model.IdStatus = this.model.Statusing.IdStatus:this.model.IdStatus=null;
     this.model.Kabinet?this.model.IdNumberKabinet = this.model.Kabinet.IdNumberKabinet:this.model.IdNumberKabinet=null;
     this.model.User?this.model.IdUser = this.model.User.IdUser:this.model.IdUser=null;
-    if(this.model.Supply)
-    {this.model.IdSupply = this.model.Supply.IdSupply
+    if(this.model.Supply){
+      this.model.IdSupply = this.model.Supply.IdSupply
       this.model.Supply.DataCreate = null;
+      if(this.model.Supply.DatePostavki.length<=10){
+        this.model.Supply.DatePostavki = this.model.Supply.DatePostavki.split("-").reverse().join("-")+"T00:00:00"
+      }
     }
     else{
       this.model.IdSupply=null;
@@ -483,13 +525,10 @@ export class PrinterTableModel implements ILogicaTable<Printer> {
     this.dataSource.data[indexold] = this.model;
     this.index = 0;
   }
- public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort): Promise<string> {
-    if(model.Printer.length!==0) {
-     this.model = JSON.parse(JSON.stringify(model.Printer[0]));
-    } 
-    else{
-     this.model = null;
-    }
+
+ public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort,table:ElementRef,template:ElementRef): Promise<string> {
+    this.table = table;  //Таблица
+    this.fulltemplate = template; //Заложенный шаблон
     this.modeltable =JSON.parse(JSON.stringify(model.Printer));
     this.dataSource.paginator = paginator;
     this.dataSource.sort = sort
@@ -510,17 +549,17 @@ export class PrinterTableModel implements ILogicaTable<Printer> {
     return "Модель принтеров заполнена";
   }
 
-  public isEditAndAddTrue():void{
+  isEditAndAddTrue():void{
     this.isEdit = true;
     this.isAdd = true;
    }
-   public isEditAndAddFalse():void{
+  isEditAndAddFalse():void{
     this.isAdd = false;
     this.isEdit = false;
    }
 }
 
-export class ScanerAndCamerTableModel implements ILogicaTable<ScanerAndCamer> {
+export class ScanerAndCamerTableModel implements INewLogicaTable<ScanerAndCamer> {
   
   constructor(public editandadd:EditAndAdd){ }
 
@@ -537,7 +576,7 @@ export class ScanerAndCamerTableModel implements ILogicaTable<ScanerAndCamer> {
 
   isAdd: boolean;
   isEdit: boolean;
-  model: ScanerAndCamer;
+  model: ScanerAndCamer = new ScanerAndCamer();
   modelToServer: ScanerAndCamer;
   index: number;
   modeltable: ScanerAndCamer[];
@@ -549,31 +588,48 @@ export class ScanerAndCamerTableModel implements ILogicaTable<ScanerAndCamer> {
   public filteredUser:any;
   public filteredSupples:any;
 
+    //Шаблоны для манипулирования DOM
+  temlateList:any //Заложенный шаблон Массив
+  rowList:any    //Строка по номеру из БД Массив 
+  fulltemplate:ElementRef<any>  //Полный шаблон для манипуляции
+  table:ElementRef<any>  //Полный шаблон для манипуляции
+
+
   castomefiltermodel() {
     this.dataSource.filterPredicate = (data, filter) => {
-      var tot = false;
-      for (let column of this.displayedColumns) {
-        if(typeof data[column]!=='undefined'){
-          if ((column in data) && (new Date(data[column].toString()).toString() == "Invalid Date")) {
-          tot = (tot || data[column].toString().trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
-       } else {
-         var date = new Date(data[column].toString());
-         var m = date.toDateString().slice(4, 7) + " " + date.getDate() + " " + date.getFullYear();
-         tot = (tot || m.toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1); 
-       }
-       }
-       else{
-         if( typeof(data[column.split('.')[0]]) ==='object'){
-           tot = (tot || data[column.split('.')[0]][column.split('.')[1]].trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
-         }
-       }
-      }
+        var tot = false;
+        for (let column of this.displayedColumns) {
+            if(typeof data[column]!=='undefined'){
+              if ((column in data) && (new Date(data[column].toString()).toString() == "Invalid Date")) {
+                tot = (tot || data[column].toString().trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+              } else {
+   
+                 var date = new Date(data[column].toString());
+                 var m = date.toDateString().slice(4, 7) + " " + date.getDate() + " " + date.getFullYear();
+                 tot = (tot || m.toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1); 
+                }
+            }
+            else{
+              if(data[column.split('.')[0]]!==null){
+                if( typeof(data[column.split('.')[0]]) ==='object'){
+                  if(data[column.split('.')[0]][column.split('.')[1]]){
+                    tot = (tot || data[column.split('.')[0]][column.split('.')[1]].trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+                  }
+                }
+              }
+              }
+            }
       return tot;
     }
   }
 
+  public filterstable(filterValue: string):void {
+    filterValue = filterValue.trim(); // Remove whitespace
+    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
+    this.dataSource.filter = filterValue;
+  }
 
-  calbackfiltersAll(){
+  public calbackfiltersAll():void{
     this.filteredKabinet = this.kabinet.slice();
     this.filteredModels = this.models.slice();
     this.filteredStatusing = this.statusing.slice();
@@ -582,22 +638,25 @@ export class ScanerAndCamerTableModel implements ILogicaTable<ScanerAndCamer> {
     this.filteredSupples = this.supples.slice();
   }
 
-  add(): void {
+ public async add():Promise<void> {
     this.isEditAndAddTrue();
     var newmodel = this.newmodel();
-    this.dataSource.paginator.lastPage();
     this.dataSource.data.push(newmodel); 
     this.modeltable.push(newmodel); 
     this.index = this.dataSource.data.length;
     this.model = newmodel;
-    this.dataSource._updateChangeSubscription();
+   await this.dataSource._updateChangeSubscription();
+   await this.dataSource.paginator.lastPage();
+   this.addtemplate(newmodel.IdScaner)
+
   } 
-  edit(model: ScanerAndCamer): void {
+ public edit(model: ScanerAndCamer):void {
     model.ModelIsEdit = true;
     this.model =JSON.parse(JSON.stringify(model));
+    this.addtemplate(model.IdScaner)
     this.isEditAndAddTrue();
   }
-  save(model: ScanerAndCamer): void {
+ public save(): void {
     this.modifimethod();
     this.isEditAndAddFalse();
     this.modelToServer = JSON.parse(JSON.stringify(this.model));
@@ -614,9 +673,11 @@ export class ScanerAndCamerTableModel implements ILogicaTable<ScanerAndCamer> {
       console.log(model.Message);
       this.dataSource._updateChangeSubscription();
      });
+     this.removetemplate();
     //Запрос на сохранение и обновление данных
   }
-  cancel(model: ScanerAndCamer): void {
+
+ public cancel(model: ScanerAndCamer):void {
     model.ModelIsEdit = false;
     this.isEditAndAddFalse(); 
     if(this.index>0)
@@ -630,27 +691,53 @@ export class ScanerAndCamerTableModel implements ILogicaTable<ScanerAndCamer> {
       this.index = 0;
     }
     this.dataSource._updateChangeSubscription();
+    this.removetemplate();
   }
-  newmodel(): ScanerAndCamer {
+
+  newmodel():ScanerAndCamer {
     var newuser: ScanerAndCamer = new ScanerAndCamer()
     newuser.ModelIsEdit = true;
     newuser.IdScaner = 0;
     return newuser;
   }
-  filterstable(filterValue: string): void {
-    filterValue = filterValue.trim(); // Remove whitespace
-    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
-    this.dataSource.filter = filterValue;
+  //Костыль дожидаемся обновление DOM
+  async delay(ms: number):Promise<void> {
+    await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log("Задержка подгрузки DOM!!!"));
   }
+      
+  ///Добавить шаблон в строку это просто жесть
+  async addtemplate(index:number):Promise<void>{
+    var i = 0;
+    await this.delay(10);
+    this.temlateList = this.fulltemplate.nativeElement.querySelectorAll("mat-form-field[id=template]");
+    this.rowList = this.table.nativeElement.querySelectorAll("div[class='"+index+"']");
+    for (var row of this.rowList){
+       row.append(this.temlateList[i])
+       i++;
+    }
+  }
+  ///Удалить шаблон из строки и востановить текущий шаблон
+  removetemplate():void{
+    var i = 0;
+    for (var row of this.rowList){
+     row.removeChild(this.temlateList[i]);
+      this.fulltemplate.nativeElement.append(this.temlateList[i])
+      i++;
+    }
+  }
+
   modifimethod(): void {
     this.model.FullProizvoditel?this.model.IdProizvoditel = this.model.FullProizvoditel.IdProizvoditel:this.model.IdProizvoditel=null;
     this.model.FullModel?this.model.IdModel = this.model.FullModel.IdModel:this.model.IdModel=null;
     this.model.Statusing?this.model.IdStatus = this.model.Statusing.IdStatus:this.model.IdStatus=null;
     this.model.Kabinet?this.model.IdNumberKabinet = this.model.Kabinet.IdNumberKabinet:this.model.IdNumberKabinet=null;
     this.model.User?this.model.IdUser = this.model.User.IdUser:this.model.IdUser=null;
-    if(this.model.Supply)
-    { this.model.IdSupply = this.model.Supply.IdSupply
+    if(this.model.Supply){ 
+      this.model.IdSupply = this.model.Supply.IdSupply
       this.model.Supply.DataCreate = null;
+      if(this.model.Supply.DatePostavki.length<=10){
+        this.model.Supply.DatePostavki = this.model.Supply.DatePostavki.split("-").reverse().join("-")+"T00:00:00"
+      }
     }
     else{
       this.model.IdSupply=null;
@@ -663,13 +750,10 @@ export class ScanerAndCamerTableModel implements ILogicaTable<ScanerAndCamer> {
     this.dataSource.data[indexold] = this.model;
     this.index = 0;
   }
- public async  addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort): Promise<string> {
-    if(model.Scaner.length!==0) {
-     this.model = JSON.parse(JSON.stringify(model.Scaner[0]));
-    } 
-    else{
-     this.model = null;
-    }
+
+  public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort,table:ElementRef,template:ElementRef): Promise<string> {
+    this.table = table;  //Таблица
+    this.fulltemplate = template; //Заложенный шаблон
     this.modeltable =JSON.parse(JSON.stringify(model.Scaner));
     this.dataSource.paginator = paginator;
     this.dataSource.sort = sort
@@ -689,17 +773,19 @@ export class ScanerAndCamerTableModel implements ILogicaTable<ScanerAndCamer> {
     this.filteredSupples = this.supples.slice();
     return "Модель сканеров заполнена";
   }
+
   isEditAndAddTrue(): void {
     this.isEdit = true;
     this.isAdd = true;
   }
+
   isEditAndAddFalse(): void {
     this.isAdd = false;
     this.isEdit = false;
   }
 }
 
-export class MfuTableModel implements ILogicaTable<Mfu> {
+export class MfuTableModel implements INewLogicaTable<Mfu>  {
  
   constructor(public editandadd:EditAndAdd){ }
 
@@ -716,7 +802,7 @@ export class MfuTableModel implements ILogicaTable<Mfu> {
 
   isAdd: boolean;
   isEdit: boolean;
-  model: Mfu;
+  model: Mfu = new Mfu();
   modelToServer:Mfu;
   index: number;
   modeltable: Mfu[];
@@ -729,31 +815,48 @@ export class MfuTableModel implements ILogicaTable<Mfu> {
   public filteredUser:any;
   public filteredSupples:any;
 
+  //Шаблоны для манипулирования DOM
+  temlateList:any //Заложенный шаблон Массив
+  rowList:any    //Строка по номеру из БД Массив 
+  fulltemplate:ElementRef<any>  //Полный шаблон для манипуляции
+  table:ElementRef<any>  //Полный шаблон для манипуляции
+
+
   castomefiltermodel() {
     this.dataSource.filterPredicate = (data, filter) => {
-      var tot = false;
-      for (let column of this.displayedColumns) {
-        if(typeof data[column]!=='undefined'){
-          if ((column in data) && (new Date(data[column].toString()).toString() == "Invalid Date")) {
-          tot = (tot || data[column].toString().trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
-       } else {
-         var date = new Date(data[column].toString());
-         var m = date.toDateString().slice(4, 7) + " " + date.getDate() + " " + date.getFullYear();
-         tot = (tot || m.toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1); 
-       }
-       }
-       else{
-         if( typeof(data[column.split('.')[0]]) ==='object'){
-           tot = (tot || data[column.split('.')[0]][column.split('.')[1]].trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
-         }
-       }
-      }
+        var tot = false;
+        for (let column of this.displayedColumns) {
+            if(typeof data[column]!=='undefined'){
+              if ((column in data) && (new Date(data[column].toString()).toString() == "Invalid Date")) {
+                tot = (tot || data[column].toString().trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+              } else {
+   
+                 var date = new Date(data[column].toString());
+                 var m = date.toDateString().slice(4, 7) + " " + date.getDate() + " " + date.getFullYear();
+                 tot = (tot || m.toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1); 
+                }
+            }
+            else{
+              if(data[column.split('.')[0]]!==null){
+                if( typeof(data[column.split('.')[0]]) ==='object'){
+                  if(data[column.split('.')[0]][column.split('.')[1]]){
+                    tot = (tot || data[column.split('.')[0]][column.split('.')[1]].trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+                  }
+                }
+              }
+              }
+            }
       return tot;
     }
   }
 
+  public filterstable(filterValue: string): void {
+    filterValue = filterValue.trim(); // Remove whitespace
+    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
+    this.dataSource.filter = filterValue;
+  }
 
-  calbackfiltersAll(){
+  public calbackfiltersAll():void{
     this.filteredKabinet = this.kabinet.slice();
     this.filteredModels = this.models.slice();
     this.filteredStatusing = this.statusing.slice();
@@ -763,24 +866,26 @@ export class MfuTableModel implements ILogicaTable<Mfu> {
     this.filteredSupples = this.supples.slice();
   }
 
-  add(): void {
+ public async add():Promise<void> {
     this.isEditAndAddTrue();
     var newmodel = this.newmodel();
-    this.dataSource.paginator.lastPage();
     this.dataSource.data.push(newmodel); 
     this.modeltable.push(newmodel); 
     this.index = this.dataSource.data.length;
     this.model = newmodel;
-    this.dataSource._updateChangeSubscription();
+  await this.dataSource._updateChangeSubscription();
+  await this.dataSource.paginator.lastPage();
+    this.addtemplate(newmodel.IdMfu)
   }  
 
-  edit(model: Mfu): void {
+  public edit(model: Mfu): void {
     model.ModelIsEdit = true;
     this.model =JSON.parse(JSON.stringify(model));
+    this.addtemplate(model.IdMfu)
     this.isEditAndAddTrue();
   }
 
-  save(model: Mfu): void {
+ public save(): void {
     this.modifimethod();
     this.isEditAndAddFalse();
     this.modelToServer = JSON.parse(JSON.stringify(this.model));
@@ -797,6 +902,7 @@ export class MfuTableModel implements ILogicaTable<Mfu> {
       console.log(model.Message);
       this.dataSource._updateChangeSubscription();
      });
+     this.removetemplate();
     //Запрос на сохранение и обновление данных
   }
 
@@ -814,6 +920,7 @@ export class MfuTableModel implements ILogicaTable<Mfu> {
       this.index = 0;
     }
     this.dataSource._updateChangeSubscription();
+    this.removetemplate();
   }
 
   newmodel(): Mfu {
@@ -822,11 +929,31 @@ export class MfuTableModel implements ILogicaTable<Mfu> {
     newuser.IdMfu = 0;
     return newuser;
   }
+   //Костыль дожидаемся обновление DOM
+  async delay(ms: number):Promise<void> {
+    await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log("Задержка подгрузки DOM!!!"));
+  }
+      
+  ///Добавить шаблон в строку это просто жесть
+  async addtemplate(index:number):Promise<void>{
+    var i = 0;
+    await this.delay(10);
+    this.temlateList = this.fulltemplate.nativeElement.querySelectorAll("mat-form-field[id=template]");
+    this.rowList = this.table.nativeElement.querySelectorAll("div[class='"+index+"']");
+    for (var row of this.rowList){
+      row.append(this.temlateList[i])
+      i++;
+    }
+  }
 
-  filterstable(filterValue: string): void {
-    filterValue = filterValue.trim(); // Remove whitespace
-    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
-    this.dataSource.filter = filterValue;
+  ///Удалить шаблон из строки и востановить текущий шаблон
+  removetemplate():void{
+    var i = 0;
+    for (var row of this.rowList){
+      row.removeChild(this.temlateList[i]);
+      this.fulltemplate.nativeElement.append(this.temlateList[i])
+      i++;
+    }
   }
 
   modifimethod(): void {
@@ -836,9 +963,12 @@ export class MfuTableModel implements ILogicaTable<Mfu> {
     this.model.Kabinet?this.model.IdNumberKabinet = this.model.Kabinet.IdNumberKabinet:this.model.IdNumberKabinet=null;
     this.model.CopySave?this.model.IdCopySave = this.model.CopySave.IdCopySave:this.model.IdCopySave=null;
     this.model.User?this.model.IdUser = this.model.User.IdUser:this.model.IdUser=null;
-    if(this.model.Supply)
-    { this.model.IdSupply = this.model.Supply.IdSupply
+    if(this.model.Supply){ 
+      this.model.IdSupply = this.model.Supply.IdSupply
       this.model.Supply.DataCreate = null;
+      if(this.model.Supply.DatePostavki.length<=10){
+        this.model.Supply.DatePostavki = this.model.Supply.DatePostavki.split("-").reverse().join("-")+"T00:00:00"
+      }
     }
     else{
       this.model.IdSupply=null;
@@ -852,13 +982,9 @@ export class MfuTableModel implements ILogicaTable<Mfu> {
     this.index = 0;
   }
 
- public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort): Promise<string> {
-    if(model.Mfu.length!==0) {
-      this.model = JSON.parse(JSON.stringify(model.Mfu[0]));
-    } 
-    else{
-      this.model = null;
-    }
+ public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort,table:ElementRef,template:ElementRef): Promise<string> {
+    this.table = table;  //Таблица
+    this.fulltemplate = template; //Заложенный шаблон
     this.modeltable =JSON.parse(JSON.stringify(model.Mfu));
     this.dataSource.paginator = paginator;
     this.dataSource.sort = sort
@@ -892,7 +1018,7 @@ export class MfuTableModel implements ILogicaTable<Mfu> {
   }
 }
 
-export class SysBlockTableModel implements ILogicaTable<SysBlock> {
+export class SysBlockTableModel implements INewLogicaTable<SysBlock>  {
   constructor(public editandadd:EditAndAdd){ }
 
   public displayedColumns = ['IdModel','User.Name','Supply.DatePostavki','NameSysBlock.NameComputer','ServiceNum','SerNum','InventarNumSysBlok','NameComputer','IpAdress','Kabinet.NumberKabinet','Coment','Statusing.Name','ActionsColumn'];
@@ -906,7 +1032,7 @@ export class SysBlockTableModel implements ILogicaTable<SysBlock> {
 
   isAdd: boolean;
   isEdit: boolean;
-  model: SysBlock;
+  model: SysBlock = new SysBlock();
   modelToServer:SysBlock;
   index: number;
   modeltable: SysBlock[];
@@ -917,30 +1043,49 @@ export class SysBlockTableModel implements ILogicaTable<SysBlock> {
   public filteredUser:any;
   public filteredSupples:any;
 
+  //Шаблоны для манипулирования DOM
+  temlateList:any //Заложенный шаблон Массив
+  rowList:any    //Строка по номеру из БД Массив 
+  fulltemplate:ElementRef<any>  //Полный шаблон для манипуляции
+  table:ElementRef<any>  //Полный шаблон для манипуляции
+
+
   castomefiltermodel() {
     this.dataSource.filterPredicate = (data, filter) => {
-      var tot = false;
-      for (let column of this.displayedColumns) {
-        if(typeof data[column]!=='undefined'){
-          if ((column in data) && (new Date(data[column].toString()).toString() == "Invalid Date")) {
-          tot = (tot || data[column].toString().trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
-       } else {
-         var date = new Date(data[column].toString());
-         var m = date.toDateString().slice(4, 7) + " " + date.getDate() + " " + date.getFullYear();
-         tot = (tot || m.toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1); 
-       }
-       }
-       else{
-         if( typeof(data[column.split('.')[0]]) ==='object'){
-           tot = (tot || data[column.split('.')[0]][column.split('.')[1]].trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
-         }
-       }
-      }
+        var tot = false;
+        for (let column of this.displayedColumns) {
+            if(typeof data[column]!=='undefined'){
+              if ((column in data) && (new Date(data[column].toString()).toString() == "Invalid Date")) {
+                tot = (tot || data[column].toString().trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+              } else {
+   
+                 var date = new Date(data[column].toString());
+                 var m = date.toDateString().slice(4, 7) + " " + date.getDate() + " " + date.getFullYear();
+                 tot = (tot || m.toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1); 
+                }
+            }
+            else{
+              if(data[column.split('.')[0]]!==null){
+                if( typeof(data[column.split('.')[0]]) ==='object'){
+                  if(data[column.split('.')[0]][column.split('.')[1]]){
+                    tot = (tot || data[column.split('.')[0]][column.split('.')[1]].trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+                  }
+                }
+              }
+              }
+            }
       return tot;
     }
   }
 
-  calbackfiltersAll(){
+  public filterstable(filterValue: string): void {
+    filterValue = filterValue.trim(); // Remove whitespace
+    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
+    this.dataSource.filter = filterValue;
+  }
+
+
+  public calbackfiltersAll():void{
     this.filteredKabinet = this.kabinet.slice();
     this.filteredModels = this.models.slice();
     this.filteredStatusing = this.statusing.slice();
@@ -948,24 +1093,26 @@ export class SysBlockTableModel implements ILogicaTable<SysBlock> {
     this.filteredSupples = this.supples.slice();
   }
 
-  add(): void {
+ public async add():Promise<void> {
     this.isEditAndAddTrue();
     var newmodel = this.newmodel();
-    this.dataSource.paginator.lastPage();
     this.dataSource.data.push(newmodel); 
     this.modeltable.push(newmodel); 
     this.index = this.dataSource.data.length;
     this.model = newmodel;
-    this.dataSource._updateChangeSubscription();
+   await this.dataSource._updateChangeSubscription();
+   await this.dataSource.paginator.lastPage();
+    this.addtemplate(newmodel.IdSysBlock)
   }  
 
-  edit(model: SysBlock): void {
+  public edit(model: SysBlock): void {
     model.ModelIsEdit = true;
     this.model =JSON.parse(JSON.stringify(model));
+    this.addtemplate(model.IdSysBlock)
     this.isEditAndAddTrue();
   }
 
-  save(model: SysBlock): void {
+  public save(): void {
     this.modifimethod();
     this.isEditAndAddFalse();
     this.modelToServer = JSON.parse(JSON.stringify(this.model));
@@ -982,10 +1129,11 @@ export class SysBlockTableModel implements ILogicaTable<SysBlock> {
       console.log(model.Message);
       this.dataSource._updateChangeSubscription();
      });
+     this.removetemplate();
     //Запрос на сохранение и обновление данных
   }
   
-  cancel(model: SysBlock): void {
+  public cancel(model: SysBlock): void {
     model.ModelIsEdit = false;
     this.isEditAndAddFalse(); 
     if(this.index>0)
@@ -999,6 +1147,7 @@ export class SysBlockTableModel implements ILogicaTable<SysBlock> {
       this.index = 0;
     }
     this.dataSource._updateChangeSubscription();
+    this.removetemplate();
   }
 
   newmodel(): SysBlock {
@@ -1008,20 +1157,45 @@ export class SysBlockTableModel implements ILogicaTable<SysBlock> {
     return newuser;
   }
 
-  filterstable(filterValue: string): void {
-    filterValue = filterValue.trim(); // Remove whitespace
-    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
-    this.dataSource.filter = filterValue;
+  //Костыль дожидаемся обновление DOM
+  async delay(ms: number):Promise<void> {
+    await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log("Задержка подгрузки DOM!!!"));
   }
+      
+  ///Добавить шаблон в строку это просто жесть
+  async addtemplate(index:number):Promise<void>{
+    var i = 0;
+    await this.delay(10);
+    this.temlateList = this.fulltemplate.nativeElement.querySelectorAll("mat-form-field[id=template]");
+    this.rowList = this.table.nativeElement.querySelectorAll("div[class='"+index+"']");
+    for (var row of this.rowList){
+      row.append(this.temlateList[i])
+      i++;
+    }
+  }
+      
+  ///Удалить шаблон из строки и востановить текущий шаблон
+  removetemplate():void{
+    var i = 0;
+    for (var row of this.rowList){
+      row.removeChild(this.temlateList[i]);
+      this.fulltemplate.nativeElement.append(this.temlateList[i])
+      i++;
+    }
+  }
+
 
   modifimethod(): void {
     this.model.NameSysBlock?this.model.IdModelSysBlock = this.model.NameSysBlock.IdModelSysBlock:this.model.IdModelSysBlock=null;
     this.model.Statusing?this.model.IdStatus = this.model.Statusing.IdStatus:this.model.IdStatus=null;
     this.model.Kabinet?this.model.IdNumberKabinet = this.model.Kabinet.IdNumberKabinet:this.model.IdNumberKabinet=null;
     this.model.User?this.model.IdUser = this.model.User.IdUser:this.model.IdUser=null;
-    if(this.model.Supply)
-    { this.model.IdSupply = this.model.Supply.IdSupply
+    if(this.model.Supply){ 
+      this.model.IdSupply = this.model.Supply.IdSupply
       this.model.Supply.DataCreate = null;
+      if(this.model.Supply.DatePostavki.length<=10){
+        this.model.Supply.DatePostavki = this.model.Supply.DatePostavki.split("-").reverse().join("-")+"T00:00:00"
+      }
     }
     else{
       this.model.IdSupply=null;
@@ -1035,13 +1209,9 @@ export class SysBlockTableModel implements ILogicaTable<SysBlock> {
     this.index = 0;
   }
 
- public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort): Promise<string> {
-  if(model.SysBlok.length!==0) {
-    this.model = JSON.parse(JSON.stringify(model.SysBlok[0]));
-  } 
-  else{
-    this.model = null;
-  }
+ public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort,table:ElementRef,template:ElementRef): Promise<string> {
+    this.table = table;  //Таблица
+    this.fulltemplate = template; //Заложенный шаблон
     this.modeltable =JSON.parse(JSON.stringify(model.SysBlok));
     this.dataSource.paginator = paginator;
     this.dataSource.sort = sort
@@ -1072,7 +1242,7 @@ export class SysBlockTableModel implements ILogicaTable<SysBlock> {
 
 }
 
-export class MonitorsTableModel implements ILogicaTable<Monitor> {
+export class MonitorsTableModel implements INewLogicaTable<Monitor>  {
   constructor(public editandadd:EditAndAdd){ }
 
   public displayedColumns = ['IdModel','User.Name','Supply.DatePostavki','NameMonitor.Name','SerNum','InventarNumMonitor','Kabinet.NumberKabinet','Coment','Statusing.Name','ActionsColumn'];
@@ -1087,7 +1257,7 @@ export class MonitorsTableModel implements ILogicaTable<Monitor> {
 
   isAdd: boolean;
   isEdit: boolean;
-  model: Monitor;
+  model: Monitor = new Monitor();
   modelToServer:Monitor;
   index: number;
   modeltable: Monitor[];
@@ -1098,30 +1268,48 @@ export class MonitorsTableModel implements ILogicaTable<Monitor> {
   public filteredUser:any;
   public filteredSupples:any;
 
+  //Шаблоны для манипулирования DOM
+  temlateList:any //Заложенный шаблон Массив
+  rowList:any    //Строка по номеру из БД Массив 
+  fulltemplate:ElementRef<any>  //Полный шаблон для манипуляции
+  table:ElementRef<any>  //Полный шаблон для манипуляции
+
+
   castomefiltermodel() {
     this.dataSource.filterPredicate = (data, filter) => {
-      var tot = false;
-      for (let column of this.displayedColumns) {
-        if(typeof data[column]!=='undefined'){
-          if ((column in data) && (new Date(data[column].toString()).toString() == "Invalid Date")) {
-          tot = (tot || data[column].toString().trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
-       } else {
-         var date = new Date(data[column].toString());
-         var m = date.toDateString().slice(4, 7) + " " + date.getDate() + " " + date.getFullYear();
-         tot = (tot || m.toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1); 
-       }
-       }
-       else{
-         if( typeof(data[column.split('.')[0]]) ==='object'){
-           tot = (tot || data[column.split('.')[0]][column.split('.')[1]].trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
-         }
-       }
-      }
+        var tot = false;
+        for (let column of this.displayedColumns) {
+            if(typeof data[column]!=='undefined'){
+              if ((column in data) && (new Date(data[column].toString()).toString() == "Invalid Date")) {
+                tot = (tot || data[column].toString().trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+              } else {
+   
+                 var date = new Date(data[column].toString());
+                 var m = date.toDateString().slice(4, 7) + " " + date.getDate() + " " + date.getFullYear();
+                 tot = (tot || m.toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1); 
+                }
+            }
+            else{
+              if(data[column.split('.')[0]]!==null){
+                if( typeof(data[column.split('.')[0]]) ==='object'){
+                  if(data[column.split('.')[0]][column.split('.')[1]]){
+                    tot = (tot || data[column.split('.')[0]][column.split('.')[1]].trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+                  }
+                }
+              }
+              }
+            }
       return tot;
     }
   }
 
-  calbackfiltersAll(){
+  public filterstable(filterValue: string): void {
+    filterValue = filterValue.trim(); // Remove whitespace
+    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
+    this.dataSource.filter = filterValue;
+  }
+
+  public calbackfiltersAll():void{
     this.filteredKabinet = this.kabinet.slice();
     this.filteredModels = this.models.slice();
     this.filteredStatusing = this.statusing.slice();
@@ -1129,24 +1317,26 @@ export class MonitorsTableModel implements ILogicaTable<Monitor> {
     this.filteredSupples = this.supples.slice();
   }
   
-  add(): void {
+  public async add():Promise<void>{
     this.isEditAndAddTrue();
     var newmodel = this.newmodel();
-    this.dataSource.paginator.lastPage();
     this.dataSource.data.push(newmodel); 
     this.modeltable.push(newmodel); 
     this.index = this.dataSource.data.length;
     this.model = newmodel;
-    this.dataSource._updateChangeSubscription();
+   await this.dataSource._updateChangeSubscription();
+   await this.dataSource.paginator.lastPage();
+    this.addtemplate(newmodel.IdMonitor)
   } 
   
-  edit(model: Monitor): void {
+  public edit(model: Monitor): void {
     model.ModelIsEdit = true;
     this.model =JSON.parse(JSON.stringify(model));
+    this.addtemplate(model.IdMonitor)
     this.isEditAndAddTrue();
   }
 
-  save(model: Monitor): void {
+  public save(): void {
     this.modifimethod();
     this.isEditAndAddFalse();
     this.modelToServer = JSON.parse(JSON.stringify(this.model));
@@ -1163,6 +1353,7 @@ export class MonitorsTableModel implements ILogicaTable<Monitor> {
       console.log(model.Message);
       this.dataSource._updateChangeSubscription();
      });
+     this.removetemplate();
     //Запрос на сохранение и обновление данных
   }
 
@@ -1180,6 +1371,7 @@ export class MonitorsTableModel implements ILogicaTable<Monitor> {
       this.index = 0;
     }
     this.dataSource._updateChangeSubscription();
+    this.removetemplate();
   }
 
   newmodel(): Monitor {
@@ -1189,20 +1381,46 @@ export class MonitorsTableModel implements ILogicaTable<Monitor> {
     return newuser;
   }
 
-  filterstable(filterValue: string): void {
-    filterValue = filterValue.trim(); // Remove whitespace
-    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
-    this.dataSource.filter = filterValue;
+  //Костыль дожидаемся обновление DOM
+  async delay(ms: number):Promise<void> {
+    await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log("Задержка подгрузки DOM!!!"));
   }
+        
+  ///Добавить шаблон в строку это просто жесть
+  async addtemplate(index:number):Promise<void>{
+    var i = 0;
+    await this.delay(10);
+    this.temlateList = this.fulltemplate.nativeElement.querySelectorAll("mat-form-field[id=template]");
+    this.rowList = this.table.nativeElement.querySelectorAll("div[class='"+index+"']");
+    for (var row of this.rowList){
+      row.append(this.temlateList[i])
+      i++;
+    }
+  }
+  
+  ///Удалить шаблон из строки и востановить текущий шаблон
+  removetemplate():void{
+    var i = 0;
+    for (var row of this.rowList){
+      row.removeChild(this.temlateList[i]);
+      this.fulltemplate.nativeElement.append(this.temlateList[i])
+      i++;
+    }
+  }
+
+
 
   modifimethod(): void {
     this.model.NameMonitor?this.model.IdModelMonitor = this.model.NameMonitor.IdModelMonitor:this.model.IdModelMonitor=null;
     this.model.Statusing?this.model.IdStatus = this.model.Statusing.IdStatus:this.model.IdStatus=null;
     this.model.Kabinet?this.model.IdNumberKabinet = this.model.Kabinet.IdNumberKabinet:this.model.IdNumberKabinet=null;
     this.model.User?this.model.IdUser = this.model.User.IdUser:this.model.IdUser=null;
-    if(this.model.Supply)
-    { this.model.IdSupply = this.model.Supply.IdSupply
+    if(this.model.Supply){ 
+      this.model.IdSupply = this.model.Supply.IdSupply
       this.model.Supply.DataCreate = null;
+      if(this.model.Supply.DatePostavki.length<=10){
+        this.model.Supply.DatePostavki = this.model.Supply.DatePostavki.split("-").reverse().join("-")+"T00:00:00"
+      }
     }
     else{
       this.model.IdSupply=null;
@@ -1216,14 +1434,10 @@ export class MonitorsTableModel implements ILogicaTable<Monitor> {
     this.index = 0;
   }
 
- public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort): Promise<string> {
-  if(model.Monitors.length!==0) {
-    this.model = JSON.parse(JSON.stringify(model.Monitors[0]));
-  } 
-  else{
-    this.model = null;
-  }
-  this.modeltable =JSON.parse(JSON.stringify(model.Monitors));
+ public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort,table:ElementRef,template:ElementRef): Promise<string> {
+   this.table = table;  //Таблица
+   this.fulltemplate = template; //Заложенный шаблон
+   this.modeltable =JSON.parse(JSON.stringify(model.Monitors));
    this.dataSource.paginator = paginator;
    this.dataSource.sort = sort
     this.dataSource.data = model.Monitors;
@@ -1251,8 +1465,8 @@ export class MonitorsTableModel implements ILogicaTable<Monitor> {
     this.isEdit = false;
   }
 }
-//implements ILogicaTable<Telephon> 
-export class TelephonsTableModel {
+
+export class TelephonsTableModel implements INewLogicaTable<Telephon> {
  
   constructor(public editandadd:EditAndAdd){ }
   public displayedColumns = ['IdTelephone','Supply.DatePostavki','NameTelephone','Telephon_','TelephonUndeground','SerNumber','IpTelephon','MacTelephon','Kabinet.NumberKabinet','Coment','Statusing.Name','ActionsColumn'];
@@ -1274,36 +1488,41 @@ export class TelephonsTableModel {
   public filteredStatusing:any;
 
   //Шаблоны для манипулирования DOM
-  private temlateList:any //Заложенный шаблон Массив
-  private rowList:any    //Строка по номеру из БД Массив 
-  private fulltemplate:ElementRef  //Полный шаблон для манипуляции
-  private table:ElementRef  //Полный шаблон для манипуляции
+   temlateList:any //Заложенный шаблон Массив
+   rowList:any    //Строка по номеру из БД Массив 
+   fulltemplate:ElementRef  //Полный шаблон для манипуляции
+   table:ElementRef  //Полный шаблон для манипуляции
 
 
-  castomefiltermodel() {
+   castomefiltermodel() {
     this.dataSource.filterPredicate = (data, filter) => {
-      var tot = false;
-      for (let column of this.displayedColumns) {
-        if(typeof data[column]!=='undefined'){
-          if ((column in data) && (new Date(data[column].toString()).toString() == "Invalid Date")) {
-          tot = (tot || data[column].toString().trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
-       } else {
-         var date = new Date(data[column].toString());
-         var m = date.toDateString().slice(4, 7) + " " + date.getDate() + " " + date.getFullYear();
-         tot = (tot || m.toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1); 
-       }
-       }
-       else{
-         if( typeof(data[column.split('.')[0]]) ==='object'){
-           tot = (tot || data[column.split('.')[0]][column.split('.')[1]].trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
-         }
-       }
-      }
+        var tot = false;
+        for (let column of this.displayedColumns) {
+            if(typeof data[column]!=='undefined'){
+              if ((column in data) && (new Date(data[column].toString()).toString() == "Invalid Date")) {
+                tot = (tot || data[column].toString().trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+              } else {
+   
+                 var date = new Date(data[column].toString());
+                 var m = date.toDateString().slice(4, 7) + " " + date.getDate() + " " + date.getFullYear();
+                 tot = (tot || m.toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1); 
+                }
+            }
+            else{
+              if(data[column.split('.')[0]]!==null){
+                if( typeof(data[column.split('.')[0]]) ==='object'){
+                  if(data[column.split('.')[0]][column.split('.')[1]]){
+                    tot = (tot || data[column.split('.')[0]][column.split('.')[1]].trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+                  }
+                }
+              }
+              }
+            }
       return tot;
     }
   }
 
-  calbackfiltersAll(){
+ public calbackfiltersAll(){
     this.filteredKabinet = this.kabinet.slice();
     this.filteredSupples = this.supples.slice();
     this.filteredStatusing = this.statusing.slice();
@@ -1317,13 +1536,13 @@ export class TelephonsTableModel {
     return newuser;
   }
 
-  //Костыль дожидаемся обновление DOM
-  private async delay(ms: number) {
+  // //Костыль дожидаемся обновление DOM
+   async delay(ms: number):Promise<void> {
     await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log("Задержка подгрузки DOM!!!"));
   }
 
 ///Добавить шаблон в строку это просто жесть
-  private async addtemplate(index:number){
+   async addtemplate(index:number):Promise<void>{
     var i = 0;
     await this.delay(10);
     this.temlateList = this.fulltemplate.nativeElement.querySelectorAll("mat-form-field[id=template]");
@@ -1335,7 +1554,7 @@ export class TelephonsTableModel {
   }
 
 ///Удалить шаблон из строки и востановить текущий шаблон
-  private removetemplate(){
+  removetemplate():void{
     var i = 0;
     for (var row of this.rowList){
        row.removeChild(this.temlateList[i]);
@@ -1344,29 +1563,28 @@ export class TelephonsTableModel {
    }
   }
  
-  add(): void {
+public async add():Promise<void> {
     this.isEditAndAddTrue();
     var newmodel = this.newmodel();
-    this.dataSource.paginator.lastPage();
     this.dataSource.data.push(newmodel); 
     this.modeltable.push(newmodel); 
     this.index = this.dataSource.data.length;
     this.model = newmodel;
-    this.dataSource._updateChangeSubscription();
+   await this.dataSource._updateChangeSubscription();
+   await this.dataSource.paginator.lastPage();
     this.addtemplate(newmodel.IdTelephon)
   }  
   
-  edit(model: Telephon): void {
+  public edit(model: Telephon): void {
     model.ModelIsEdit = true;
     this.model =JSON.parse(JSON.stringify(model));
     this.addtemplate(model.IdTelephon)
     this.isEditAndAddTrue();
   }
 
-  save(): void {
+  public save(): void {
     this.modifimethod();
     this.isEditAndAddFalse();
-    this.removetemplate();
     this.modelToServer = JSON.parse(JSON.stringify(this.model));
     if(this.modelToServer.Supply)
     {
@@ -1380,11 +1598,11 @@ export class TelephonsTableModel {
       console.log(model.Message);
       this.dataSource._updateChangeSubscription();
      });
-     
+     this.removetemplate();
     //Запрос на сохранение и обновление данных
   }
 
-  cancel(model: Telephon): void {
+  public cancel(model: Telephon): void {
     model.ModelIsEdit = false;
     this.isEditAndAddFalse(); 
     if(this.index>0)
@@ -1401,20 +1619,21 @@ export class TelephonsTableModel {
     this.removetemplate();
   }
 
-
-
-  filterstable(filterValue: string): void {
+  public filterstable(filterValue: string): void {
     filterValue = filterValue.trim(); // Remove whitespace
     filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
     this.dataSource.filter = filterValue;
   }
 
-  modifimethod(): void {
+  public modifimethod(): void {
     this.model.Kabinet?this.model.IdNumberKabinet = this.model.Kabinet.IdNumberKabinet:this.model.IdNumberKabinet=null;
     this.model.Statusing?this.model.IdStatus = this.model.Statusing.IdStatus:this.model.IdStatus=null;
-    if(this.model.Supply)
-    {this.model.IdSupply = this.model.Supply.IdSupply
+    if(this.model.Supply){
+      this.model.IdSupply = this.model.Supply.IdSupply
       this.model.Supply.DataCreate = null;
+      if(this.model.Supply.DatePostavki.length<=10){
+        this.model.Supply.DatePostavki = this.model.Supply.DatePostavki.split("-").reverse().join("-")+"T00:00:00"
+      }
     }
     else{
       this.model.IdSupply=null;
@@ -1456,7 +1675,7 @@ export class TelephonsTableModel {
   }
 }
 
-export class BlockPowerTableModel implements ILogicaTable<BlockPower> {
+export class BlockPowerTableModel implements INewLogicaTable<BlockPower> {
  
   constructor(public editandadd:EditAndAdd){ }  
   
@@ -1474,7 +1693,7 @@ export class BlockPowerTableModel implements ILogicaTable<BlockPower> {
 
   isAdd: boolean;
   isEdit: boolean;
-  model: BlockPower;
+  model: BlockPower = new BlockPower();
   modelToServer: BlockPower;
   index: number;
   modeltable: BlockPower[];
@@ -1486,30 +1705,47 @@ export class BlockPowerTableModel implements ILogicaTable<BlockPower> {
   public filteredSupples:any;
   public filteredProizvoditel:any;
 
+  //Шаблоны для манипулирования DOM
+  temlateList:any //Заложенный шаблон Массив
+  rowList:any    //Строка по номеру из БД Массив 
+  fulltemplate:ElementRef<any>  //Полный шаблон для манипуляции
+  table:ElementRef<any>  //Полный шаблон для манипуляции
+
   castomefiltermodel() {
     this.dataSource.filterPredicate = (data, filter) => {
-      var tot = false;
-      for (let column of this.displayedColumns) {
-        if(typeof data[column]!=='undefined'){
-          if ((column in data) && (new Date(data[column].toString()).toString() == "Invalid Date")) {
-          tot = (tot || data[column].toString().trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
-       } else {
-         var date = new Date(data[column].toString());
-         var m = date.toDateString().slice(4, 7) + " " + date.getDate() + " " + date.getFullYear();
-         tot = (tot || m.toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1); 
-       }
-       }
-       else{
-         if( typeof(data[column.split('.')[0]]) ==='object'){
-           tot = (tot || data[column.split('.')[0]][column.split('.')[1]].trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
-         }
-       }
-      }
+        var tot = false;
+        for (let column of this.displayedColumns) {
+            if(typeof data[column]!=='undefined'){
+              if ((column in data) && (new Date(data[column].toString()).toString() == "Invalid Date")) {
+                tot = (tot || data[column].toString().trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+              } else {
+   
+                 var date = new Date(data[column].toString());
+                 var m = date.toDateString().slice(4, 7) + " " + date.getDate() + " " + date.getFullYear();
+                 tot = (tot || m.toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1); 
+                }
+            }
+            else{
+              if(data[column.split('.')[0]]!==null){
+                if( typeof(data[column.split('.')[0]]) ==='object'){
+                  if(data[column.split('.')[0]][column.split('.')[1]]){
+                    tot = (tot || data[column.split('.')[0]][column.split('.')[1]].trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+                  }
+                }
+              }
+              }
+            }
       return tot;
     }
   }
 
-  calbackfiltersAll(){
+  public filterstable(filterValue: string):void {
+    filterValue = filterValue.trim(); // Remove whitespace
+    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
+    this.dataSource.filter = filterValue;
+  }
+
+  public calbackfiltersAll():void {
     this.filteredUser = this.user.slice();
     this.filteredProizvoditel = this.proizvoditel.slice()
     this.filteredModels = this.models.slice();
@@ -1518,31 +1754,26 @@ export class BlockPowerTableModel implements ILogicaTable<BlockPower> {
     this.filteredStatusing = this.statusing.slice();
   }
 
-  filterstable(filterValue: string): void {
-    filterValue = filterValue.trim(); // Remove whitespace
-    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
-    this.dataSource.filter = filterValue;
-  }
-
- 
-  add(): void {
+  public async add():Promise<void>{
     this.isEditAndAddTrue();
     var newmodel = this.newmodel();
-    this.dataSource.paginator.lastPage();
     this.dataSource.data.push(newmodel); 
     this.modeltable.push(newmodel); 
     this.index = this.dataSource.data.length;
     this.model = newmodel;
-    this.dataSource._updateChangeSubscription();
+   await this.dataSource._updateChangeSubscription();
+   await this.dataSource.paginator.lastPage();
+    this.addtemplate(newmodel.IdBlockPowers)
   }  
   
-  edit(model: BlockPower): void {
+  public edit(model: BlockPower):void {
     model.ModelIsEdit = true;
     this.model =JSON.parse(JSON.stringify(model));
+    this.addtemplate(model.IdBlockPowers)
     this.isEditAndAddTrue();
   }
 
-  save(model: BlockPower): void {
+  public save():void {
     this.modifimethod();
     this.isEditAndAddFalse();
     this.modelToServer = JSON.parse(JSON.stringify(this.model));
@@ -1559,10 +1790,11 @@ export class BlockPowerTableModel implements ILogicaTable<BlockPower> {
       console.log(model.Message);
       this.dataSource._updateChangeSubscription();
      });
+     this.removetemplate();
     //Запрос на сохранение и обновление данных
   }
 
-  cancel(model: BlockPower): void {
+  public cancel(model: BlockPower):void {
     model.ModelIsEdit = false;
     this.isEditAndAddFalse(); 
     if(this.index>0)
@@ -1576,6 +1808,7 @@ export class BlockPowerTableModel implements ILogicaTable<BlockPower> {
       this.index = 0;
     }
     this.dataSource._updateChangeSubscription();
+    this.removetemplate();
   }
 
   newmodel(): BlockPower {
@@ -1585,15 +1818,46 @@ export class BlockPowerTableModel implements ILogicaTable<BlockPower> {
     return newuser;
   }
 
+  //Костыль дожидаемся обновление DOM
+  async delay(ms: number):Promise<void> {
+    await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log("Задержка подгрузки DOM!!!"));
+  }
+        
+  ///Добавить шаблон в строку это просто жесть
+  async addtemplate(index:number):Promise<void>{
+    var i = 0;
+    await this.delay(10);
+    this.temlateList = this.fulltemplate.nativeElement.querySelectorAll("mat-form-field[id=template]");
+    this.rowList = this.table.nativeElement.querySelectorAll("div[class='"+index+"']");
+    for (var row of this.rowList){
+      row.append(this.temlateList[i])
+      i++;
+    }
+  }
+  
+  ///Удалить шаблон из строки и востановить текущий шаблон
+  removetemplate():void{
+    var i = 0;
+    for (var row of this.rowList){
+      row.removeChild(this.temlateList[i]);
+      this.fulltemplate.nativeElement.append(this.temlateList[i])
+      i++;
+    }
+  }
+
+
   modifimethod(): void {
     this.model.Kabinet?this.model.IdNumberKabinet = this.model.Kabinet.IdNumberKabinet:this.model.IdNumberKabinet=null;
     this.model.Statusing?this.model.IdStatus = this.model.Statusing.IdStatus:this.model.IdStatus=null;
     this.model.User?this.model.IdUser = this.model.User.IdUser:this.model.IdUser=null;
     this.model.ProizvoditelBlockPower?this.model.IdProizvoditelBP = this.model.ProizvoditelBlockPower.IdProizvoditelBP:this.model.IdProizvoditelBP=null;
     this.model.ModelBlockPower?this.model.IdModelBP = this.model.ModelBlockPower.IdModelBP:this.model.IdModelBP=null;
-    if(this.model.Supply)
-    {this.model.IdSupply = this.model.Supply.IdSupply
+    if(this.model.Supply){
+      this.model.IdSupply = this.model.Supply.IdSupply
       this.model.Supply.DataCreate = null;
+      if(this.model.Supply.DatePostavki.length<=10){
+        this.model.Supply.DatePostavki = this.model.Supply.DatePostavki.split("-").reverse().join("-")+"T00:00:00"
+      }
     }
     else{
       this.model.IdSupply=null;
@@ -1607,13 +1871,9 @@ export class BlockPowerTableModel implements ILogicaTable<BlockPower> {
     this.index = 0;
   }
 
-public async  addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort): Promise<string> {
-  if(model.BlockPower.length!==0) {
-    this.model = JSON.parse(JSON.stringify(model.BlockPower[0]));
-  } 
-  else{
-    this.model = null;
-  }
+public async  addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort,table:ElementRef,template:ElementRef): Promise<string> {
+  this.table = table;  //Таблица
+  this.fulltemplate = template; //Заложенный шаблон
   this.modeltable =JSON.parse(JSON.stringify(model.BlockPower));
   this.dataSource.data = model.BlockPower;
   this.dataSource.paginator = paginator;

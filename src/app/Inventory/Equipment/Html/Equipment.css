@@ -16,6 +16,13 @@ table {
   table-layout: fixed;
 }
 
+.validation{
+  width: 100%;
+}
+.paginator{
+  margin-bottom: 100px;
+} 
+
 .tables {
   position: relative;
   max-height: 600px;
