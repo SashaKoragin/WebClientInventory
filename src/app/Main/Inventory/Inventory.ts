@@ -8,12 +8,14 @@ import { Equipment } from '../../Inventory/Equipment/View/Equepment';
 import { Invent } from '../../Inventory/Invent/View/Invent';
 import { User } from '../../Inventory/User/View/User';
 import { FormsModule } from '@angular/forms';
-import { DocumentSelect } from '../../Inventory/Documents/View/DocumentsSelect';
+import { DocumentSelect } from '../../Inventory/Documents/Documents/View/DocumentsSelect';
 import { ErrorInventory } from '../../Inventory/ErrorInventory/View/ErrorInventory';
 import { Select } from '../../Inventory/AddFullModel/ModelViewSelect/View/SelectView';
 import { ComplimentTableEquipment } from '../../Inventory/ComplimentTableEquipment/View/ComplimentTableEquipment';
 import { MccColorPickerModule} from 'material-community-components';
 import { Analitics } from '../../Inventory/Analitics/View/Analitics';
+import { BookAccounting } from '../../Inventory/Documents/BookAccounting/View/BookAccounting';
+import { UploadsFile } from '../../Inventory/AddFullModel/ModelLoadFileToServet/View/Upload';
 
 @NgModule(({
     imports: [
@@ -28,7 +30,7 @@ import { Analitics } from '../../Inventory/Analitics/View/Analitics';
           }),
     ],
     declarations: [
-        MainInventar, Equipment, Invent, User,DocumentSelect,ErrorInventory,Select,ComplimentTableEquipment,Analitics
+        MainInventar, Equipment, Invent, User,DocumentSelect,ErrorInventory,Select,UploadsFile,ComplimentTableEquipment,Analitics,BookAccounting
     ]
 }) as any)
 

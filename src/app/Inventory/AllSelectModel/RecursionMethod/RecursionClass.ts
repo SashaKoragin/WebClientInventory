@@ -26,6 +26,7 @@ export class Recursion{
                      use.Children[i].Children[0].Types.push({Name:monitor.NameMonitor.Name ,NameModel:null,SerNumber:monitor.SerNum,
                         ServiceNumber:null,InventerNumber:monitor.InventarNumMonitor,
                         Kabinet:monitor.Kabinet?monitor.Kabinet.NumberKabinet:null,
+                        Status:monitor.Coment,
                         NameComputer:null,IpAdress:null});
                  }
                  i++;
@@ -36,7 +37,8 @@ export class Recursion{
                  for (const mfu of user.Mfu) {
                      use.Children[i].Children[0].Types.push({Name:mfu.FullProizvoditel.NameProizvoditel ,NameModel:mfu.FullModel.NameModel,
                         SerNumber:mfu.ZavNumber,ServiceNumber:mfu.ServiceNumber,InventerNumber:null,
-                        Kabinet:mfu.Kabinet?mfu.Kabinet.NumberKabinet:null,NameComputer:null,IpAdress:null
+                        Kabinet:mfu.Kabinet?mfu.Kabinet.NumberKabinet:null,NameComputer:null,IpAdress:null,
+                        Status:mfu.Coment
                         });
                  }
                  i++;
@@ -47,7 +49,8 @@ export class Recursion{
                  for (const printer of user.Printer) {
                      use.Children[i].Children[0].Types.push({Name:printer.FullProizvoditel.NameProizvoditel ,NameModel:printer.FullModel.NameModel,
                         SerNumber:printer.ZavNumber,ServiceNumber:printer.ServiceNumber,InventerNumber:null,
-                        Kabinet:printer.Kabinet?printer.Kabinet.NumberKabinet:null,NameComputer:null,IpAdress:null
+                        Kabinet:printer.Kabinet?printer.Kabinet.NumberKabinet:null,NameComputer:null,IpAdress:null,
+                        Status:printer.Coment
                         });
                  }
                  i++;
@@ -58,7 +61,8 @@ export class Recursion{
                  for (const scaner of user.ScanerAndCamer) {
                      use.Children[i].Children[0].Types.push({Name:scaner.FullProizvoditel.NameProizvoditel ,NameModel:scaner.FullModel.NameModel,
                         SerNumber:scaner.ZavNumber,ServiceNumber:scaner.ServiceNumber,InventerNumber:scaner.InventarNumber,
-                        Kabinet:scaner.Kabinet?scaner.Kabinet.NumberKabinet:null,NameComputer:null,IpAdress:null
+                        Kabinet:scaner.Kabinet?scaner.Kabinet.NumberKabinet:null,NameComputer:null,IpAdress:null,
+                        Status:scaner.Coment
                         });
                  }
                  i++;
@@ -69,7 +73,8 @@ export class Recursion{
                  for (const sysblok of user.SysBlock) {
                      use.Children[i].Children[0].Types.push({Name:sysblok.NameSysBlock.NameComputer ,NameModel:null,
                         SerNumber:sysblok.SerNum,ServiceNumber:sysblok.ServiceNum,InventerNumber:sysblok.InventarNumSysBlok,
-                        Kabinet:sysblok.Kabinet?sysblok.Kabinet.NumberKabinet:null,NameComputer:sysblok.NameComputer,IpAdress:sysblok.IpAdress
+                        Kabinet:sysblok.Kabinet?sysblok.Kabinet.NumberKabinet:null,NameComputer:sysblok.NameComputer,IpAdress:sysblok.IpAdress,
+                        Status:sysblok.Coment
                         });
                  }
                  i++;
@@ -80,7 +85,8 @@ export class Recursion{
                      for (const blok of user.BlockPower) {
                          use.Children[i].Children[0].Types.push({Name:blok.ProizvoditelBlockPower.Name ,NameModel:blok.ModelBlockPower.Name,
                             SerNumber:blok.ZavNumber,ServiceNumber:blok.ServiceNumber,InventerNumber:blok.InventarNumber,
-                            Kabinet:blok.Kabinet?blok.Kabinet.NumberKabinet:null,NameComputer:null,IpAdress:null
+                            Kabinet:blok.Kabinet?blok.Kabinet.NumberKabinet:null,NameComputer:null,IpAdress:null,
+                            Status:blok.Coment
                             });
                      }
                      i++;
@@ -90,7 +96,9 @@ export class Recursion{
                   use.Children.push({Name:"Телефон",IdUser:null,Types:null,InputServer:false,Children:[{Children:[],Name:null,IdUser:null,Types:[],InputServer:false}]})
                                  use.Children[i].Children[0].Types.push({Name:user.Telephon.NameTelephone ,NameModel:null,
                                     SerNumber:user.Telephon.SerNumber,ServiceNumber:null,InventerNumber:null,
-                                    Kabinet:user.Telephon.Kabinet?user.Telephon.Kabinet.NumberKabinet:null,NameComputer:user.Telephon.MacTelephon,IpAdress:user.Telephon.IpTelephon
+                                    Status:user.Telephon.Coment,
+                                    Kabinet:user.Telephon.Kabinet?user.Telephon.Kabinet.NumberKabinet:null,NameComputer:user.Telephon.MacTelephon,
+                                    IpAdress:user.Telephon.IpTelephon
                                     });
                              i++;
              }
@@ -132,6 +140,7 @@ export class Recursion{
                  otd.Children[j].Children[i].Children[0].Types.push({Name:monitor.NameMonitor.Name ,NameModel:null,SerNumber:monitor.SerNum,
                     ServiceNumber:null,InventerNumber:monitor.InventarNumMonitor,
                     Kabinet:monitor.Kabinet?monitor.Kabinet.NumberKabinet:null,
+                    Status:monitor.Coment,
                     NameComputer:null,IpAdress:null});
                  }
                  i++;
@@ -142,7 +151,8 @@ export class Recursion{
                  for (const mfu of user.Mfu) {
                     otd.Children[j].Children[i].Children[0].Types.push({Name:mfu.FullProizvoditel.NameProizvoditel ,NameModel:mfu.FullModel.NameModel,
                         SerNumber:mfu.ZavNumber,ServiceNumber:mfu.ServiceNumber,InventerNumber:null,
-                        Kabinet:mfu.Kabinet?mfu.Kabinet.NumberKabinet:null,NameComputer:null,IpAdress:null
+                        Kabinet:mfu.Kabinet?mfu.Kabinet.NumberKabinet:null,NameComputer:null,IpAdress:null,
+                        Status:mfu.Coment
                         });
                  }
                  i++;
@@ -153,7 +163,8 @@ export class Recursion{
                  for (const printer of user.Printer) {
                     otd.Children[j].Children[i].Children[0].Types.push({Name:printer.FullProizvoditel.NameProizvoditel ,NameModel:printer.FullModel.NameModel,
                         SerNumber:printer.ZavNumber,ServiceNumber:printer.ServiceNumber,InventerNumber:null,
-                        Kabinet:printer.Kabinet?printer.Kabinet.NumberKabinet:null,NameComputer:null,IpAdress:null
+                        Kabinet:printer.Kabinet?printer.Kabinet.NumberKabinet:null,NameComputer:null,IpAdress:null,
+                        Status:printer.Coment
                         });
                  }
                  i++;
@@ -164,7 +175,8 @@ export class Recursion{
                  for (const scaner of user.ScanerAndCamer) {
                 otd.Children[j].Children[i].Children[0].Types.push({Name:scaner.FullProizvoditel.NameProizvoditel ,NameModel:scaner.FullModel.NameModel,
                     SerNumber:scaner.ZavNumber,ServiceNumber:scaner.ServiceNumber,InventerNumber:scaner.InventarNumber,
-                    Kabinet:scaner.Kabinet?scaner.Kabinet.NumberKabinet:null,NameComputer:null,IpAdress:null
+                    Kabinet:scaner.Kabinet?scaner.Kabinet.NumberKabinet:null,NameComputer:null,IpAdress:null,
+                    Status:scaner.Coment
                     });
                  }
                  i++;
@@ -175,7 +187,8 @@ export class Recursion{
                  for (const sysblok of user.SysBlock) {
                      otd.Children[j].Children[i].Children[0].Types.push({Name:sysblok.NameSysBlock.NameComputer ,NameModel:null,
                         SerNumber:sysblok.SerNum,ServiceNumber:sysblok.ServiceNum,InventerNumber:sysblok.InventarNumSysBlok,
-                        Kabinet:sysblok.Kabinet?sysblok.Kabinet.NumberKabinet:null,NameComputer:sysblok.NameComputer,IpAdress:sysblok.IpAdress
+                        Kabinet:sysblok.Kabinet?sysblok.Kabinet.NumberKabinet:null,NameComputer:sysblok.NameComputer,IpAdress:sysblok.IpAdress,
+                        Status:sysblok.Coment
                         });
                  }
                  i++;
@@ -186,7 +199,8 @@ export class Recursion{
                      for (const blok of user.BlockPower) {
                         otd.Children[j].Children[i].Children[0].Types.push({Name:blok.ProizvoditelBlockPower.Name ,NameModel:blok.ModelBlockPower.Name,
                             SerNumber:blok.ZavNumber,ServiceNumber:blok.ServiceNumber,InventerNumber:blok.InventarNumber,
-                            Kabinet:blok.Kabinet?blok.Kabinet.NumberKabinet:null,NameComputer:null,IpAdress:null
+                            Kabinet:blok.Kabinet?blok.Kabinet.NumberKabinet:null,NameComputer:null,IpAdress:null,
+                            Status:blok.Coment
                             });
                      }
                      i++;
@@ -196,6 +210,7 @@ export class Recursion{
                 otd.Children[j].Children.push({Name:"Телефон",IdUser:null,Types:null,InputServer:false,Children:[{Children:[],Name:null,IdUser:null,Types:[],InputServer:false}]})
                     otd.Children[j].Children[i].Children[0].Types.push({Name:user.Telephon.NameTelephone,NameModel:null,
                                     SerNumber:user.Telephon.SerNumber,ServiceNumber:null,InventerNumber:null,
+                                    Status:user.Telephon.Coment,
                                     Kabinet:user.Telephon.Kabinet?user.Telephon.Kabinet.NumberKabinet:null,NameComputer:user.Telephon.MacTelephon,IpAdress:user.Telephon.IpTelephon
                                     });
                      i++;
@@ -232,4 +247,5 @@ export class Equipment{
     Kabinet:string;
     NameComputer:string;
     IpAdress:string;
+    Status:string;
 }

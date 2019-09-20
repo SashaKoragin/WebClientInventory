@@ -5,10 +5,11 @@ import { AuthInventar  } from '../../Secyrity/ModelSecurity/AuthInventory';
 import { Equipment } from '../../Inventory/Equipment/View/Equepment';
 import { Invent } from '../../Inventory/Invent/View/Invent';
 import { User } from '../../Inventory/User/View/User';
-import { DocumentSelect } from '../../Inventory/Documents/View/DocumentsSelect';
+import { DocumentSelect } from '../../Inventory/Documents/Documents/View/DocumentsSelect';
 import { ErrorInventory } from '../../Inventory/ErrorInventory/View/ErrorInventory';
 import { ComplimentTableEquipment } from '../../Inventory/ComplimentTableEquipment/View/ComplimentTableEquipment';
 import { Analitics } from '../../Inventory/Analitics/View/Analitics';
+import { BookAccounting } from '../../Inventory/Documents/BookAccounting/View/BookAccounting';
 
 const appRoutes: Routes = [
 {
@@ -35,6 +36,10 @@ const appRoutes: Routes = [
         {
             path: 'documents',
             component: DocumentSelect
+        },
+        {
+            path: 'book',
+            component: BookAccounting
         },
         {
             path:'analitics',

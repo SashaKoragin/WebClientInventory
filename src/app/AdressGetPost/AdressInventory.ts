@@ -1,6 +1,6 @@
 export class AdressInventarka {
-    public host = 'i7751-w00000745';
-   // public host = 'localhost';
+   // public host = 'i7751-w00000745';
+    public host = 'localhost';
     public autificationInventar = `http://${this.host}:8182/Inventarka/Authorization`;
     public alluser = `http://${this.host}:8182/Inventarka/AllUsers`;
     public allotdelget = `http://${this.host}:8182/Inventarka/AllOtdels`;
@@ -43,9 +43,11 @@ export class AdressInventarka {
     public generatedocument = `http://${this.host}:8182/Inventarka/Invoice`;
     public addfiledb = `http://${this.host}:8182/Inventarka/AddFileDb`;
     public selectdocument = `http://${this.host}:8182/Inventarka/LoadDocument`;
+    public selectbook = `http://${this.host}:8182/Inventarka/LoadBook`
 
     public actualstatusModel = `http://${this.host}:8182/Inventarka/ActualUsers`;
-
+    public telephoneHelper = `http://${this.host}:8182/Inventarka/GenerateTelephoneHelper`;
+    public bookModels = `http://${this.host}:8182/Inventarka/GenerateBookAccounting`;
     ///Вспомогательные таблицы маршруты к ним
     public addAndEditNameSysBlock = `http://${this.host}:8182/Inventarka/AddAndEditNameSysBlock`;
     public addAndEditNameMonitor =`http://${this.host}:8182/Inventarka/AddAndEditNameMonitor`;
@@ -58,4 +60,5 @@ export class AdressInventarka {
     public addAndEditNameClassification = `http://${this.host}:8182/Inventarka/AddAndEditNameClassification`;
     public addAndEditNameFullProizvoditel = `http://${this.host}:8182/Inventarka/AddAndEditNameFullProizvoditel`;
     public addAndEditNameCopySave = `http://${this.host}:8182/Inventarka/AddAndEditNameCopySave`;
+
 }

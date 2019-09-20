@@ -7,6 +7,7 @@
                 <span matPrefix><i class="material-icons">youtube_searched_for</i></span>
                 <input matInput (keyup)="user.filterstable($event.target.value)" placeholder="Поиск данных">
         </mat-form-field>
+           <button class="actual" mat-button (click)="telephoneHelp()">Сформировать справочник</button>
            <button class="actual" mat-button (click)="excel.ExportTOExcel(tableusers)">Выгрузить пользователей</button>
            <button class="actual" mat-button (click)="actualUsers()">Актулизация пользователей</button>
            <label >{{serveranswer}}</label>

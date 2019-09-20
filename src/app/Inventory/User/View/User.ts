@@ -4,6 +4,7 @@ import {MatTableDataSource,MatPaginator, MatSort } from '@angular/material';
 import { UserTableModel, TelephonsTableModel, OtdelTableModel } from '../../AddFullModel/ModelTable/TableModel';
 import { UsersIsActualsStats } from '../../ModelInventory/InventoryModel';
 import { ImportToExcel } from '../../AddFullModel/ModelTable/PublicFunction';
+import { ModelSelect } from '../../AllSelectModel/ParametrModel';
 
 
 @Component(({
@@ -56,6 +57,22 @@ export class User implements OnInit {
     ngOnInit():void {
         this.loadsModel();
     }
+
+    public async telephoneHelp(){
+        this.serveranswer = 'Выгружаем справочник телефонов!!!'
+        await this.selectall.telephonehelp(new ModelSelect(10)).subscribe(async model=>{
+            var blob = new Blob([model], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+            var url = window.URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = "Телефонный справочник инспекции";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        });
+    }
+
 
     public async actualUsers(){
         this.serveranswer = 'Идет актулизация (подождите)!'

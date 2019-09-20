@@ -56,7 +56,7 @@
                 </div>
                 </div>
            </div>
-    <div class="mat-app-background basic-container" [style.display]="logica?.date ? 'none' : 'grid'">
+    <div  [style.display]="logica?.date ? 'none' : 'grid'">
       <div class="button"><button mat-button (click)="back()">Назад</button></div>
       
     <div *ngIf="logica.errornull; else notfound">
@@ -65,13 +65,13 @@
             <table mat-table   #table [dataSource]="dataSource">
                 <ng-container *ngFor="let column of columns.Colums" [matColumnDef]="column.columnDef">
                     <th mat-header-cell [style.background]="column.color" *matHeaderCellDef>{{ column.header }}</th>
-                    <td mat-cell [style.background]="column.color" *matCellDef="let row">{{ column.cell(row) }}</td>
+                    <td mat-cell [style.background]="column.color" *matCellDef="let row">{{ column.cell(row)==='undefined'?'Отсутствует':column.cell(row) }}</td>
                 </ng-container>
                 <tr  mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
                 <tr  mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             </table>
         </div>
-        <mat-paginator #tables [pageSizeOptions]="[10, 50, 100,allcountproblem]" showFirstLastButtons ="true"></mat-paginator>
+        <mat-paginator class="paginator"  #tables [pageSizeOptions]="[10, 50, 100,allcountproblem]" showFirstLastButtons ="true"></mat-paginator>
     </div>
     </div>
 <div [style.display]="logica?.progress ? 'none':'inline'">

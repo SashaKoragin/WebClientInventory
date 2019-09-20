@@ -9,15 +9,18 @@ export class DynamicTableColumnModel{
     public mainselect:SelectTableModel = this.selectserver[0];
     //Ошибки
     public columns:Table[] = [{Type:"ErrorUSerNotActul", Colums:[]},
-                       {Type:"Error", Colums:[]}
-                      ];
+                              {Type:"Error", Colums:[]}
+                             ];
     //Аналитика
-    public selectserverstatistic:SelectTableModel[]=[{text:"Аналитика мониторы и Системные блоки", indexsevr:8,indexcolumnmodel:0}
+    public selectserverstatistic:SelectTableModel[]=[{text:"Аналитика мониторы и Системные блоки", indexsevr:8,indexcolumnmodel:0},
+                                                     {text:"Отсутствие техники у пользователя", indexsevr:9,indexcolumnmodel:1}
                                                     ];
     //Аналитика
     public mainselectstatistic:SelectTableModel = this.selectserverstatistic[0];
     //Аналитика
-    public columnsanalitics:Table[] = [{Type:"AnaliticaSysBlokAndMonitors", Colums:[]}];
+    public columnsanalitics:Table[] = [{Type:"AnaliticaSysBlokAndMonitors", Colums:[]},
+                                       {Type:"UsersNotTechnical", Colums:[]}
+                                      ];
 }
 ///Класс селектора
 export class SelectTableModel{

@@ -4,6 +4,7 @@ import { DataSource } from '@angular/cdk/table';
 import { async } from 'rxjs/internal/scheduler/async';
 import { DatePipe } from '@angular/common';
 import { ElementRef } from '@angular/core';
+import { Book } from './ViewInventory';
 
 
 
@@ -98,11 +99,14 @@ export interface ILogicaTable<T> {
 export class DesirilizeXml{
     Tehnical:TehnicalSql = new TehnicalSql();
     Documents:Documents = new Documents();
+    Book:Book = new Book();
 }
+
 export class TehnicalSql{
     Users:Users[] = null;
     Otdel:Otdel[] =null;
 }
+
 export class Documents{
     Document:Document[] = null;
 }

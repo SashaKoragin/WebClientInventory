@@ -78,3 +78,6 @@ table {
     overflow: auto;
   }
   
+  .paginator{
+    margin-bottom: 100px;
+  } 

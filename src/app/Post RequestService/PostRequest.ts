@@ -11,6 +11,7 @@ import { deserializeArray } from 'class-transformer';
 import { ModelSelect, LogicaSelect } from '../Inventory/AllSelectModel/ParametrModel';
 import { DocumentReport } from '../Inventory/AllSelectModel/Report/ReportModel';
 import { UploadFile } from '../Inventory/AddFullModel/ModelTable/FileModel';
+import { BookModels } from '../Inventory/ModelInventory/ViewInventory';
 
 
 const url: AdressInventarka = new AdressInventarka();
@@ -61,6 +62,13 @@ export class PostInventar {
     actualusersmodel(){
         return this.http.post(url.actualstatusModel,null,httpOptionsJson);
     }
+
+    //Генерация справочника инспекции
+    telephonehelp(model:ModelSelect){
+        return this.http.post(url.telephoneHelper,model,
+            { responseType: 'arraybuffer', headers: new HttpHeaders({ 'Content-Type': 'application/json' }) })
+    }
+    
     ///Выборка всего из БД в всех пользователей
     async alluser() {
     this.select.Users = await this.http.get(url.alluser, httpOptionsJson).toPromise().then((model)=>{
@@ -361,6 +369,16 @@ export class SelectAllParametrs{
 
    public selectdocument(iddocument:number){
     return this.http.post(url.selectdocument,iddocument,
+        { responseType: 'arraybuffer', headers: new HttpHeaders({ 'Content-Type': 'application/json' }) })
+   }
+
+   public selectbook(idbook:number){
+    return this.http.post(url.selectbook,idbook,
+        { responseType: 'arraybuffer', headers: new HttpHeaders({ 'Content-Type': 'application/json' }) })
+   }
+
+   public generatebook(bookModels:BookModels ){
+    return this.http.post(url.bookModels,bookModels,
         { responseType: 'arraybuffer', headers: new HttpHeaders({ 'Content-Type': 'application/json' }) })
    }
 

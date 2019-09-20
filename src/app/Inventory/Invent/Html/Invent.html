@@ -73,6 +73,7 @@
                                             <th>Кабинет</th>
                                             <th>Наименование компьютера</th>
                                             <th>Ip Адрес</th>
+                                            <th>Примечание</th>
                                         </tr>
                                         <tbody>
                                             <tr *ngFor="let type of node.Types">
@@ -84,6 +85,7 @@
                                                 <th>{{type?.Kabinet}}</th>
                                                 <th>{{type?.NameComputer}}</th>
                                                 <th>{{type?.IpAdress}}</th>
+                                                <th>{{type?.Status}}</th>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -185,6 +187,7 @@
                                 <th>Кабинет</th>
                                 <th>Наименование компьютера</th>
                                 <th>Ip Адрес</th>
+                                <th>Примечание</th>
                             </tr>
                             <tbody>
                                 <tr *ngFor="let type of node.Types">
@@ -196,6 +199,7 @@
                                     <th>{{type?.Kabinet}}</th>
                                     <th>{{type?.NameComputer}}</th>
                                     <th>{{type?.IpAdress}}</th>
+                                    <th>{{type?.Status}}</th>
                                 </tr>
                             </tbody>
                         </table>

@@ -1,16 +1,14 @@
 import { MatTableDataSource} from '@angular/material';
-import { ElementRef, ViewChild } from '@angular/core';
+import { ElementRef} from '@angular/core';
 import { SelectAllParametrs } from '../../../Post RequestService/PostRequest';
 
 export class AddFile{
     
-    constructor(public select:SelectAllParametrs) { }
+    constructor(public select:SelectAllParametrs,ref:ElementRef) {
+      this.ref = ref;
+    }
 
     ref:ElementRef
-   
-   public intilization(ref:ElementRef){
-     this.ref = ref;
-   }
 
     public visible:boolean;
     displaydataSource: string[] = ['Name', 'Expansion','Button'];
@@ -55,7 +53,7 @@ export class AddFile{
       this.fileReader.readAsArrayBuffer(file);
     }
 
-    resetfilestatus() {
+  private resetfilestatus() {
         this.ref.nativeElement.value = "";
     }
 
@@ -70,8 +68,6 @@ export class AddFile{
         }
         return array;
     }
-
-
 
     delete(file:Upload){
         var index = this.UploadFile.Upload.findIndex(x =>x.NameFile ==file.NameFile)
@@ -88,9 +84,9 @@ export class AddFile{
           }
     }
 
-   donloadsServers(){
+   donloadsServers(ClassFile:string){
      if(this.UploadFile.Upload.length>0){
-      console.log(this.UploadFile);
+      this.UploadFile.ClassFileToServer = ClassFile;
       this.select.addfiledb(this.UploadFile).subscribe(model=>{
           console.log(model);
           this.dataSource = null;
@@ -103,12 +99,9 @@ export class AddFile{
    }
 }
 
-
-
-
-
 export class UploadFile {
-  Upload:Upload[] = []
+  Upload:Upload[] = [];
+  ClassFileToServer:string;
 }
 
 export class Upload{

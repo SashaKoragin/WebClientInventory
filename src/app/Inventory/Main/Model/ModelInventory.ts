@@ -45,8 +45,13 @@ export class Inventar {
             otdelfunc: 'Документы',
             children:  [{
                 otdelfunc: null,
-                children: null, types: 'Документы', pages: './documents', fullpath: 'Документы\\Документы', model: 'Документы'
-            }], types: null, pages: null, fullpath: null, model: null
+                children: null, types: 'Накладные', pages: './documents', fullpath: 'Документы\\Накладные', model: 'Накладные'
+            },
+            {
+                otdelfunc: null,
+                children: null, types: 'Книга учета', pages: './book', fullpath: 'Документы\\Книга учета', model: 'Книга учета'
+            }
+        ], types: null, pages: null, fullpath: null, model: null
         },
         {
             otdelfunc: 'Аналитика',

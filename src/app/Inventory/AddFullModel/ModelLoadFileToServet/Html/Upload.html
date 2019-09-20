@@ -1,0 +1,32 @@
+<button class="Upload"  mat-fab color="primary" matTooltip="Прекрепить файлы" type="button" (change)="addfile.onChange($event)">
+    <label for="fileToUpload">
+       <mat-icon matSuffix>attach_file</mat-icon>
+    </label>
+      <input #myInput id="fileToUpload" accept="image/tiff" type="file"  multiple style="display:none;">
+</button>
+<label>{{addfile?.result}}</label>
+
+<div class="file"  [style.display]="addfile?.visible ? 'grid' : 'none'" >
+    <table class="filetable" mat-table [dataSource]="addfile?.dataSource">
+        <ng-container matColumnDef="Name">
+            <th mat-header-cell *matHeaderCellDef>Имя файла</th>
+            <td mat-cell *matCellDef="let row">{{row.NameFile}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="Expansion">
+            <th mat-header-cell *matHeaderCellDef>Тип файла</th>
+            <td mat-cell *matCellDef="let row">{{row.ExpansionFile}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="Button">
+            <th mat-header-cell *matHeaderCellDef>Логика</th>
+            <td mat-cell *matCellDef="let row">
+                    <button class="delete" mat-button (click)="addfile.delete(row)">Исключить файл</button>    
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="addfile?.displaydataSource"></tr>
+        <tr mat-row *matRowDef="let row; columns: addfile?.displaydataSource;"></tr>
+    </table>
+    <button class="uploading" mat-button (click)="addfile.donloadsServers(ClassFile)">Загрузить в БД</button>
+</div>

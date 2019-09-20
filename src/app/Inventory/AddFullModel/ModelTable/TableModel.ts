@@ -193,6 +193,36 @@ export class UserTableModel implements INewLogicaTable<Users>  {
  fulltemplate:ElementRef  //Полный шаблон для манипуляции
  table:ElementRef  //Полный шаблон для манипуляции
 
+ castomefiltermodel() {
+  this.dataSource.filterPredicate = (data, filter) => {
+      var tot = false;
+      for (let column of this.displayedColumns) {
+          if(typeof data[column]!=='undefined'){
+            if ((column in data) && (new Date(data[column].toString()).toString() == "Invalid Date")) {
+              tot = (tot || data[column].toString().trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+            } else {
+ 
+               var date = new Date(data[column].toString());
+               var m = date.toDateString().slice(4, 7) + " " + date.getDate() + " " + date.getFullYear();
+               tot = (tot || m.toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1); 
+              }
+          }
+          else{
+            if(data[column.split('.')[0]]!==null){
+              if( typeof(data[column.split('.')[0]]) ==='object'){
+                if(data[column.split('.')[0]][column.split('.')[1]]){
+                  tot = (tot || data[column.split('.')[0]][column.split('.')[1]].trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+                }
+              }
+            }
+            }
+          }
+    return tot;
+  }
+}
+
+
+
   //Метод для выноса всех костылей на модель
   public modifimethod():void{
     this.model.Otdel?this.model.IdOtdel = this.model.Otdel.IdOtdel:this.model.IdOtdel=null;
@@ -313,6 +343,7 @@ export class UserTableModel implements INewLogicaTable<Users>  {
         this.fulltemplate = template; //Заложенный шаблон
         this.dataSource.paginator = paginator;
         this.dataSource.sort = sort
+        this.castomefiltermodel();
         this.dataSource.data = model.Users
         this.otdels = model.Otdels;
         this.telephone = model.Telephon;
