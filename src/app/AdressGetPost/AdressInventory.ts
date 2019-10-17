@@ -1,6 +1,6 @@
 export class AdressInventarka {
-   // public host = 'i7751-w00000745';
-    public host = 'localhost';
+    public host = 'i7751-w00000745';
+   // public host = 'localhost';
     public autificationInventar = `http://${this.host}:8182/Inventarka/Authorization`;
     public alluser = `http://${this.host}:8182/Inventarka/AllUsers`;
     public allotdelget = `http://${this.host}:8182/Inventarka/AllOtdels`;
@@ -45,6 +45,7 @@ export class AdressInventarka {
     public selectdocument = `http://${this.host}:8182/Inventarka/LoadDocument`;
     public selectbook = `http://${this.host}:8182/Inventarka/LoadBook`
 
+    public actualIpAdresComputers =`http://${this.host}:8182/Inventarka/ActualComputerIp`
     public actualstatusModel = `http://${this.host}:8182/Inventarka/ActualUsers`;
     public telephoneHelper = `http://${this.host}:8182/Inventarka/GenerateTelephoneHelper`;
     public bookModels = `http://${this.host}:8182/Inventarka/GenerateBookAccounting`;

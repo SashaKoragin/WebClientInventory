@@ -1,0 +1,14 @@
+.panel{
+    margin: 5px;
+}
+.panelbutton{
+    background: azure;
+    margin: inherit;
+    border-radius: 80px;
+}
+
+button, 
+button:active, 
+button:focus {
+    outline: none;
+}

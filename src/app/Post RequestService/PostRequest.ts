@@ -62,7 +62,10 @@ export class PostInventar {
     actualusersmodel(){
         return this.http.post(url.actualstatusModel,null,httpOptionsJson);
     }
-
+    //Актулизация Ip Адресов Компьютеров
+    actualIpComputers(){
+        return this.http.post(url.actualIpAdresComputers,null,httpOptionsJson);
+    }
     //Генерация справочника инспекции
     telephonehelp(model:ModelSelect){
         return this.http.post(url.telephoneHelper,model,
@@ -353,9 +356,7 @@ export class SelectAllParametrs{
     constructor(private http: HttpClient) { }
     
 
-
-
-    addselectallparametrs(model:ModelSelect){
+   addselectallparametrs(model:ModelSelect){
         return this.http.post(url.selectparametr,model,httpOptionsJson);
     }
 

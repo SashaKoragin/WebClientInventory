@@ -1,4 +1,4 @@
-import { Component,Input,ViewChild, ElementRef  } from '@angular/core';
+import { Component,Input,ViewChild, ElementRef,Renderer2, AfterViewInit} from '@angular/core';
 import {GenerateParametrs, LogicaDataBase } from '../../../AllSelectModel/GenerateParametrFront';
 import { MatPaginator,MatTableDataSource} from '@angular/material';
 import { SelectAllParametrs } from '../../../../Post RequestService/PostRequest';
@@ -11,17 +11,30 @@ import { Table } from '../../ModelTable/DynamicTableModel';
     styleUrls: ['../Html/SelectView.css'],
 }) as any)
 
-export class Select{
+export class Select implements AfterViewInit{
 
+    constructor(private renderer: Renderer2) {}
+
+    private elementpanel: ElementRef
     @ViewChild('TABLE',{static: false}) table: ElementRef;
+
+    //Панель инструментов
+    @ViewChild('TOOLPANEL',{static:false}) toolspanels: ElementRef;
+    @Input() set panels(value: ElementRef) {
+       this.elementpanel = value;
+       this.ngAfterViewInit();
+     }
+    
     @Input() logica:LogicaDataBase;
     @Input() columns:Table;
     @Input() selecting:GenerateParametrs;
     @Input() select:SelectAllParametrs;
+
     @ViewChild('tables',{static: false}) paginator: MatPaginator;
     allcountproblem:number = 0
     displayedColumns:any
     dataSource:MatTableDataSource<any> = new MatTableDataSource<any>();
+
     update(){
        try {
            if(this.selecting.errorModel())
@@ -60,11 +73,25 @@ export class Select{
         this.displayedColumns = null;
     }
 
-ExportTOExcel()
-{
-  const ws: XLSX.WorkSheet=XLSX.utils.table_to_sheet(this.table.nativeElement);
-  const wb: XLSX.WorkBook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'Таблица');
-  XLSX.writeFile(wb, 'Отчет.xlsx');
-}
+    FilterDataTable(filterValue: string) {
+        this.dataSource.filter = filterValue.trim().toLowerCase();
+    }
+
+
+    ExportTOExcel()
+    {
+      const ws: XLSX.WorkSheet=XLSX.utils.table_to_sheet(this.table.nativeElement);
+      const wb: XLSX.WorkBook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Таблица');
+      XLSX.writeFile(wb, 'Отчет.xlsx');
+    }
+
+    ///Подгрузка панели задач
+    ngAfterViewInit(): void {
+      if(this.elementpanel){
+        this.renderer.appendChild(this.toolspanels.nativeElement,this.elementpanel.nativeElement)
+        }
+    }
+
+
 }

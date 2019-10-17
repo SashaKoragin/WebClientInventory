@@ -16,6 +16,7 @@ import { MccColorPickerModule} from 'material-community-components';
 import { Analitics } from '../../Inventory/Analitics/View/Analitics';
 import { BookAccounting } from '../../Inventory/Documents/BookAccounting/View/BookAccounting';
 import { UploadsFile } from '../../Inventory/AddFullModel/ModelLoadFileToServet/View/Upload';
+import { Synchronization } from '../../Inventory/Process/Synchronization/View/Synchronization';
 
 @NgModule(({
     imports: [
@@ -30,7 +31,7 @@ import { UploadsFile } from '../../Inventory/AddFullModel/ModelLoadFileToServet/
           }),
     ],
     declarations: [
-        MainInventar, Equipment, Invent, User,DocumentSelect,ErrorInventory,Select,UploadsFile,ComplimentTableEquipment,Analitics,BookAccounting
+        MainInventar, Equipment, Invent, User,DocumentSelect,ErrorInventory,Select,UploadsFile,ComplimentTableEquipment,Analitics,BookAccounting,Synchronization
     ]
 }) as any)
 

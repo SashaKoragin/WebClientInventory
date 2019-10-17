@@ -81,3 +81,11 @@ table {
   .paginator{
     margin-bottom: 100px;
   } 
+
+  .search_blok{
+    width: 50%;
+  }
+  
+  .search{
+    width: 50%;
+  }

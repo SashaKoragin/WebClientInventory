@@ -58,9 +58,15 @@
            </div>
     <div  [style.display]="logica?.date ? 'none' : 'grid'">
       <div class="button"><button mat-button (click)="back()">Назад</button></div>
-      
     <div *ngIf="logica.errornull; else notfound">
-                <button mat-button (click)="ExportTOExcel()">Выгрузить</button>
+                <form class="search">
+                    <mat-form-field class="search_blok">
+                          <span matPrefix><i class="material-icons">youtube_searched_for</i></span>
+                          <input matInput (keyup)="FilterDataTable($event.target.value)" placeholder="Поиск данных">
+                    </mat-form-field>
+                    <button mat-button (click)="ExportTOExcel()">Выгрузить</button>
+                  </form>
+           <div class="panel" #TOOLPANEL></div>
         <div class="mat-elevation-z8" #TABLE >
             <table mat-table   #table [dataSource]="dataSource">
                 <ng-container *ngFor="let column of columns.Colums" [matColumnDef]="column.columnDef">

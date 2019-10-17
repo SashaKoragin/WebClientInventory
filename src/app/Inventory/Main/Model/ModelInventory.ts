@@ -61,12 +61,20 @@ export class Inventar {
             }], types: null, pages: null, fullpath: null, model: null
         },
         {
+            otdelfunc: 'Процессы',
+            children: [{
+                otdelfunc:null,
+                children:null, types: 'Синхронизация', pages: './process', fullpath: 'Процессы\\Синхронизация', model: 'Синхронизация'
+            }], types: null, pages:null,fullpath:null,model:null
+        }, 
+        {
             otdelfunc: 'Ошибки',
             children:  [{
                 otdelfunc: null,
                 children: null, types: 'Ошибки', pages: './error', fullpath: 'Ошибки\\Ошибки', model: 'Ошибки'
             }], types: null, pages: null, fullpath: null, model: null
-        },  
+        }
+
     ], types: null, pages: null, fullpath: null, model: null
     }]);
 }

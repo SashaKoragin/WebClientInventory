@@ -10,6 +10,7 @@ import { ErrorInventory } from '../../Inventory/ErrorInventory/View/ErrorInvento
 import { ComplimentTableEquipment } from '../../Inventory/ComplimentTableEquipment/View/ComplimentTableEquipment';
 import { Analitics } from '../../Inventory/Analitics/View/Analitics';
 import { BookAccounting } from '../../Inventory/Documents/BookAccounting/View/BookAccounting';
+import { Synchronization } from '../../Inventory/Process/Synchronization/View/Synchronization';
 
 const appRoutes: Routes = [
 {
@@ -48,6 +49,11 @@ const appRoutes: Routes = [
         {
             path:'error',
             component:ErrorInventory
+        },
+        {
+            path:'process',
+            component:Synchronization
+
         }
     ]
     }
