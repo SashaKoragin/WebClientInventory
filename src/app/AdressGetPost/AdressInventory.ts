@@ -1,6 +1,6 @@
 export class AdressInventarka {
-    public host = 'i7751-w00000745';
-   // public host = 'localhost';
+    //public host = 'i7751-w00000745';
+    public host = 'localhost';
     public autificationInventar = `http://${this.host}:8182/Inventarka/Authorization`;
     public alluser = `http://${this.host}:8182/Inventarka/AllUsers`;
     public allotdelget = `http://${this.host}:8182/Inventarka/AllOtdels`;
@@ -13,8 +13,12 @@ export class AdressInventarka {
     public addandeditotdel = `http://${this.host}:8182/Inventarka/AddAndEditOtdel`;
     public addandedittelephon = ` http://${this.host}:8182/Inventarka/AddAndEditTelephone`;
     public addandeditblockpower = ` http://${this.host}:8182/Inventarka/AddAndEditBlockPower`;
-    
-    public allstatistics =`http://${this.host}:8182/Inventarka/AllActualsProcedureUsers`
+    public addandeditswitch =`http://${this.host}:8182/Inventarka/AddAndEditSwith`;
+    public addandeditmodelswith = `http://${this.host}:8182/Inventarka/AddAndEditModelSwith`;
+
+    public allmodelswithes = `http://${this.host}:8182/Inventarka/AllModelSwithes`;
+    public allswithes = `http://${this.host}:8182/Inventarka/AllSwithes`;
+    public allstatistics =`http://${this.host}:8182/Inventarka/AllActualsProcedureUsers`;
     public allsysblock = `http://${this.host}:8182/Inventarka/AllSysBlok`;
     public allmonitor = `http://${this.host}:8182/Inventarka/AllMonitors`;
     public allmfu = `http://${this.host}:8182/Inventarka/AllMfu`;
@@ -50,6 +54,7 @@ export class AdressInventarka {
     public telephoneHelper = `http://${this.host}:8182/Inventarka/GenerateTelephoneHelper`;
     public bookModels = `http://${this.host}:8182/Inventarka/GenerateBookAccounting`;
     ///Вспомогательные таблицы маршруты к ним
+
     public addAndEditNameSysBlock = `http://${this.host}:8182/Inventarka/AddAndEditNameSysBlock`;
     public addAndEditNameMonitor =`http://${this.host}:8182/Inventarka/AddAndEditNameMonitor`;
     public addAndEditNameModelBlokPower = `http://${this.host}:8182/Inventarka/AddAndEditNameModelBlokPower`;
@@ -61,5 +66,4 @@ export class AdressInventarka {
     public addAndEditNameClassification = `http://${this.host}:8182/Inventarka/AddAndEditNameClassification`;
     public addAndEditNameFullProizvoditel = `http://${this.host}:8182/Inventarka/AddAndEditNameFullProizvoditel`;
     public addAndEditNameCopySave = `http://${this.host}:8182/Inventarka/AddAndEditNameCopySave`;
-
 }

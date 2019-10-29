@@ -4,54 +4,66 @@
 .modeltableuse{
     margin-right: 50px;
 }
-th.mat-header-cell{
-    text-align: center;
-    white-space: pre-wrap;
+
+.validation{
+    width: 100%;
+}
+
+.paginator{
+    margin-bottom: 100px;
+} 
+
+
+ th, td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    height: 10px;
+ }
+  
+  th.mat-header-cell{
+     text-align: center;
+     white-space: pre-wrap;
+     padding-left: 5px;
+     padding-right: 5px;
+     border: groove;
+     background: cadetblue;  
+     font-family: 'Times New Roman';
+     font-size: 16px;
+     font-weight: bold;
+  }
+  
+  td.mat-cell{
+    text-align: left;
+    white-space: nowrap;
     padding-left: 5px;
     padding-right: 5px;
     border: groove;
-    background: cadetblue;  
+    background: darkkhaki;
     font-family: 'Times New Roman';
-    font-size: 18px;
-    font-weight: bold;
- }
- 
-td.mat-cell{
-   text-align: left;
-   white-space: nowrap;
-   padding-left: 5px;
-   padding-right: 5px;
-   border: groove;
-   background: darkkhaki;
-   font-family: 'Times New Roman';
    font-size: 14px;
    font-weight: bold;
+  }
+
+
+ .input{
+    height: inherit;
  }
+
  .lable{
-     font-size: 14px;
+     font-size: 24px;
      font-weight: bold;
      font-family: 'Times New Roman';
- }
- .paginator1{
-     width: 500px;
- }
- .table1{
-     width: 500px;
+     margin: auto;
  }
 
- .paginator2{
-    width: 550px;
-}
-.table2{
-    width: 550px;
-}
+ .table{
+    width: -webkit-fill-available;
+    margin: auto;
+ }
 
-.table3{
-    width: 800px;
-}
-
-.paginator3{
-    width: 800px;
+.content{
+    width: fit-content;
 }
 ::ng-deep .mat-tab-label-content{
     font-size: 18px;

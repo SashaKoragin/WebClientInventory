@@ -1,10 +1,9 @@
-import { Users, ILogicaTable, FullSelectedModel, Otdel, Position, Printer, Mfu, ScanerAndCamer, SysBlock, CopySave,
-   Monitor,NameSysBlock,Supply,
-  Kabinet,FullModel,Statusing,FullProizvoditel, ModelReturn, NameMonitor, Telephon,BlockPower,ModelBlockPower,ProizvoditelBlockPower, INewLogicaTable } from '../../ModelInventory/InventoryModel';
+import { Users, FullSelectedModel, Otdel, Position, Printer, Mfu, ScanerAndCamer, SysBlock, CopySave,
+   Monitor,NameSysBlock,Supply,Classification,Swithe,
+  Kabinet,FullModel,Statusing,FullProizvoditel, ModelReturn, NameMonitor, Telephon,BlockPower,ModelBlockPower,ProizvoditelBlockPower, INewLogicaTable,ModelSwithe  } from '../../ModelInventory/InventoryModel';
 import { MatTableDataSource,MatPaginator,MatSort } from '@angular/material';
 import { ModelValidation } from '../ValidationModel/UserValidation';
 import { EditAndAdd } from '../../../Post RequestService/PostRequest';
-import { Classification } from '../../ModelInventory/InventoryModel';
 import * as _moment from 'moment';
 import * as _rollupMoment from 'moment';
 import {MatDatepickerInputEvent} from '@angular/material/datepicker';
@@ -359,6 +358,222 @@ export class UserTableModel implements INewLogicaTable<Users>  {
     this.isAdd = true;
    }
 
+  isEditAndAddFalse():void{
+    this.isAdd = false;
+    this.isEdit = false;
+   }
+}
+
+export class SwitchTableModel implements INewLogicaTable<Swithe>{
+  constructor(public editandadd:EditAndAdd){ }
+
+  public modelvalid:ModelValidation = new ModelValidation()
+  public kabinet:Kabinet[];
+  public models:ModelSwithe[];
+  public statusing:Statusing[];
+  public supples:Supply[]
+  public user:Users[];
+
+  displayedColumns = ['IdSwithes','User.Name','Supply.DatePostavki','ModelSwithes.NameModel','ModelSwithes.CountPort','ServiceNum','SerNum','InventarNum','Coment','Kabinet.NumberKabinet','Statusing.Name','ActionsColumn'];
+  dataSource: MatTableDataSource<Swithe> = new MatTableDataSource<Swithe>();
+  isAdd: boolean;  
+  isEdit: boolean;
+  model: Swithe = new Swithe();
+  modelToServer: Swithe;
+  index: number;
+  modeltable: Swithe[];
+
+  public filteredKabinet:any;
+  public filteredModels:any;
+  public filteredStatusing:any;
+  public filteredUser:any;
+  public filteredSupples:any;
+
+  temlateList: any;
+  rowList: any;
+  fulltemplate: ElementRef<any>;
+  table: ElementRef<any>;
+
+  castomefiltermodel() {
+    this.dataSource.filterPredicate = (data, filter) => {
+        var tot = false;
+        for (let column of this.displayedColumns) {
+            if(typeof data[column]!=='undefined'){
+              if ((column in data) && (new Date(data[column].toString()).toString() == "Invalid Date")) {
+                tot = (tot || data[column].toString().trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+              } else {
+   
+                 var date = new Date(data[column].toString());
+                 var m = date.toDateString().slice(4, 7) + " " + date.getDate() + " " + date.getFullYear();
+                 tot = (tot || m.toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1); 
+                }
+            }
+            else{
+              if(data[column.split('.')[0]]!==null){
+                if( typeof(data[column.split('.')[0]]) ==='object'){
+                  if(data[column.split('.')[0]][column.split('.')[1]]){
+                    tot = (tot || data[column.split('.')[0]][column.split('.')[1]].trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+                  }
+                }
+              }
+              }
+            }
+      return tot;
+    }
+  }
+
+  public filterstable(filterValue: string): void {
+    filterValue = filterValue.trim(); // Remove whitespace
+    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
+    this.dataSource.filter = filterValue;
+  }
+
+  public calbackfiltersAll(): void {
+    this.filteredKabinet = this.kabinet.slice();
+    this.filteredModels = this.models.slice();
+    this.filteredStatusing = this.statusing.slice();
+    this.filteredUser = this.user.slice();
+    this.filteredSupples = this.supples.slice();
+  }
+
+  public async add(): Promise<void> {
+    this.isEditAndAddTrue();
+    var newmodel = this.newmodel();
+    this.dataSource.data.push(newmodel); 
+    this.modeltable.push(newmodel); 
+    this.index = this.dataSource.data.length;
+    this.model = newmodel;
+    await this.dataSource._updateChangeSubscription();
+    await this.dataSource.paginator.lastPage();
+    this.addtemplate(newmodel.IdSwithes)
+  }  
+
+  public edit(model: Swithe): void {
+    model.ModelIsEdit = true;
+    this.model =JSON.parse(JSON.stringify(model));
+    this.addtemplate(model.IdSwithes)
+    this.isEditAndAddTrue();
+  }
+
+  save(): void {
+    this.modifimethod();
+    this.isEditAndAddFalse();
+    this.modelToServer = JSON.parse(JSON.stringify(this.model));
+    if(this.modelToServer.Supply)
+    {
+      this.modelToServer.Supply.DatePostavki = null;
+    }
+     this.editandadd.addandeditswitch(this.modelToServer).subscribe((model:ModelReturn)=>{
+      if(model.Guid)
+      {
+        this.dataSource.data.find(x=>x.IdSwithes===0).IdHistory = model.Guid;
+        this.dataSource.data.find(x=>x.IdSwithes===0).IdSwithes = model.Index;
+      }
+      console.log(model.Message);
+      this.dataSource._updateChangeSubscription();
+     });
+     this.removetemplate();
+    //Запрос на сохранение и обновление данных
+  }
+
+  cancel(model: Swithe): void {
+    model.ModelIsEdit = false;
+    this.isEditAndAddFalse(); 
+    if(this.index>0)
+    {
+      this.dataSource.data.pop();
+      this.index = 0;
+    }
+    else{
+      var userdefault = this.modeltable.find(x=>x.IdSwithes ===this.model.IdSwithes);
+      this.dataSource.data[this.modeltable.indexOf(userdefault)] = model;
+      this.index = 0;
+    }
+    this.dataSource._updateChangeSubscription();
+    this.removetemplate();
+  }
+
+  newmodel(): Swithe {
+    var newuser: Swithe = new Swithe()
+    newuser.ModelIsEdit = true;
+    newuser.IdSwithes = 0;
+    return newuser;
+  }
+
+     //Костыль дожидаемся обновление DOM
+     async delay(ms: number):Promise<void> {
+       await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log("Задержка подгрузки DOM!!!"));
+     }
+
+     async addtemplate(index: number): Promise<void> {
+       var i = 0;
+       await this.delay(10);
+       this.temlateList = this.fulltemplate.nativeElement.querySelectorAll("mat-form-field[id=template]");
+       this.rowList = this.table.nativeElement.querySelectorAll("div[class='"+index+"']");
+       for (var row of this.rowList){
+           row.append(this.temlateList[i])
+           i++;
+        }
+     }
+
+      removetemplate(): void {
+        var i = 0;
+        for (var row of this.rowList){
+           row.removeChild(this.temlateList[i]);
+           this.fulltemplate.nativeElement.append(this.temlateList[i])
+           i++;
+        }
+      }
+
+  modifimethod(): void {
+    this.model.ModelSwithe?this.model.IdModelSwithes = this.model.ModelSwithe.IdModelSwithes:this.model.IdModelSwithes=null;
+    this.model.Statusing?this.model.IdStatus = this.model.Statusing.IdStatus:this.model.IdStatus=null;
+    this.model.Kabinet?this.model.IdNumberKabinet = this.model.Kabinet.IdNumberKabinet:this.model.IdNumberKabinet=null;
+    this.model.User?this.model.IdUser = this.model.User.IdUser:this.model.IdUser=null;
+    if(this.model.Supply){
+      this.model.IdSupply = this.model.Supply.IdSupply
+      this.model.Supply.DataCreate = null;
+      if(this.model.Supply.DatePostavki.length<=10){
+        this.model.Supply.DatePostavki = this.model.Supply.DatePostavki.split("-").reverse().join("-")+"T00:00:00"
+      }
+    }
+    else{
+      this.model.IdSupply=null;
+    }
+    this.isEdit = true;
+    this.model.ModelIsEdit = false;
+    //Поиск индекса и замена модели по индексу в таблице
+    var userdefault = this.modeltable.find(x=>x.IdSwithes ===this.model.IdSwithes);
+    var indexold = this.modeltable.indexOf(userdefault);
+    this.dataSource.data[indexold] = this.model;
+    this.index = 0;
+  }
+
+  public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef<any>, template: ElementRef<any>): Promise<string> {
+    this.table = table;  //Таблица
+    this.fulltemplate = template; //Заложенный шаблон
+    this.modeltable =JSON.parse(JSON.stringify(model.Swithes));
+    this.dataSource.paginator = paginator;
+    this.dataSource.sort = sort
+    this.castomefiltermodel();
+    this.dataSource.data = model.Swithes;
+    this.kabinet = model.Kabinet;
+    this.models = model.ModelSwithe;
+    this.statusing = model.Statusing;
+    this.user = model.Users;
+    this.supples = model.Supply;
+    this.filteredKabinet = this.kabinet.slice();
+    this.filteredModels = this.models.slice();
+    this.filteredStatusing = this.statusing.slice();
+    this.filteredUser = this.user.slice();
+    this.filteredSupples = this.supples.slice();
+    return "Модель коммутаторов заполнена";
+  }
+
+  isEditAndAddTrue():void{
+    this.isEdit = true;
+    this.isAdd = true;
+   }
   isEditAndAddFalse():void{
     this.isAdd = false;
     this.isEdit = false;
@@ -1935,7 +2150,8 @@ public async  addtableModel(model: FullSelectedModel, paginator: MatPaginator, s
   }
 }
 
-export class NameSysBlockTableModel implements ILogicaTable<NameSysBlock> {
+export class NameSysBlockTableModel implements INewLogicaTable<NameSysBlock> {
+ 
  
   constructor(public editandadd:EditAndAdd){ }
   public displayedColumns = ['IdModelSysBlock','NameComputer','ActionsColumn'];
@@ -1943,32 +2159,45 @@ export class NameSysBlockTableModel implements ILogicaTable<NameSysBlock> {
 
   isAdd: boolean;
   isEdit: boolean;
-  model: NameSysBlock;
+  model: NameSysBlock = new NameSysBlock();
   index: number;
   modeltable: NameSysBlock[];
- 
+
+  temlateList: any;
+  rowList: any;
+  fulltemplate: ElementRef<any>;
+  table: ElementRef<any>;
+
+  calbackfiltersAll(): void {
+    throw new Error("Method not implemented.");
+  }
+
   filterstable(filterValue: string): void {
     filterValue = filterValue.trim(); // Remove whitespace
     filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
     this.dataSource.filter = filterValue;
   }
 
-  add(): void {
+  public async add():Promise<void> {
     this.isEditAndAddTrue();
     var newmodel = this.newmodel();
-    this.dataSource.paginator.lastPage();
     this.dataSource.data.push(newmodel); 
     this.modeltable.push(newmodel); 
     this.index = this.dataSource.data.length;
     this.model = newmodel;
-    this.dataSource._updateChangeSubscription();
+    await this.dataSource._updateChangeSubscription();
+    await this.dataSource.paginator.lastPage();
+    this.addtemplate(newmodel.IdModelSysBlock)
   }  
-  edit(model: NameSysBlock): void {
+
+  public edit(model: NameSysBlock): void {
     model.ModelIsEdit = true;
     this.model =JSON.parse(JSON.stringify(model));
+    this.addtemplate(model.IdModelSysBlock)
     this.isEditAndAddTrue();
   }
-  save(model: NameSysBlock): void {
+
+  public save(): void {
     this.modifimethod();
     this.isEditAndAddFalse();
      this.editandadd.addAndEditNameSysBlock(this.model).subscribe((model:ModelReturn)=>{
@@ -1979,9 +2208,11 @@ export class NameSysBlockTableModel implements ILogicaTable<NameSysBlock> {
       console.log(model.Message);
       this.dataSource._updateChangeSubscription();
      });
+     this.removetemplate();
     //Запрос на сохранение и обновление данных
   }
-  cancel(model: NameSysBlock): void {
+
+  public cancel(model: NameSysBlock): void {
     model.ModelIsEdit = false;
     this.isEditAndAddFalse(); 
     if(this.index>0)
@@ -1995,6 +2226,7 @@ export class NameSysBlockTableModel implements ILogicaTable<NameSysBlock> {
       this.index = 0;
     }
     this.dataSource._updateChangeSubscription();
+    this.removetemplate();
   }
 
   newmodel(): NameSysBlock {
@@ -2002,6 +2234,30 @@ export class NameSysBlockTableModel implements ILogicaTable<NameSysBlock> {
     newuser.ModelIsEdit = true;
     newuser.IdModelSysBlock = 0;
     return newuser;
+  }
+
+  async delay(ms: number): Promise<void> {
+    await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log("Задержка подгрузки DOM!!!"));
+  }
+
+  async addtemplate(index: number): Promise<void> {
+    var i = 0;
+    await this.delay(10);
+    this.temlateList = this.fulltemplate.nativeElement.querySelectorAll("mat-form-field[id=template]");
+    this.rowList = this.table.nativeElement.querySelectorAll("div[class='"+index+"']");
+    for (var row of this.rowList){
+      row.append(this.temlateList[i])
+      i++;
+    }
+  }
+
+  removetemplate(): void {
+    var i = 0;
+    for (var row of this.rowList){
+      row.removeChild(this.temlateList[i]);
+      this.fulltemplate.nativeElement.append(this.temlateList[i])
+      i++;
+    }
   }
 
   modifimethod(): void {
@@ -2014,13 +2270,9 @@ export class NameSysBlockTableModel implements ILogicaTable<NameSysBlock> {
     this.index = 0;
   }
 
-  public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort): Promise<string> {
-    if(model.ModelSysBlok.length!==0) {
-      this.model = JSON.parse(JSON.stringify(model.ModelSysBlok[0]));
-    } 
-    else{
-      this.model = null;
-    }
+  public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort,table:ElementRef,template:ElementRef): Promise<string> {
+    this.table = table;  //Таблица
+    this.fulltemplate = template; //Заложенный шаблон
     this.modeltable =JSON.parse(JSON.stringify(model.ModelSysBlok));
     this.dataSource.data = model.ModelSysBlok;
     this.dataSource.paginator = paginator;
@@ -2028,18 +2280,18 @@ export class NameSysBlockTableModel implements ILogicaTable<NameSysBlock> {
     return "Модель Наименование системных блоков заполнена";
   }
 
-
   isEditAndAddTrue(): void {
     this.isEdit = true;
     this.isAdd = true;
   }
+
   isEditAndAddFalse(): void {
     this.isAdd = false;
     this.isEdit = false;
   }
 }
 
-export class NameMonitorTableModel implements ILogicaTable<NameMonitor> {
+export class NameMonitorTableModel implements INewLogicaTable<NameMonitor> {
   
   constructor(public editandadd:EditAndAdd){ }
   public displayedColumns = ['IdModelMonitor','Name','ActionsColumn'];
@@ -2048,32 +2300,45 @@ export class NameMonitorTableModel implements ILogicaTable<NameMonitor> {
 
   isAdd: boolean;
   isEdit: boolean;
-  model: NameMonitor;
+  model: NameMonitor = new NameMonitor();
   index: number;
   modeltable: NameMonitor[];
   
+  temlateList: any;
+  rowList: any;
+  fulltemplate: ElementRef<any>;
+  table: ElementRef<any>;
+
+  calbackfiltersAll(): void {
+    throw new Error("Method not implemented.");
+  }
+
   filterstable(filterValue: string): void {
     filterValue = filterValue.trim(); // Remove whitespace
     filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
     this.dataSource.filter = filterValue;
   }
 
-  add(): void {
+  public async add():Promise<void> {
     this.isEditAndAddTrue();
     var newmodel = this.newmodel();
-    this.dataSource.paginator.lastPage();
     this.dataSource.data.push(newmodel); 
     this.modeltable.push(newmodel); 
     this.index = this.dataSource.data.length;
     this.model = newmodel;
-    this.dataSource._updateChangeSubscription();
+    await this.dataSource._updateChangeSubscription();
+    await this.dataSource.paginator.lastPage();
+    this.addtemplate(newmodel.IdModelMonitor);
   }
-  edit(model: NameMonitor): void {
+
+  public edit(model: NameMonitor): void {
     model.ModelIsEdit = true;
     this.model =JSON.parse(JSON.stringify(model));
+    this.addtemplate(model.IdModelMonitor)
     this.isEditAndAddTrue();
   }
-  save(model: NameMonitor): void {
+
+  public save(): void {
     this.modifimethod();
     this.isEditAndAddFalse();
      this.editandadd.addAndEditNameMonitor(this.model).subscribe((model:ModelReturn)=>{
@@ -2084,10 +2349,11 @@ export class NameMonitorTableModel implements ILogicaTable<NameMonitor> {
       console.log(model.Message);
       this.dataSource._updateChangeSubscription();
      });
+     this.removetemplate();
     //Запрос на сохранение и обновление данных
   }
 
-  cancel(model: NameMonitor): void {
+  public cancel(model: NameMonitor): void {
     model.ModelIsEdit = false;
     this.isEditAndAddFalse(); 
     if(this.index>0)
@@ -2101,6 +2367,7 @@ export class NameMonitorTableModel implements ILogicaTable<NameMonitor> {
       this.index = 0;
     }
     this.dataSource._updateChangeSubscription();
+    this.removetemplate();
   }
 
   newmodel(): NameMonitor {
@@ -2108,6 +2375,30 @@ export class NameMonitorTableModel implements ILogicaTable<NameMonitor> {
     newuser.ModelIsEdit = true;
     newuser.IdModelMonitor = 0;
     return newuser;
+  }
+
+  async delay(ms: number): Promise<void> {
+    await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log("Задержка подгрузки DOM!!!"));
+  }
+
+  async addtemplate(index: number): Promise<void> {
+    var i = 0;
+    await this.delay(10);
+    this.temlateList = this.fulltemplate.nativeElement.querySelectorAll("mat-form-field[id=template]");
+    this.rowList = this.table.nativeElement.querySelectorAll("div[class='"+index+"']");
+    for (var row of this.rowList){
+      row.append(this.temlateList[i])
+      i++;
+    }
+  }
+
+  removetemplate(): void {
+    var i = 0;
+    for (var row of this.rowList){
+      row.removeChild(this.temlateList[i]);
+      this.fulltemplate.nativeElement.append(this.temlateList[i])
+      i++;
+    }
   }
 
 
@@ -2121,13 +2412,9 @@ export class NameMonitorTableModel implements ILogicaTable<NameMonitor> {
     this.index = 0;
   }
 
-  public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort): Promise<string> {
-    if(model.NameMonitors.length!==0) {
-      this.model = JSON.parse(JSON.stringify(model.NameMonitors[0]));
-    } 
-    else{
-      this.model = null;
-    }
+  public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort,table:ElementRef,template:ElementRef): Promise<string> {
+    this.table = table;  //Таблица
+    this.fulltemplate = template; //Заложенный шаблон
     this.modeltable =JSON.parse(JSON.stringify(model.NameMonitors));
     this.dataSource.data = model.NameMonitors;
     this.dataSource.paginator = paginator;
@@ -2145,40 +2432,55 @@ export class NameMonitorTableModel implements ILogicaTable<NameMonitor> {
     this.isEdit = false;
   }
 }
-export class NameModelBlokPowerTableModel implements ILogicaTable<ModelBlockPower> {
+
+export class NameModelBlokPowerTableModel implements INewLogicaTable<ModelBlockPower> {
   
   constructor(public editandadd:EditAndAdd){ }
+
   public displayedColumns = ['IdModelBP','Name','ActionsColumn'];
   public dataSource: MatTableDataSource<ModelBlockPower> = new MatTableDataSource<ModelBlockPower>();
 
   isAdd: boolean;
   isEdit: boolean;
-  model: ModelBlockPower;
+  model: ModelBlockPower = new ModelBlockPower();
   index: number;
   modeltable: ModelBlockPower[];
   
+  temlateList: any;
+  rowList: any;
+  fulltemplate: ElementRef<any>;
+  table: ElementRef<any>;
+
+  calbackfiltersAll(): void {
+    throw new Error("Method not implemented.");
+  }
+
   filterstable(filterValue: string): void {
     filterValue = filterValue.trim(); // Remove whitespace
     filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
     this.dataSource.filter = filterValue;
   }
-  add(): void {
+
+  public async add(): Promise<void> {
     this.isEditAndAddTrue();
     var newmodel = this.newmodel();
-    this.dataSource.paginator.lastPage();
     this.dataSource.data.push(newmodel); 
     this.modeltable.push(newmodel); 
     this.index = this.dataSource.data.length;
     this.model = newmodel;
-    this.dataSource._updateChangeSubscription();
+    await this.dataSource._updateChangeSubscription();
+    await this.dataSource.paginator.lastPage();
+    this.addtemplate(newmodel.IdModelBP);
   } 
-  edit(model: ModelBlockPower): void {
+
+  public edit(model: ModelBlockPower): void {
     model.ModelIsEdit = true;
     this.model =JSON.parse(JSON.stringify(model));
+    this.addtemplate(model.IdModelBP);
     this.isEditAndAddTrue();
   }
 
-  save(model: ModelBlockPower): void {
+  public save(): void {
     this.modifimethod();
     this.isEditAndAddFalse();
      this.editandadd.addAndEditNameModelBlokPower(this.model).subscribe((model:ModelReturn)=>{
@@ -2189,9 +2491,11 @@ export class NameModelBlokPowerTableModel implements ILogicaTable<ModelBlockPowe
       console.log(model.Message);
       this.dataSource._updateChangeSubscription();
      });
+     this.removetemplate();
     //Запрос на сохранение и обновление данных
   }
-  cancel(model: ModelBlockPower): void {
+
+  public cancel(model: ModelBlockPower): void {
     model.ModelIsEdit = false;
     this.isEditAndAddFalse(); 
     if(this.index>0)
@@ -2205,6 +2509,7 @@ export class NameModelBlokPowerTableModel implements ILogicaTable<ModelBlockPowe
       this.index = 0;
     }
     this.dataSource._updateChangeSubscription();
+    this.removetemplate();
   }
 
   newmodel(): ModelBlockPower {
@@ -2212,6 +2517,30 @@ export class NameModelBlokPowerTableModel implements ILogicaTable<ModelBlockPowe
     newuser.ModelIsEdit = true;
     newuser.IdModelBP = 0;
     return newuser;
+  }
+
+  async delay(ms: number): Promise<void> {
+    await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log("Задержка подгрузки DOM!!!"));
+  }
+
+  async addtemplate(index: number): Promise<void> {
+    var i = 0;
+    await this.delay(10);
+    this.temlateList = this.fulltemplate.nativeElement.querySelectorAll("mat-form-field[id=template]");
+    this.rowList = this.table.nativeElement.querySelectorAll("div[class='"+index+"']");
+    for (var row of this.rowList){
+      row.append(this.temlateList[i])
+      i++;
+    }
+  }
+
+  removetemplate(): void {
+    var i = 0;
+    for (var row of this.rowList){
+      row.removeChild(this.temlateList[i]);
+      this.fulltemplate.nativeElement.append(this.temlateList[i])
+      i++;
+    }
   }
 
   modifimethod(): void {
@@ -2224,13 +2553,9 @@ export class NameModelBlokPowerTableModel implements ILogicaTable<ModelBlockPowe
     this.index = 0;
   }
 
-  public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort): Promise<string> {
-    if(model.ModelBlockPower.length!==0) {
-      this.model = JSON.parse(JSON.stringify(model.ModelBlockPower[0]));
-    } 
-    else{
-      this.model = null;
-    }
+  public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort,table:ElementRef,template:ElementRef): Promise<string> {
+    this.table = table;  //Таблица
+    this.fulltemplate = template; //Заложенный шаблон
     this.modeltable =JSON.parse(JSON.stringify(model.ModelBlockPower));
     this.dataSource.data = model.ModelBlockPower;
     this.dataSource.paginator = paginator;
@@ -2249,43 +2574,54 @@ export class NameModelBlokPowerTableModel implements ILogicaTable<ModelBlockPowe
   }
 }
 
-export class NameProizvoditelBlockPowerTableModel implements ILogicaTable<ProizvoditelBlockPower> {
+export class NameProizvoditelBlockPowerTableModel implements INewLogicaTable<ProizvoditelBlockPower> {
 
   constructor(public editandadd:EditAndAdd){ }
+
   public displayedColumns = ['IdProizvoditelBP','Name','ActionsColumn'];
   public dataSource: MatTableDataSource<ProizvoditelBlockPower> = new MatTableDataSource<ProizvoditelBlockPower>();
 
   isAdd: boolean;
   isEdit: boolean;
-  model: ProizvoditelBlockPower;
+  model: ProizvoditelBlockPower = new ProizvoditelBlockPower();
   index: number;
   modeltable: ProizvoditelBlockPower[];
 
-    
+  temlateList: any;
+  rowList: any;
+  fulltemplate: ElementRef<any>;
+  table: ElementRef<any>;
+
+  calbackfiltersAll(): void {
+    throw new Error("Method not implemented.");
+  }
+
   filterstable(filterValue: string): void {
     filterValue = filterValue.trim(); // Remove whitespace
     filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
     this.dataSource.filter = filterValue;
   }
 
-  add(): void {
+  public async add(): Promise<void> {
     this.isEditAndAddTrue();
     var newmodel = this.newmodel();
-    this.dataSource.paginator.lastPage();
     this.dataSource.data.push(newmodel); 
     this.modeltable.push(newmodel); 
     this.index = this.dataSource.data.length;
     this.model = newmodel;
-    this.dataSource._updateChangeSubscription();
+    await this.dataSource._updateChangeSubscription();
+    await this.dataSource.paginator.lastPage();
+    this.addtemplate(newmodel.IdProizvoditelBP)
   }
   
-  edit(model: ProizvoditelBlockPower): void {
+  public edit(model: ProizvoditelBlockPower): void {
     model.ModelIsEdit = true;
     this.model =JSON.parse(JSON.stringify(model));
+    this.addtemplate(model.IdProizvoditelBP)
     this.isEditAndAddTrue();
   }
 
-  save(model: ProizvoditelBlockPower): void {
+  public save(): void {
     this.modifimethod();
     this.isEditAndAddFalse();
      this.editandadd.addAndEditNameProizvoditelBlockPower(this.model).subscribe((model:ModelReturn)=>{
@@ -2296,24 +2632,11 @@ export class NameProizvoditelBlockPowerTableModel implements ILogicaTable<Proizv
       console.log(model.Message);
       this.dataSource._updateChangeSubscription();
      });
+     this.removetemplate();
     //Запрос на сохранение и обновление данных
   }
-  modifimethod(): void {
-    this.isEdit = true;
-    this.model.ModelIsEdit = false;
-    //Поиск индекса и замена модели по индексу в таблице
-    var userdefault = this.modeltable.find(x=>x.IdProizvoditelBP===this.model.IdProizvoditelBP);
-    var indexold = this.modeltable.indexOf(userdefault);
-    this.dataSource.data[indexold] = this.model;
-    this.index = 0;
-  }
-  newmodel(): ProizvoditelBlockPower {
-    var newuser: ProizvoditelBlockPower = new ProizvoditelBlockPower();
-    newuser.ModelIsEdit = true;
-    newuser.IdProizvoditelBP = 0;
-    return newuser;
-  }
-  cancel(model: ProizvoditelBlockPower): void {
+
+  public cancel(model: ProizvoditelBlockPower): void {
     model.ModelIsEdit = false;
     this.isEditAndAddFalse(); 
     if(this.index>0)
@@ -2327,15 +2650,53 @@ export class NameProizvoditelBlockPowerTableModel implements ILogicaTable<Proizv
       this.index = 0;
     }
     this.dataSource._updateChangeSubscription();
+    this.removetemplate();
   }
 
-  public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort): Promise<string> {
-    if(model.ProizvoditelBlockPower.length!==0) {
-      this.model = JSON.parse(JSON.stringify(model.ProizvoditelBlockPower[0]));
-    } 
-    else{
-      this.model = null;
+  newmodel(): ProizvoditelBlockPower {
+    var newuser: ProizvoditelBlockPower = new ProizvoditelBlockPower();
+    newuser.ModelIsEdit = true;
+    newuser.IdProizvoditelBP = 0;
+    return newuser;
+  }
+
+  async delay(ms: number): Promise<void> {
+    await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log("Задержка подгрузки DOM!!!"));
+  }
+
+  async addtemplate(index: number): Promise<void> {
+    var i = 0;
+    await this.delay(10);
+    this.temlateList = this.fulltemplate.nativeElement.querySelectorAll("mat-form-field[id=template]");
+    this.rowList = this.table.nativeElement.querySelectorAll("div[class='"+index+"']");
+    for (var row of this.rowList){
+      row.append(this.temlateList[i])
+      i++;
     }
+  }
+
+  removetemplate(): void {
+    var i = 0;
+    for (var row of this.rowList){
+      row.removeChild(this.temlateList[i]);
+      this.fulltemplate.nativeElement.append(this.temlateList[i])
+      i++;
+    }
+  }
+
+  modifimethod(): void {
+    this.isEdit = true;
+    this.model.ModelIsEdit = false;
+    //Поиск индекса и замена модели по индексу в таблице
+    var userdefault = this.modeltable.find(x=>x.IdProizvoditelBP===this.model.IdProizvoditelBP);
+    var indexold = this.modeltable.indexOf(userdefault);
+    this.dataSource.data[indexold] = this.model;
+    this.index = 0;
+  }
+
+  public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort,table:ElementRef,template:ElementRef): Promise<string> {
+    this.table = table;  //Таблица
+    this.fulltemplate = template; //Заложенный шаблон
     this.modeltable =JSON.parse(JSON.stringify(model.ProizvoditelBlockPower));
     this.dataSource.data = model.ProizvoditelBlockPower;
     this.dataSource.paginator = paginator;
@@ -2353,25 +2714,27 @@ export class NameProizvoditelBlockPowerTableModel implements ILogicaTable<Proizv
     this.isEdit = false;
   }
 }
-export class NameFullModelTableModel implements ILogicaTable<FullModel> {
+
+export class NameFullModelTableModel implements INewLogicaTable<FullModel> {
  
   constructor(public editandadd:EditAndAdd){ }
+
   public displayedColumns = ['IdModel','NameModel','IdClasificationName','ActionsColumn'];
   public dataSource: MatTableDataSource<FullModel> = new MatTableDataSource<FullModel>();
 
   isAdd: boolean;
   isEdit: boolean;
-  model: FullModel;
+  model: FullModel = new FullModel();
   index: number;
   modeltable: FullModel[];
 
   public classification:Classification[]
-
   public filteredClassification:any;
 
-  calbackfiltersAll(){
-    this.filteredClassification = this.classification.slice();
-  }
+  temlateList: any;
+  rowList: any;
+  fulltemplate: ElementRef<any>;
+  table: ElementRef<any>;
 
   filterstable(filterValue: string): void {
     filterValue = filterValue.trim(); // Remove whitespace
@@ -2379,24 +2742,32 @@ export class NameFullModelTableModel implements ILogicaTable<FullModel> {
     this.dataSource.filter = filterValue;
   }
 
-  add(): void {
+  calbackfiltersAll(){
+    this.filteredClassification = this.classification.slice();
+  }
+
+
+
+  public async add(): Promise<void> {
     this.isEditAndAddTrue();
     var newmodel = this.newmodel();
-    this.dataSource.paginator.lastPage();
     this.dataSource.data.push(newmodel); 
     this.modeltable.push(newmodel); 
     this.index = this.dataSource.data.length;
     this.model = newmodel;
-    this.dataSource._updateChangeSubscription();
+    await this.dataSource._updateChangeSubscription();
+    await this.dataSource.paginator.lastPage();
+    this.addtemplate(newmodel.IdModel)
   }  
 
   edit(model: FullModel): void {
     model.ModelIsEdit = true;
     this.model =JSON.parse(JSON.stringify(model));
+    this.addtemplate(model.IdModel)
     this.isEditAndAddTrue();
   }
   
-  save(model: FullModel): void {
+  public save(): void {
     this.modifimethod();
     this.isEditAndAddFalse();
      this.editandadd.addAndEditNameFullModel(this.model).subscribe((model:ModelReturn)=>{
@@ -2407,10 +2778,11 @@ export class NameFullModelTableModel implements ILogicaTable<FullModel> {
       console.log(model.Message);
       this.dataSource._updateChangeSubscription();
      });
+     this.removetemplate();
     //Запрос на сохранение и обновление данных
   }
 
-  cancel(model: FullModel): void {
+  public cancel(model: FullModel): void {
     model.ModelIsEdit = false;
     this.isEditAndAddFalse(); 
     if(this.index>0)
@@ -2424,6 +2796,7 @@ export class NameFullModelTableModel implements ILogicaTable<FullModel> {
       this.index = 0;
     }
     this.dataSource._updateChangeSubscription();
+    this.removetemplate();
   }
 
   newmodel(): FullModel {
@@ -2431,6 +2804,33 @@ export class NameFullModelTableModel implements ILogicaTable<FullModel> {
     newuser.ModelIsEdit = true;
     newuser.IdModel = 0;
     return newuser;
+  }
+
+  //Костыль дожидаемся обновление DOM
+  async delay(ms: number):Promise<void> {
+    await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log("Задержка подгрузки DOM!!!"));
+  }
+
+  ///Добавить шаблон в строку это просто жесть
+  async addtemplate(index:number):Promise<void>{
+    var i = 0;
+    await this.delay(10);
+    this.temlateList = this.fulltemplate.nativeElement.querySelectorAll("mat-form-field[id=template]");
+    this.rowList = this.table.nativeElement.querySelectorAll("div[class='"+index+"']");
+    for (var row of this.rowList){
+      row.append(this.temlateList[i])
+      i++;
+    }
+  }
+
+  ///Удалить шаблон из строки и востановить текущий шаблон
+  removetemplate():void{
+      var i = 0;
+      for (var row of this.rowList){
+        row.removeChild(this.temlateList[i]);
+        this.fulltemplate.nativeElement.append(this.temlateList[i])
+        i++;
+      }
   }
 
   modifimethod(): void {
@@ -2444,13 +2844,9 @@ export class NameFullModelTableModel implements ILogicaTable<FullModel> {
     this.index = 0;
   }
 
-  public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort): Promise<string> {
-    if(model.Model.length!==0) {
-      this.model = JSON.parse(JSON.stringify(model.Model[0]));
-    } 
-    else{
-      this.model = null;
-    }
+  public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort,table:ElementRef,template:ElementRef): Promise<string> {
+    this.table = table;  //Таблица
+    this.fulltemplate = template; //Заложенный шаблон
     this.modeltable =JSON.parse(JSON.stringify(model.Model));
     this.dataSource.data = model.Model;
     this.dataSource.paginator = paginator;
@@ -2471,19 +2867,29 @@ export class NameFullModelTableModel implements ILogicaTable<FullModel> {
   }
 }
 
-export class NameFullProizvoditelTableModel implements ILogicaTable<FullProizvoditel> {
+export class NameFullProizvoditelTableModel implements INewLogicaTable<FullProizvoditel> {
  
-  
   constructor(public editandadd:EditAndAdd){ }
+
   public displayedColumns = ['IdProizvoditel','NameProizvoditel','ActionsColumn'];
   public dataSource: MatTableDataSource<FullProizvoditel> = new MatTableDataSource<FullProizvoditel>();
  
   isAdd: boolean;
   isEdit: boolean;
-  model: FullProizvoditel;
+  model: FullProizvoditel = new FullProizvoditel();
   index: number;
   modeltable: FullProizvoditel[];
  
+  //Шаблоны для манипулирования DOM
+  temlateList:any //Заложенный шаблон Массив
+  rowList:any    //Строка по номеру из БД Массив 
+  fulltemplate:ElementRef<any>  //Полный шаблон для манипуляции
+  table:ElementRef<any>  //Полный шаблон для манипуляции
+
+  calbackfiltersAll(): void {
+    throw new Error("Method not implemented.");
+  }
+
   filterstable(filterValue: string): void {
     filterValue = filterValue.trim(); // Remove whitespace
     filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
@@ -2491,24 +2897,26 @@ export class NameFullProizvoditelTableModel implements ILogicaTable<FullProizvod
   }
 
 
-  add(): void {
+  public async add(): Promise<void> {
     this.isEditAndAddTrue();
     var newmodel = this.newmodel();
-    this.dataSource.paginator.lastPage();
     this.dataSource.data.push(newmodel); 
     this.modeltable.push(newmodel); 
     this.index = this.dataSource.data.length;
     this.model = newmodel;
-    this.dataSource._updateChangeSubscription();
+    await this.dataSource._updateChangeSubscription();
+    await this.dataSource.paginator.lastPage();
+    this.addtemplate(newmodel.IdProizvoditel)
   }  
 
-  edit(model: FullProizvoditel): void {
+  public edit(model: FullProizvoditel): void {
     model.ModelIsEdit = true;
     this.model =JSON.parse(JSON.stringify(model));
+    this.addtemplate(model.IdProizvoditel)
     this.isEditAndAddTrue();
   }
 
-  save(model: FullProizvoditel): void {
+  public save(): void {
     this.modifimethod();
     this.isEditAndAddFalse();
      this.editandadd.addAndEditNameFullProizvoditel(this.model).subscribe((model:ModelReturn)=>{
@@ -2519,10 +2927,11 @@ export class NameFullProizvoditelTableModel implements ILogicaTable<FullProizvod
       console.log(model.Message);
       this.dataSource._updateChangeSubscription();
      });
+     this.removetemplate();
     //Запрос на сохранение и обновление данных
   }
 
-  cancel(model: FullProizvoditel): void {
+  public cancel(model: FullProizvoditel): void {
     model.ModelIsEdit = false;
     this.isEditAndAddFalse(); 
     if(this.index>0)
@@ -2536,6 +2945,7 @@ export class NameFullProizvoditelTableModel implements ILogicaTable<FullProizvod
       this.index = 0;
     }
     this.dataSource._updateChangeSubscription();
+    this.removetemplate();
   }
 
   newmodel(): FullProizvoditel {
@@ -2545,7 +2955,32 @@ export class NameFullProizvoditelTableModel implements ILogicaTable<FullProizvod
     return newuser;
   }
 
+  //Костыль дожидаемся обновление DOM
+  async delay(ms: number):Promise<void> {
+    await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log("Задержка подгрузки DOM!!!"));
+  }
 
+    ///Добавить шаблон в строку это просто жесть
+  async addtemplate(index:number):Promise<void>{
+      var i = 0;
+      await this.delay(10);
+      this.temlateList = this.fulltemplate.nativeElement.querySelectorAll("mat-form-field[id=template]");
+      this.rowList = this.table.nativeElement.querySelectorAll("div[class='"+index+"']");
+      for (var row of this.rowList){
+        row.append(this.temlateList[i])
+        i++;
+      }
+  }
+
+  ///Удалить шаблон из строки и востановить текущий шаблон
+  removetemplate():void{
+      var i = 0;
+      for (var row of this.rowList){
+        row.removeChild(this.temlateList[i]);
+        this.fulltemplate.nativeElement.append(this.temlateList[i])
+        i++;
+      }
+  }
 
   modifimethod(): void {
     this.isEdit = true;
@@ -2557,13 +2992,9 @@ export class NameFullProizvoditelTableModel implements ILogicaTable<FullProizvod
     this.index = 0;
   }
 
-  public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort): Promise<string> {
-    if(model.Proizvoditel.length!==0) {
-      this.model = JSON.parse(JSON.stringify(model.Proizvoditel[0]));
-    } 
-    else{
-      this.model = null;
-    }
+  public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort,table:ElementRef,template:ElementRef): Promise<string> {
+    this.table = table;  //Таблица
+    this.fulltemplate = template; //Заложенный шаблон
     this.modeltable =JSON.parse(JSON.stringify(model.Proizvoditel));
     this.dataSource.data = model.Proizvoditel;
     this.dataSource.paginator = paginator;
@@ -2581,46 +3012,58 @@ export class NameFullProizvoditelTableModel implements ILogicaTable<FullProizvod
     this.isAdd = false;
     this.isEdit = false;
   }
-
 }
-export class NameClassificationTableModel implements ILogicaTable<Classification> {
+
+export class NameClassificationTableModel implements INewLogicaTable<Classification> {
  
   constructor(public editandadd:EditAndAdd){ }
+
   public displayedColumns = ['IdClasification','NameClass','ActionsColumn'];
   public dataSource: MatTableDataSource<Classification> = new MatTableDataSource<Classification>();
 
   isAdd: boolean;
   isEdit: boolean;
-  model: Classification;
+  model: Classification = new Classification();
   index: number;
   modeltable: Classification[];
  
+  //Шаблоны для манипулирования DOM
+  temlateList:any //Заложенный шаблон Массив
+  rowList:any    //Строка по номеру из БД Массив 
+  fulltemplate:ElementRef<any>  //Полный шаблон для манипуляции
+  table:ElementRef<any>  //Полный шаблон для манипуляции
+
+  
+  calbackfiltersAll(): void {
+    throw new Error("Method not implemented.");
+  }
+
   filterstable(filterValue: string): void {
     filterValue = filterValue.trim(); // Remove whitespace
     filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
     this.dataSource.filter = filterValue;
   }
 
-
-
-  add(): void {
+  public async add(): Promise<void> {
     this.isEditAndAddTrue();
     var newmodel = this.newmodel();
-    this.dataSource.paginator.lastPage();
     this.dataSource.data.push(newmodel); 
     this.modeltable.push(newmodel); 
     this.index = this.dataSource.data.length;
     this.model = newmodel;
-    this.dataSource._updateChangeSubscription();
+    await this.dataSource._updateChangeSubscription();
+    await this.dataSource.paginator.lastPage();
+    this.addtemplate(newmodel.IdClasification)
   }  
 
-  edit(model: Classification): void {
+  public edit(model: Classification): void {
     model.ModelIsEdit = true;
     this.model =JSON.parse(JSON.stringify(model));
+    this.addtemplate(model.IdClasification)
     this.isEditAndAddTrue();
   }
 
-  save(model: Classification): void {
+  public save(): void {
     this.modifimethod();
     this.isEditAndAddFalse();
      this.editandadd.addAndEditNameClassification(this.model).subscribe((model:ModelReturn)=>{
@@ -2631,10 +3074,11 @@ export class NameClassificationTableModel implements ILogicaTable<Classification
       console.log(model.Message);
       this.dataSource._updateChangeSubscription();
      });
+     this.removetemplate();
     //Запрос на сохранение и обновление данных
   }
 
-  cancel(model: Classification): void {
+  public cancel(model: Classification): void {
     model.ModelIsEdit = false;
     this.isEditAndAddFalse(); 
     if(this.index>0)
@@ -2648,6 +3092,7 @@ export class NameClassificationTableModel implements ILogicaTable<Classification
       this.index = 0;
     }
     this.dataSource._updateChangeSubscription();
+    this.removetemplate();
   }
 
   newmodel(): Classification {
@@ -2656,6 +3101,34 @@ export class NameClassificationTableModel implements ILogicaTable<Classification
     newuser.IdClasification = 0;
     return newuser;
   }
+
+  //Костыль дожидаемся обновление DOM
+  async delay(ms: number):Promise<void> {
+    await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log("Задержка подгрузки DOM!!!"));
+  }
+
+  ///Добавить шаблон в строку это просто жесть
+  async addtemplate(index:number):Promise<void>{
+      var i = 0;
+      await this.delay(10);
+      this.temlateList = this.fulltemplate.nativeElement.querySelectorAll("mat-form-field[id=template]");
+      this.rowList = this.table.nativeElement.querySelectorAll("div[class='"+index+"']");
+      for (var row of this.rowList){
+        row.append(this.temlateList[i])
+        i++;
+      }
+  }
+
+  ///Удалить шаблон из строки и востановить текущий шаблон
+  removetemplate():void{
+      var i = 0;
+      for (var row of this.rowList){
+        row.removeChild(this.temlateList[i]);
+        this.fulltemplate.nativeElement.append(this.temlateList[i])
+        i++;
+      }
+  }
+
 
   modifimethod(): void {
     this.isEdit = true;
@@ -2667,13 +3140,9 @@ export class NameClassificationTableModel implements ILogicaTable<Classification
     this.index = 0;
   }
 
-  public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort): Promise<string> {
-    if(model.Classification.length!==0) {
-      this.model = JSON.parse(JSON.stringify(model.Classification[0]));
-    } 
-    else{
-      this.model = null;
-    }
+  public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort,table:ElementRef,template:ElementRef): Promise<string> {
+    this.table = table;  //Таблица
+    this.fulltemplate = template; //Заложенный шаблон
     this.modeltable =JSON.parse(JSON.stringify(model.Classification));
     this.dataSource.data = model.Classification;
     this.dataSource.paginator = paginator;
@@ -2691,19 +3160,30 @@ export class NameClassificationTableModel implements ILogicaTable<Classification
     this.isEdit = false;
   }
 }
-export class NameCopySaveTableModel implements ILogicaTable<CopySave> {
+export class NameCopySaveTableModel implements INewLogicaTable<CopySave> {
   
   constructor(public editandadd:EditAndAdd){ }
+
   public displayedColumns = ['IdCopySave','NameCopySave','SerNum','InventarNum','ActionsColumn'];
   public dataSource: MatTableDataSource<CopySave> = new MatTableDataSource<CopySave>();
   public modelvalid:ModelValidation = new ModelValidation()
 
   isAdd: boolean;
   isEdit: boolean;
-  model: CopySave;
+  model: CopySave = new CopySave();
   index: number;
   modeltable: CopySave[];
   
+  //Шаблоны для манипулирования DOM
+  temlateList:any //Заложенный шаблон Массив
+  rowList:any    //Строка по номеру из БД Массив 
+  fulltemplate:ElementRef<any>  //Полный шаблон для манипуляции
+  table:ElementRef<any>  //Полный шаблон для манипуляции
+
+  calbackfiltersAll(): void {
+    throw new Error("Method not implemented.");
+  }
+
   filterstable(filterValue: string): void {
     filterValue = filterValue.trim(); // Remove whitespace
     filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
@@ -2711,24 +3191,26 @@ export class NameCopySaveTableModel implements ILogicaTable<CopySave> {
   }
 
 
-  add(): void {
+  public async add():Promise<void> {
     this.isEditAndAddTrue();
     var newmodel = this.newmodel();
-    this.dataSource.paginator.lastPage();
     this.dataSource.data.push(newmodel); 
     this.modeltable.push(newmodel); 
     this.index = this.dataSource.data.length;
     this.model = newmodel;
-    this.dataSource._updateChangeSubscription();
+    await this.dataSource._updateChangeSubscription();
+    await this.dataSource.paginator.lastPage();
+    this.addtemplate(newmodel.IdCopySave);
   }  
 
   edit(model: CopySave): void {
     model.ModelIsEdit = true;
     this.model =JSON.parse(JSON.stringify(model));
+    this.addtemplate(model.IdCopySave)
     this.isEditAndAddTrue();
   }
 
-  save(model: CopySave): void {
+  public save(): void {
     this.modifimethod();
     this.isEditAndAddFalse();
      this.editandadd.addAndEditNameCopySave(this.model).subscribe((model:ModelReturn)=>{
@@ -2739,10 +3221,11 @@ export class NameCopySaveTableModel implements ILogicaTable<CopySave> {
       console.log(model.Message);
       this.dataSource._updateChangeSubscription();
      });
+     this.removetemplate();
     //Запрос на сохранение и обновление данных
   }
 
-  cancel(model: CopySave): void {
+  public cancel(model: CopySave): void {
     model.ModelIsEdit = false;
     this.isEditAndAddFalse(); 
     if(this.index>0)
@@ -2756,6 +3239,7 @@ export class NameCopySaveTableModel implements ILogicaTable<CopySave> {
       this.index = 0;
     }
     this.dataSource._updateChangeSubscription();
+    this.removetemplate();
   }
 
   newmodel(): CopySave {
@@ -2765,10 +3249,36 @@ export class NameCopySaveTableModel implements ILogicaTable<CopySave> {
     return newuser;
   }
 
+  //Костыль дожидаемся обновление DOM
+  async delay(ms: number):Promise<void> {
+    await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log("Задержка подгрузки DOM!!!"));
+  }
+
+  ///Добавить шаблон в строку это просто жесть
+  async addtemplate(index:number):Promise<void>{
+      var i = 0;
+      await this.delay(10);
+      this.temlateList = this.fulltemplate.nativeElement.querySelectorAll("mat-form-field[id=template]");
+      this.rowList = this.table.nativeElement.querySelectorAll("div[class='"+index+"']");
+      for (var row of this.rowList){
+         row.append(this.temlateList[i])
+         i++;
+      }
+  }
+
+  ///Удалить шаблон из строки и востановить текущий шаблон
+  removetemplate():void{
+      var i = 0;
+      for (var row of this.rowList){
+       row.removeChild(this.temlateList[i]);
+        this.fulltemplate.nativeElement.append(this.temlateList[i])
+        i++;
+      }
+  }
+
 
   modifimethod(): void {
     this.isEdit = true;
-    
     this.model.ModelIsEdit = false;
     //Поиск индекса и замена модели по индексу в таблице
     var userdefault = this.modeltable.find(x=>x.IdCopySave===this.model.IdCopySave);
@@ -2777,13 +3287,9 @@ export class NameCopySaveTableModel implements ILogicaTable<CopySave> {
     this.index = 0;
   }
 
- public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort): Promise<string> {
-    if(model.CopySave.length!==0) {
-      this.model = JSON.parse(JSON.stringify(model.CopySave[0]));
-    } 
-    else{
-      this.model = null;
-    }
+ public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort,table:ElementRef,template:ElementRef): Promise<string> {
+    this.table = table;  //Таблица
+    this.fulltemplate = template; //Заложенный шаблон
     this.modeltable =JSON.parse(JSON.stringify(model.CopySave));
     this.dataSource.data = model.CopySave;
     this.dataSource.paginator = paginator;
@@ -2800,43 +3306,57 @@ export class NameCopySaveTableModel implements ILogicaTable<CopySave> {
     this.isAdd = false;
     this.isEdit = false;
   }
-
 }
-export class NameKabinetTableModel implements ILogicaTable<Kabinet> {
+
+export class NameKabinetTableModel implements INewLogicaTable<Kabinet> {
  
   constructor(public editandadd:EditAndAdd){ }
+
   public displayedColumns = ['IdNumberKabinet','NumberKabinet','ActionsColumn'];
   public dataSource: MatTableDataSource<Kabinet> = new MatTableDataSource<Kabinet>();
 
   isAdd: boolean;
   isEdit: boolean;
-  model: Kabinet;
+  model: Kabinet = new Kabinet();
   index: number;
   modeltable: Kabinet[];
  
+  //Шаблоны для манипулирования DOM
+  temlateList:any //Заложенный шаблон Массив
+  rowList:any    //Строка по номеру из БД Массив 
+  fulltemplate:ElementRef<any>  //Полный шаблон для манипуляции
+  table:ElementRef<any>  //Полный шаблон для манипуляции
+
+  calbackfiltersAll(): void {
+    throw new Error("Method not implemented.");
+  }
+
   filterstable(filterValue: string): void {
     filterValue = filterValue.trim(); // Remove whitespace
     filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
     this.dataSource.filter = filterValue;
   }
 
-  add(): void {
+  public async add(): Promise<void> {
     this.isEditAndAddTrue();
     var newmodel = this.newmodel();
-    this.dataSource.paginator.lastPage();
     this.dataSource.data.push(newmodel); 
     this.modeltable.push(newmodel); 
     this.index = this.dataSource.data.length;
     this.model = newmodel;
-    this.dataSource._updateChangeSubscription();
+    await this.dataSource._updateChangeSubscription();
+    await this.dataSource.paginator.lastPage();
+    this.addtemplate(newmodel.IdNumberKabinet);
   }  
+
   edit(model: Kabinet): void {
     model.ModelIsEdit = true;
     this.model =JSON.parse(JSON.stringify(model));
+    this.addtemplate(model.IdNumberKabinet)
     this.isEditAndAddTrue();
   }
 
-  save(model: Kabinet): void {
+  public save(): void {
     this.modifimethod();
     this.isEditAndAddFalse();
      this.editandadd.addAndEditNameKabinet(this.model).subscribe((model:ModelReturn)=>{
@@ -2847,6 +3367,7 @@ export class NameKabinetTableModel implements ILogicaTable<Kabinet> {
       console.log(model.Message);
       this.dataSource._updateChangeSubscription();
      });
+     this.removetemplate();
     //Запрос на сохранение и обновление данных
   }
 
@@ -2864,6 +3385,7 @@ export class NameKabinetTableModel implements ILogicaTable<Kabinet> {
       this.index = 0;
     }
     this.dataSource._updateChangeSubscription();
+    this.removetemplate();
   }
 
   newmodel(): Kabinet {
@@ -2871,6 +3393,33 @@ export class NameKabinetTableModel implements ILogicaTable<Kabinet> {
     newuser.ModelIsEdit = true;
     newuser.IdNumberKabinet = 0;
     return newuser;
+  }
+
+  //Костыль дожидаемся обновление DOM
+  async delay(ms: number):Promise<void> {
+    await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log("Задержка подгрузки DOM!!!"));
+  }
+
+  ///Добавить шаблон в строку это просто жесть
+  async addtemplate(index:number):Promise<void>{
+      var i = 0;
+      await this.delay(10);
+      this.temlateList = this.fulltemplate.nativeElement.querySelectorAll("mat-form-field[id=template]");
+      this.rowList = this.table.nativeElement.querySelectorAll("div[class='"+index+"']");
+      for (var row of this.rowList){
+         row.append(this.temlateList[i])
+         i++;
+      }
+  }
+
+  ///Удалить шаблон из строки и востановить текущий шаблон
+  removetemplate():void{
+      var i = 0;
+      for (var row of this.rowList){
+       row.removeChild(this.temlateList[i]);
+        this.fulltemplate.nativeElement.append(this.temlateList[i])
+        i++;
+      }
   }
 
   modifimethod(): void {
@@ -2883,18 +3432,14 @@ export class NameKabinetTableModel implements ILogicaTable<Kabinet> {
     this.index = 0;
   }
 
- public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort): Promise<string> {
-    if(model.Kabinet.length!==0) {
-      this.model = JSON.parse(JSON.stringify(model.Kabinet[0]));
-    } 
-    else{
-      this.model = null;
-    }
-    this.modeltable =JSON.parse(JSON.stringify(model.Kabinet));
-    this.dataSource.data = model.Kabinet;
-    this.dataSource.paginator = paginator;
-    this.dataSource.sort = sort;
-    return "Кабинеты заполнены";
+ public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort,table:ElementRef,template:ElementRef): Promise<string> {
+  this.table = table;  //Таблица
+  this.fulltemplate = template; //Заложенный шаблон
+  this.modeltable =JSON.parse(JSON.stringify(model.Kabinet));
+  this.dataSource.data = model.Kabinet;
+  this.dataSource.paginator = paginator;
+  this.dataSource.sort = sort;
+  return "Кабинеты заполнены";
   }
 
   isEditAndAddTrue(): void {
@@ -2908,9 +3453,10 @@ export class NameKabinetTableModel implements ILogicaTable<Kabinet> {
   }
 }
 
-export class NameSupplyTableModel implements ILogicaTable<Supply> {
+export class NameSupplyTableModel implements INewLogicaTable<Supply> {
  
   constructor(public editandadd:EditAndAdd){ }
+
   public displayedColumns = ['IdSupply','NameSupply','NameKontract','DatePostavki','ActionsColumn'];
   public dataSource: MatTableDataSource<Supply> = new MatTableDataSource<Supply>();
 
@@ -2922,10 +3468,20 @@ export class NameSupplyTableModel implements ILogicaTable<Supply> {
 
   isAdd: boolean;
   isEdit: boolean;
-  model: Supply;
+  model: Supply = new Supply();
   index: number;
   modeltable: Supply[];
   modelToServer: Supply;
+
+  //Шаблоны для манипулирования DOM
+  temlateList:any //Заложенный шаблон Массив
+  rowList:any    //Строка по номеру из БД Массив 
+  fulltemplate:ElementRef<any>  //Полный шаблон для манипуляции
+  table:ElementRef<any>  //Полный шаблон для манипуляции
+  
+  calbackfiltersAll(): void {
+    throw new Error("Method not implemented.");
+  }
 
   filterstable(filterValue: string): void {
     filterValue = filterValue.trim(); // Remove whitespace
@@ -2934,23 +3490,25 @@ export class NameSupplyTableModel implements ILogicaTable<Supply> {
   }
 
 
-  add(): void {
+  public async add(): Promise<void> {
     this.isEditAndAddTrue();
     var newmodel = this.newmodel();
-    this.dataSource.paginator.lastPage();
     this.dataSource.data.push(newmodel); 
     this.modeltable.push(newmodel); 
     this.index = this.dataSource.data.length;
     this.model = newmodel;
-    this.dataSource._updateChangeSubscription();
+    await this.dataSource._updateChangeSubscription();
+    await this.dataSource.paginator.lastPage();
+    this.addtemplate(newmodel.IdSupply);
   }  
   edit(model: Supply): void {
     model.ModelIsEdit = true;
     this.model =JSON.parse(JSON.stringify(model));
+    this.addtemplate(model.IdSupply)
     this.isEditAndAddTrue();
   }
 
-  save(model: Supply): void {
+  public save(): void {
     this.modifimethod();
     this.isEditAndAddFalse();
      this.editandadd.addAndEditNameSupply(this.modelToServer).subscribe((model:ModelReturn)=>{
@@ -2961,10 +3519,11 @@ export class NameSupplyTableModel implements ILogicaTable<Supply> {
       console.log(model.Message);
       this.dataSource._updateChangeSubscription();
      });
+     this.removetemplate();
     //Запрос на сохранение и обновление данных
   }
 
-  cancel(model: Supply): void {
+  public cancel(model: Supply): void {
     model.ModelIsEdit = false;
     this.isEditAndAddFalse(); 
     if(this.index>0)
@@ -2978,13 +3537,41 @@ export class NameSupplyTableModel implements ILogicaTable<Supply> {
       this.index = 0;
     }
     this.dataSource._updateChangeSubscription();
+    this.removetemplate();
   }
 
   newmodel(): Supply {
-    var newuser: Supply = new Supply ();
+    var newuser: Supply = new Supply();
     newuser.ModelIsEdit = true;
     newuser.IdSupply = 0;
     return newuser;
+  }
+
+  //Костыль дожидаемся обновление DOM
+  async delay(ms: number):Promise<void> {
+    await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log("Задержка подгрузки DOM!!!"));
+  }
+
+  ///Добавить шаблон в строку это просто жесть
+  async addtemplate(index:number):Promise<void>{
+      var i = 0;
+      await this.delay(10);
+      this.temlateList = this.fulltemplate.nativeElement.querySelectorAll("mat-form-field[id=template]");
+      this.rowList = this.table.nativeElement.querySelectorAll("div[class='"+index+"']");
+      for (var row of this.rowList){
+         row.append(this.temlateList[i])
+         i++;
+    }
+  }
+
+  ///Удалить шаблон из строки и востановить текущий шаблон
+  removetemplate():void{
+      var i = 0;
+      for (var row of this.rowList){
+       row.removeChild(this.temlateList[i]);
+        this.fulltemplate.nativeElement.append(this.temlateList[i])
+        i++;
+    }
   }
 
   modifimethod(): void {
@@ -3000,18 +3587,14 @@ export class NameSupplyTableModel implements ILogicaTable<Supply> {
     this.index = 0;
   }
 
- public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort): Promise<string> {
-    if(model.Supply.length!==0) {
-      this.model = JSON.parse(JSON.stringify(model.Supply[0]));
-    } 
-    else{
-      this.model = null;
-    }
-    this.modeltable =JSON.parse(JSON.stringify(model.Supply));
-    this.dataSource.data = model.Supply;
-    this.dataSource.paginator = paginator;
-    this.dataSource.sort = sort;
-    return "Поставщики партий заполнены";
+ public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort,table:ElementRef,template:ElementRef): Promise<string> {
+  this.table = table;  //Таблица
+  this.fulltemplate = template; //Заложенный шаблон
+  this.modeltable =JSON.parse(JSON.stringify(model.Supply));
+  this.dataSource.data = model.Supply;
+  this.dataSource.paginator = paginator;
+  this.dataSource.sort = sort;
+  return "Поставщики партий заполнены";
   }
 
   isEditAndAddTrue(): void {
@@ -3024,22 +3607,30 @@ export class NameSupplyTableModel implements ILogicaTable<Supply> {
     this.isEdit = false;
   }
 
-
 }
 
-export class NameStatusingTableModel implements ILogicaTable<Statusing> {
+export class NameStatusingTableModel implements INewLogicaTable<Statusing> {
 
   constructor(public editandadd:EditAndAdd){ }
+
   public displayedColumns = ['IdStatus','Name','Color','ActionsColumn'];
   public dataSource: MatTableDataSource<Statusing> = new MatTableDataSource<Statusing>();
 
-
-
   isAdd: boolean;
   isEdit: boolean;
-  model: Statusing;
+  model: Statusing = new Statusing();
   index: number;
   modeltable: Statusing[];
+
+  //Шаблоны для манипулирования DOM
+  temlateList:any //Заложенный шаблон Массив
+  rowList:any    //Строка по номеру из БД Массив 
+  fulltemplate:ElementRef<any>  //Полный шаблон для манипуляции
+  table:ElementRef<any>  //Полный шаблон для манипуляции
+
+  calbackfiltersAll(): void {
+    throw new Error("Method not implemented.");
+  }
 
   filterstable(filterValue: string): void {
     filterValue = filterValue.trim(); // Remove whitespace
@@ -3047,24 +3638,26 @@ export class NameStatusingTableModel implements ILogicaTable<Statusing> {
     this.dataSource.filter = filterValue;
   }
 
-  add(): void {
+  public async add(): Promise<void> {
     this.isEditAndAddTrue();
     var newmodel = this.newmodel();
-    this.dataSource.paginator.lastPage();
     this.dataSource.data.push(newmodel); 
     this.modeltable.push(newmodel); 
     this.index = this.dataSource.data.length;
     this.model = newmodel;
-    this.dataSource._updateChangeSubscription();
+    await this.dataSource._updateChangeSubscription();
+    await this.dataSource.paginator.lastPage();
+    this.addtemplate(newmodel.IdStatus);
   }  
 
   edit(model: Statusing): void {
     model.ModelIsEdit = true;
     this.model =JSON.parse(JSON.stringify(model));
+    this.addtemplate(model.IdStatus)
     this.isEditAndAddTrue();
   }
 
-  save(model: Statusing): void {
+  public save(): void {
     this.modifimethod();
     this.isEditAndAddFalse();
      this.editandadd.addAndEditNameStatus(this.model).subscribe((model:ModelReturn)=>{
@@ -3075,10 +3668,11 @@ export class NameStatusingTableModel implements ILogicaTable<Statusing> {
       console.log(model.Message);
       this.dataSource._updateChangeSubscription();
      });
+     this.removetemplate();
     //Запрос на сохранение и обновление данных
   }
 
-  cancel(model: Statusing): void {
+  public cancel(model: Statusing): void {
     model.ModelIsEdit = false;
     this.isEditAndAddFalse(); 
     if(this.index>0)
@@ -3092,6 +3686,7 @@ export class NameStatusingTableModel implements ILogicaTable<Statusing> {
       this.index = 0;
     }
     this.dataSource._updateChangeSubscription();
+    this.removetemplate();
   }
 
   newmodel(): Statusing {
@@ -3101,6 +3696,32 @@ export class NameStatusingTableModel implements ILogicaTable<Statusing> {
     return newuser;
   }
 
+  //Костыль дожидаемся обновление DOM
+  async delay(ms: number):Promise<void> {
+    await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log("Задержка подгрузки DOM!!!"));
+  }
+
+  ///Добавить шаблон в строку это просто жесть
+  async addtemplate(index:number):Promise<void>{
+      var i = 0;
+      await this.delay(10);
+      this.temlateList = this.fulltemplate.nativeElement.querySelectorAll(".validation");
+      this.rowList = this.table.nativeElement.querySelectorAll("div[class='"+index+"']");
+      for (var row of this.rowList){
+         row.append(this.temlateList[i])
+         i++;
+      }
+  }
+
+  ///Удалить шаблон из строки и востановить текущий шаблон
+  removetemplate():void{
+      var i = 0;
+      for (var row of this.rowList){
+       row.removeChild(this.temlateList[i]);
+        this.fulltemplate.nativeElement.append(this.temlateList[i])
+        i++;
+      }
+  }
 
   modifimethod(): void {
     this.isEdit = true;
@@ -3112,18 +3733,14 @@ export class NameStatusingTableModel implements ILogicaTable<Statusing> {
     this.index = 0;
   }
 
- public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort): Promise<string> {
-    if(model.Statusing.length!==0) {
-      this.model = JSON.parse(JSON.stringify(model.Statusing[0]));
-    } 
-    else{
-      this.model = null;
-    }
-    this.modeltable =JSON.parse(JSON.stringify(model.Statusing));
-    this.dataSource.data = model.Statusing;
-    this.dataSource.paginator = paginator;
-    this.dataSource.sort = sort;
-    return "Справочник статусов заполнены";
+ public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort,table:ElementRef,template:ElementRef): Promise<string> {
+  this.table = table;  //Таблица
+  this.fulltemplate = template; //Заложенный шаблон
+  this.modeltable =JSON.parse(JSON.stringify(model.Statusing));
+  this.dataSource.data = model.Statusing;
+  this.dataSource.paginator = paginator;
+  this.dataSource.sort = sort;
+  return "Справочник статусов заполнены";
   }
 
   isEditAndAddTrue(): void {
@@ -3135,5 +3752,149 @@ export class NameStatusingTableModel implements ILogicaTable<Statusing> {
     this.isAdd = false;
     this.isEdit = false;
   }
+}
 
+export class NameModelSwitheTableModel implements INewLogicaTable<ModelSwithe> {
+  
+  constructor(public editandadd:EditAndAdd){ }
+  
+  public displayedColumns = ['IdModelSwithes','NameModel','CountPort','ActionsColumn'];  
+  public dataSource: MatTableDataSource<ModelSwithe> = new MatTableDataSource<ModelSwithe>();
+  
+  isAdd: boolean;
+  isEdit: boolean;
+  model: ModelSwithe = new ModelSwithe();
+  index: number;
+  modeltable: ModelSwithe[];
+
+  //Шаблоны для манипулирования DOM
+  temlateList:any //Заложенный шаблон Массив
+  rowList:any    //Строка по номеру из БД Массив 
+  fulltemplate:ElementRef<any>  //Полный шаблон для манипуляции
+  table:ElementRef<any>  //Полный шаблон для манипуляции
+
+  calbackfiltersAll(): void {
+    throw new Error("Method not implemented.");
+  }
+
+  filterstable(filterValue: string): void {
+    filterValue = filterValue.trim(); // Remove whitespace
+    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
+    this.dataSource.filter = filterValue;
+  }
+
+  public async add():Promise<void> {
+    this.isEditAndAddTrue();
+    var newmodel = this.newmodel();
+    this.dataSource.data.push(newmodel); 
+    this.modeltable.push(newmodel); 
+    this.index = this.dataSource.data.length;
+    this.model = newmodel;
+    await this.dataSource._updateChangeSubscription();
+    await this.dataSource.paginator.lastPage();
+    this.addtemplate(newmodel.IdModelSwithes);
+  }  
+
+  edit(model: ModelSwithe): void {
+    model.ModelIsEdit = true;
+    this.model =JSON.parse(JSON.stringify(model));
+    this.addtemplate(model.IdModelSwithes)
+    this.isEditAndAddTrue();
+  }
+
+  public save(): void {
+    this.modifimethod();
+    this.isEditAndAddFalse();
+     this.editandadd.addAndEditModelSwitch(this.model).subscribe((model:ModelReturn)=>{
+      if(model.Index!==0)
+      {
+        this.dataSource.data.find(x=>x.IdModelSwithes===0).IdModelSwithes = model.Index;
+      }
+      console.log(model.Message);
+      this.dataSource._updateChangeSubscription();
+     });
+     this.removetemplate();
+    //Запрос на сохранение и обновление данных
+  }
+
+  cancel(model: ModelSwithe): void {
+    model.ModelIsEdit = false;
+    this.isEditAndAddFalse(); 
+    if(this.index>0)
+    {
+      this.dataSource.data.pop();
+      this.index = 0;
+    }
+    else{
+      var userdefault = this.modeltable.find(x=>x.IdModelSwithes===this.model.IdModelSwithes);
+      this.dataSource.data[this.modeltable.indexOf(userdefault)] = model;
+      this.index = 0;
+    }
+    this.dataSource._updateChangeSubscription();
+    this.removetemplate();
+  }
+
+  newmodel(): ModelSwithe {
+    var newuser: ModelSwithe = new ModelSwithe();
+    newuser.ModelIsEdit = true;
+    newuser.IdModelSwithes = 0;
+    return newuser;
+  }
+
+  //Костыль дожидаемся обновление DOM
+  async delay(ms: number):Promise<void> {
+    await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log("Задержка подгрузки DOM!!!"));
+  }
+
+  ///Добавить шаблон в строку это просто жесть
+  async addtemplate(index:number):Promise<void>{
+      var i = 0;
+      await this.delay(10);
+      this.temlateList = this.fulltemplate.nativeElement.querySelectorAll("mat-form-field[id=template]");
+      this.rowList = this.table.nativeElement.querySelectorAll("div[class='"+index+"']");
+      for (var row of this.rowList){
+         row.append(this.temlateList[i])
+         i++;
+      }
+  }
+
+  ///Удалить шаблон из строки и востановить текущий шаблон
+  removetemplate():void{
+      var i = 0;
+      for (var row of this.rowList){
+       row.removeChild(this.temlateList[i]);
+        this.fulltemplate.nativeElement.append(this.temlateList[i])
+        i++;
+      }
+  }
+
+  modifimethod(): void {
+    this.isEdit = true;
+    this.model.ModelIsEdit = false;
+    //Поиск индекса и замена модели по индексу в таблице
+    var userdefault = this.modeltable.find(x=>x.IdModelSwithes===this.model.IdModelSwithes);
+    var indexold = this.modeltable.indexOf(userdefault);
+    this.dataSource.data[indexold] = this.model;
+    this.index = 0;
+  }
+
+  public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef<any>, template: ElementRef<any>): Promise<string> {
+    this.table = table;  //Таблица
+    this.fulltemplate = template; //Заложенный шаблон
+    this.modeltable =JSON.parse(JSON.stringify(model.ModelSwithe));
+    this.dataSource.data = model.ModelSwithe;
+    this.dataSource.paginator = paginator;
+    this.dataSource.sort = sort;
+    return "Модели комутаторов заполнены";
+  }
+
+  isEditAndAddTrue(): void {
+    this.isEdit = true;
+    this.isAdd = true;
+  }
+
+  isEditAndAddFalse(): void {
+    this.isAdd = false;
+    this.isEdit = false;
+  }
 }

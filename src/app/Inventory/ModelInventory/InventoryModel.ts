@@ -1,8 +1,5 @@
-import {MatPaginator, MatSort } from '@angular/material';
+import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { User } from '../User/View/User';
-import { DataSource } from '@angular/cdk/table';
-import { async } from 'rxjs/internal/scheduler/async';
-import { DatePipe } from '@angular/common';
 import { ElementRef } from '@angular/core';
 import { Book } from './ViewInventory';
 
@@ -11,6 +8,10 @@ import { Book } from './ViewInventory';
 export interface INewLogicaTable<T> {
   //В связи с неоправдано низкой скоростью обработки таблиц выносим шаблоны редактирования отдельно отсюда 3 новых приватных метода
   //Задержка является костылем надо думать как исправить
+    //Колонки массив названий
+    displayedColumns:any[]
+
+    dataSource: MatTableDataSource<T>
     //Добавление новой записи
     isAdd:boolean;
     //Редактируем
@@ -41,7 +42,7 @@ export interface INewLogicaTable<T> {
     //Редактирование
     edit(model: T): void;
     //Сохранение
-    save(model: T):void;
+    save():void;
     //Отмена
     cancel(model: T):void;
     //Создание новой модели
@@ -59,42 +60,6 @@ export interface INewLogicaTable<T> {
     isEditAndAddFalse():void;
 }
 
-
-
-
-
-
-export interface ILogicaTable<T> {
-    //Добавление
-    add(): void;
-    //Редактирование
-    edit(model: T): void;
-    //Сохранение
-    save(model: T):void;
-    //Отмена
-    cancel(model: T):void;
-    //Создание новой модели
-    newmodel():T;
-    //Фильтрация данных
-    filterstable(filterValue:string):void;
-    //Метод переноса модификаций моделей
-    modifimethod():void;
-
-    addtableModel(model:FullSelectedModel,paginator:MatPaginator,sort:MatSort):Promise<string>
-
-    isEditAndAddTrue():void;
-    isEditAndAddFalse():void;
-    //Добавление новой записи
-    isAdd:boolean;
-    //Редактируем
-    isEdit:boolean;
-    //Модель расширения
-   // model:T;
-    //Индекс
-    index:number;
-    //Модели расширения
-    modeltable:T[];
-}
 ///Десериализация json ответов
 export class DesirilizeXml{
     Tehnical:TehnicalSql = new TehnicalSql();
@@ -119,6 +84,7 @@ export class FullSelectedModel{
    Printer:Printer[];
    Scaner:ScanerAndCamer[];
    Mfu:Mfu[];
+   Swithes:Swithe[];
    SysBlok:SysBlock[];
    Monitors:Monitor[];
    NameMonitors:NameMonitor[];
@@ -135,6 +101,7 @@ export class FullSelectedModel{
    ProizvoditelBlockPower:ProizvoditelBlockPower[];
    UsersIsActualsStats:UsersIsActualsStats[];
    Classification:Classification[];
+   ModelSwithe:ModelSwithe[];
 
 }
 ///Модель отвертов с сервера
@@ -162,6 +129,7 @@ export class Users{
     public StatusActual?: boolean;
     public IdHistory?: string;
     public Mfu?:Mfu[];
+    public Swithes?:Swithe[];
     public Monitors?:Monitor[];
     public SysBlock?:SysBlock[];
     public Printer?:Printer[];
@@ -294,12 +262,39 @@ export class Monitor {
     public Coment: string;
     public IdStatus: number;
     public IdHistory: string;
-    public Statusing: Statusing;
+    public Statusing?: Statusing;
     public NameMonitor: NameMonitor;
     public Kabinet?:Kabinet;
     public Supply?:Supply;
     public User?:Users;
     public ModelIsEdit?: boolean = false;
+}
+
+export class Swithe{
+    public IdSwithes:number;
+    public IdUser?:number;
+    public IdModelSwithes?:number;
+    public IdSupply?:number;
+    public IdNumberKabinet?:number;
+    public ServiceNum:string;
+    public SerNum:string;
+    public InventarNum:string;
+    public Coment:string;
+    public IdStatus:number;
+    public IdHistory:string;
+    public Statusing?: Statusing;
+    public ModelSwithe?:ModelSwithe;
+    public Kabinet?:Kabinet;
+    public Supply?:Supply;
+    public User?:Users;
+    public ModelIsEdit?: boolean = false;
+}
+
+export class ModelSwithe{
+   public IdModelSwithes:number;
+   public NameModel:string;
+   public CountPort:string;
+   public ModelIsEdit?: boolean = false;
 }
 
 export class Mfu {

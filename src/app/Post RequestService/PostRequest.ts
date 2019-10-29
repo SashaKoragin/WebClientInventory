@@ -5,13 +5,14 @@ import { Users, Autorization, Printer, Kabinet,
          BlockPower, UsersIsActualsStats, Classification,
          FullSelectedModel, NameMonitor, FullProizvoditel, Statusing, 
          FullModel, CopySave, NameSysBlock, Otdel,Position,
-         Telephon,Supply,ModelBlockPower,ProizvoditelBlockPower } from '../Inventory/ModelInventory/InventoryModel';
+         Telephon,Supply,ModelBlockPower,ProizvoditelBlockPower,Swithe } from '../Inventory/ModelInventory/InventoryModel';
 import { AdressInventarka } from '../AdressGetPost/AdressInventory';
 import { deserializeArray } from 'class-transformer';
 import { ModelSelect, LogicaSelect } from '../Inventory/AllSelectModel/ParametrModel';
 import { DocumentReport } from '../Inventory/AllSelectModel/Report/ReportModel';
 import { UploadFile } from '../Inventory/AddFullModel/ModelTable/FileModel';
 import { BookModels } from '../Inventory/ModelInventory/ViewInventory';
+import { ModelSwithe } from '../Inventory/ModelInventory/InventoryModel';
 
 
 const url: AdressInventarka = new AdressInventarka();
@@ -224,6 +225,22 @@ export class PostInventar {
                }
          });
     }
+    ///Все модели комутаторов
+    async allmodelswithes(){
+        this.select.ModelSwithe = await this.http.get(url.allmodelswithes,httpOptionsJson).toPromise().then(model=>{
+            if(model){
+                return deserializeArray<ModelSwithe>(ModelSwithe,model.toString());
+            }
+        })
+    }
+    ///Все коммутаторы
+    async allswithes(){
+        this.select.Swithes = await this.http.get(url.allswithes,httpOptionsJson).toPromise().then(model=>{
+            if(model){
+                return deserializeArray<Swithe>(Swithe,model.toString());
+            }
+        })
+    }
 
     async allmodelblockpower(){
         this.select.ModelBlockPower = await this.http.get(url.allmodelblockpower,httpOptionsJson).toPromise().then(model=>{
@@ -254,7 +271,6 @@ export class PostInventar {
 
  ///Все запросы для заполнение данных по пользователю
  public async fullusers(){
-
        await this.alluser();
        await this.allposition();
        await this.allotdel();
@@ -277,6 +293,10 @@ export class EditAndAdd{
     ///Добабление или обновление принтеров
     addandeditprinter(printer:Printer){
         return this.http.post(url.addandeditprinter, printer, httpOptionsJson);
+    }    
+    ///Добабление или обновление Коммутаторов
+    addandeditswitch(switchs:Swithe) {
+        return this.http.post(url.addandeditswitch, switchs, httpOptionsJson);
     }    
     ///Добабление или обновление сканера
     addandeditscaner(scaner:ScanerAndCamer){
@@ -349,6 +369,10 @@ export class EditAndAdd{
     ///Редактирование или добавление CopySave
     addAndEditNameCopySave(nameCopySave:CopySave){
         return this.http.post(url.addAndEditNameCopySave,nameCopySave,httpOptionsJson);
+    }
+    ///Редактирование или добавление ModelSwithe
+    addAndEditModelSwitch(nameModelSwitch:ModelSwithe){
+        return this.http.post(url.addandeditmodelswith,nameModelSwitch,httpOptionsJson);
     }
 }
 @Injectable()

@@ -1,5 +1,5 @@
 import { FormGroup, FormControl, Validators,AbstractControl,ValidationErrors} from '@angular/forms';
-import { Otdel, Position, FullProizvoditel, FullModel, NameSysBlock, NameMonitor,ProizvoditelBlockPower,ModelBlockPower } from '../../ModelInventory/InventoryModel';
+import { Otdel, Position, FullProizvoditel, FullModel, NameSysBlock, NameMonitor, ProizvoditelBlockPower, ModelBlockPower, ModelSwithe } from '../../ModelInventory/InventoryModel';
 
 
 
@@ -50,6 +50,12 @@ export class ModelValidation  {
             var nameModel = control.value as ModelBlockPower;
             return  (nameModel == undefined||nameModel.Name == undefined)  ?  { 'error': true  } : null
     };
+    //Валидация моделей коммутатора
+    public validationFullModelSwith(control: AbstractControl): ValidationErrors  {
+        var nameModel = control.value as ModelSwithe;
+        return  (nameModel == undefined||nameModel.NameModel == undefined)  ?  { 'error': true  } : null
+    };
+
 
     ///Валидационная модель проверки Групп
     getRowValidatorModel: FormGroup[] =[
@@ -59,44 +65,46 @@ export class ModelValidation  {
                 'TabelNumber': new FormControl(null, Validators.required),
                 'NamePosition': new FormControl({value: new Position()}, [Validators.required,this.validationNamePosition]),
                 'NameOtdel': new FormControl({value: new Otdel()}, [Validators.required,this.validationNameOtdel]),
-            }
-            ),
+            }),
          new FormGroup({
             'ZavNum':new FormControl(null, Validators.required),
             'InventarNum':new FormControl(null, Validators.required),
             'Proizvoditel':new FormControl({value: new FullProizvoditel()}, [Validators.required, this.validationFullProizvodite]),
             'Model':new FormControl({value: new FullModel()}, [Validators.required, this.validationFullModel])
-            }
-            ),
-            new FormGroup({
-                'SerNum':new FormControl(null, Validators.required),
-                'InventarNum':new FormControl(null, Validators.required),
-                'NameComputer':new FormControl(null, Validators.required),
-                'Model':new FormControl({value: new NameSysBlock()}, [Validators.required, this.validationFullNameSysBlock]),
-                }),
-            new FormGroup({
-                'SerNum':new FormControl(null, Validators.required),
-                'InventarNum':new FormControl(null, Validators.required),
-                'Model':new FormControl({value: new NameMonitor()}, [Validators.required, this.validationFullNameMonitor]),
-                }),
-            new FormGroup({
-                'NameTelephone':new FormControl(null,Validators.required),
-                'Telephone':new FormControl(null,Validators.required),
-                'SerNumber':new FormControl(null,Validators.required),
-                'IpTelephone':new FormControl(null,Validators.required),
-                'MacTelephone':new FormControl(null,Validators.required)
             }),
-            new FormGroup({
-                'Proizvoditel':new FormControl({value: new ProizvoditelBlockPower()}, [Validators.required, this.validationFullProizvoditeIbp]),
-                'Model':new FormControl({value: new ModelBlockPower()}, [Validators.required, this.validationFullModelIbp]),
-                'ZavNum':new FormControl(null, Validators.required),
-                'InventarNum':new FormControl(null, Validators.required)
+         new FormGroup({
+            'SerNum':new FormControl(null, Validators.required),
+            'InventarNum':new FormControl(null, Validators.required),
+            'NameComputer':new FormControl(null, Validators.required),
+            'Model':new FormControl({value: new NameSysBlock()}, [Validators.required, this.validationFullNameSysBlock]),
             }),
-            new FormGroup({
-                'NameCopySave':new FormControl(null, Validators.required),
-                'SerNum':new FormControl(null, Validators.required),
-                'InventarNum':new FormControl(null, Validators.required),
+        new FormGroup({
+            'SerNum':new FormControl(null, Validators.required),
+            'InventarNum':new FormControl(null, Validators.required),
+            'Model':new FormControl({value: new NameMonitor()}, [Validators.required, this.validationFullNameMonitor]),
+            }),
+        new FormGroup({
+            'NameTelephone':new FormControl(null,Validators.required),
+            'Telephone':new FormControl(null,Validators.required),
+            'SerNumber':new FormControl(null,Validators.required),
+            'IpTelephone':new FormControl(null,Validators.required),
+            'MacTelephone':new FormControl(null,Validators.required)
+            }),
+        new FormGroup({
+            'Proizvoditel':new FormControl({value: new ProizvoditelBlockPower()}, [Validators.required, this.validationFullProizvoditeIbp]),
+            'Model':new FormControl({value: new ModelBlockPower()}, [Validators.required, this.validationFullModelIbp]),
+            'ZavNum':new FormControl(null, Validators.required),
+            'InventarNum':new FormControl(null, Validators.required)
+            }),
+        new FormGroup({
+            'NameCopySave':new FormControl(null, Validators.required),
+            'SerNum':new FormControl(null, Validators.required),
+            'InventarNum':new FormControl(null, Validators.required),
+            }),
+        new FormGroup({
+            'Model':new FormControl({value: new ModelSwithe()}, [Validators.required, this.validationFullModelSwith]),
+            'SerNum':new FormControl(null, Validators.required),
+            'InventarNum':new FormControl(null, Validators.required)
             })
-             
         ];
  }

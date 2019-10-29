@@ -1,6 +1,6 @@
-<h1>Дополнение к технике</h1>
+<h1>Дополнение к технике Модели и Производители</h1>
 <mat-tab-group [style.display]="isload ? 'none' : 'grid'">
-        <mat-tab class="tab" label="Наименование Системных блоков и Мониторов">
+        <mat-tab class="tab" label="Системные блоки и Мониторы">
     <div class="modeltable">
            <div class="modeltableuse">
                 <form class="search">
@@ -10,7 +10,8 @@
                         </mat-form-field>
                  </form>
                  <label class="lable">Наименование системных блоков</label>
-                <table class="table1" mat-table [dataSource]="nameSysBlock.dataSource">
+                <div class="content" #TABLEMODELSYSBLOCK>
+                <table class="table" mat-table [dataSource]="nameSysBlock.dataSource">
                         <ng-container matColumnDef="IdModelSysBlock">
                             <th mat-header-cell *matHeaderCellDef>Id</th>
                               <td mat-cell *matCellDef="let row">{{row?.IdModelSysBlock}}</td>
@@ -20,9 +21,8 @@
                                 <th mat-header-cell *matHeaderCellDef>Наименование системного блока</th>
                                   <td mat-cell *matCellDef="let row">
                                     <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.NameComputer}}</Label> 
-                                        <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
-                                            <input matInput placeholder="Наименование системного блока" [ngModel]="nameSysBlock.model?.NameComputer" (ngModelChange)="nameSysBlock.model.NameComputer = $event"/>
-                                        </mat-form-field> 
+                                    <div [ngClass]=row.IdModelSysBlock.toString() id="{{row.IdModelSysBlock}}" [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                                    </div>
                                   </td>
                         </ng-container>
 
@@ -46,11 +46,16 @@
                             </div>
                          </td>
                          </ng-container>
-
                         <tr mat-header-row *matHeaderRowDef="nameSysBlock.displayedColumns"></tr>
                         <tr mat-row *matRowDef="let row; columns: nameSysBlock.displayedColumns;"></tr>
                     </table>
-                    <mat-paginator class="paginator1" #nameSysBlocks [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons="true"></mat-paginator>
+                    <mat-paginator class="paginator" #nameSysBlocks [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons="true"></mat-paginator>
+                  </div>
+                  <div [style.display]="'none'" #TEMPLATEMODELSYSBLOCK>
+                        <mat-form-field id="template" class="validation">
+                          <input matInput placeholder="Наименование системного блока" [ngModel]="nameSysBlock.model?.NameComputer" (ngModelChange)="nameSysBlock.model.NameComputer = $event"/>
+                         </mat-form-field>
+                  </div>
         </div>
         <div class="modeltableuse">
                 <form class="search">
@@ -60,19 +65,19 @@
                         </mat-form-field>
                  </form>
                 <label class="lable">Наименование мониторов</label>
-                <table class="table1" mat-table [dataSource]="nameMonitor.dataSource">
+                <div class="content" #TABLEMODELMONITOR>
+                <table class="table" mat-table [dataSource]="nameMonitor.dataSource">
                         <ng-container matColumnDef="IdModelMonitor">
                             <th mat-header-cell *matHeaderCellDef>Id</th>
-                              <td mat-cell *matCellDef="let row">{{row?.IdModelMonitor}}</td>
+                            <td mat-cell *matCellDef="let row">{{row?.IdModelMonitor}}</td>
                         </ng-container>
 
                         <ng-container matColumnDef="Name">
                                 <th mat-header-cell *matHeaderCellDef>Наименование монитора</th>
                                   <td mat-cell *matCellDef="let row">
                                     <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.Name}}</Label> 
-                                        <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
-                                            <input matInput placeholder="Наименование монитора" [ngModel]="nameMonitor.model?.Name" (ngModelChange)="nameMonitor.model.Name = $event"/>
-                                        </mat-form-field> 
+                                      <div [ngClass]=row.IdModelMonitor.toString() id="{{row.IdModelMonitor}}" [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                                      </div>
                                   </td>
                         </ng-container>
 
@@ -100,116 +105,130 @@
                         <tr mat-header-row *matHeaderRowDef="nameMonitor.displayedColumns"></tr>
                         <tr mat-row *matRowDef="let row; columns: nameMonitor.displayedColumns;"></tr>
                     </table>
-                    <mat-paginator class="paginator1" #nameMonitors [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons="true"></mat-paginator>
+                    <mat-paginator class="paginator" #nameMonitors [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons="true"></mat-paginator>
+                  </div>
+                  <div [style.display]="'none'" #TEMPLATEMODELMONITOR>
+                        <mat-form-field id="template" class="validation">
+                            <input matInput placeholder="Наименование монитора" [ngModel]="nameMonitor.model?.Name" (ngModelChange)="nameMonitor.model.Name = $event"/>
+                         </mat-form-field>
+                  </div>
         </div>
 </div>
         </mat-tab>
-        <mat-tab class="tab" label="Модели и производители ИБП">
+        <mat-tab class="tab" label="ИБП">
                 <div class="modeltable">
-                        <div class="modeltableuse">
-                             <form class="search">
-                                     <mat-form-field class="search_blok">
-                                           <span matPrefix><i class="material-icons">youtube_searched_for</i></span>
-                                           <input matInput (keyup)="nameModelBlokPower.filterstable($event.target.value)" placeholder="Поиск данных">
-                                     </mat-form-field>
-                              </form>
-                              <label class="lable">Модели ИБП</label>
-                             <table class="table1" mat-table [dataSource]="nameModelBlokPower.dataSource">
-                                     <ng-container matColumnDef="IdModelBP">
-                                         <th mat-header-cell *matHeaderCellDef>Id</th>
-                                           <td mat-cell *matCellDef="let row">{{row?.IdModelBP}}</td>
-                                     </ng-container>
+                     <div class="modeltableuse">
+                        <form class="search">
+                            <mat-form-field class="search_blok">
+                              <span matPrefix><i class="material-icons">youtube_searched_for</i></span>
+                              <input matInput (keyup)="nameModelBlokPower.filterstable($event.target.value)" placeholder="Поиск данных">
+                            </mat-form-field>
+                        </form>
+                          <label class="lable">Модели ИБП</label>
+                           <div class="content" #TABLEMODELIBP>
+                             <table class="table" mat-table [dataSource]="nameModelBlokPower.dataSource">
+                               <ng-container matColumnDef="IdModelBP">
+                                    <th mat-header-cell *matHeaderCellDef>Id</th>
+                                    <td mat-cell *matCellDef="let row">{{row?.IdModelBP}}</td>
+                               </ng-container>
              
-                                     <ng-container matColumnDef="Name">
-                                             <th mat-header-cell *matHeaderCellDef>Модель ИБП</th>
-                                               <td mat-cell *matCellDef="let row">
-                                                 <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.Name}}</Label> 
-                                                     <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
-                                                         <input matInput placeholder="Наименование модели ИБП" [ngModel]="nameModelBlokPower.model?.Name" (ngModelChange)="nameModelBlokPower.model.Name = $event"/>
-                                                     </mat-form-field> 
-                                               </td>
-                                     </ng-container>
+                               <ng-container matColumnDef="Name">
+                                    <th mat-header-cell *matHeaderCellDef>Модель ИБП</th>
+                                    <td mat-cell *matCellDef="let row">
+                                        <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.Name}}</Label> 
+                                         <div [ngClass]=row.IdModelBP.toString() id="{{row.IdModelBP}}" [style.display]="!row.ModelIsEdit ? 'none':'block'"></div>
+                                    </td>
+                               </ng-container>
              
-                                     <ng-container matColumnDef="ActionsColumn">  
-                                         <th mat-header-cell *matHeaderCellDef>
-                                             <button mat-icon-button color="primary" [disabled]="nameModelBlokPower.isAdd" focusable="false" (click)="nameModelBlokPower.add()">
-                                                 <i class="material-icons">person_add</i>
-                                             </button>
-                                         </th>
-                                         <td mat-cell *matCellDef="let row">
-                                         <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="nameModelBlokPower.isEdit" color="accent" (click)="nameModelBlokPower.edit(row)">
-                                             <i class="material-icons">edit</i>
-                                         </button>
-                                         <div *ngIf="row.ModelIsEdit" >
-                                                 <button  mat-icon-button type="submit" color="primary" focusable="false" (click)="nameModelBlokPower.save()">
-                                                         <i class="material-icons">check</i>
-                                                </button>
-                                                <button mat-icon-button color="primary" focusable="false" (click)="nameModelBlokPower.cancel(row)">
-                                                     <i class="material-icons">cancel</i>
-                                                 </button>
-                                         </div>
-                                      </td>
-                                      </ng-container>
-             
+                               <ng-container matColumnDef="ActionsColumn">  
+                                    <th mat-header-cell *matHeaderCellDef>
+                                      <button mat-icon-button color="primary" [disabled]="nameModelBlokPower.isAdd" focusable="false" (click)="nameModelBlokPower.add()">
+                                        <i class="material-icons">person_add</i>
+                                      </button>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row">
+                                      <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="nameModelBlokPower.isEdit" color="accent" (click)="nameModelBlokPower.edit(row)">
+                                        <i class="material-icons">edit</i>
+                                      </button>
+                                        <div *ngIf="row.ModelIsEdit" >
+                                            <button  mat-icon-button type="submit" color="primary" focusable="false" (click)="nameModelBlokPower.save()">
+                                                <i class="material-icons">check</i>
+                                            </button>
+                                            <button mat-icon-button color="primary" focusable="false" (click)="nameModelBlokPower.cancel(row)">
+                                                <i class="material-icons">cancel</i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </ng-container>
                                      <tr mat-header-row *matHeaderRowDef="nameModelBlokPower.displayedColumns"></tr>
                                      <tr mat-row *matRowDef="let row; columns: nameModelBlokPower.displayedColumns;"></tr>
-                                 </table>
-                                 <mat-paginator class="paginator1" #nameModelBlokPowers [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons="true"></mat-paginator>
+                             </table>
+                              <mat-paginator class="paginator" #nameModelBlokPowers [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons="true"></mat-paginator>
+                           </div>
+                            <div [style.display]="'none'" #TEMPLATEMODELIBP>
+                                <mat-form-field id="template" class="validation">
+                                    <input matInput placeholder="Наименование модели ИБП" [ngModel]="nameModelBlokPower.model?.Name" (ngModelChange)="nameModelBlokPower.model.Name = $event"/>
+                                </mat-form-field> 
+                            </div>
                      </div>
                      <div class="modeltableuse">
-                             <form class="search">
-                                     <mat-form-field class="search_blok">
-                                           <span matPrefix><i class="material-icons">youtube_searched_for</i></span>
-                                           <input matInput (keyup)="nameProizvoditelBlock.filterstable($event.target.value)" placeholder="Поиск данных">
-                                     </mat-form-field>
-                              </form>
-                             <label class="lable">Производители ИБП</label>
-                             <table class="table1" mat-table [dataSource]="nameProizvoditelBlock.dataSource">
-                                     <ng-container matColumnDef="IdProizvoditelBP">
-                                         <th mat-header-cell *matHeaderCellDef>Id</th>
-                                           <td mat-cell *matCellDef="let row">{{row?.IdProizvoditelBP}}</td>
-                                     </ng-container>
+                        <form class="search">
+                            <mat-form-field class="search_blok">
+                                <span matPrefix><i class="material-icons">youtube_searched_for</i></span>
+                                <input matInput (keyup)="nameProizvoditelBlock.filterstable($event.target.value)" placeholder="Поиск данных">
+                            </mat-form-field>
+                        </form>
+                         <label class="lable">Производители ИБП</label>
+                           <div class="content" #TABLEPROIZVODITELIBP>
+                             <table class="table" mat-table [dataSource]="nameProizvoditelBlock.dataSource">
+                                <ng-container matColumnDef="IdProizvoditelBP">
+                                    <th mat-header-cell *matHeaderCellDef>Id</th>
+                                    <td mat-cell *matCellDef="let row">{{row?.IdProizvoditelBP}}</td>
+                                </ng-container>
              
-                                     <ng-container matColumnDef="Name">
-                                             <th mat-header-cell *matHeaderCellDef>Производитель ИБП</th>
-                                               <td mat-cell *matCellDef="let row">
-                                                 <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.Name}}</Label> 
-                                                     <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
-                                                         <input matInput placeholder="Наименование производителя ИБП" [ngModel]="nameProizvoditelBlock.model?.Name" (ngModelChange)="nameProizvoditelBlock.model.Name = $event"/>
-                                                     </mat-form-field> 
-                                               </td>
-                                     </ng-container>
+                                <ng-container matColumnDef="Name">
+                                    <th mat-header-cell *matHeaderCellDef>Производитель ИБП</th>
+                                    <td mat-cell *matCellDef="let row">
+                                        <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.Name}}</Label> 
+                                        <div [ngClass]=row.IdProizvoditelBP.toString() id="{{row.IdProizvoditelBP}}" [style.display]="!row.ModelIsEdit ? 'none':'block'"></div>
+                                    </td>
+                                </ng-container>
              
-                                     <ng-container matColumnDef="ActionsColumn">  
-                                         <th mat-header-cell *matHeaderCellDef>
-                                             <button mat-icon-button color="primary" [disabled]="nameProizvoditelBlock.isAdd" focusable="false" (click)="nameProizvoditelBlock.add()">
-                                                 <i class="material-icons">person_add</i>
-                                             </button>
-                                         </th>
-                                         <td mat-cell *matCellDef="let row">
-                                         <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="nameProizvoditelBlock.isEdit" color="accent" (click)="nameProizvoditelBlock.edit(row)">
-                                             <i class="material-icons">edit</i>
-                                         </button>
-                                         <div *ngIf="row.ModelIsEdit" >
-                                                 <button  mat-icon-button type="submit" color="primary" focusable="false" (click)="nameProizvoditelBlock.save()">
-                                                         <i class="material-icons">check</i>
-                                                </button>
-                                                <button mat-icon-button color="primary" focusable="false" (click)="nameProizvoditelBlock.cancel(row)">
-                                                     <i class="material-icons">cancel</i>
-                                                 </button>
-                                         </div>
-                                      </td>
-                                      </ng-container>
-             
+                                <ng-container matColumnDef="ActionsColumn">  
+                                    <th mat-header-cell *matHeaderCellDef>
+                                      <button mat-icon-button color="primary" [disabled]="nameProizvoditelBlock.isAdd" focusable="false" (click)="nameProizvoditelBlock.add()">
+                                        <i class="material-icons">person_add</i>
+                                      </button>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row">
+                                      <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="nameProizvoditelBlock.isEdit" color="accent" (click)="nameProizvoditelBlock.edit(row)">
+                                        <i class="material-icons">edit</i>
+                                      </button>
+                                      <div *ngIf="row.ModelIsEdit" >
+                                      <button  mat-icon-button type="submit" color="primary" focusable="false" (click)="nameProizvoditelBlock.save()">
+                                        <i class="material-icons">check</i>
+                                      </button>
+                                      <button mat-icon-button color="primary" focusable="false" (click)="nameProizvoditelBlock.cancel(row)">
+                                        <i class="material-icons">cancel</i>
+                                      </button>
+                                      </div>
+                                    </td>
+                                </ng-container>
                                      <tr mat-header-row *matHeaderRowDef="nameProizvoditelBlock.displayedColumns"></tr>
                                      <tr mat-row *matRowDef="let row; columns: nameProizvoditelBlock.displayedColumns;"></tr>
-                                 </table>
-                                 <mat-paginator class="paginator1" #nameProizvoditelBlocks [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons="true"></mat-paginator>
+                            </table>
+                                <mat-paginator class="paginator" #nameProizvoditelBlocks [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons="true"></mat-paginator>
+                          </div>
+                          <div [style.display]="'none'" #TEMPLATEPROIZVODITELIBP>
+                            <mat-form-field id="template" class="validation">
+                              <input matInput placeholder="Наименование производителя ИБП" [ngModel]="nameProizvoditelBlock.model?.Name" (ngModelChange)="nameProizvoditelBlock.model.Name = $event"/>
+                            </mat-form-field> 
+                          </div>
                      </div>
-             </div>
+                </div>
         </mat-tab>
-        <mat-tab class="tab" label="Модели и производители Принтеров (МФУ)">
-                <div class="modeltable">
+        <mat-tab class="tab" label="Принтеры и МФУ">
+            <div class="modeltable">
                         <div class="modeltableuse">
                              <form class="search">
                                      <mat-form-field class="search_blok">
@@ -218,7 +237,8 @@
                                      </mat-form-field>
                               </form>
                               <label class="lable">Производитель Принтер(МФУ)</label>
-                             <table class="table1" mat-table [dataSource]="nameFullProizvoditel.dataSource">
+                              <div class="content" #TABLEPROIZVODITELMFU>
+                             <table class="table" mat-table [dataSource]="nameFullProizvoditel.dataSource">
                                      <ng-container matColumnDef="IdProizvoditel">
                                          <th mat-header-cell *matHeaderCellDef>Id</th>
                                            <td mat-cell *matCellDef="let row">{{row?.IdProizvoditel}}</td>
@@ -228,9 +248,7 @@
                                              <th mat-header-cell *matHeaderCellDef>Производитель Принтер(МФУ)</th>
                                                <td mat-cell *matCellDef="let row">
                                                  <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.NameProizvoditel}}</Label> 
-                                                     <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
-                                                         <input matInput placeholder="Наименование производителя Принтер(МФУ)" [ngModel]="nameFullProizvoditel.model?.NameProizvoditel" (ngModelChange)="nameFullProizvoditel.model.NameProizvoditel = $event"/>
-                                                     </mat-form-field> 
+                                                 <div [ngClass]=row.IdProizvoditel.toString() id="{{row.IdProizvoditel}}" [style.display]="!row.ModelIsEdit ? 'none':'block'"></div>
                                                </td>
                                      </ng-container>
              
@@ -254,11 +272,16 @@
                                          </div>
                                       </td>
                                       </ng-container>
-             
                                      <tr mat-header-row *matHeaderRowDef="nameFullProizvoditel.displayedColumns"></tr>
                                      <tr mat-row *matRowDef="let row; columns: nameFullProizvoditel.displayedColumns;"></tr>
                                  </table>
-                                 <mat-paginator class="paginator1" #nameFullProizvoditels [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons="true"></mat-paginator>
+                                 <mat-paginator class="paginator" #nameFullProizvoditels [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons="true"></mat-paginator>
+                             </div>
+                             <div [style.display]="'none'" #TEMPLATEPROIZVODITELMFU>
+                                <mat-form-field id="template" class="validation">
+                                    <input matInput placeholder="Наименование производителя Принтер(МФУ)" [ngModel]="nameFullProizvoditel.model?.NameProizvoditel" (ngModelChange)="nameFullProizvoditel.model.NameProizvoditel = $event"/>
+                                </mat-form-field>
+                              </div>
                      </div>
                       <div class="modeltableuse">
                              <form class="search">
@@ -268,7 +291,8 @@
                                      </mat-form-field>
                               </form>
                              <label class="lable">Модели Принтер(МФУ)</label>
-                             <table class="table2" mat-table [dataSource]="nameFullModel.dataSource">
+                             <div class="content" #TABLEMODELMFU>
+                             <table class="table" mat-table [dataSource]="nameFullModel.dataSource">
                                      <ng-container matColumnDef="IdModel">
                                          <th mat-header-cell *matHeaderCellDef>Id</th>
                                            <td mat-cell *matCellDef="let row">{{row?.IdModel}}</td>
@@ -278,9 +302,7 @@
                                              <th mat-header-cell *matHeaderCellDef>Модель Принтер(МФУ)</th>
                                                <td mat-cell *matCellDef="let row">
                                                  <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.NameModel}}</Label> 
-                                                     <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
-                                                         <input matInput placeholder="Наименование модели Принтер(МФУ)" [ngModel]="nameFullModel.model?.NameModel" (ngModelChange)="nameFullModel.model.NameModel = $event"/>
-                                                     </mat-form-field> 
+                                                   <div [ngClass]=row.IdModel.toString() id="{{row.IdModel}}" [style.display]="!row.ModelIsEdit ? 'none':'block'"></div>
                                                </td>
                                      </ng-container>
              
@@ -288,18 +310,9 @@
                                             <th mat-header-cell *matHeaderCellDef>Классификация</th>
                                               <td mat-cell *matCellDef="let row">
                                                 <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Classification?.NameClass}}</Label>
-                                                    <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
-                                                        <mat-select (click)="nameFullModel.calbackfiltersAll()" [placeholder]="nameFullModel.model.Classification?.NameClass" [(ngModel)]="nameFullModel.model.Classification" name="class">
-                                                           <mat-select-filter class="filter" [placeholder]="nameFullModel.model.Classification?.NameClass" [array]="nameFullModel.classification" (filteredReturn)="nameFullModel.filteredStatusing =$event">
-                                                            </mat-select-filter>
-                                                              <mat-option *ngFor="let class of nameFullModel.filteredClassification" [value]="class">
-                                                                {{class.NameClass}}
-                                                              </mat-option>
-                                                        </mat-select>
-                                                    </mat-form-field>
+                                                  <div [ngClass]=row.IdModel.toString() id="{{row.IdModel}}" [style.display]="!row.ModelIsEdit ? 'none':'block'"></div>
                                               </td>
                                         </ng-container> 
-
 
                                      <ng-container matColumnDef="ActionsColumn">  
                                          <th mat-header-cell *matHeaderCellDef>
@@ -325,8 +338,23 @@
                                      <tr mat-header-row *matHeaderRowDef="nameFullModel.displayedColumns"></tr>
                                      <tr mat-row *matRowDef="let row; columns: nameFullModel.displayedColumns;"></tr>
                                  </table>
-                                 <mat-paginator class="paginator2" #nameFullModels [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons="true"></mat-paginator>
-                     </div> 
+                                 <mat-paginator class="paginator" #nameFullModels [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons="true"></mat-paginator>
+                                </div>
+                                <div [style.display]="'none'" #TEMPLATEMODELMFU>
+                                    <mat-form-field id="template" class="validation">
+                                        <input matInput placeholder="Наименование модели Принтер(МФУ)" [ngModel]="nameFullModel.model?.NameModel" (ngModelChange)="nameFullModel.model.NameModel = $event"/>
+                                    </mat-form-field> 
+                                    <mat-form-field id="template" class="validation">
+                                        <mat-select (click)="nameFullModel.calbackfiltersAll()" [placeholder]="nameFullModel.model.Classification?.NameClass" [(ngModel)]="nameFullModel.model.Classification" name="class">
+                                            <mat-select-filter class="filter" [placeholder]="nameFullModel.model.Classification?.NameClass" [displayMember]="'NameClass'" [array]="nameFullModel.classification" (filteredReturn)="nameFullModel.filteredClassification =$event">
+                                            </mat-select-filter>
+                                                <mat-option *ngFor="let class of nameFullModel.filteredClassification" [value]="class">
+                                                  {{class.NameClass}}
+                                                </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                       </div> 
 
                      <div class="modeltableuse">
                             <form class="search">
@@ -336,7 +364,8 @@
                                     </mat-form-field>
                              </form>
                              <label class="lable">Классификация</label>
-                            <table class="table1" mat-table [dataSource]="nameClassification.dataSource">
+                            <div class="content" #TABLECLASSIFICATIONMFU>
+                            <table class="table" mat-table [dataSource]="nameClassification.dataSource">
                                     <ng-container matColumnDef="IdClasification">
                                         <th mat-header-cell *matHeaderCellDef>Id</th>
                                           <td mat-cell *matCellDef="let row">{{row?.IdClasification}}</td>
@@ -346,9 +375,7 @@
                                             <th mat-header-cell *matHeaderCellDef>Классификация</th>
                                               <td mat-cell *matCellDef="let row">
                                                 <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.NameClass}}</Label> 
-                                                    <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
-                                                        <input matInput placeholder="Классификация" [ngModel]="nameClassification.model?.NameClass" (ngModelChange)="nameClassification.model.NameClass = $event"/>
-                                                    </mat-form-field> 
+                                                <div [ngClass]=row.IdClasification.toString() id="{{row.IdClasification}}" [style.display]="!row.ModelIsEdit ? 'none':'block'"></div>
                                               </td>
                                     </ng-container>
             
@@ -376,9 +403,15 @@
                                     <tr mat-header-row *matHeaderRowDef="nameClassification.displayedColumns"></tr>
                                     <tr mat-row *matRowDef="let row; columns: nameClassification.displayedColumns;"></tr>
                                 </table>
-                                <mat-paginator class="paginator1" #nameClassifications [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons="true"></mat-paginator>
-                    </div>
-             </div>
+                                <mat-paginator class="paginator" #nameClassifications [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons="true"></mat-paginator>
+                            </div>
+                            <div [style.display]="'none'" #TEMPLATECLASSIFICATIONMFU>
+                                <mat-form-field id="template" class="validation">
+                                    <input matInput placeholder="Классификация" [ngModel]="nameClassification.model?.NameClass" (ngModelChange)="nameClassification.model.NameClass = $event"/>
+                                </mat-form-field> 
+                            </div>
+                        </div>
+            </div>
         </mat-tab>
          <mat-tab class="tab" label="CopySave">
                                <form class="search">
@@ -388,7 +421,8 @@
                                      </mat-form-field>
                               </form>
                              <label class="lable">CopySave</label>
-                             <table class="table3" mat-table [dataSource]="nameCopySave.dataSource">
+                            <div class="content" #TABLECOPYSAVE>
+                             <table class="table" mat-table [dataSource]="nameCopySave.dataSource">
                                      <ng-container matColumnDef="IdCopySave">
                                          <th mat-header-cell *matHeaderCellDef>Id</th>
                                            <td mat-cell *matCellDef="let row">{{row?.IdCopySave}}</td>
@@ -398,9 +432,7 @@
                                              <th mat-header-cell *matHeaderCellDef>Наименование CopySave</th>
                                                <td mat-cell *matCellDef="let row">
                                                  <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.NameCopySave}}</Label> 
-                                                     <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
-                                                         <input matInput placeholder="Наименование CopySave" [formControl]="nameCopySave.modelvalid?.getRowValidatorModel[6].get('NameCopySave')" [ngModel]="nameCopySave.model?.NameCopySave" (ngModelChange)="nameCopySave.model.NameCopySave = $event"/>
-                                                     </mat-form-field> 
+                                                 <div [ngClass]=row.IdCopySave.toString() id="{{row.IdCopySave}}" [style.display]="!row.ModelIsEdit ? 'none':'block'"></div>
                                                </td>
                                      </ng-container>
              
@@ -408,9 +440,7 @@
                                             <th mat-header-cell *matHeaderCellDef>Сирийный номер</th>
                                               <td mat-cell *matCellDef="let row">
                                                 <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.SerNum}}</Label> 
-                                                    <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
-                                                        <input matInput placeholder="Сирийный номер" [formControl]="nameCopySave.modelvalid?.getRowValidatorModel[6].get('SerNum')" [ngModel]="nameCopySave.model?.SerNum" (ngModelChange)="nameCopySave.model.SerNum = $event"/>
-                                                    </mat-form-field> 
+                                                <div [ngClass]=row.IdCopySave.toString() id="{{row.IdCopySave}}" [style.display]="!row.ModelIsEdit ? 'none':'block'"></div>
                                               </td>
                                     </ng-container>
 
@@ -418,9 +448,7 @@
                                             <th mat-header-cell *matHeaderCellDef>Инвентарный номер</th>
                                               <td mat-cell *matCellDef="let row">
                                                 <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.InventarNum}}</Label> 
-                                                    <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
-                                                        <input matInput placeholder="Инвентарный номер" [formControl]="nameCopySave.modelvalid?.getRowValidatorModel[6].get('InventarNum')" [ngModel]="nameCopySave.model?.InventarNum" (ngModelChange)="nameCopySave.model.InventarNum = $event"/>
-                                                    </mat-form-field> 
+                                                <div [ngClass]=row.IdCopySave.toString() id="{{row.IdCopySave}}" [style.display]="!row.ModelIsEdit ? 'none':'block'"></div>
                                               </td>
                                     </ng-container>
 
@@ -448,11 +476,23 @@
                                      <tr mat-header-row *matHeaderRowDef="nameCopySave.displayedColumns"></tr>
                                      <tr mat-row *matRowDef="let row; columns: nameCopySave.displayedColumns;"></tr>
                             </table>
-                            <mat-paginator class="paginator3" #nameCopySaves [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons="true"></mat-paginator>
+                            <mat-paginator class="paginator" #nameCopySaves [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons="true"></mat-paginator>
+                        </div>
+                        <div [style.display]="'none'" #TEMPLATECOPYSAVE>
+                            <mat-form-field id="template" class="validation">
+                                <input matInput placeholder="Наименование CopySave" [formControl]="nameCopySave.modelvalid?.getRowValidatorModel[6].get('NameCopySave')" [ngModel]="nameCopySave.model?.NameCopySave" (ngModelChange)="nameCopySave.model.NameCopySave = $event"/>
+                            </mat-form-field> 
+                            <mat-form-field id="template" class="validation">
+                                <input matInput placeholder="Сирийный номер" [formControl]="nameCopySave.modelvalid?.getRowValidatorModel[6].get('SerNum')" [ngModel]="nameCopySave.model?.SerNum" (ngModelChange)="nameCopySave.model.SerNum = $event"/>
+                            </mat-form-field> 
+                            <mat-form-field id="template" class="validation">
+                                <input matInput placeholder="Инвентарный номер" [formControl]="nameCopySave.modelvalid?.getRowValidatorModel[6].get('InventarNum')" [ngModel]="nameCopySave.model?.InventarNum" (ngModelChange)="nameCopySave.model.InventarNum = $event"/>
+                            </mat-form-field> 
+                        </div>
 
         </mat-tab>
         <mat-tab class="tab" label="Кабинеты,Статусы">
-        <div class="modeltable">
+          <div class="modeltable">
                 <div class="modeltableuse">
                         <form class="search">
                                 <mat-form-field class="search_blok">
@@ -461,7 +501,8 @@
                                 </mat-form-field>
                          </form>
                          <label class="lable">Кабинеты</label>
-                         <table class="table1" mat-table [dataSource]="nameKabinet.dataSource">
+                         <div class="content" #TABLEKABINET>
+                         <table class="table" mat-table [dataSource]="nameKabinet.dataSource">
                                 <ng-container matColumnDef="IdNumberKabinet">
                                     <th mat-header-cell *matHeaderCellDef>Id</th>
                                       <td mat-cell *matCellDef="let row">{{row?.IdNumberKabinet}}</td>
@@ -471,9 +512,7 @@
                                         <th mat-header-cell *matHeaderCellDef>Номер кабинета</th>
                                           <td mat-cell *matCellDef="let row">
                                             <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.NumberKabinet}}</Label> 
-                                                <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
-                                                    <input matInput placeholder="Номер кабинета" [ngModel]="nameKabinet.model?.NumberKabinet" (ngModelChange)="nameKabinet.model.NumberKabinet = $event"/>
-                                                </mat-form-field> 
+                                            <div [ngClass]=row.IdNumberKabinet.toString() id="{{row.IdNumberKabinet}}" [style.display]="!row.ModelIsEdit ? 'none':'block'"></div>
                                           </td>
                                 </ng-container>
         
@@ -501,7 +540,13 @@
                                 <tr mat-header-row *matHeaderRowDef="nameKabinet.displayedColumns"></tr>
                                 <tr mat-row *matRowDef="let row; columns: nameKabinet.displayedColumns;"></tr>
                             </table>
-                            <mat-paginator class="paginator1" #nameKabinets [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons="true"></mat-paginator>
+                            <mat-paginator class="paginator" #nameKabinets [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons="true"></mat-paginator>
+                          </div>
+                          <div [style.display]="'none'" #TEMPLATEKABINET>
+                            <mat-form-field id="template" class="validation">
+                                <input matInput placeholder="Номер кабинета" [ngModel]="nameKabinet.model?.NumberKabinet" (ngModelChange)="nameKabinet.model.NumberKabinet = $event"/>
+                            </mat-form-field> 
+                          </div>
                 </div>
                 <div class="modeltableuse">
                         <form class="search">
@@ -511,7 +556,8 @@
                                 </mat-form-field>
                          </form>
                          <label class="lable">Статусы техники</label>
-                         <table class="table2" mat-table [dataSource]="nameStatusing.dataSource">
+                         <div class="content" #TABLESTATUS>
+                         <table class="table" mat-table [dataSource]="nameStatusing.dataSource">
                                 <ng-container matColumnDef="IdStatus">
                                     <th mat-header-cell *matHeaderCellDef>Id</th>
                                       <td mat-cell *matCellDef="let row">{{row?.IdStatus}}</td>
@@ -521,9 +567,7 @@
                                         <th mat-header-cell *matHeaderCellDef>Наименоваение статуса</th>
                                           <td mat-cell *matCellDef="let row">
                                             <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.Name}}</Label> 
-                                                <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
-                                                    <input matInput placeholder="Наименование статуса" [ngModel]="nameStatusing.model?.Name" (ngModelChange)="nameStatusing.model.Name = $event"/>
-                                                </mat-form-field> 
+                                            <div [ngClass]=row.IdStatus.toString() id="{{row.IdStatus}}" [style.display]="!row.ModelIsEdit ? 'none':'block'"></div>
                                           </td>
                                 </ng-container>
         
@@ -531,7 +575,7 @@
                                         <th mat-header-cell *matHeaderCellDef>Цвет</th>
                                           <td [style.background]="row?.Color" mat-cell *matCellDef="let row">
                                             <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.Color}}</Label> 
-                                                        <mcc-color-picker hideButtons [style.background]="nameStatusing.model.Color" [usedColorLabel]="'Мои цвета'" [selectedColor]="nameStatusing.model.Color" [style.display]="!row.ModelIsEdit ? 'none':'block'" (selected)="nameStatusing.model.Color = $event"></mcc-color-picker>
+                                            <div [ngClass]=row.IdStatus.toString() id="{{row.IdStatus}}" [style.display]="!row.ModelIsEdit ? 'none':'block'"></div>
                                           </td>
                                 </ng-container>
 
@@ -560,10 +604,16 @@
                                 <tr mat-header-row *matHeaderRowDef="nameStatusing.displayedColumns"></tr>
                                 <tr mat-row *matRowDef="let row; columns: nameStatusing.displayedColumns;"></tr>
                             </table>
-                            <mat-paginator class="paginator2" #nameStatusings [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons="true"></mat-paginator>
-
+                            <mat-paginator class="paginator" #nameStatusings [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons="true"></mat-paginator>
+                        </div>
+                        <div [style.display]="'none'" #TEMPLATESTATUS>
+                            <mat-form-field id="template" class="validation">
+                                <input matInput placeholder="Наименование статуса" [ngModel]="nameStatusing.model?.Name" (ngModelChange)="nameStatusing.model.Name = $event"/>
+                            </mat-form-field> 
+                                <mcc-color-picker id="template" class="validation" hideButtons [style.background]="nameStatusing.model.Color" [usedColorLabel]="'Мои цвета'" [selectedColor]="nameStatusing.model.Color" (selected)="nameStatusing.model.Color = $event"></mcc-color-picker>
+                        </div>
                 </div>
-        </div>
+            </div>
         </mat-tab>
     <mat-tab class="tab" label="Поставка контракт">
         <div class="modeltableuse">
@@ -574,7 +624,8 @@
                         </mat-form-field>
                  </form>
                  <label class="lable">Поставка (партия)</label>
-                 <table class="table3" mat-table [dataSource]="nameSupply.dataSource">
+                <div class="content" #TABLESUPPLE>
+                 <table class="table" mat-table [dataSource]="nameSupply.dataSource">
                         <ng-container matColumnDef="IdSupply">
                             <th mat-header-cell *matHeaderCellDef>Id</th>
                               <td mat-cell *matCellDef="let row">{{row?.IdSupply}}</td>
@@ -584,9 +635,7 @@
                                 <th mat-header-cell *matHeaderCellDef>Поставка (партия)</th>
                                   <td mat-cell *matCellDef="let row">
                                     <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.NameSupply}}</Label> 
-                                        <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
-                                            <input matInput placeholder="Наименование поставки" [ngModel]="nameSupply.model?.NameSupply" (ngModelChange)="nameSupply.model.NameSupply = $event"/>
-                                        </mat-form-field> 
+                                    <div [ngClass]=row.IdSupply.toString() id="{{row.IdSupply}}" [style.display]="!row.ModelIsEdit ? 'none':'block'"></div>
                                   </td>
                         </ng-container>
 
@@ -594,9 +643,7 @@
                                 <th mat-header-cell *matHeaderCellDef>Номер и дата контракта</th>
                                   <td mat-cell *matCellDef="let row">
                                     <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.NameKontract}}</Label> 
-                                        <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
-                                            <input matInput placeholder="Название контракта" [ngModel]="nameSupply.model?.NameKontract" (ngModelChange)="nameSupply.model.NameKontract = $event"/>
-                                        </mat-form-field> 
+                                    <div [ngClass]=row.IdSupply.toString() id="{{row.IdSupply}}" [style.display]="!row.ModelIsEdit ? 'none':'block'"></div>
                                   </td>
                         </ng-container>
 
@@ -604,13 +651,7 @@
                                 <th mat-header-cell *matHeaderCellDef>Фактиктическая дата поставки</th>
                                   <td mat-cell *matCellDef="let row">
                                     <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.DatePostavki}}</Label> 
-                                        <mat-form-field [style.display]="!row.ModelIsEdit ? 'none':'block'">
-                                             <input matInput [matDatepicker]="picker1" placeholder="Дата поставки!!" (dateChange)="nameSupply.onChangeEventDate($event)">
-                                         <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-                                         <mat-datepicker #picker1></mat-datepicker> 
-<!-- 
-                                            <input matInput placeholder="Название контракта"  /> -->
-                                        </mat-form-field> 
+                                    <div [ngClass]=row.IdSupply.toString() id="{{row.IdSupply}}" [style.display]="!row.ModelIsEdit ? 'none':'block'"></div>
                                   </td>
                         </ng-container>
 
@@ -638,11 +679,92 @@
                         <tr mat-header-row *matHeaderRowDef="nameSupply.displayedColumns"></tr>
                         <tr mat-row *matRowDef="let row; columns: nameSupply.displayedColumns;"></tr>
                     </table>
-                    <mat-paginator class="paginator3" #nameSupplys [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons="true"></mat-paginator>
+                    <mat-paginator class="paginator" #nameSupplys [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons="true"></mat-paginator>
+                </div>
+                <div [style.display]="'none'" #TEMPLATESUPPLE>
+                    <mat-form-field id="template" class="validation">
+                        <input matInput placeholder="Наименование поставки" [ngModel]="nameSupply.model?.NameSupply" (ngModelChange)="nameSupply.model.NameSupply = $event"/>
+                    </mat-form-field> 
+                    <mat-form-field id="template" class="validation">
+                        <input matInput placeholder="Название контракта" [ngModel]="nameSupply.model?.NameKontract" (ngModelChange)="nameSupply.model.NameKontract = $event"/>
+                    </mat-form-field> 
+                    <mat-form-field id="template" class="validation">
+                            <input matInput [matDatepicker]="picker1" placeholder="Дата поставки!!" (dateChange)="nameSupply.onChangeEventDate($event)">
+                        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                        <mat-datepicker #picker1></mat-datepicker> 
+                    </mat-form-field> 
+                </div>
+            </div>
+    </mat-tab>
+    <mat-tab class="tab" label="Коммутаторы">
+        <div class="modeltableuse">
+                <form class="search">
+                        <mat-form-field class="search_blok">
+                              <span matPrefix><i class="material-icons">youtube_searched_for</i></span>
+                              <input matInput (keyup)="nameModelSwithe.filterstable($event.target.value)" placeholder="Поиск данных">
+                        </mat-form-field>
+                </form>
+                        <label class="lable">Модели комутаторов</label>
+                        <div class="content" #TABLESWITHE>
+                            <table class="table" mat-table [dataSource]="nameModelSwithe.dataSource">
+                                <ng-container matColumnDef="IdModelSwithes">
+                                    <th mat-header-cell *matHeaderCellDef>Id</th>
+                                    <td mat-cell *matCellDef="let row">{{row?.IdModelSwithes}}</td>
+                                </ng-container>
+                                        
+                                <ng-container matColumnDef="NameModel">
+                                    <th mat-header-cell *matHeaderCellDef>Наименование модели комутатора</th>
+                                    <td mat-cell *matCellDef="let row">
+                                        <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.NameModel}}</Label> 
+                                        <div [ngClass]=row.IdModelSwithes.toString() id="{{row.IdModelSwithes}}" [style.display]="!row.ModelIsEdit ? 'none':'block'"></div>
+                                    </td>
+                                </ng-container>
+                
+                                <ng-container matColumnDef="CountPort">
+                                    <th mat-header-cell *matHeaderCellDef>Количество портов</th>
+                                    <td mat-cell *matCellDef="let row">
+                                        <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.CountPort}}</Label> 
+                                        <div [ngClass]=row.IdModelSwithes.toString() id="{{row.IdModelSwithes}}" [style.display]="!row.ModelIsEdit ? 'none':'block'"></div>
+                                    </td>
+                                </ng-container>
+                
+                
+                                <ng-container matColumnDef="ActionsColumn">  
+                                    <th mat-header-cell *matHeaderCellDef>
+                                        <button mat-icon-button color="primary" [disabled]="nameModelSwithe.isAdd" focusable="false" (click)="nameModelSwithe.add()">
+                                            <i class="material-icons">person_add</i>
+                                        </button>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="nameModelSwithe.isEdit" color="accent" (click)="nameModelSwithe.edit(row)">
+                                            <i class="material-icons">edit</i>
+                                        </button>
+                                        <div *ngIf="row.ModelIsEdit" >
+                                        <button  mat-icon-button type="submit" color="primary" focusable="false" (click)="nameModelSwithe.save()">
+                                            <i class="material-icons">check</i>
+                                        </button>
+                                        <button mat-icon-button color="primary" focusable="false" (click)="nameModelSwithe.cancel(row)">
+                                            <i class="material-icons">cancel</i>
+                                        </button>
+                                        </div>
+                                    </td>
+                                </ng-container>
+                                        <tr mat-header-row *matHeaderRowDef="nameModelSwithe.displayedColumns"></tr>
+                                        <tr mat-row *matRowDef="let row; columns: nameModelSwithe.displayedColumns;"></tr>
+                            </table>
+                           <mat-paginator class="paginator" #nameModelSwithes [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons="true"></mat-paginator>
+                        </div>
+                        <div [style.display]="'none'" #TEMPLATESWITHE>
+                            <mat-form-field id="template" class="validation">
+                                <input matInput placeholder="Наименование модели" [ngModel]="nameModelSwithe.model?.NameModel" (ngModelChange)="nameModelSwithe.model.NameModel = $event"/>
+                            </mat-form-field> 
+                            <mat-form-field id="template" class="validation">
+                                <input matInput placeholder="Количество портов" [ngModel]="nameModelSwithe.model?.CountPort" (ngModelChange)="nameModelSwithe.model.CountPort = $event"/>
+                            </mat-form-field> 
+                        </div>
         </div>
     </mat-tab>
 </mat-tab-group>
-
 <div [style.display]="isload ? 'inline':'none'">
         <p>Идет загрузка данных подождите пожалуйста!!!</p>
         <mat-progress-bar mode="indeterminate"></mat-progress-bar>

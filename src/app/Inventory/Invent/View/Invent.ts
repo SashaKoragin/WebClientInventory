@@ -126,6 +126,4 @@ nestedDataSource1: MatTreeNestedDataSource<ModelUserAndEquipment> = new MatTreeN
              alert("У отдела отсутствует начальник!!!");
          }
      }
-
-     
 }

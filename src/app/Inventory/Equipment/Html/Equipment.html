@@ -1299,6 +1299,205 @@
               </mat-form-field>
            </div>
         </mat-tab> 
+        <mat-tab label="Коммутаторы"> 
+          <div class="mat-elevation-z8">
+            <form class="search">
+              <mat-form-field class="search_blok">
+                    <span matPrefix><i class="material-icons">youtube_searched_for</i></span>
+                    <input matInput (keyup)="switch.filterstable($event.target.value)" placeholder="Поиск данных">
+              </mat-form-field>
+              <button class="actual" mat-button (click)="excel.ExportTOExcel(tableblockpowers)">Выгрузить ИБП</button>
+            </form>
+              <div class="tables" #TABLESWITHES>
+                <table mat-table [dataSource]="switch.dataSource" matSort>
+                  <ng-container matColumnDef="IdSwithes">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
+                        <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">{{row?.IdSwithes}}</td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="User.Name">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Пользователь</th>
+                        <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
+                          <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.User?.Name}}</Label>
+                            <div [ngClass]=row.IdSwithes.toString() id="{{row.IdSwithes}}" [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            </div>
+                        </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="Supply.DatePostavki">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Фактическая дата поставки</th>
+                        <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
+                          <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{dp.transform(row.Supply?.DatePostavki,'dd-MM-yyyy')}}</Label>
+                            <div [ngClass]=row.IdSwithes.toString() id="{{row.IdSwithes}}" [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            </div>
+                        </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="ModelSwithes.NameModel">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Модель</th>
+                        <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
+                          <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.ModelSwithe?.NameModel}}</Label>
+                            <div [ngClass]=row.IdSwithes.toString() id="{{row.IdSwithes}}" [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            </div>
+                        </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="ModelSwithes.CountPort">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Колличество портов</th>
+                        <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
+                            <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.ModelSwithe?.CountPort}}</Label> 
+                            <div [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                                <label>{{switch.model?.ModelSwithe?.CountPort}}</label> 
+                             </div>
+                        </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="ServiceNum">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Сервисный номер</th>
+                        <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
+                          <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.ServiceNum}}</Label> 
+                            <div [ngClass]=row.IdSwithes.toString() id="{{row.IdSwithes}}" [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            </div>
+                        </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="SerNum">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Серийный номер</th>
+                        <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
+                          <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.SerNum}}</Label> 
+                            <div [ngClass]=row.IdSwithes.toString() id="{{row.IdSwithes}}" [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            </div>
+                        </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="InventarNum">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Инвентарный номер</th>
+                        <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
+                          <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.InventarNum}}</Label> 
+                            <div [ngClass]=row.IdSwithes.toString() id="{{row.IdSwithes}}" [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            </div>
+                        </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="Coment">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Коментарий</th>
+                        <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
+                          <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Coment}}</Label>
+                            <div [ngClass]=row.IdSwithes.toString() id="{{row.IdSwithes}}" [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            </div>
+                        </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="Kabinet.NumberKabinet">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Кабинет</th>
+                        <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
+                          <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Kabinet?.NumberKabinet}}</Label>
+                            <div [ngClass]=row.IdSwithes.toString() id="{{row.IdSwithes}}" [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            </div>
+                        </td>
+                  </ng-container> 
+
+                  <ng-container matColumnDef="Statusing.Name">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Статус</th>
+                        <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
+                          <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Statusing?.Name}}</Label>
+                            <div [ngClass]=row.IdSwithes.toString() id="{{row.IdSwithes}}" [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            </div>
+                        </td>
+                  </ng-container> 
+
+                  <ng-container matColumnDef="ActionsColumn">  
+                      <th mat-header-cell *matHeaderCellDef>
+                          <button mat-icon-button color="primary" [disabled]="switch.isAdd" focusable="false" (click)="switch.add()">
+                              <i class="material-icons">person_add</i>
+                          </button>
+                      </th>
+                      <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
+                      <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="switch.isEdit" color="accent" (click)="switch.edit(row)">
+                          <i class="material-icons">edit</i>
+                      </button>
+                      <div *ngIf="row.ModelIsEdit" >
+                              <button  mat-icon-button type="submit" [disabled]="switch.modelvalid.getRowValidatorModel[7].invalid" color="primary" focusable="false" (click)="switch.save()">
+                                      <i class="material-icons">check</i>
+                             </button>
+                             <button mat-icon-button color="primary" focusable="false" (click)="switch.cancel(row)">
+                                  <i class="material-icons">cancel</i>
+                              </button>
+                      </div>
+                   </td>
+                   </ng-container>
+
+                  <tr mat-header-row *matHeaderRowDef="switch.displayedColumns; sticky: true"></tr>
+                  <tr mat-row *matRowDef="let row; columns: switch.displayedColumns;"></tr>
+              </table>
+           </div>
+           <mat-paginator class="paginator" #swithes [pageSizeOptions]="[5, 10, 25, paginatorswithes.length]" showFirstLastButtons="true"></mat-paginator>
+          </div>
+             <div [style.display]="'none'" #TEMPLATESWITHES>
+              <mat-form-field id="template" class="validation">
+                <mat-select (click)="switch.calbackfiltersAll()" [placeholder]="switch.model.User?.Name" [(ngModel)]="switch.model.User" name="user">
+                   <mat-select-filter class="filter" [placeholder]="switch.model.User?.Name" [displayMember]="'Name'" [array]="switch.user" (filteredReturn)="switch.filteredUser =$event">
+                    </mat-select-filter>
+                      <mat-option [value]='null'>None</mat-option>
+                      <mat-option *ngFor="let user of switch.filteredUser" [value]="user">
+                        {{user.Name}}
+                      </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field id="template" class="validation">
+                <mat-select (click)="switch.calbackfiltersAll()"  [placeholder]="switch.model.Supply?.DatePostavki" [(ngModel)]="switch.model.Supply" name="supply">
+                   <mat-select-filter class="filter" [placeholder]="switch.model.Supply?.DatePostavki" [displayMember]="'DatePostavki'" [array]="switch.supples" (filteredReturn)="switch.filteredSupples =$event">
+                    </mat-select-filter>
+                      <mat-option [value]='null'>None</mat-option>
+                      <mat-option *ngFor="let supply of switch.filteredSupples" [value]="supply">
+                         {{datetemplate(supply.DatePostavki)}}
+                      </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field id="template" class="validation">
+              <mat-select (click)="switch.calbackfiltersAll()" [formControl]="switch.modelvalid?.getRowValidatorModel[7].get('Model')" [placeholder]="switch.model.ModelSwithe?.NameModel" [(ngModel)]="switch.model.ModelSwithe" name="models">
+                 <mat-select-filter class="filter" [placeholder]="switch.model.ModelSwithe?.NameModel" [displayMember]="'NameModel'" [array]="switch.models" (filteredReturn)="switch.filteredModels =$event">
+                  </mat-select-filter>
+                    <mat-option [value]='null'>None</mat-option>
+                    <mat-option *ngFor="let models of switch.filteredModels" [value]="models">
+                      {{models.NameModel}}
+                    </mat-option>
+              </mat-select>
+              </mat-form-field>
+              <mat-form-field id="template" class="validation">
+                 <input matInput placeholder="Сервисный номер" [ngModel]="switch.model?.ServiceNumber" (ngModelChange)="switch.model.ServiceNumber = $event"/>
+              </mat-form-field>
+              <mat-form-field id="template" class="validation">
+                 <input matInput [formControl]="switch.modelvalid?.getRowValidatorModel[7].get('SerNum')" placeholder="Заводской номер" [ngModel]="switch.model?.SerNum" (ngModelChange)="switch.model.SerNum = $event"/>
+              </mat-form-field> 
+              <mat-form-field id="template" class="validation">
+                 <input matInput [formControl]="switch.modelvalid?.getRowValidatorModel[7].get('InventarNum')" placeholder="Инвентарный номер" [ngModel]="switch.model?.InventarNum" (ngModelChange)="switch.model.InventarNum = $event"/>
+              </mat-form-field> 
+              <mat-form-field id="template" class="validation">
+                 <input matInput placeholder="Коментарий" [ngModel]="switch.model?.Coment" (ngModelChange)="switch.model.Coment = $event"/>
+              </mat-form-field>
+              <mat-form-field id="template" class="validation">
+                <mat-select (click)="switch.calbackfiltersAll()" [placeholder]="switch.model.Kabinet?.NumberKabinet" [(ngModel)]="switch.model.Kabinet" name="kabinet">
+                  <mat-select-filter class="filter" [placeholder]="switch.model.Kabinet?.NumberKabinet"  [displayMember]="'NumberKabinet'" [array]="switch.kabinet" (filteredReturn)="switch.filteredKabinet =$event">
+                   </mat-select-filter>
+                    <mat-option [value]='null'>None</mat-option>
+                    <mat-option *ngFor="let kabinet of switch.filteredKabinet" [value]="kabinet">
+                      {{kabinet.NumberKabinet}}
+                    </mat-option>
+                   </mat-select>
+              </mat-form-field>
+              <mat-form-field id="template" class="validation">
+                 <mat-select (click)="switch.calbackfiltersAll()" [placeholder]="switch.model.Statusing?.Name" [(ngModel)]="switch.model.Statusing" name="status">
+                   <mat-select-filter class="filter" [placeholder]="switch.model.Statusing?.Name" [array]="switch.statusing" (filteredReturn)="switch.filteredStatusing =$event">
+                   </mat-select-filter>
+                     <mat-option [value]='null'>None</mat-option>
+                     <mat-option *ngFor="let status of switch.filteredStatusing" [value]="status">
+                       {{status.Name}}
+                   </mat-option>
+                 </mat-select>
+              </mat-form-field>
+             </div>
+        </mat-tab>
 </mat-tab-group>
 <div [style.display]="isload ? 'inline':'none'">
     <p>Идет загрузка данных подождите пожалуйста!!!</p>

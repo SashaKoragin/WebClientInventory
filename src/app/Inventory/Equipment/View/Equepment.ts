@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import {PostInventar, EditAndAdd } from '../../../Post RequestService/PostRequest';
-import { PrinterTableModel, ScanerAndCamerTableModel, MfuTableModel, SysBlockTableModel, MonitorsTableModel, TelephonsTableModel, BlockPowerTableModel } from '../../AddFullModel/ModelTable/TableModel';
+import { PrinterTableModel, ScanerAndCamerTableModel, MfuTableModel, SysBlockTableModel, MonitorsTableModel, TelephonsTableModel, BlockPowerTableModel, SwitchTableModel } from '../../AddFullModel/ModelTable/TableModel';
 import {MatPaginator, MatSort} from '@angular/material';
 import { ImportToExcel } from '../../AddFullModel/ModelTable/PublicFunction';
 import { DatePipe } from '@angular/common';
@@ -33,11 +33,12 @@ export class Equipment implements OnInit {
    @ViewChild('TEMPLATESYSBLOK',{static: true}) templateSysblok: ElementRef;
    @ViewChild('TEMPLATEMONITOR',{static: true}) templateMonitor: ElementRef;
    @ViewChild('TEMPLATEBLOCKPOWER',{static: true}) templateBlockpower: ElementRef;
+   @ViewChild('TEMPLATESWITHES',{static: true}) templateSwithes: ElementRef;
    
      isload:boolean = true;
      loadMessage:string[] = []
-      @ViewChild('printers',{static: true}) paginatorptinter: MatPaginator;
-      @ViewChild(MatSort,{static: false}) sortprinter: MatSort;
+     @ViewChild('printers',{static: true}) paginatorptinter: MatPaginator;
+     @ViewChild(MatSort,{static: false}) sortprinter: MatSort;
      @ViewChild('scaners',{static: true}) paginatorscaner: MatPaginator;
      @ViewChild(MatSort,{static: true}) sortscaner: MatSort;
      @ViewChild('mfus',{static: true}) paginatormfu: MatPaginator;
@@ -45,9 +46,12 @@ export class Equipment implements OnInit {
      @ViewChild('sysbloks',{static: true}) paginatorsysblok: MatPaginator;
      @ViewChild(MatSort,{static: true}) sortsysblok: MatSort;
      @ViewChild('monitors',{static: true}) paginatormonitors: MatPaginator;
-      @ViewChild(MatSort,{static: true}) sortmonitors: MatSort;
+     @ViewChild(MatSort,{static: true}) sortmonitors: MatSort;
      @ViewChild('blockpowers',{static: true}) paginatorblockpower: MatPaginator;
      @ViewChild(MatSort,{static: true}) sortblockpower: MatSort;
+     @ViewChild('swithes',{static: true}) paginatorswithes: MatPaginator;
+     @ViewChild(MatSort,{static: true}) sortswithes: MatSort;
+
 
      @ViewChild('TABLEPRINTERS',{static: false}) tableprinters: ElementRef;
      @ViewChild('TABLESCANERS',{static: false}) tablescaners: ElementRef;
@@ -55,6 +59,7 @@ export class Equipment implements OnInit {
      @ViewChild('TABLESYSBLOKS',{static: false}) tablesysbloks: ElementRef;
      @ViewChild('TABLEMONITORS',{static: false}) tablemonitors: ElementRef;
      @ViewChild('TABLEBLOCKPOWERS',{static: false}) tableblockpowers: ElementRef;
+     @ViewChild('TABLESWITHES',{static: false}) tableswithes: ElementRef;
      excel:ImportToExcel = new ImportToExcel();
 
    public printer: PrinterTableModel = new PrinterTableModel(this.editandadd);  
@@ -63,7 +68,9 @@ export class Equipment implements OnInit {
    public sysblok:SysBlockTableModel = new SysBlockTableModel(this.editandadd);
    public monitor:MonitorsTableModel = new MonitorsTableModel(this.editandadd);
    public blockpower:BlockPowerTableModel = new BlockPowerTableModel(this.editandadd);
-  public async ngOnInit():Promise<void> {
+   public switch:SwitchTableModel = new SwitchTableModel(this.editandadd)
+
+   public async ngOnInit():Promise<void> {
    await this.start()
   }
   
@@ -89,6 +96,9 @@ export class Equipment implements OnInit {
      await this.selectAll.allblockpower();
      message = await this.blockpower.addtableModel(this.selectAll.select,this.paginatorblockpower,this.sortblockpower,this.tableblockpowers,this.templateBlockpower);
      this.loadMessage.push(message);
+     await this.selectAll.allswithes();
+     message = await this.switch.addtableModel(this.selectAll.select,this.paginatorswithes,this.sortswithes,this.tableswithes,this.templateSwithes);
+     this.loadMessage.push(message);
      this.isload = false;
   }
 
@@ -104,5 +114,6 @@ export class Equipment implements OnInit {
    await this.selectAll.allsupply();
    await this.selectAll.allproizvoditelblockpower();
    await this.selectAll.allmodelblockpower();
+   await this.selectAll.allmodelswithes();
   }
 }

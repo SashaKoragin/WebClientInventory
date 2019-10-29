@@ -10,11 +10,12 @@
       "noImplicitAny": true,
       "suppressImplicitAnyIndexErrors": true,
       "types": [ "node" , "jasmine" ],
+      
     },
     "include": [
       "src/**/*"
   ],
     "exclude": [
       "./node_modules"
-    ]
+    ]    
 }
