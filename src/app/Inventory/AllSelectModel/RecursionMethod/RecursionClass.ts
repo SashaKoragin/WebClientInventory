@@ -21,15 +21,15 @@ export class Recursion{
              use.Types =null;
              if(user.Monitors !=null||typeof user.Monitors!='undefined')
              {
-              use.Children.push({Name:"Монитор",IdUser:null,Types:null,InputServer:false,Children:[{Children:[],Name:null,IdUser:null,Types:[],InputServer:false}]})
-                 for (const monitor of user.Monitors) {
-                     use.Children[i].Children[0].Types.push({Name:monitor.NameMonitor.Name ,NameModel:null,SerNumber:monitor.SerNum,
-                        ServiceNumber:null,InventerNumber:monitor.InventarNumMonitor,
-                        Kabinet:monitor.Kabinet?monitor.Kabinet.NumberKabinet:null,
-                        Status:monitor.Coment,
-                        NameComputer:null,IpAdress:null});
-                 }
-                 i++;
+             use.Children.push({Name:"Монитор",IdUser:null,Types:null,InputServer:false,Children:[{Children:[],Name:null,IdUser:null,Types:[],InputServer:false}]})
+                  for (const monitor of user.Monitors) {
+                      use.Children[i].Children[0].Types.push({Name:monitor.NameMonitor.Name ,NameModel:null,SerNumber:monitor.SerNum,
+                         ServiceNumber:null,InventerNumber:monitor.InventarNumMonitor,
+                         Kabinet:monitor.Kabinet?monitor.Kabinet.NumberKabinet:null,
+                         Status:monitor.Coment,
+                         NameComputer:null,IpAdress:null});
+                  }
+                  i++;
              }
              if(user.Mfu!=null||typeof user.Mfu!='undefined')
              {
@@ -102,6 +102,19 @@ export class Recursion{
                                     });
                              i++;
              }
+             if(user.Swithe!=null||typeof user.Swithe!='undefined')
+             {
+                  use.Children.push({Name:"Коммутатор",IdUser:null,Types:null,InputServer:false,Children:[{Children:[],Name:null,IdUser:null,Types:[],InputServer:false}]})
+                     for (const swith of user.Swithe) {
+                         use.Children[i].Children[0].Types.push({Name:'Коммутатор' ,NameModel:swith.ModelSwithe.NameModel,
+                            SerNumber:swith.SerNum,ServiceNumber:swith.ServiceNum,InventerNumber:swith.InventarNum,
+                            Kabinet:swith.Kabinet?swith.Kabinet.NumberKabinet:null,NameComputer:null,IpAdress:null,
+                            Status:swith.Coment
+                            });
+                     }
+                     i++;
+             }
+
              if(use.Children.length>0)
              {
                 this.userEcvipment.push(use);
@@ -112,8 +125,8 @@ export class Recursion{
       ///Разкладка отделов в рекурсию
       public methodEquipmentOtdelAndUserRecursion(Otdel:Otdel[]){
         console.log(Otdel)
-        var i =0;
-        var j =0;
+        var i;
+        var j;
         for (const otdel of Otdel) {
             j = 0;
             var otd =new ModelUserAndEquipment();
@@ -129,9 +142,8 @@ export class Recursion{
               ||(user.ScanerAndCamer!=null||typeof user.ScanerAndCamer!='undefined')
               ||(user.SysBlock!=null||typeof user.SysBlock!='undefined')
               ||(user.BlockPower!=null||typeof user.BlockPower!='undefined')
-              ||(user.Telephon!=null||typeof user.Telephon!='undefined')
+              ||(user.Telephon!=null||typeof user.Telephon!='undefined')||(user.Swithe!=null||typeof user.Swithe!='undefined')
               ){  
-
               otd.Children.push({ Name:user.Name, IdUser:user.IdUser,IdUserOtdel:otdel.IdUser, InputServer:true,Types:null,Children:[] })
              if(user.Monitors !=null||typeof user.Monitors!='undefined')
              {
@@ -215,7 +227,18 @@ export class Recursion{
                                     });
                      i++;
              }
-
+             if(user.Swithe!=null||typeof user.Swithe!='undefined')
+             {
+                otd.Children[j].Children.push({Name:"Комутатор",IdUser:null,Types:null,InputServer:false,Children:[{Children:[],Name:null,IdUser:null,Types:[],InputServer:false}]})
+                     for (const swith of user.Swithe) {
+                        otd.Children[j].Children[i].Children[0].Types.push({Name:'Коммутатор' ,NameModel:swith.ModelSwithe.NameModel,
+                        SerNumber:swith.SerNum,ServiceNumber:swith.ServiceNum,InventerNumber:swith.InventarNum,
+                        Kabinet:swith.Kabinet?swith.Kabinet.NumberKabinet:null,NameComputer:null,IpAdress:null,
+                        Status:swith.Coment
+                        });
+                     }
+                     i++;
+             }
              j++;
             }
            }

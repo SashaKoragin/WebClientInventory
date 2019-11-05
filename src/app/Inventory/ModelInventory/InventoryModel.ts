@@ -62,7 +62,6 @@ export interface INewLogicaTable<T> {
 
 ///Десериализация json ответов
 export class DesirilizeXml{
-    Tehnical:TehnicalSql = new TehnicalSql();
     Documents:Documents = new Documents();
     Book:Book = new Book();
 }
@@ -101,7 +100,7 @@ export class FullSelectedModel{
    ProizvoditelBlockPower:ProizvoditelBlockPower[];
    UsersIsActualsStats:UsersIsActualsStats[];
    Classification:Classification[];
-   ModelSwithe:ModelSwithe[];
+   ModelSwithe:ModelSwithes[];
 
 }
 ///Модель отвертов с сервера
@@ -129,7 +128,7 @@ export class Users{
     public StatusActual?: boolean;
     public IdHistory?: string;
     public Mfu?:Mfu[];
-    public Swithes?:Swithe[];
+    public Swithe?:Swithe[];
     public Monitors?:Monitor[];
     public SysBlock?:SysBlock[];
     public Printer?:Printer[];
@@ -283,14 +282,14 @@ export class Swithe{
     public IdStatus:number;
     public IdHistory:string;
     public Statusing?: Statusing;
-    public ModelSwithe?:ModelSwithe;
+    public ModelSwithe?:ModelSwithes;
     public Kabinet?:Kabinet;
     public Supply?:Supply;
     public User?:Users;
     public ModelIsEdit?: boolean = false;
 }
 
-export class ModelSwithe{
+export class ModelSwithes{
    public IdModelSwithes:number;
    public NameModel:string;
    public CountPort:string;

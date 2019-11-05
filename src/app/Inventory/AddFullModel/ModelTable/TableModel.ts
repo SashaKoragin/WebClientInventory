@@ -1,6 +1,6 @@
 import { Users, FullSelectedModel, Otdel, Position, Printer, Mfu, ScanerAndCamer, SysBlock, CopySave,
    Monitor,NameSysBlock,Supply,Classification,Swithe,
-  Kabinet,FullModel,Statusing,FullProizvoditel, ModelReturn, NameMonitor, Telephon,BlockPower,ModelBlockPower,ProizvoditelBlockPower, INewLogicaTable,ModelSwithe  } from '../../ModelInventory/InventoryModel';
+  Kabinet,FullModel,Statusing,FullProizvoditel, ModelReturn, NameMonitor, Telephon,BlockPower,ModelBlockPower,ProizvoditelBlockPower, INewLogicaTable,ModelSwithes  } from '../../ModelInventory/InventoryModel';
 import { MatTableDataSource,MatPaginator,MatSort } from '@angular/material';
 import { ModelValidation } from '../ValidationModel/UserValidation';
 import { EditAndAdd } from '../../../Post RequestService/PostRequest';
@@ -369,7 +369,7 @@ export class SwitchTableModel implements INewLogicaTable<Swithe>{
 
   public modelvalid:ModelValidation = new ModelValidation()
   public kabinet:Kabinet[];
-  public models:ModelSwithe[];
+  public models:ModelSwithes[];
   public statusing:Statusing[];
   public supples:Supply[]
   public user:Users[];
@@ -3754,18 +3754,18 @@ export class NameStatusingTableModel implements INewLogicaTable<Statusing> {
   }
 }
 
-export class NameModelSwitheTableModel implements INewLogicaTable<ModelSwithe> {
+export class NameModelSwitheTableModel implements INewLogicaTable<ModelSwithes> {
   
   constructor(public editandadd:EditAndAdd){ }
   
   public displayedColumns = ['IdModelSwithes','NameModel','CountPort','ActionsColumn'];  
-  public dataSource: MatTableDataSource<ModelSwithe> = new MatTableDataSource<ModelSwithe>();
+  public dataSource: MatTableDataSource<ModelSwithes> = new MatTableDataSource<ModelSwithes>();
   
   isAdd: boolean;
   isEdit: boolean;
-  model: ModelSwithe = new ModelSwithe();
+  model: ModelSwithes = new ModelSwithes();
   index: number;
-  modeltable: ModelSwithe[];
+  modeltable: ModelSwithes[];
 
   //Шаблоны для манипулирования DOM
   temlateList:any //Заложенный шаблон Массив
@@ -3795,7 +3795,7 @@ export class NameModelSwitheTableModel implements INewLogicaTable<ModelSwithe> {
     this.addtemplate(newmodel.IdModelSwithes);
   }  
 
-  edit(model: ModelSwithe): void {
+  edit(model: ModelSwithes): void {
     model.ModelIsEdit = true;
     this.model =JSON.parse(JSON.stringify(model));
     this.addtemplate(model.IdModelSwithes)
@@ -3817,7 +3817,7 @@ export class NameModelSwitheTableModel implements INewLogicaTable<ModelSwithe> {
     //Запрос на сохранение и обновление данных
   }
 
-  cancel(model: ModelSwithe): void {
+  cancel(model: ModelSwithes): void {
     model.ModelIsEdit = false;
     this.isEditAndAddFalse(); 
     if(this.index>0)
@@ -3834,8 +3834,8 @@ export class NameModelSwitheTableModel implements INewLogicaTable<ModelSwithe> {
     this.removetemplate();
   }
 
-  newmodel(): ModelSwithe {
-    var newuser: ModelSwithe = new ModelSwithe();
+  newmodel(): ModelSwithes {
+    var newuser: ModelSwithes = new ModelSwithes();
     newuser.ModelIsEdit = true;
     newuser.IdModelSwithes = 0;
     return newuser;

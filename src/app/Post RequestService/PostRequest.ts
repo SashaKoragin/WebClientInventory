@@ -5,14 +5,13 @@ import { Users, Autorization, Printer, Kabinet,
          BlockPower, UsersIsActualsStats, Classification,
          FullSelectedModel, NameMonitor, FullProizvoditel, Statusing, 
          FullModel, CopySave, NameSysBlock, Otdel,Position,
-         Telephon,Supply,ModelBlockPower,ProizvoditelBlockPower,Swithe } from '../Inventory/ModelInventory/InventoryModel';
+         Telephon,Supply,ModelBlockPower,ProizvoditelBlockPower,Swithe,ModelSwithes } from '../Inventory/ModelInventory/InventoryModel';
 import { AdressInventarka } from '../AdressGetPost/AdressInventory';
 import { deserializeArray } from 'class-transformer';
 import { ModelSelect, LogicaSelect } from '../Inventory/AllSelectModel/ParametrModel';
 import { DocumentReport } from '../Inventory/AllSelectModel/Report/ReportModel';
 import { UploadFile } from '../Inventory/AddFullModel/ModelTable/FileModel';
 import { BookModels } from '../Inventory/ModelInventory/ViewInventory';
-import { ModelSwithe } from '../Inventory/ModelInventory/InventoryModel';
 
 
 const url: AdressInventarka = new AdressInventarka();
@@ -229,7 +228,7 @@ export class PostInventar {
     async allmodelswithes(){
         this.select.ModelSwithe = await this.http.get(url.allmodelswithes,httpOptionsJson).toPromise().then(model=>{
             if(model){
-                return deserializeArray<ModelSwithe>(ModelSwithe,model.toString());
+                return deserializeArray<ModelSwithes>(ModelSwithes,model.toString());
             }
         })
     }
@@ -371,7 +370,7 @@ export class EditAndAdd{
         return this.http.post(url.addAndEditNameCopySave,nameCopySave,httpOptionsJson);
     }
     ///Редактирование или добавление ModelSwithe
-    addAndEditModelSwitch(nameModelSwitch:ModelSwithe){
+    addAndEditModelSwitch(nameModelSwitch:ModelSwithes){
         return this.http.post(url.addandeditmodelswith,nameModelSwitch,httpOptionsJson);
     }
 }

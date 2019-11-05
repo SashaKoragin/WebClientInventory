@@ -1,5 +1,5 @@
 import { FormGroup, FormControl, Validators,AbstractControl,ValidationErrors} from '@angular/forms';
-import { Otdel, Position, FullProizvoditel, FullModel, NameSysBlock, NameMonitor, ProizvoditelBlockPower, ModelBlockPower, ModelSwithe } from '../../ModelInventory/InventoryModel';
+import { Otdel, Position, FullProizvoditel, FullModel, NameSysBlock, NameMonitor, ProizvoditelBlockPower, ModelBlockPower, ModelSwithes } from '../../ModelInventory/InventoryModel';
 
 
 
@@ -52,7 +52,7 @@ export class ModelValidation  {
     };
     //Валидация моделей коммутатора
     public validationFullModelSwith(control: AbstractControl): ValidationErrors  {
-        var nameModel = control.value as ModelSwithe;
+        var nameModel = control.value as ModelSwithes;
         return  (nameModel == undefined||nameModel.NameModel == undefined)  ?  { 'error': true  } : null
     };
 
@@ -102,7 +102,7 @@ export class ModelValidation  {
             'InventarNum':new FormControl(null, Validators.required),
             }),
         new FormGroup({
-            'Model':new FormControl({value: new ModelSwithe()}, [Validators.required, this.validationFullModelSwith]),
+            'Model':new FormControl({value: new ModelSwithes()}, [Validators.required, this.validationFullModelSwith]),
             'SerNum':new FormControl(null, Validators.required),
             'InventarNum':new FormControl(null, Validators.required)
             })

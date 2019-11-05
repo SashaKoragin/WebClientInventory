@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import {ScrollingModule} from '@angular/cdk/scrolling';
 import {
     MatAutocompleteModule,
     MatBadgeModule,
@@ -80,6 +81,7 @@ import { MatSelectFilterModule} from 'mat-select-filter';
         MatSortModule,
         MatTableModule,
         MatTabsModule,
+        ScrollingModule,
         MatToolbarModule,
         MatTooltipModule,
         MatTreeModule
