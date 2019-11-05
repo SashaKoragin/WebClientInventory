@@ -166,7 +166,7 @@ export class OtdelTableModel implements INewLogicaTable<Otdel>{
 export class UserTableModel implements INewLogicaTable<Users>  {
   constructor(public editandadd:EditAndAdd){}
 
-  public displayedColumns = ['IdUser','Name','TabelNumber','Telephon.Telephon_','Telephon.TelephonUndeground','Position.NamePosition','Otdel.NameOtdel','StatusActual','ActionsColumn'];
+  public displayedColumns = ['IdUser','Name','TabelNumber','Telephon.SerNumber','Telephon.Telephon_','Telephon.TelephonUndeground','Position.NamePosition','Otdel.NameOtdel','StatusActual','ActionsColumn'];
   public dataSource: MatTableDataSource<Users> = new MatTableDataSource<Users>();
   public modelvalid:ModelValidation = new ModelValidation()
   public otdels: Otdel[];
