@@ -1,11 +1,10 @@
-import { Component, OnInit, ViewChild,ElementRef  } from '@angular/core';
-import {PostInventar, EditAndAdd } from '../../../Post RequestService/PostRequest';
+import { Component, OnInit,OnDestroy, ViewChild,ElementRef  } from '@angular/core';
+import {PostInventar, EditAndAdd, AuthIdentificationSignalR } from '../../../Post RequestService/PostRequest';
 import {MatTableDataSource,MatPaginator, MatSort } from '@angular/material';
 import { UserTableModel, TelephonsTableModel, OtdelTableModel } from '../../AddFullModel/ModelTable/TableModel';
 import { UsersIsActualsStats } from '../../ModelInventory/InventoryModel';
 import { ImportToExcel } from '../../AddFullModel/ModelTable/PublicFunction';
 import { ModelSelect } from '../../AllSelectModel/ParametrModel';
-
 
 @Component(({
     selector: 'equepment',
@@ -15,7 +14,8 @@ import { ModelSelect } from '../../AllSelectModel/ParametrModel';
 }) as any)
 
 export class User implements OnInit {
-    constructor(public selectall: PostInventar,public editandadd:EditAndAdd) { }
+
+    constructor(public selectall: PostInventar,public editandadd:EditAndAdd,public SignalR:AuthIdentificationSignalR) { }
 
 
 
@@ -41,7 +41,7 @@ export class User implements OnInit {
     user:UserTableModel = new UserTableModel(this.editandadd);
     otdel:OtdelTableModel = new OtdelTableModel(this.editandadd);
     excel:ImportToExcel = new ImportToExcel();
-    public telephone:TelephonsTableModel = new TelephonsTableModel(this.editandadd);
+    public telephone:TelephonsTableModel = new TelephonsTableModel(this.editandadd,this.SignalR);
 
     dateconverters(date:any){
         if(date){

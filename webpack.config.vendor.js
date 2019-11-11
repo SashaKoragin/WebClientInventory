@@ -62,7 +62,6 @@ module.exports = {
     plugins: [
         ExtractCss,
         new Webpack.ProvidePlugin({ $: 'jquery', jQuery: 'jquery' }), // Maps these identifiers to the jQuery package (because Bootstrap expects it to be a global variable)
-        new Webpack.optimize.OccurrenceOrderPlugin(),
         new Webpack.DllPlugin({
             path: Path.join(__dirname, 'public', '[name]-manifest.json'),
             name: '[name]_[hash]',

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router, NavigationExtras } from '@angular/router';
-import { AuthIdentification, PostInventar } from '../../Post RequestService/PostRequest';
+import { AuthIdentification, PostInventar, AuthIdentificationSignalR } from '../../Post RequestService/PostRequest';
 import { Autorization } from '../../Inventory/ModelInventory/InventoryModel';
 import { deserialize } from 'class-transformer';
 
@@ -11,7 +11,7 @@ import { deserialize } from 'class-transformer';
 })
 export class LoginInventarization {
 
-    constructor(public authService: AuthIdentification, public router: Router,public selectall:PostInventar) { }
+    constructor(public authService: AuthIdentification, public router: Router,public selectall:PostInventar, private signalR: AuthIdentificationSignalR) { }
 
     login() {
         try {
@@ -20,6 +20,8 @@ export class LoginInventarization {
             this.authService.login().subscribe((model) => {
                 if (model) {
                     this.authService.fullSelect = deserialize(Autorization, model.toString());
+                    this.signalR.createconection(this.authService.fullSelect.Users);
+                    this.signalR.startserverSignalR();
                     let redirect = this.authService.redirectUrl ? this.authService.redirectUrl : '/Inventory';
                     this.authService.isLoggedIn = true;
                     let navigationExtras: NavigationExtras = {
@@ -42,5 +44,6 @@ export class LoginInventarization {
 
     logout() {
         this.authService.logout();
+        this.signalR.stopserverSignalR();
     }
 }

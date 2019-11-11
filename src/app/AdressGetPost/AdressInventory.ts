@@ -1,6 +1,6 @@
 export class AdressInventarka {
-    public host = 'i7751-w00000745:8182';
-   // public host = 'localhost:8182';
+  //  public host = 'i7751-w00000745:8182';
+    public host = 'localhost:8182';
     public autificationInventar = `http://${this.host}/Inventarka/Authorization`;
     public alluser = `http://${this.host}/Inventarka/AllUsers`;
     public allotdelget = `http://${this.host}/Inventarka/AllOtdels`;
@@ -11,8 +11,8 @@ export class AdressInventarka {
     public addandeditsysblock = `http://${this.host}/Inventarka/AddAndEditSysBlok`;
     public addandeditmonitor = `http://${this.host}/Inventarka/AddAndEditMonitor`;
     public addandeditotdel = `http://${this.host}/Inventarka/AddAndEditOtdel`;
-    public addandedittelephon = ` http://${this.host}/Inventarka/AddAndEditTelephone`;
-    public addandeditblockpower = ` http://${this.host}/Inventarka/AddAndEditBlockPower`;
+    public addandedittelephon = `http://${this.host}/Inventarka/AddAndEditTelephone`;
+    public addandeditblockpower = `http://${this.host}/Inventarka/AddAndEditBlockPower`;
     public addandeditswitch =`http://${this.host}/Inventarka/AddAndEditSwith`;
     public addandeditmodelswith = `http://${this.host}/Inventarka/AddAndEditModelSwith`;
 

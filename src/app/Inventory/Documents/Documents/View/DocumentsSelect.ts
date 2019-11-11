@@ -79,9 +79,9 @@ export class DocumentSelect implements OnInit {
 
     delete(element:Document){
     if(element.IsActual ===false){
-    this.select.deletedocument(element.Id).subscribe((model:ModelReturn) =>{
-          if(model.Message){
-            console.log(model.Message);
+    this.select.deletedocument(element.Id).subscribe((model:string) =>{
+          if(model){
+            console.log(model);
             this.select.selectusersql(this.selecting.generatecommand()).subscribe((model)=>{
                 this.selectsql.Documents = deserialize<Documents>(Documents,model.toString()); //Динамический язык
                 this.dataSource = new MatTableDataSource<Document>(this.selectsql.Documents.Document)

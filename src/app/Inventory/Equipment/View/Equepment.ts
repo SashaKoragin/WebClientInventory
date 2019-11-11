@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import {PostInventar, EditAndAdd } from '../../../Post RequestService/PostRequest';
+import { PostInventar, EditAndAdd, AuthIdentificationSignalR } from '../../../Post RequestService/PostRequest';
 import { PrinterTableModel, ScanerAndCamerTableModel, MfuTableModel, SysBlockTableModel, MonitorsTableModel, TelephonsTableModel, BlockPowerTableModel, SwitchTableModel } from '../../AddFullModel/ModelTable/TableModel';
 import {MatPaginator, MatSort} from '@angular/material';
 import { ImportToExcel } from '../../AddFullModel/ModelTable/PublicFunction';
@@ -14,7 +14,7 @@ import { DatePipe } from '@angular/common';
 }) as any)
 
 export class Equipment implements OnInit {
-  constructor(public editandadd:EditAndAdd,public selectAll:PostInventar,private dp: DatePipe) { }
+  constructor(public editandadd:EditAndAdd,public selectAll:PostInventar,private dp: DatePipe,public SignalR:AuthIdentificationSignalR) { }
 
    
    datetemplate(date:any){
@@ -62,13 +62,13 @@ export class Equipment implements OnInit {
      @ViewChild('TABLESWITHES',{static: false}) tableswithes: ElementRef;
      excel:ImportToExcel = new ImportToExcel();
 
-   public printer: PrinterTableModel = new PrinterTableModel(this.editandadd);  
-   public scaner: ScanerAndCamerTableModel = new ScanerAndCamerTableModel(this.editandadd); 
-   public mfu: MfuTableModel = new MfuTableModel(this.editandadd); 
-   public sysblok:SysBlockTableModel = new SysBlockTableModel(this.editandadd);
-   public monitor:MonitorsTableModel = new MonitorsTableModel(this.editandadd);
-   public blockpower:BlockPowerTableModel = new BlockPowerTableModel(this.editandadd);
-   public switch:SwitchTableModel = new SwitchTableModel(this.editandadd)
+   public printer: PrinterTableModel = new PrinterTableModel(this.editandadd,this.SignalR);  
+   public scaner: ScanerAndCamerTableModel = new ScanerAndCamerTableModel(this.editandadd,this.SignalR); 
+   public mfu: MfuTableModel = new MfuTableModel(this.editandadd,this.SignalR); 
+   public sysblok:SysBlockTableModel = new SysBlockTableModel(this.editandadd,this.SignalR);
+   public monitor:MonitorsTableModel = new MonitorsTableModel(this.editandadd,this.SignalR);
+   public blockpower:BlockPowerTableModel = new BlockPowerTableModel(this.editandadd,this.SignalR);
+   public switch:SwitchTableModel = new SwitchTableModel(this.editandadd,this.SignalR)
 
    public async ngOnInit():Promise<void> {
    await this.start()

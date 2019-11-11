@@ -33,6 +33,7 @@ import { Synchronization } from '../../Inventory/Process/Synchronization/View/Sy
     declarations: [
         MainInventar, Equipment, Invent, User,DocumentSelect,ErrorInventory,Select,UploadsFile,ComplimentTableEquipment,Analitics,BookAccounting,Synchronization
     ]
+    
 }) as any)
 
 export class InventarModule { }

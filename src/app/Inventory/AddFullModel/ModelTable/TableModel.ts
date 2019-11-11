@@ -3,11 +3,13 @@ import { Users, FullSelectedModel, Otdel, Position, Printer, Mfu, ScanerAndCamer
   Kabinet,FullModel,Statusing,FullProizvoditel, ModelReturn, NameMonitor, Telephon,BlockPower,ModelBlockPower,ProizvoditelBlockPower, INewLogicaTable,ModelSwithes  } from '../../ModelInventory/InventoryModel';
 import { MatTableDataSource,MatPaginator,MatSort } from '@angular/material';
 import { ModelValidation } from '../ValidationModel/UserValidation';
-import { EditAndAdd } from '../../../Post RequestService/PostRequest';
+import { EditAndAdd, AuthIdentificationSignalR } from '../../../Post RequestService/PostRequest';
 import * as _moment from 'moment';
 import * as _rollupMoment from 'moment';
 import {MatDatepickerInputEvent} from '@angular/material/datepicker';
 import { ElementRef } from '@angular/core';
+import { BroadcastEventListener } from 'ng2-signalr';
+import { deserialize } from 'class-transformer';
 const moment = _rollupMoment || _moment;
 
 export class OtdelTableModel implements INewLogicaTable<Otdel>{
@@ -64,7 +66,7 @@ export class OtdelTableModel implements INewLogicaTable<Otdel>{
   public save(): void {
     this.modifimethod();
     this.isEditAndAddFalse();
-     this.editandadd.addandeditotdel(this.model).subscribe((model:ModelReturn)=>{
+     this.editandadd.addandeditotdel(this.model).subscribe((model:ModelReturn<Otdel>)=>{
       if(model.Index!==0)
       {
         this.dataSource.data.find(x=>x.IdOtdel===0).IdOtdel = model.Index;
@@ -293,7 +295,7 @@ export class UserTableModel implements INewLogicaTable<Users>  {
   public save(): void {
       this.modifimethod();
       this.isEditAndAddFalse();
-      this.editandadd.addandedituser(this.model).subscribe((model:ModelReturn)=>{
+      this.editandadd.addandedituser(this.model).subscribe((model:ModelReturn<Users>)=>{
         if(model.Guid)
         {
            this.dataSource.data.find(x=>x.IdUser===0).IdHistory = model.Guid;
@@ -365,7 +367,9 @@ export class UserTableModel implements INewLogicaTable<Users>  {
 }
 
 export class SwitchTableModel implements INewLogicaTable<Swithe>{
-  constructor(public editandadd:EditAndAdd){ }
+  constructor(public editandadd:EditAndAdd, public SignalR:AuthIdentificationSignalR){
+    this.subscribeservers();
+   }
 
   public modelvalid:ModelValidation = new ModelValidation()
   public kabinet:Kabinet[];
@@ -388,11 +392,46 @@ export class SwitchTableModel implements INewLogicaTable<Swithe>{
   public filteredStatusing:any;
   public filteredUser:any;
   public filteredSupples:any;
+  //Подписка
+  public subscribe:any = null;
 
   temlateList: any;
   rowList: any;
   fulltemplate: ElementRef<any>;
   table: ElementRef<any>;
+
+  public subscribeservers(){
+    this.subscribe = new BroadcastEventListener<Swithe>('SubscribeSwithe');
+    this.SignalR.conect.listen(this.subscribe);
+    this.subscribe.subscribe((substring:string) =>{
+      var submodel = deserialize<Swithe>(Swithe,substring);
+      var index = this.dataSource.data.find(x=>x.IdSwithes === submodel.IdSwithes);
+      var indexzero = this.dataSource.data.find(x=>x.IdSwithes===0);
+      try{
+        if(indexzero){
+          ///Для изменявшего
+          this.dataSource.data.find(x=>x.IdSwithes===0).IdHistory = submodel.IdHistory;
+          this.dataSource.data.find(x=>x.IdSwithes===0).IdSwithes = submodel.IdSwithes;
+        }
+        else{
+           if(index){
+             ///Для остальных пользователей изменение
+              this.dataSource.data[this.dataSource.data.indexOf(index)] = submodel;
+              this.modeltable[this.modeltable.indexOf(index)] = submodel;
+           }
+           else{
+               ///Для остальных пользователей добавление
+              this.dataSource.data.push(submodel);
+              this.modeltable.push(submodel);
+           }
+        }
+          this.dataSource._updateChangeSubscription();
+        }
+      catch(e){
+        console.log(e);
+      }
+    });
+  }
 
   castomefiltermodel() {
     this.dataSource.filterPredicate = (data, filter) => {
@@ -457,20 +496,14 @@ export class SwitchTableModel implements INewLogicaTable<Swithe>{
 
   save(): void {
     this.modifimethod();
-    this.isEditAndAddFalse();
     this.modelToServer = JSON.parse(JSON.stringify(this.model));
     if(this.modelToServer.Supply)
     {
-      this.modelToServer.Supply.DatePostavki = null;
+      this.modelToServer.Supply.DatePostavki = `/Date(${new Date(this.modelToServer.Supply.DatePostavki).getTime()})/`;
     }
-     this.editandadd.addandeditswitch(this.modelToServer).subscribe((model:ModelReturn)=>{
-      if(model.Guid)
-      {
-        this.dataSource.data.find(x=>x.IdSwithes===0).IdHistory = model.Guid;
-        this.dataSource.data.find(x=>x.IdSwithes===0).IdSwithes = model.Index;
-      }
+     this.editandadd.addandeditswitch(this.modelToServer).toPromise().then((model:ModelReturn<Swithe>)=>{
       console.log(model.Message);
-      this.dataSource._updateChangeSubscription();
+      this.isEditAndAddFalse();
      });
      this.removetemplate();
     //Запрос на сохранение и обновление данных
@@ -534,7 +567,7 @@ export class SwitchTableModel implements INewLogicaTable<Swithe>{
       this.model.IdSupply = this.model.Supply.IdSupply
       this.model.Supply.DataCreate = null;
       if(this.model.Supply.DatePostavki.length<=10){
-        this.model.Supply.DatePostavki = this.model.Supply.DatePostavki.split("-").reverse().join("-")+"T00:00:00"
+        this.model.Supply.DatePostavki = this.model.Supply.DatePostavki.split("-").reverse().join("-")+"T00:00:00.000Z"
       }
     }
     else{
@@ -542,10 +575,6 @@ export class SwitchTableModel implements INewLogicaTable<Swithe>{
     }
     this.isEdit = true;
     this.model.ModelIsEdit = false;
-    //Поиск индекса и замена модели по индексу в таблице
-    var userdefault = this.modeltable.find(x=>x.IdSwithes ===this.model.IdSwithes);
-    var indexold = this.modeltable.indexOf(userdefault);
-    this.dataSource.data[indexold] = this.model;
     this.index = 0;
   }
 
@@ -581,7 +610,9 @@ export class SwitchTableModel implements INewLogicaTable<Swithe>{
 }
 
 export class PrinterTableModel implements INewLogicaTable<Printer> {
-  constructor(public editandadd:EditAndAdd){ }
+  constructor(public editandadd:EditAndAdd, public SignalR:AuthIdentificationSignalR){
+    this.subscribeservers();
+   }
 
   public displayedColumns = ['IdModel','User.Name','Supply.DatePostavki','FullProizvoditel.NameProizvoditel','FullModel.NameModel','ZavNumber','ServiceNumber','InventarNumber','IpAdress','Coment','Kabinet.NumberKabinet','Statusing.Name','ActionsColumn'];
   public dataSource: MatTableDataSource<Printer> = new MatTableDataSource<Printer>();
@@ -606,12 +637,46 @@ export class PrinterTableModel implements INewLogicaTable<Printer> {
   public filteredProizvoditel:any;
   public filteredUser:any;
   public filteredSupples:any;
-  
+  //Подписка
+  public subscribe:any = null;
   //Шаблоны для манипулирования DOM
   temlateList:any //Заложенный шаблон Массив
   rowList:any    //Строка по номеру из БД Массив 
   fulltemplate:ElementRef<any>  //Полный шаблон для манипуляции
   table:ElementRef<any>  //Полный шаблон для манипуляции
+
+  public subscribeservers(){
+    this.subscribe = new BroadcastEventListener<Printer>('SubscribePrinter');
+    this.SignalR.conect.listen(this.subscribe);
+    this.subscribe.subscribe((substring:string) =>{
+      var submodel = deserialize<Printer>(Printer,substring);
+      var index = this.dataSource.data.find(x=>x.IdPrinter === submodel.IdPrinter);
+      var indexzero = this.dataSource.data.find(x=>x.IdPrinter===0);
+      try{
+        if(indexzero){
+          ///Для изменявшего
+          this.dataSource.data.find(x=>x.IdPrinter===0).IdHistory = submodel.IdHistory;
+          this.dataSource.data.find(x=>x.IdPrinter===0).IdPrinter = submodel.IdPrinter;
+        }
+        else{
+           if(index){
+             ///Для остальных пользователей изменение
+              this.dataSource.data[this.dataSource.data.indexOf(index)] = submodel;
+              this.modeltable[this.modeltable.indexOf(index)] = submodel;
+           }
+           else{
+               ///Для остальных пользователей добавление
+              this.dataSource.data.push(submodel);
+              this.modeltable.push(submodel);
+           }
+        }
+          this.dataSource._updateChangeSubscription();
+        }
+      catch(e){
+        console.log(e);
+      }
+    });
+  }
 
   castomefiltermodel() {
     this.dataSource.filterPredicate = (data, filter) => {
@@ -677,20 +742,14 @@ export class PrinterTableModel implements INewLogicaTable<Printer> {
 
  public save(): void {
     this.modifimethod();
-    this.isEditAndAddFalse();
     this.modelToServer = JSON.parse(JSON.stringify(this.model));
     if(this.modelToServer.Supply)
     {
-      this.modelToServer.Supply.DatePostavki = null;
+      this.modelToServer.Supply.DatePostavki = `/Date(${new Date(this.modelToServer.Supply.DatePostavki).getTime()})/`;
     }
-     this.editandadd.addandeditprinter(this.modelToServer).subscribe((model:ModelReturn)=>{
-      if(model.Guid)
-      {
-        this.dataSource.data.find(x=>x.IdPrinter===0).IdHistory = model.Guid;
-        this.dataSource.data.find(x=>x.IdPrinter===0).IdPrinter = model.Index;
-      }
-      console.log(model.Message);
-      this.dataSource._updateChangeSubscription();
+     this.editandadd.addandeditprinter(this.modelToServer).toPromise().then((model:ModelReturn<Printer>)=>{
+        console.log(model.Message);
+        this.isEditAndAddFalse();
      });
      this.removetemplate();
     //Запрос на сохранение и обновление данных
@@ -757,7 +816,7 @@ export class PrinterTableModel implements INewLogicaTable<Printer> {
       this.model.IdSupply = this.model.Supply.IdSupply
       this.model.Supply.DataCreate = null;
       if(this.model.Supply.DatePostavki.length<=10){
-        this.model.Supply.DatePostavki = this.model.Supply.DatePostavki.split("-").reverse().join("-")+"T00:00:00"
+        this.model.Supply.DatePostavki = this.model.Supply.DatePostavki.split("-").reverse().join("-")+"T00:00:00.000Z"
       }
     }
     else{
@@ -765,10 +824,6 @@ export class PrinterTableModel implements INewLogicaTable<Printer> {
     }
     this.isEdit = true;
     this.model.ModelIsEdit = false;
-    //Поиск индекса и замена модели по индексу в таблице
-    var userdefault = this.modeltable.find(x=>x.IdPrinter ===this.model.IdPrinter);
-    var indexold = this.modeltable.indexOf(userdefault);
-    this.dataSource.data[indexold] = this.model;
     this.index = 0;
   }
 
@@ -807,7 +862,9 @@ export class PrinterTableModel implements INewLogicaTable<Printer> {
 
 export class ScanerAndCamerTableModel implements INewLogicaTable<ScanerAndCamer> {
   
-  constructor(public editandadd:EditAndAdd){ }
+  constructor(public editandadd:EditAndAdd, public SignalR:AuthIdentificationSignalR){
+    this.subscribeservers();
+   }
 
   public displayedColumns = ['IdModel','User.Name','Supply.DatePostavki','FullProizvoditel.NameProizvoditel','FullModel.NameModel',
   'ZavNumber','ServiceNumber','InventarNumber','IpAdress','Coment','Kabinet.NumberKabinet','Statusing.Name','ActionsColumn'];
@@ -833,13 +890,46 @@ export class ScanerAndCamerTableModel implements INewLogicaTable<ScanerAndCamer>
   public filteredProizvoditel:any;
   public filteredUser:any;
   public filteredSupples:any;
-
+  //Подписка
+  public subscribe:any = null;
     //Шаблоны для манипулирования DOM
   temlateList:any //Заложенный шаблон Массив
   rowList:any    //Строка по номеру из БД Массив 
   fulltemplate:ElementRef<any>  //Полный шаблон для манипуляции
   table:ElementRef<any>  //Полный шаблон для манипуляции
 
+  public subscribeservers(){
+    this.subscribe = new BroadcastEventListener<ScanerAndCamer>('SubscribeScanerAndCamer');
+    this.SignalR.conect.listen(this.subscribe);
+    this.subscribe.subscribe((substring:string) =>{
+      var submodel = deserialize<ScanerAndCamer>(ScanerAndCamer,substring);
+      var index = this.dataSource.data.find(x=>x.IdScaner === submodel.IdScaner);
+      var indexzero = this.dataSource.data.find(x=>x.IdScaner===0);
+      try{
+        if(indexzero){
+          ///Для изменявшего
+          this.dataSource.data.find(x=>x.IdScaner===0).IdHistory = submodel.IdHistory;
+          this.dataSource.data.find(x=>x.IdScaner===0).IdScaner = submodel.IdScaner;
+        }
+        else{
+           if(index){
+             ///Для остальных пользователей изменение
+              this.dataSource.data[this.dataSource.data.indexOf(index)] = submodel;
+              this.modeltable[this.modeltable.indexOf(index)] = submodel;
+           }
+           else{
+               ///Для остальных пользователей добавление
+              this.dataSource.data.push(submodel);
+              this.modeltable.push(submodel);
+           }
+        }
+          this.dataSource._updateChangeSubscription();
+        }
+      catch(e){
+        console.log(e);
+      }
+    });
+  }
 
   castomefiltermodel() {
     this.dataSource.filterPredicate = (data, filter) => {
@@ -904,20 +994,14 @@ export class ScanerAndCamerTableModel implements INewLogicaTable<ScanerAndCamer>
   }
  public save(): void {
     this.modifimethod();
-    this.isEditAndAddFalse();
     this.modelToServer = JSON.parse(JSON.stringify(this.model));
     if(this.modelToServer.Supply)
     {
-      this.modelToServer.Supply.DatePostavki = null;
+      this.modelToServer.Supply.DatePostavki = `/Date(${new Date(this.modelToServer.Supply.DatePostavki).getTime()})/`;
     }
-     this.editandadd.addandeditscaner(this.modelToServer).subscribe((model:ModelReturn)=>{
-      if(model.Guid)
-      {
-        this.dataSource.data.find(x=>x.IdScaner===0).IdHistory = model.Guid;
-        this.dataSource.data.find(x=>x.IdScaner===0).IdScaner = model.Index;
-      }
+     this.editandadd.addandeditscaner(this.modelToServer).toPromise().then((model:ModelReturn<ScanerAndCamer>)=>{
       console.log(model.Message);
-      this.dataSource._updateChangeSubscription();
+      this.isEditAndAddFalse();
      });
      this.removetemplate();
     //Запрос на сохранение и обновление данных
@@ -982,7 +1066,7 @@ export class ScanerAndCamerTableModel implements INewLogicaTable<ScanerAndCamer>
       this.model.IdSupply = this.model.Supply.IdSupply
       this.model.Supply.DataCreate = null;
       if(this.model.Supply.DatePostavki.length<=10){
-        this.model.Supply.DatePostavki = this.model.Supply.DatePostavki.split("-").reverse().join("-")+"T00:00:00"
+        this.model.Supply.DatePostavki = this.model.Supply.DatePostavki.split("-").reverse().join("-")+"T00:00:00.000Z"
       }
     }
     else{
@@ -990,10 +1074,6 @@ export class ScanerAndCamerTableModel implements INewLogicaTable<ScanerAndCamer>
     }
     this.isEdit = true;
     this.model.ModelIsEdit = false;
-    //Поиск индекса и замена модели по индексу в таблице
-    var userdefault = this.modeltable.find(x=>x.IdScaner ===this.model.IdScaner);
-    var indexold = this.modeltable.indexOf(userdefault);
-    this.dataSource.data[indexold] = this.model;
     this.index = 0;
   }
 
@@ -1033,7 +1113,9 @@ export class ScanerAndCamerTableModel implements INewLogicaTable<ScanerAndCamer>
 
 export class MfuTableModel implements INewLogicaTable<Mfu>  {
  
-  constructor(public editandadd:EditAndAdd){ }
+  constructor(public editandadd:EditAndAdd, public SignalR:AuthIdentificationSignalR){ 
+    this.subscribeservers();
+  }
 
   public displayedColumns = ['IdModel','User.Name','Supply.DatePostavki','FullProizvoditel.NameProizvoditel','FullModel.NameModel','ZavNumber','ServiceNumber','InventarNumber','IpAdress','CopySave.SerNum','Coment','Kabinet.NumberKabinet','Statusing.Name','ActionsColumn'];
   public dataSource: MatTableDataSource<Mfu> = new MatTableDataSource<Mfu>();
@@ -1060,13 +1142,46 @@ export class MfuTableModel implements INewLogicaTable<Mfu>  {
   public filteredCopySave:any;
   public filteredUser:any;
   public filteredSupples:any;
-
+  //Подписка
+  public subscribe:any = null;
   //Шаблоны для манипулирования DOM
   temlateList:any //Заложенный шаблон Массив
   rowList:any    //Строка по номеру из БД Массив 
   fulltemplate:ElementRef<any>  //Полный шаблон для манипуляции
   table:ElementRef<any>  //Полный шаблон для манипуляции
 
+  public subscribeservers(){
+    this.subscribe = new BroadcastEventListener<Mfu>('SubscribeMfu');
+    this.SignalR.conect.listen(this.subscribe);
+    this.subscribe.subscribe((substring:string) =>{
+      var submodel = deserialize<Mfu>(Mfu,substring);
+      var index = this.dataSource.data.find(x=>x.IdMfu === submodel.IdMfu);
+      var indexzero = this.dataSource.data.find(x=>x.IdMfu===0);
+      try{
+        if(indexzero){
+          ///Для изменявшего
+          this.dataSource.data.find(x=>x.IdMfu===0).IdHistory = submodel.IdHistory;
+          this.dataSource.data.find(x=>x.IdMfu===0).IdMfu = submodel.IdMfu;
+        }
+        else{
+           if(index){
+             ///Для остальных пользователей изменение
+              this.dataSource.data[this.dataSource.data.indexOf(index)] = submodel;
+              this.modeltable[this.modeltable.indexOf(index)] = submodel;
+           }
+           else{
+               ///Для остальных пользователей добавление
+              this.dataSource.data.push(submodel);
+              this.modeltable.push(submodel);
+           }
+        }
+          this.dataSource._updateChangeSubscription();
+        }
+      catch(e){
+        console.log(e);
+      }
+    });
+  }
 
   castomefiltermodel() {
     this.dataSource.filterPredicate = (data, filter) => {
@@ -1133,20 +1248,14 @@ export class MfuTableModel implements INewLogicaTable<Mfu>  {
 
  public save(): void {
     this.modifimethod();
-    this.isEditAndAddFalse();
     this.modelToServer = JSON.parse(JSON.stringify(this.model));
     if(this.modelToServer.Supply)
     {
-      this.modelToServer.Supply.DatePostavki = null;
+      this.modelToServer.Supply.DatePostavki = `/Date(${new Date(this.modelToServer.Supply.DatePostavki).getTime()})/`;
     }
-     this.editandadd.addandeditmfu(this.modelToServer).subscribe((model:ModelReturn)=>{
-      if(model.Guid)
-      {
-        this.dataSource.data.find(x=>x.IdMfu===0).IdHistory = model.Guid;
-        this.dataSource.data.find(x=>x.IdMfu===0).IdMfu = model.Index;
-      }
+     this.editandadd.addandeditmfu(this.modelToServer).toPromise().then((model:ModelReturn<Mfu>)=>{
       console.log(model.Message);
-      this.dataSource._updateChangeSubscription();
+      this.isEditAndAddFalse();
      });
      this.removetemplate();
     //Запрос на сохранение и обновление данных
@@ -1213,7 +1322,7 @@ export class MfuTableModel implements INewLogicaTable<Mfu>  {
       this.model.IdSupply = this.model.Supply.IdSupply
       this.model.Supply.DataCreate = null;
       if(this.model.Supply.DatePostavki.length<=10){
-        this.model.Supply.DatePostavki = this.model.Supply.DatePostavki.split("-").reverse().join("-")+"T00:00:00"
+        this.model.Supply.DatePostavki = this.model.Supply.DatePostavki.split("-").reverse().join("-")+"T00:00:00.000Z"
       }
     }
     else{
@@ -1221,10 +1330,6 @@ export class MfuTableModel implements INewLogicaTable<Mfu>  {
     }
     this.isEdit = true;
     this.model.ModelIsEdit = false;
-    //Поиск индекса и замена модели по индексу в таблице
-    var userdefault = this.modeltable.find(x=>x.IdMfu ===this.model.IdMfu);
-    var indexold = this.modeltable.indexOf(userdefault);
-    this.dataSource.data[indexold] = this.model;
     this.index = 0;
   }
 
@@ -1265,7 +1370,9 @@ export class MfuTableModel implements INewLogicaTable<Mfu>  {
 }
 
 export class SysBlockTableModel implements INewLogicaTable<SysBlock>  {
-  constructor(public editandadd:EditAndAdd){ }
+  constructor(public editandadd:EditAndAdd, public SignalR:AuthIdentificationSignalR){ 
+    this.subscribeservers();
+  }
 
   public displayedColumns = ['IdModel','User.Name','Supply.DatePostavki','NameSysBlock.NameComputer','ServiceNum','SerNum','InventarNumSysBlok','NameComputer','IpAdress','Kabinet.NumberKabinet','Coment','Statusing.Name','ActionsColumn'];
   public dataSource: MatTableDataSource<SysBlock> = new MatTableDataSource<SysBlock>();
@@ -1288,13 +1395,46 @@ export class SysBlockTableModel implements INewLogicaTable<SysBlock>  {
   public filteredStatusing:any;
   public filteredUser:any;
   public filteredSupples:any;
-
+  //Подписка
+  public subscribe:any = null;
   //Шаблоны для манипулирования DOM
   temlateList:any //Заложенный шаблон Массив
   rowList:any    //Строка по номеру из БД Массив 
   fulltemplate:ElementRef<any>  //Полный шаблон для манипуляции
   table:ElementRef<any>  //Полный шаблон для манипуляции
 
+  public subscribeservers(){
+    this.subscribe = new BroadcastEventListener<SysBlock>('SubscribeSysBlok');
+    this.SignalR.conect.listen(this.subscribe);
+    this.subscribe.subscribe((substring:string) =>{
+      var submodel = deserialize<SysBlock>(SysBlock,substring);
+      var index = this.dataSource.data.find(x=>x.IdSysBlock === submodel.IdSysBlock);
+      var indexzero = this.dataSource.data.find(x=>x.IdSysBlock===0);
+      try{
+        if(indexzero){
+          ///Для изменявшего
+          this.dataSource.data.find(x=>x.IdSysBlock===0).IdHistory = submodel.IdHistory;
+          this.dataSource.data.find(x=>x.IdSysBlock===0).IdSysBlock = submodel.IdSysBlock;
+        }
+        else{
+           if(index){
+             ///Для остальных пользователей изменение
+              this.dataSource.data[this.dataSource.data.indexOf(index)] = submodel;
+              this.modeltable[this.modeltable.indexOf(index)] = submodel;
+           }
+           else{
+               ///Для остальных пользователей добавление
+              this.dataSource.data.push(submodel);
+              this.modeltable.push(submodel);
+           }
+        }
+          this.dataSource._updateChangeSubscription();
+        }
+      catch(e){
+        console.log(e);
+      }
+    });
+  }
 
   castomefiltermodel() {
     this.dataSource.filterPredicate = (data, filter) => {
@@ -1360,20 +1500,14 @@ export class SysBlockTableModel implements INewLogicaTable<SysBlock>  {
 
   public save(): void {
     this.modifimethod();
-    this.isEditAndAddFalse();
     this.modelToServer = JSON.parse(JSON.stringify(this.model));
     if(this.modelToServer.Supply)
     {
-      this.modelToServer.Supply.DatePostavki = null;
+      this.modelToServer.Supply.DatePostavki = `/Date(${new Date(this.modelToServer.Supply.DatePostavki).getTime()})/`;
     }
-     this.editandadd.addandeditsysblok(this.modelToServer).subscribe((model:ModelReturn)=>{
-      if(model.Guid)
-      {
-        this.dataSource.data.find(x=>x.IdSysBlock===0).IdHistory = model.Guid;
-        this.dataSource.data.find(x=>x.IdSysBlock===0).IdSysBlock = model.Index;
-      }
+     this.editandadd.addandeditsysblok(this.modelToServer).subscribe((model:ModelReturn<SysBlock>)=>{
       console.log(model.Message);
-      this.dataSource._updateChangeSubscription();
+      this.isEditAndAddFalse();
      });
      this.removetemplate();
     //Запрос на сохранение и обновление данных
@@ -1440,7 +1574,7 @@ export class SysBlockTableModel implements INewLogicaTable<SysBlock>  {
       this.model.IdSupply = this.model.Supply.IdSupply
       this.model.Supply.DataCreate = null;
       if(this.model.Supply.DatePostavki.length<=10){
-        this.model.Supply.DatePostavki = this.model.Supply.DatePostavki.split("-").reverse().join("-")+"T00:00:00"
+        this.model.Supply.DatePostavki = this.model.Supply.DatePostavki.split("-").reverse().join("-")+"T00:00:00.000Z"
       }
     }
     else{
@@ -1448,10 +1582,6 @@ export class SysBlockTableModel implements INewLogicaTable<SysBlock>  {
     }
     this.isEdit = true;
     this.model.ModelIsEdit = false;
-    //Поиск индекса и замена модели по индексу в таблице
-    var userdefault = this.modeltable.find(x=>x.IdSysBlock ===this.model.IdSysBlock);
-    var indexold = this.modeltable.indexOf(userdefault);
-    this.dataSource.data[indexold] = this.model;
     this.index = 0;
   }
 
@@ -1485,11 +1615,12 @@ export class SysBlockTableModel implements INewLogicaTable<SysBlock>  {
     this.isAdd = false;
     this.isEdit = false;
   }
-
 }
 
 export class MonitorsTableModel implements INewLogicaTable<Monitor>  {
-  constructor(public editandadd:EditAndAdd){ }
+  constructor(public editandadd:EditAndAdd, public SignalR:AuthIdentificationSignalR){ 
+    this.subscribeservers();
+  }
 
   public displayedColumns = ['IdModel','User.Name','Supply.DatePostavki','NameMonitor.Name','SerNum','InventarNumMonitor','Kabinet.NumberKabinet','Coment','Statusing.Name','ActionsColumn'];
   public dataSource: MatTableDataSource<Monitor> = new MatTableDataSource<Monitor>();
@@ -1513,13 +1644,46 @@ export class MonitorsTableModel implements INewLogicaTable<Monitor>  {
   public filteredStatusing:any;
   public filteredUser:any;
   public filteredSupples:any;
-
+  //Подписка
+  public subscribe:any = null;
   //Шаблоны для манипулирования DOM
   temlateList:any //Заложенный шаблон Массив
   rowList:any    //Строка по номеру из БД Массив 
   fulltemplate:ElementRef<any>  //Полный шаблон для манипуляции
   table:ElementRef<any>  //Полный шаблон для манипуляции
 
+  public subscribeservers(){
+    this.subscribe = new BroadcastEventListener<Monitor>('SubscribeMonitor');
+    this.SignalR.conect.listen(this.subscribe);
+    this.subscribe.subscribe((substring:string) =>{
+      var submodel = deserialize<Monitor>(Monitor,substring);
+      var index = this.dataSource.data.find(x=>x.IdMonitor === submodel.IdMonitor);
+      var indexzero = this.dataSource.data.find(x=>x.IdMonitor===0);
+      try{
+        if(indexzero){
+          ///Для изменявшего
+          this.dataSource.data.find(x=>x.IdMonitor===0).IdHistory = submodel.IdHistory;
+          this.dataSource.data.find(x=>x.IdMonitor===0).IdMonitor = submodel.IdMonitor;
+        }
+        else{
+           if(index){
+             ///Для остальных пользователей изменение
+              this.dataSource.data[this.dataSource.data.indexOf(index)] = submodel;
+              this.modeltable[this.modeltable.indexOf(index)] = submodel;
+           }
+           else{
+               ///Для остальных пользователей добавление
+              this.dataSource.data.push(submodel);
+              this.modeltable.push(submodel);
+           }
+        }
+          this.dataSource._updateChangeSubscription();
+        }
+      catch(e){
+        console.log(e);
+      }
+    });
+  }
 
   castomefiltermodel() {
     this.dataSource.filterPredicate = (data, filter) => {
@@ -1576,28 +1740,26 @@ export class MonitorsTableModel implements INewLogicaTable<Monitor>  {
   } 
   
   public edit(model: Monitor): void {
+    console.log(this.model);
+    console.log(this.dataSource.data);
     model.ModelIsEdit = true;
     this.model =JSON.parse(JSON.stringify(model));
     this.addtemplate(model.IdMonitor)
     this.isEditAndAddTrue();
+    console.log(this.model);
+    console.log(this.dataSource.data);
   }
 
   public save(): void {
     this.modifimethod();
-    this.isEditAndAddFalse();
     this.modelToServer = JSON.parse(JSON.stringify(this.model));
     if(this.modelToServer.Supply)
     {
-      this.modelToServer.Supply.DatePostavki = null;
+      this.modelToServer.Supply.DatePostavki = `/Date(${new Date(this.modelToServer.Supply.DatePostavki).getTime()})/`;
     }
-     this.editandadd.addandeditmonitor(this.modelToServer).subscribe((model:ModelReturn)=>{
-      if(model.Guid)
-      {
-        this.dataSource.data.find(x=>x.IdMonitor===0).IdHistory = model.Guid;
-        this.dataSource.data.find(x=>x.IdMonitor===0).IdMonitor = model.Index;
-      }
-      console.log(model.Message);
-      this.dataSource._updateChangeSubscription();
+     this.editandadd.addandeditmonitor(this.modelToServer).toPromise().then((model:ModelReturn<Monitor>)=>{
+     console.log(model.Message);
+     this.isEditAndAddFalse();
      });
      this.removetemplate();
     //Запрос на сохранение и обновление данных
@@ -1665,7 +1827,7 @@ export class MonitorsTableModel implements INewLogicaTable<Monitor>  {
       this.model.IdSupply = this.model.Supply.IdSupply
       this.model.Supply.DataCreate = null;
       if(this.model.Supply.DatePostavki.length<=10){
-        this.model.Supply.DatePostavki = this.model.Supply.DatePostavki.split("-").reverse().join("-")+"T00:00:00"
+        this.model.Supply.DatePostavki = this.model.Supply.DatePostavki.split("-").reverse().join("-")+"T00:00:00.000Z"
       }
     }
     else{
@@ -1673,10 +1835,6 @@ export class MonitorsTableModel implements INewLogicaTable<Monitor>  {
     }
     this.isEdit = true;
     this.model.ModelIsEdit = false;
-    //Поиск индекса и замена модели по индексу в таблице
-    var userdefault = this.modeltable.find(x=>x.IdMonitor ===this.model.IdMonitor);
-    var indexold = this.modeltable.indexOf(userdefault);
-    this.dataSource.data[indexold] = this.model;
     this.index = 0;
   }
 
@@ -1714,14 +1872,15 @@ export class MonitorsTableModel implements INewLogicaTable<Monitor>  {
 
 export class TelephonsTableModel implements INewLogicaTable<Telephon> {
  
-  constructor(public editandadd:EditAndAdd){ }
+  constructor(public editandadd:EditAndAdd, public SignalR:AuthIdentificationSignalR){
+    this.subscribeservers();
+   }
   public displayedColumns = ['IdTelephone','Supply.DatePostavki','NameTelephone','Telephon_','TelephonUndeground','SerNumber','IpTelephon','MacTelephon','Kabinet.NumberKabinet','Coment','Statusing.Name','ActionsColumn'];
   public dataSource: MatTableDataSource<Telephon> = new MatTableDataSource<Telephon>();
   public modelvalid:ModelValidation = new ModelValidation()
   public supples:Supply[]
   public kabinet:Kabinet[];
   public statusing:Statusing[];
-
 
   isAdd: boolean;
   isEdit: boolean;
@@ -1732,15 +1891,50 @@ export class TelephonsTableModel implements INewLogicaTable<Telephon> {
   public filteredKabinet:any;
   public filteredSupples:any;
   public filteredStatusing:any;
-
+  public subscribe:any = null;
   //Шаблоны для манипулирования DOM
    temlateList:any //Заложенный шаблон Массив
    rowList:any    //Строка по номеру из БД Массив 
    fulltemplate:ElementRef  //Полный шаблон для манипуляции
    table:ElementRef  //Полный шаблон для манипуляции
 
+  public subscribeservers(){
+    this.subscribe = new BroadcastEventListener<Telephon>('SubscribeTelephone');
+    this.SignalR.conect.listen(this.subscribe);
+    this.subscribe.subscribe((substring:string) =>{
+      var submodel = deserialize<Telephon>(Telephon,substring);
+      var index = this.dataSource.data.find(x=>x.IdTelephon === submodel.IdTelephon);
+      var indexzero = this.dataSource.data.find(x=>x.IdTelephon===0);
+    try{
+      if(indexzero){
+        ///Для изменявшего
+        this.dataSource.data.find(x=>x.IdTelephon===0).IdTelephon = submodel.IdTelephon;
+      }
+      else{
+         if(index){
+           ///Для остальных пользователей изменение
+            this.dataSource.data[this.dataSource.data.indexOf(index)] = submodel;
+            this.modeltable[this.modeltable.indexOf(index)] = submodel;
+            console.log(this.modeltable[this.modeltable.indexOf(index)]);
+            console.log(this.dataSource.data);
+            console.log(this.isAdd);
+            console.log(this.isEdit);
+         }
+         else{
+             ///Для остальных пользователей добавление
+            this.dataSource.data.push(submodel);
+            this.modeltable.push(submodel);
+         }
+      }
+        this.dataSource._updateChangeSubscription();
+      }
+    catch(e){
+      console.log(e);
+    }
+    });
+  }
 
-   castomefiltermodel() {
+  castomefiltermodel() {
     this.dataSource.filterPredicate = (data, filter) => {
         var tot = false;
         for (let column of this.displayedColumns) {
@@ -1748,7 +1942,6 @@ export class TelephonsTableModel implements INewLogicaTable<Telephon> {
               if ((column in data) && (new Date(data[column].toString()).toString() == "Invalid Date")) {
                 tot = (tot || data[column].toString().trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
               } else {
-   
                  var date = new Date(data[column].toString());
                  var m = date.toDateString().slice(4, 7) + " " + date.getDate() + " " + date.getFullYear();
                  tot = (tot || m.toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1); 
@@ -1802,11 +1995,11 @@ export class TelephonsTableModel implements INewLogicaTable<Telephon> {
 ///Удалить шаблон из строки и востановить текущий шаблон
   removetemplate():void{
     var i = 0;
-    for (var row of this.rowList){
-       row.removeChild(this.temlateList[i]);
-       this.fulltemplate.nativeElement.append(this.temlateList[i])
-     i++;
-   }
+      for (var row of this.rowList){
+        row.removeChild(this.temlateList[i]);
+        this.fulltemplate.nativeElement.append(this.temlateList[i])
+        i++;
+      }
   }
  
 public async add():Promise<void> {
@@ -1830,19 +2023,14 @@ public async add():Promise<void> {
 
   public save(): void {
     this.modifimethod();
-    this.isEditAndAddFalse();
     this.modelToServer = JSON.parse(JSON.stringify(this.model));
     if(this.modelToServer.Supply)
     {
-      this.modelToServer.Supply.DatePostavki = null;
+      this.modelToServer.Supply.DatePostavki = `/Date(${new Date(this.modelToServer.Supply.DatePostavki).getTime()})/`
     }
-     this.editandadd.addandedittelephon(this.modelToServer).subscribe((model:ModelReturn)=>{
-      if(model.Index!==0)
-      {
-        this.dataSource.data.find(x=>x.IdTelephon===0).IdTelephon = model.Index;
-      }
-      console.log(model.Message);
-      this.dataSource._updateChangeSubscription();
+      this.editandadd.addandedittelephon(this.modelToServer).toPromise().then((model:ModelReturn<Telephon>)=>{
+        console.log(model.Message);
+        this.isEditAndAddFalse();
      });
      this.removetemplate();
     //Запрос на сохранение и обновление данных
@@ -1878,18 +2066,14 @@ public async add():Promise<void> {
       this.model.IdSupply = this.model.Supply.IdSupply
       this.model.Supply.DataCreate = null;
       if(this.model.Supply.DatePostavki.length<=10){
-        this.model.Supply.DatePostavki = this.model.Supply.DatePostavki.split("-").reverse().join("-")+"T00:00:00"
+        this.model.Supply.DatePostavki = this.model.Supply.DatePostavki.split("-").reverse().join("-")+"T00:00:00.000Z"
       }
     }
     else{
       this.model.IdSupply=null;
     }
-    this.isEdit = true;
     this.model.ModelIsEdit = false;
-    //Поиск индекса и замена модели по индексу в таблице
-    var userdefault = this.modeltable.find(x=>x.IdTelephon ===this.model.IdTelephon);
-    var indexold = this.modeltable.indexOf(userdefault);
-    this.dataSource.data[indexold] = this.model;
+    this.isEdit = true;
     this.index = 0;
   }
 
@@ -1897,7 +2081,7 @@ public async add():Promise<void> {
     this.table = table;  //Таблица
     this.fulltemplate = template; //Заложенный шаблон
     this.modeltable =JSON.parse(JSON.stringify(model.Telephon));
-    this.dataSource.data = model.Telephon;
+    this.dataSource.data = JSON.parse(JSON.stringify(model.Telephon));
     this.dataSource.paginator = paginator;
     this.dataSource.sort = sort
     this.castomefiltermodel();
@@ -1923,7 +2107,9 @@ public async add():Promise<void> {
 
 export class BlockPowerTableModel implements INewLogicaTable<BlockPower> {
  
-  constructor(public editandadd:EditAndAdd){ }  
+  constructor(public editandadd:EditAndAdd, public SignalR:AuthIdentificationSignalR){ 
+    this.subscribeservers();
+  }  
   
   public displayedColumns = ['IdBlockPowers','User.Name','Supply.DatePostavki','ProizvoditelBlockPower.Name','ModelBlockPower.Name','ZavNumber','ServiceNumber','InventarNumber','Coment','Kabinet.NumberKabinet','Statusing.Name','ActionsColumn'];
   public dataSource: MatTableDataSource<BlockPower> = new MatTableDataSource<BlockPower>();
@@ -1950,12 +2136,47 @@ export class BlockPowerTableModel implements INewLogicaTable<BlockPower> {
   public filteredUser:any;
   public filteredSupples:any;
   public filteredProizvoditel:any;
-
+  //Подписка
+  public subscribe:any = null;
   //Шаблоны для манипулирования DOM
   temlateList:any //Заложенный шаблон Массив
   rowList:any    //Строка по номеру из БД Массив 
   fulltemplate:ElementRef<any>  //Полный шаблон для манипуляции
   table:ElementRef<any>  //Полный шаблон для манипуляции
+
+  public subscribeservers(){
+    this.subscribe = new BroadcastEventListener<BlockPower>('SubscribeBlockPower');
+    this.SignalR.conect.listen(this.subscribe);
+    this.subscribe.subscribe((substring:string) =>{
+      var submodel = deserialize<BlockPower>(BlockPower,substring);
+      var index = this.dataSource.data.find(x=>x.IdBlockPowers=== submodel.IdBlockPowers);
+      var indexzero = this.dataSource.data.find(x=>x.IdBlockPowers===0);
+      try{
+        if(indexzero){
+          ///Для изменявшего
+          this.dataSource.data.find(x=>x.IdBlockPowers===0).IdHistory = submodel.IdHistory;
+          this.dataSource.data.find(x=>x.IdBlockPowers===0).IdBlockPowers = submodel.IdBlockPowers;
+        }
+        else{
+           if(index){
+             ///Для остальных пользователей изменение
+              this.dataSource.data[this.dataSource.data.indexOf(index)] = submodel;
+              this.modeltable[this.modeltable.indexOf(index)] = submodel;
+           }
+           else{
+               ///Для остальных пользователей добавление
+              this.dataSource.data.push(submodel);
+              this.modeltable.push(submodel);
+           }
+        }
+          this.dataSource._updateChangeSubscription();
+        }
+      catch(e){
+        console.log(e);
+      }
+    });
+  }
+
 
   castomefiltermodel() {
     this.dataSource.filterPredicate = (data, filter) => {
@@ -2021,20 +2242,14 @@ export class BlockPowerTableModel implements INewLogicaTable<BlockPower> {
 
   public save():void {
     this.modifimethod();
-    this.isEditAndAddFalse();
     this.modelToServer = JSON.parse(JSON.stringify(this.model));
     if(this.modelToServer.Supply)
     {
-      this.modelToServer.Supply.DatePostavki = null;
+      this.modelToServer.Supply.DatePostavki = `/Date(${new Date(this.modelToServer.Supply.DatePostavki).getTime()})/`;
     }
-     this.editandadd.addandeditblockpower(this.modelToServer).subscribe((model:ModelReturn)=>{
-      if(model.Index!==0)
-      {
-        this.dataSource.data.find(x=>x.IdBlockPowers===0).IdHistory = model.Guid;
-        this.dataSource.data.find(x=>x.IdBlockPowers===0).IdBlockPowers = model.Index;
-      }
+     this.editandadd.addandeditblockpower(this.modelToServer).toPromise().then((model:ModelReturn<BlockPower>)=>{
       console.log(model.Message);
-      this.dataSource._updateChangeSubscription();
+      this.isEditAndAddFalse();
      });
      this.removetemplate();
     //Запрос на сохранение и обновление данных
@@ -2102,7 +2317,7 @@ export class BlockPowerTableModel implements INewLogicaTable<BlockPower> {
       this.model.IdSupply = this.model.Supply.IdSupply
       this.model.Supply.DataCreate = null;
       if(this.model.Supply.DatePostavki.length<=10){
-        this.model.Supply.DatePostavki = this.model.Supply.DatePostavki.split("-").reverse().join("-")+"T00:00:00"
+        this.model.Supply.DatePostavki = this.model.Supply.DatePostavki.split("-").reverse().join("-")+"T00:00:00.000Z"
       }
     }
     else{
@@ -2110,10 +2325,6 @@ export class BlockPowerTableModel implements INewLogicaTable<BlockPower> {
     }
     this.isEdit = true;
     this.model.ModelIsEdit = false;
-    //Поиск индекса и замена модели по индексу в таблице
-    var userdefault = this.modeltable.find(x=>x.IdBlockPowers ===this.model.IdBlockPowers);
-    var indexold = this.modeltable.indexOf(userdefault);
-    this.dataSource.data[indexold] = this.model;
     this.index = 0;
   }
 
@@ -2200,7 +2411,7 @@ export class NameSysBlockTableModel implements INewLogicaTable<NameSysBlock> {
   public save(): void {
     this.modifimethod();
     this.isEditAndAddFalse();
-     this.editandadd.addAndEditNameSysBlock(this.model).subscribe((model:ModelReturn)=>{
+     this.editandadd.addAndEditNameSysBlock(this.model).subscribe((model:ModelReturn<NameSysBlock>)=>{
       if(model.Index!==0)
       {
         this.dataSource.data.find(x=>x.IdModelSysBlock===0).IdModelSysBlock = model.Index;
@@ -2341,7 +2552,7 @@ export class NameMonitorTableModel implements INewLogicaTable<NameMonitor> {
   public save(): void {
     this.modifimethod();
     this.isEditAndAddFalse();
-     this.editandadd.addAndEditNameMonitor(this.model).subscribe((model:ModelReturn)=>{
+     this.editandadd.addAndEditNameMonitor(this.model).subscribe((model:ModelReturn<NameMonitor>)=>{
       if(model.Index!==0)
       {
         this.dataSource.data.find(x=>x.IdModelMonitor===0).IdModelMonitor = model.Index;
@@ -2483,7 +2694,7 @@ export class NameModelBlokPowerTableModel implements INewLogicaTable<ModelBlockP
   public save(): void {
     this.modifimethod();
     this.isEditAndAddFalse();
-     this.editandadd.addAndEditNameModelBlokPower(this.model).subscribe((model:ModelReturn)=>{
+     this.editandadd.addAndEditNameModelBlokPower(this.model).subscribe((model:ModelReturn<ModelBlockPower>)=>{
       if(model.Index!==0)
       {
         this.dataSource.data.find(x=>x.IdModelBP===0).IdModelBP = model.Index;
@@ -2624,7 +2835,7 @@ export class NameProizvoditelBlockPowerTableModel implements INewLogicaTable<Pro
   public save(): void {
     this.modifimethod();
     this.isEditAndAddFalse();
-     this.editandadd.addAndEditNameProizvoditelBlockPower(this.model).subscribe((model:ModelReturn)=>{
+     this.editandadd.addAndEditNameProizvoditelBlockPower(this.model).subscribe((model:ModelReturn<ProizvoditelBlockPower>)=>{
       if(model.Index!==0)
       {
         this.dataSource.data.find(x=>x.IdProizvoditelBP===0).IdProizvoditelBP = model.Index;
@@ -2770,7 +2981,7 @@ export class NameFullModelTableModel implements INewLogicaTable<FullModel> {
   public save(): void {
     this.modifimethod();
     this.isEditAndAddFalse();
-     this.editandadd.addAndEditNameFullModel(this.model).subscribe((model:ModelReturn)=>{
+     this.editandadd.addAndEditNameFullModel(this.model).subscribe((model:ModelReturn<FullModel>)=>{
       if(model.Index!==0)
       {
         this.dataSource.data.find(x=>x.IdModel===0).IdModel = model.Index;
@@ -2919,7 +3130,7 @@ export class NameFullProizvoditelTableModel implements INewLogicaTable<FullProiz
   public save(): void {
     this.modifimethod();
     this.isEditAndAddFalse();
-     this.editandadd.addAndEditNameFullProizvoditel(this.model).subscribe((model:ModelReturn)=>{
+     this.editandadd.addAndEditNameFullProizvoditel(this.model).subscribe((model:ModelReturn<FullProizvoditel>)=>{
       if(model.Index!==0)
       {
         this.dataSource.data.find(x=>x.IdProizvoditel===0).IdProizvoditel = model.Index;
@@ -3066,7 +3277,7 @@ export class NameClassificationTableModel implements INewLogicaTable<Classificat
   public save(): void {
     this.modifimethod();
     this.isEditAndAddFalse();
-     this.editandadd.addAndEditNameClassification(this.model).subscribe((model:ModelReturn)=>{
+     this.editandadd.addAndEditNameClassification(this.model).subscribe((model:ModelReturn<Classification>)=>{
       if(model.Index!==0)
       {
         this.dataSource.data.find(x=>x.IdClasification===0).IdClasification = model.Index;
@@ -3213,7 +3424,7 @@ export class NameCopySaveTableModel implements INewLogicaTable<CopySave> {
   public save(): void {
     this.modifimethod();
     this.isEditAndAddFalse();
-     this.editandadd.addAndEditNameCopySave(this.model).subscribe((model:ModelReturn)=>{
+     this.editandadd.addAndEditNameCopySave(this.model).subscribe((model:ModelReturn<CopySave>)=>{
       if(model.Index!==0)
       {
         this.dataSource.data.find(x=>x.IdCopySave===0).IdCopySave = model.Index;
@@ -3359,7 +3570,7 @@ export class NameKabinetTableModel implements INewLogicaTable<Kabinet> {
   public save(): void {
     this.modifimethod();
     this.isEditAndAddFalse();
-     this.editandadd.addAndEditNameKabinet(this.model).subscribe((model:ModelReturn)=>{
+     this.editandadd.addAndEditNameKabinet(this.model).subscribe((model:ModelReturn<Kabinet>)=>{
       if(model.Index!==0)
       {
         this.dataSource.data.find(x=>x.IdNumberKabinet===0).IdNumberKabinet = model.Index;
@@ -3511,7 +3722,7 @@ export class NameSupplyTableModel implements INewLogicaTable<Supply> {
   public save(): void {
     this.modifimethod();
     this.isEditAndAddFalse();
-     this.editandadd.addAndEditNameSupply(this.modelToServer).subscribe((model:ModelReturn)=>{
+     this.editandadd.addAndEditNameSupply(this.modelToServer).subscribe((model:ModelReturn<Supply>)=>{
       if(model.Index!==0)
       {
         this.dataSource.data.find(x=>x.IdSupply===0).IdSupply = model.Index;
@@ -3660,7 +3871,7 @@ export class NameStatusingTableModel implements INewLogicaTable<Statusing> {
   public save(): void {
     this.modifimethod();
     this.isEditAndAddFalse();
-     this.editandadd.addAndEditNameStatus(this.model).subscribe((model:ModelReturn)=>{
+     this.editandadd.addAndEditNameStatus(this.model).subscribe((model:ModelReturn<Statusing>)=>{
       if(model.Index!==0)
       {
         this.dataSource.data.find(x=>x.IdStatus===0).IdStatus = model.Index;
@@ -3805,7 +4016,7 @@ export class NameModelSwitheTableModel implements INewLogicaTable<ModelSwithes> 
   public save(): void {
     this.modifimethod();
     this.isEditAndAddFalse();
-     this.editandadd.addAndEditModelSwitch(this.model).subscribe((model:ModelReturn)=>{
+     this.editandadd.addAndEditModelSwitch(this.model).subscribe((model:ModelReturn<ModelSwithes>)=>{
       if(model.Index!==0)
       {
         this.dataSource.data.find(x=>x.IdModelSwithes===0).IdModelSwithes = model.Index;

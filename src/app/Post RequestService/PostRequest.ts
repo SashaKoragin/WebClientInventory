@@ -1,3 +1,4 @@
+import { SignalR, ISignalRConnection, IConnectionOptions, BroadcastEventListener, ConnectionStatus } from 'ng2-signalr';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Users, Autorization, Printer, Kabinet, 
@@ -19,6 +20,63 @@ const httpOptionsJson = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
 
 };
+
+@Injectable({
+    providedIn: 'root'
+})
+export class AuthIdentificationSignalR {
+    
+    constructor(public signalR: SignalR) { }
+
+   public iduser:string = null;
+   public conect: ISignalRConnection = null;
+   public status: ConnectionStatus = null;
+
+    createconection(users:Users) {
+        try {
+            var options: IConnectionOptions = {
+                hubName: 'SignalRinventory',
+                qs: { user: users.Name, tabelnumbers: users.TabelNumber},
+                url: 'http://localhost:8059/signalr',
+                executeErrorsInZone: true,
+                executeEventsInZone: true,
+                executeStatusChangeInZone: true
+                //Можно задать ping интервал
+            }
+            console.log('Создали соединение!!!');
+            this.conect = this.signalR.createConnection(options);
+            this.statusSubscriSignalR()
+        } catch (e) {
+            alert(e.toString());
+        }
+    }
+    ///Запуск подписи на событие
+   async startserverSignalR() {
+        if (this.status === null) {
+           await this.conect.start();
+            this.iduser = this.conect.id
+            console.log('Запустили сервер!');
+            console.log('Подписались на статус соединения!');
+            }
+        }
+
+    stopserverSignalR() {
+        if (this.status.name === 'connected') {
+            console.log('Остановили сервер!');
+            console.log('Отписались от статуса соединения!');
+            this.conect.stop();
+            this.iduser = null;
+            this.status = null;
+        }
+    }
+
+    private statusSubscriSignalR() {
+        this.conect.status.subscribe((state: ConnectionStatus) => {
+            this.status = state;
+        });
+    }
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -127,7 +185,7 @@ export class PostInventar {
             if(model){
                 return deserializeArray<SysBlock>(SysBlock,model.toString())
                }
-         });;
+         });
     }
     //Получить всю класификацию
     async allclassification(){

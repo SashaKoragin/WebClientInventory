@@ -103,11 +103,13 @@ export class FullSelectedModel{
    ModelSwithe:ModelSwithes[];
 
 }
+
 ///Модель отвертов с сервера
-export class ModelReturn{
+export class ModelReturn<T>{
     public Guid:string;
     public Index:number;
     public Message:string;
+    public Model:T
 }
 
 export class Autorization {
@@ -439,7 +441,7 @@ export class Supply{
     public IdSupply:number;
     public NameSupply:string;
     public NameKontract:string;
-    public DatePostavki:string;
+    public DatePostavki:any;
     public DataCreate:string;
     public ModelIsEdit?: boolean = false;
 }

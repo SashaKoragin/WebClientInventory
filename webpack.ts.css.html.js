@@ -65,7 +65,12 @@ plugins: [
         /angular(\\|\/)core/,
         Path.resolve(__dirname, 'src'), // каталог с исходными файлами
         {} // карта маршрутов
-    )
+    ),
+    new Webpack.ProvidePlugin({
+      $:'jquery/dist/jquery.min.js',
+      jQuery: 'jquery/dist/jquery.min.js',
+      'window.jQuery': 'jquery/dist/jquery.min.js'
+    })
 ],
 devtool: 'source-map'
 };

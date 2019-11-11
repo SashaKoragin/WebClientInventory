@@ -12,7 +12,14 @@ import { AuthModule } from './RouteLogin/RoutingAuth';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { AngularMaterialModule} from '../MaterialLibary/MaterialLibary';
-
+import { SignalRConfiguration, SignalRModule } from 'ng2-signalr';
+import { AuthIdentificationSignalR } from '../../Post RequestService/PostRequest';
+export function createConfig(): SignalRConfiguration {
+    const c = new SignalRConfiguration();
+    c.logging = true;
+    c.url = 'http://localhost:8059/signalr';
+    return c;
+}
 
 @NgModule({
     imports: [
@@ -23,12 +30,15 @@ import { AngularMaterialModule} from '../MaterialLibary/MaterialLibary';
         AuthModule,
         AngularMaterialModule,
         HttpClientModule,
-        AppRoutingModule
+        AppRoutingModule,
+        SignalRModule.forRoot(createConfig)
     ],
     declarations: [
         Root
     ],
-     bootstrap: [Root]
+     bootstrap: [Root],
+     providers:[AuthIdentificationSignalR]
+
 })
 export class Maining {
     constructor(router: Router) {
