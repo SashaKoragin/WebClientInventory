@@ -9,6 +9,7 @@ import { DocumentReport } from '../../AllSelectModel/Report/ReportModel';
 import { TehnicalSql } from '../../ModelInventory/InventoryModel';
 import { deserialize } from 'class-transformer';
 import {MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
+import { DynamicTableColumnModel, Table } from '../../AddFullModel/ModelTable/DynamicTableModel';
 
 
 interface FlatNodeModel {
@@ -27,6 +28,18 @@ interface FlatNodeModel {
 export class Invent implements OnInit {
     constructor(public select:SelectAllParametrs, public authService: AuthIdentification) { }
 
+
+    dinamicmodel:DynamicTableColumnModel = new DynamicTableColumnModel();
+    logicaotdel:LogicaDataBase = new LogicaDataBase();
+    selectingotdel:GenerateParametrs;
+    columnsotdel:Table= this.dinamicmodel.columnslog[1];
+
+    errorserver(type:any){
+        this.select.addselectallparametrs(new ModelSelect(this.dinamicmodel.log[1].indexsevr)).subscribe((model:ModelSelect)=>{
+            this.selectingotdel = new GenerateParametrs(model);
+          })
+    }
+
     modelUserAndEquipment:Recursion = new Recursion();
 
     logica:LogicaDataBase = new LogicaDataBase();
@@ -41,7 +54,8 @@ export class Invent implements OnInit {
         })          
         this.select.addselectallparametrs(new ModelSelect(2)).subscribe((model:ModelSelect)=>{
             this.selecting1 = new GenerateParametrs(model);
-          })         
+          })
+          this.errorserver(null)         
     }
 
     private _transformerUser = (node: ModelUserAndEquipment, level: number) => {

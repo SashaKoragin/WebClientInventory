@@ -1,69 +1,71 @@
+export const ServerHost:string = 'I7751-W40204180'  //localhost
+//export const ServerHost:string = 'localhost' 
+export const ServerPort:string = '8182'
+
 export class AdressInventarka {
-  //  public host = 'i7751-w00000745:8182';
-    public host = 'localhost:8182';
-    public autificationInventar = `http://${this.host}/Inventarka/Authorization`;
-    public alluser = `http://${this.host}/Inventarka/AllUsers`;
-    public allotdelget = `http://${this.host}/Inventarka/AllOtdels`;
-    public addandedituser = `http://${this.host}/Inventarka/AddAndEditUser`;
-    public addandeditprinter = `http://${this.host}/Inventarka/AddAndEditPrinter`;
-    public addandeditscaner = `http://${this.host}/Inventarka/AddAndEditScaner`;
-    public addandeditmfu = `http://${this.host}/Inventarka/AddAndEditMfu`;
-    public addandeditsysblock = `http://${this.host}/Inventarka/AddAndEditSysBlok`;
-    public addandeditmonitor = `http://${this.host}/Inventarka/AddAndEditMonitor`;
-    public addandeditotdel = `http://${this.host}/Inventarka/AddAndEditOtdel`;
-    public addandedittelephon = `http://${this.host}/Inventarka/AddAndEditTelephone`;
-    public addandeditblockpower = `http://${this.host}/Inventarka/AddAndEditBlockPower`;
-    public addandeditswitch =`http://${this.host}/Inventarka/AddAndEditSwith`;
-    public addandeditmodelswith = `http://${this.host}/Inventarka/AddAndEditModelSwith`;
+    public autificationInventar = `http://${ServerHost}:${ServerPort}/Inventarka/Authorization`;
+    public alluser = `http://${ServerHost}:${ServerPort}/Inventarka/AllUsers`;
+    public allotdelget = `http://${ServerHost}:${ServerPort}/Inventarka/AllOtdels`;
+    public addandedituser = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditUser?userIdEdit=`;
+    public addandeditprinter = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditPrinter?userIdEdit=`;
+    public addandeditscaner = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditScaner?userIdEdit=`;
+    public addandeditmfu = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditMfu?userIdEdit=`;
+    public addandeditsysblock = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditSysBlok?userIdEdit=`;
+    public addandeditmonitor = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditMonitor?userIdEdit=`;
+    public addandeditotdel = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditOtdel`;
+    public addandedittelephon = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditTelephone?userIdEdit=`;
+    public addandeditblockpower = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditBlockPower?userIdEdit=`;
+    public addandeditswitch =`http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditSwith?userIdEdit=`;
+    public addandeditmodelswith = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditModelSwith`;
 
-    public allmodelswithes = `http://${this.host}/Inventarka/AllModelSwithes`;
-    public allswithes = `http://${this.host}/Inventarka/AllSwithes`;
-    public allstatistics =`http://${this.host}/Inventarka/AllActualsProcedureUsers`;
-    public allsysblock = `http://${this.host}/Inventarka/AllSysBlok`;
-    public allmonitor = `http://${this.host}/Inventarka/AllMonitors`;
-    public allmfu = `http://${this.host}/Inventarka/AllMfu`;
-    public allcopysave = `http://${this.host}/Inventarka/AllCopySave`;
-    public allposition = `http://${this.host}/Inventarka/AllPosition`;
-    public allprinters = `http://${this.host}/Inventarka/AllPrinters`;
-    public allscaners = `http://${this.host}/Inventarka/AllScaners`;
-    public allproizvoditel = `http://${this.host}/Inventarka/AllProizvoditel`;
-    public allmodel = `http://${this.host}/Inventarka/AllModel`;
-    public allkabinet = `http://${this.host}/Inventarka/AllKabinet`;
-    public allstatusing = `http://${this.host}/Inventarka/AllStatusing`;
-    public allnamesysblok = `http://${this.host}/Inventarka/AllNameSysBlock`;
-    public allnamemonitor = `http://${this.host}/Inventarka/AllNameMonitor`;
-    public alltelephon = `http://${this.host}/Inventarka/AllTelephon`;
-    public allblockpower = `http://${this.host}/Inventarka/AllBlockPower`;
-    public allsupply = `http://${this.host}/Inventarka/AllSupply`;
-    public allmodelblockpower = `http://${this.host}/Inventarka/AllModelBlockPower`;
-    public allproizvoditelblockpower = `http://${this.host}/Inventarka/AllProizvoditelBlockPower`;
-    public allclasification= `http://${this.host}/Inventarka/AllClasification`
+    public allmodelswithes = `http://${ServerHost}:${ServerPort}/Inventarka/AllModelSwithes`;
+    public allswithes = `http://${ServerHost}:${ServerPort}/Inventarka/AllSwithes`;
+    public allstatistics =`http://${ServerHost}:${ServerPort}/Inventarka/AllActualsProcedureUsers`;
+    public allsysblock = `http://${ServerHost}:${ServerPort}/Inventarka/AllSysBlok`;
+    public allmonitor = `http://${ServerHost}:${ServerPort}/Inventarka/AllMonitors`;
+    public allmfu = `http://${ServerHost}:${ServerPort}/Inventarka/AllMfu`;
+    public allcopysave = `http://${ServerHost}:${ServerPort}/Inventarka/AllCopySave`;
+    public allposition = `http://${ServerHost}:${ServerPort}/Inventarka/AllPosition`;
+    public allprinters = `http://${ServerHost}:${ServerPort}/Inventarka/AllPrinters`;
+    public allscaners = `http://${ServerHost}:${ServerPort}/Inventarka/AllScaners`;
+    public allproizvoditel = `http://${ServerHost}:${ServerPort}/Inventarka/AllProizvoditel`;
+    public allmodel = `http://${ServerHost}:${ServerPort}/Inventarka/AllModel`;
+    public allkabinet = `http://${ServerHost}:${ServerPort}/Inventarka/AllKabinet`;
+    public allstatusing = `http://${ServerHost}:${ServerPort}/Inventarka/AllStatusing`;
+    public allnamesysblok = `http://${ServerHost}:${ServerPort}/Inventarka/AllNameSysBlock`;
+    public allnamemonitor = `http://${ServerHost}:${ServerPort}/Inventarka/AllNameMonitor`;
+    public alltelephon = `http://${ServerHost}:${ServerPort}/Inventarka/AllTelephon`;
+    public allblockpower = `http://${ServerHost}:${ServerPort}/Inventarka/AllBlockPower`;
+    public allsupply = `http://${ServerHost}:${ServerPort}/Inventarka/AllSupply`;
+    public allmodelblockpower = `http://${ServerHost}:${ServerPort}/Inventarka/AllModelBlockPower`;
+    public allproizvoditelblockpower = `http://${ServerHost}:${ServerPort}/Inventarka/AllProizvoditelBlockPower`;
+    public allclasification= `http://${ServerHost}:${ServerPort}/Inventarka/AllClasification`
 
-    public selectparametr = `http://${this.host}/Inventarka/GenerateSqlSelect`;
-    public selectxml = `http://${this.host}/Inventarka/SelectXml`;
+    public selectparametr = `http://${ServerHost}:${ServerPort}/Inventarka/GenerateSqlSelect`;
+    public selectxml = `http://${ServerHost}:${ServerPort}/Inventarka/SelectXml`;
     
-    public deletedocument = `http://${this.host}/Inventarka/DeleteDocument`;
+    public deletedocument = `http://${ServerHost}:${ServerPort}/Inventarka/DeleteDocument`;
 
-    public generatedocument = `http://${this.host}/Inventarka/Invoice`;
-    public addfiledb = `http://${this.host}/Inventarka/AddFileDb`;
-    public selectdocument = `http://${this.host}/Inventarka/LoadDocument`;
-    public selectbook = `http://${this.host}/Inventarka/LoadBook`
+    public generatedocument = `http://${ServerHost}:${ServerPort}/Inventarka/Invoice`;
+    public addfiledb = `http://${ServerHost}:${ServerPort}/Inventarka/AddFileDb`;
+    public selectdocument = `http://${ServerHost}:${ServerPort}/Inventarka/LoadDocument`;
+    public selectbook = `http://${ServerHost}:${ServerPort}/Inventarka/LoadBook`
 
-    public actualIpAdresComputers =`http://${this.host}/Inventarka/ActualComputerIp`
-    public actualstatusModel = `http://${this.host}/Inventarka/ActualUsers`;
-    public telephoneHelper = `http://${this.host}/Inventarka/GenerateTelephoneHelper`;
-    public bookModels = `http://${this.host}/Inventarka/GenerateBookAccounting`;
+    public actualIpAdresComputers =`http://${ServerHost}:${ServerPort}/Inventarka/ActualComputerIp`
+    public actualstatusModel = `http://${ServerHost}:${ServerPort}/Inventarka/ActualUsers`;
+    public telephoneHelper = `http://${ServerHost}:${ServerPort}/Inventarka/GenerateTelephoneHelper`;
+    public bookModels = `http://${ServerHost}:${ServerPort}/Inventarka/GenerateBookAccounting`;
     ///Вспомогательные таблицы маршруты к ним
 
-    public addAndEditNameSysBlock = `http://${this.host}/Inventarka/AddAndEditNameSysBlock`;
-    public addAndEditNameMonitor =`http://${this.host}/Inventarka/AddAndEditNameMonitor`;
-    public addAndEditNameModelBlokPower = `http://${this.host}/Inventarka/AddAndEditNameModelBlokPower`;
-    public addAndEditNameProizvoditelBlockPower = `http://${this.host}/Inventarka/AddAndEditNameProizvoditelBlockPower`;
-    public addAndEditNameSupply = `http://${this.host}/Inventarka/AddAndEditNameSupply`;
-    public addAndEditNameStatus = `http://${this.host}/Inventarka/AddAndEditNameStatus`;
-    public addAndEditNameKabinet = `http://${this.host}/Inventarka/AddAndEditNameKabinet`;
-    public addAndEditNameFullModel = `http://${this.host}/Inventarka/AddAndEditNameFullModel`;
-    public addAndEditNameClassification = `http://${this.host}/Inventarka/AddAndEditNameClassification`;
-    public addAndEditNameFullProizvoditel = `http://${this.host}/Inventarka/AddAndEditNameFullProizvoditel`;
-    public addAndEditNameCopySave = `http://${this.host}/Inventarka/AddAndEditNameCopySave`;
+    public addAndEditNameSysBlock = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditNameSysBlock`;
+    public addAndEditNameMonitor =`http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditNameMonitor`;
+    public addAndEditNameModelBlokPower = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditNameModelBlokPower`;
+    public addAndEditNameProizvoditelBlockPower = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditNameProizvoditelBlockPower`;
+    public addAndEditNameSupply = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditNameSupply`;
+    public addAndEditNameStatus = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditNameStatus`;
+    public addAndEditNameKabinet = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditNameKabinet`;
+    public addAndEditNameFullModel = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditNameFullModel`;
+    public addAndEditNameClassification = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditNameClassification`;
+    public addAndEditNameFullProizvoditel = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditNameFullProizvoditel`;
+    public addAndEditNameCopySave = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditNameCopySave`;
 }

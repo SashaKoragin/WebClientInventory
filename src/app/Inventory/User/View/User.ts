@@ -38,8 +38,8 @@ export class User implements OnInit {
 
     @ViewChild('TABLETELEPHONES',{static: false}) tabletelephones: ElementRef;
     
-    user:UserTableModel = new UserTableModel(this.editandadd);
-    otdel:OtdelTableModel = new OtdelTableModel(this.editandadd);
+    user:UserTableModel = new UserTableModel(this.editandadd,this.SignalR);
+    otdel:OtdelTableModel = new OtdelTableModel(this.editandadd,this.SignalR);
     excel:ImportToExcel = new ImportToExcel();
     public telephone:TelephonsTableModel = new TelephonsTableModel(this.editandadd,this.SignalR);
 

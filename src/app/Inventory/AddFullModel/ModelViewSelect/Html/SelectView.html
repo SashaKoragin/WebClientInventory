@@ -71,7 +71,7 @@
             <table mat-table   #table [dataSource]="dataSource">
                 <ng-container *ngFor="let column of columns.Colums" [matColumnDef]="column.columnDef">
                     <th mat-header-cell [style.background]="column.color" *matHeaderCellDef>{{ column.header }}</th>
-                    <td mat-cell [style.background]="column.color" *matCellDef="let row">{{ column.cell(row)==='undefined'?'Отсутствует':column.cell(row) }}</td>
+                    <td mat-cell [style.background]="column.color" *matCellDef="let row" [matTooltip]="column.cell(row)==='undefined'?'Отсутствует':column.cell(row)">{{ column.cell(row)==='undefined'?'Отсутствует':column.cell(row) }}</td>
                 </ng-container>
                 <tr  mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
                 <tr  mat-row *matRowDef="let row; columns: displayedColumns;"></tr>

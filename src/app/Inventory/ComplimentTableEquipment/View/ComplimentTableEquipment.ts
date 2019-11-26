@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild,ElementRef } from '@angular/core';
 
-import {PostInventar, EditAndAdd } from '../../../Post RequestService/PostRequest';
+import { PostInventar, EditAndAdd, AuthIdentificationSignalR } from '../../../Post RequestService/PostRequest';
 import { NameSysBlockTableModel,NameModelSwitheTableModel, NameMonitorTableModel, NameModelBlokPowerTableModel, NameProizvoditelBlockPowerTableModel, NameFullModelTableModel, NameFullProizvoditelTableModel, NameClassificationTableModel, NameCopySaveTableModel, NameSupplyTableModel, NameKabinetTableModel, NameStatusingTableModel } from '../../AddFullModel/ModelTable/TableModel';
 import {MatPaginator} from '@angular/material';
 @Component(({
@@ -8,11 +8,10 @@ import {MatPaginator} from '@angular/material';
     templateUrl: '../Html/ComplimentTableEquipment.html',
     styleUrls: ['../Html/ComplimentTableEquipment.css'],
     providers: [EditAndAdd]
-
 }) as any)
 
 export class ComplimentTableEquipment implements OnInit{
-    constructor(public editandadd:EditAndAdd,public selectAll:PostInventar) { }
+    constructor(public editandadd:EditAndAdd,public selectAll:PostInventar,public SignalR:AuthIdentificationSignalR) { }
 
    //Шаблоны
    @ViewChild('TEMPLATEMODELSYSBLOCK',{static: true}) templateModelSysBlock: ElementRef;
@@ -57,18 +56,18 @@ export class ComplimentTableEquipment implements OnInit{
     @ViewChild('nameStatusings',{static: false}) paginatornameStatusings: MatPaginator;
     @ViewChild('nameModelSwithes',{static: false}) paginatornameModelSwithe: MatPaginator;
 
-    public nameSysBlock: NameSysBlockTableModel = new NameSysBlockTableModel(this.editandadd);
-    public nameMonitor: NameMonitorTableModel = new NameMonitorTableModel(this.editandadd);
-    public nameModelBlokPower: NameModelBlokPowerTableModel = new NameModelBlokPowerTableModel(this.editandadd)
-    public nameProizvoditelBlock: NameProizvoditelBlockPowerTableModel = new NameProizvoditelBlockPowerTableModel(this.editandadd) 
-    public nameFullModel:NameFullModelTableModel = new NameFullModelTableModel(this.editandadd)
-    public nameFullProizvoditel:NameFullProizvoditelTableModel = new NameFullProizvoditelTableModel(this.editandadd)
-    public nameClassification:NameClassificationTableModel = new NameClassificationTableModel(this.editandadd)
-    public nameCopySave:NameCopySaveTableModel = new NameCopySaveTableModel(this.editandadd)
-    public nameKabinet: NameKabinetTableModel = new NameKabinetTableModel(this.editandadd);
-    public nameSupply:NameSupplyTableModel = new NameSupplyTableModel(this.editandadd);
-    public nameStatusing: NameStatusingTableModel = new NameStatusingTableModel(this.editandadd);
-    public nameModelSwithe: NameModelSwitheTableModel = new NameModelSwitheTableModel(this.editandadd);
+    public nameSysBlock: NameSysBlockTableModel = new NameSysBlockTableModel(this.editandadd,this.SignalR);
+    public nameMonitor: NameMonitorTableModel = new NameMonitorTableModel(this.editandadd,this.SignalR);
+    public nameModelBlokPower: NameModelBlokPowerTableModel = new NameModelBlokPowerTableModel(this.editandadd,this.SignalR)
+    public nameProizvoditelBlock: NameProizvoditelBlockPowerTableModel = new NameProizvoditelBlockPowerTableModel(this.editandadd,this.SignalR) 
+    public nameFullModel:NameFullModelTableModel = new NameFullModelTableModel(this.editandadd,this.SignalR)
+    public nameFullProizvoditel:NameFullProizvoditelTableModel = new NameFullProizvoditelTableModel(this.editandadd,this.SignalR)
+    public nameClassification:NameClassificationTableModel = new NameClassificationTableModel(this.editandadd,this.SignalR)
+    public nameCopySave:NameCopySaveTableModel = new NameCopySaveTableModel(this.editandadd,this.SignalR)
+    public nameKabinet: NameKabinetTableModel = new NameKabinetTableModel(this.editandadd,this.SignalR);
+    public nameSupply:NameSupplyTableModel = new NameSupplyTableModel(this.editandadd,this.SignalR);
+    public nameStatusing: NameStatusingTableModel = new NameStatusingTableModel(this.editandadd,this.SignalR);
+    public nameModelSwithe: NameModelSwitheTableModel = new NameModelSwitheTableModel(this.editandadd,this.SignalR);
 
     ngOnInit(): void {
         this.start()   

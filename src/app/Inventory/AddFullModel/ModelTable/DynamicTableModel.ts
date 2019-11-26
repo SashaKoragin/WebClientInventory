@@ -6,6 +6,7 @@ export class DynamicTableColumnModel{
         {text:"Ошибки по инвенторизации", indexsevr:7,indexcolumnmodel:1},
         {text:"Не совпадения имен с Инвентарным номером", indexsevr:16,indexcolumnmodel:2},
         {text:"Дубли имен компьютеров в БД", indexsevr:17,indexcolumnmodel:3},
+        {text:"Несоответствие имен по Ip Адресам", indexsevr:20,indexcolumnmodel:4},
     ]
     //Ошибки
     public mainselect:SelectTableModel = this.selectserver[0];
@@ -14,6 +15,7 @@ export class DynamicTableColumnModel{
                               {Type:"Error", Colums:[]},
                               {Type:"InventarNotHostName", Colums:[]},
                               {Type:"DoubleComputersName", Colums:[]},
+                              {Type:"NameHostIpAdress", Colums:[]},
                              ];
     //Аналитика
     public selectserverstatistic:SelectTableModel[]=[{text:"Аналитика мониторы и Системные блоки", indexsevr:8,indexcolumnmodel:0},
@@ -41,6 +43,19 @@ export class DynamicTableColumnModel{
                                            {Type:"ComputerIpAdressSynhronization", Colums:[]},
                                            {Type:"SynhronizationIp", Colums:[]},
                                          ];
+
+  //Журнал логирования
+  public log:SelectTableModel[]=[
+                                 {text:"Журнал логов редактирования", indexsevr:21,indexcolumnmodel:0},
+                                 {text:"Вся техника на отдел", indexsevr:22,indexcolumnmodel:1},
+                                ]
+
+//Журнал таблицы с логом
+public columnslog:Table[] = [  {Type:"HistoryLog",Colums:[]},
+                               {Type:"TecnicalOtdel",Colums:[]}
+];
+
+  
 
 }
 ///Класс селектора

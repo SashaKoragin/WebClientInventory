@@ -11,6 +11,7 @@ import { ComplimentTableEquipment } from '../../Inventory/ComplimentTableEquipme
 import { Analitics } from '../../Inventory/Analitics/View/Analitics';
 import { BookAccounting } from '../../Inventory/Documents/BookAccounting/View/BookAccounting';
 import { Synchronization } from '../../Inventory/Process/Synchronization/View/Synchronization';
+import { Log } from '../../Inventory/JurnalLog/View/Log';
 
 const appRoutes: Routes = [
 {
@@ -54,6 +55,10 @@ const appRoutes: Routes = [
             path:'process',
             component:Synchronization
 
+        },
+        {
+            path:'log',
+            component:Log
         }
     ]
     }

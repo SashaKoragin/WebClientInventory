@@ -116,4 +116,5 @@ export class Equipment implements OnInit {
    await this.selectAll.allmodelblockpower();
    await this.selectAll.allmodelswithes();
   }
+
 }

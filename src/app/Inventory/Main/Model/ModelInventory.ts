@@ -38,7 +38,7 @@ export class Inventar {
             otdelfunc: 'Статистика',
             children:  [{
                 otdelfunc: null,
-                children: null, types: 'Общая инвентаризация', pages: './inventar', fullpath: 'Статистика\\Общая инвентаризация', model: 'Инвентаризация'
+                children: null, types: 'Статистика', pages: './inventar', fullpath: 'Статистика\\Статистика', model: 'Статистика'
             }], types: null, pages: null, fullpath: null, model: null
         },
         {
@@ -73,6 +73,13 @@ export class Inventar {
                 otdelfunc: null,
                 children: null, types: 'Ошибки', pages: './error', fullpath: 'Ошибки\\Ошибки', model: 'Ошибки'
             }], types: null, pages: null, fullpath: null, model: null
+        },
+        {
+            otdelfunc: 'Журнал',
+            children: [{
+                otdelfunc:null,
+                children:null,types:'Журнал изменений', pages: './log', fullpath: 'Журнал\\Журнал изменений', model: 'Журнал изменений'
+            }], types:null,pages:null,fullpath:null,model:null
         }
 
     ], types: null, pages: null, fullpath: null, model: null

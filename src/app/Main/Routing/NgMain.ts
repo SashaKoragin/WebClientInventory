@@ -14,10 +14,11 @@ import { HttpClientModule } from '@angular/common/http';
 import { AngularMaterialModule} from '../MaterialLibary/MaterialLibary';
 import { SignalRConfiguration, SignalRModule } from 'ng2-signalr';
 import { AuthIdentificationSignalR } from '../../Post RequestService/PostRequest';
+import { ServerHost } from '../../AdressGetPost/AdressInventory';
 export function createConfig(): SignalRConfiguration {
     const c = new SignalRConfiguration();
     c.logging = true;
-    c.url = 'http://localhost:8059/signalr';
+    c.url = `http://${ServerHost}:8059/signalr`;
     return c;
 }
 

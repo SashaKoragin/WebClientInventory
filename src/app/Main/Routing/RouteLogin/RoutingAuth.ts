@@ -5,7 +5,6 @@ import { FormsModule } from '@angular/forms';
 import { AuthRoutingModule } from './NgAuth';
 import { AngularMaterialModule } from '../../MaterialLibary/MaterialLibary';
 import { LoginInventarization } from '../../../Secyrity/Security/Security';
-import { AuthIdentificationSignalR } from '../../../Post RequestService/PostRequest';
 
 
 @NgModule({

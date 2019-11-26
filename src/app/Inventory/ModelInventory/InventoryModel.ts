@@ -347,8 +347,11 @@ export class InfoLogic {
 export class History {
     public Id: number;
     public IdHistory: string;
+    public IdModel: number;
+    public NameModelClass: string;
     public IdUser: number;
-    public UserProcess: string;
+    public OldModelColums: string;
+    public NewModelColums: string;
 }
 
 export class FullProizvoditel {

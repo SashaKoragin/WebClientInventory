@@ -112,7 +112,7 @@
     <mat-progress-bar mode="indeterminate"></mat-progress-bar>
 </div>
 </mat-tab>
-   <mat-tab label="Техника на отдел">
+   <mat-tab label="Техника на отдел по пользователям">
    <div class="head" [style.display]="logica1?.select ? 'grid' : 'none'">
     <div class="button"><button mat-button (click)="updateOtdels()">Обновить</button></div>
         <div class="grid-container2" *ngFor="let selectvalue of selecting1?.parametrs">
@@ -229,5 +229,8 @@
 <p>Идет загрузка данных подождите пожалуйста!!!</p>
 <mat-progress-bar mode="indeterminate"></mat-progress-bar>
 </div>
+</mat-tab>
+<mat-tab label="Общая техника на отдел">
+        <selectsql [(logica)]="logicaotdel" [(selecting)]="selectingotdel" [(columns)]="columnsotdel" [(select)]="select"></selectsql>
 </mat-tab>
 </mat-tab-group>

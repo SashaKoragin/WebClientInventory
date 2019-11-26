@@ -36,7 +36,8 @@ import {
     MatTabsModule,
     MatToolbarModule,
     MatTooltipModule,
-    MatTreeModule
+    MatTreeModule,
+    MAT_HAMMER_OPTIONS
 } from '@angular/material';
 import { CdkTableModule } from '@angular/cdk/table';
 import { CdkTreeModule } from '@angular/cdk/tree';
@@ -85,6 +86,16 @@ import { MatSelectFilterModule} from 'mat-select-filter';
         MatToolbarModule,
         MatTooltipModule,
         MatTreeModule
-    ]
+    ],
+    providers: [
+        {
+          provide: MAT_HAMMER_OPTIONS,
+          useValue: {
+            cssProps: {
+              userSelect: true
+            }
+          },
+        },
+      ],
 }) as any)
 export class AngularMaterialModule { }

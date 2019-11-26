@@ -17,6 +17,7 @@ import { Analitics } from '../../Inventory/Analitics/View/Analitics';
 import { BookAccounting } from '../../Inventory/Documents/BookAccounting/View/BookAccounting';
 import { UploadsFile } from '../../Inventory/AddFullModel/ModelLoadFileToServet/View/Upload';
 import { Synchronization } from '../../Inventory/Process/Synchronization/View/Synchronization';
+import { Log } from '../../Inventory/JurnalLog/View/Log';
 
 @NgModule(({
     imports: [
@@ -31,7 +32,7 @@ import { Synchronization } from '../../Inventory/Process/Synchronization/View/Sy
           }),
     ],
     declarations: [
-        MainInventar, Equipment, Invent, User,DocumentSelect,ErrorInventory,Select,UploadsFile,ComplimentTableEquipment,Analitics,BookAccounting,Synchronization
+        MainInventar, Equipment, Invent, User,DocumentSelect,ErrorInventory,Select,UploadsFile,ComplimentTableEquipment,Analitics,BookAccounting,Synchronization,Log
     ]
     
 }) as any)

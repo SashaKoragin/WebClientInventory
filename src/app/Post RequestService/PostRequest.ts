@@ -7,7 +7,7 @@ import { Users, Autorization, Printer, Kabinet,
          FullSelectedModel, NameMonitor, FullProizvoditel, Statusing, 
          FullModel, CopySave, NameSysBlock, Otdel,Position,
          Telephon,Supply,ModelBlockPower,ProizvoditelBlockPower,Swithe,ModelSwithes } from '../Inventory/ModelInventory/InventoryModel';
-import { AdressInventarka } from '../AdressGetPost/AdressInventory';
+import { AdressInventarka, ServerHost } from '../AdressGetPost/AdressInventory';
 import { deserializeArray } from 'class-transformer';
 import { ModelSelect, LogicaSelect } from '../Inventory/AllSelectModel/ParametrModel';
 import { DocumentReport } from '../Inventory/AllSelectModel/Report/ReportModel';
@@ -36,8 +36,8 @@ export class AuthIdentificationSignalR {
         try {
             var options: IConnectionOptions = {
                 hubName: 'SignalRinventory',
-                qs: { user: users.Name, tabelnumbers: users.TabelNumber},
-                url: 'http://localhost:8059/signalr',
+                qs: { iduser:users.IdUser, user: users.Name, tabelnumbers: users.TabelNumber},
+                url: `http://${ServerHost}:8059/signalr`,
                 executeErrorsInZone: true,
                 executeEventsInZone: true,
                 executeStatusChangeInZone: true
@@ -344,44 +344,44 @@ export class PostInventar {
 export class EditAndAdd{
     constructor(private http: HttpClient) { }
      ///Обновление или добавление Users
-    addandedituser(user:Users){
-        return this.http.post(url.addandedituser, user, httpOptionsJson);
+    addandedituser(user:Users,userIdEdit:string){
+        return this.http.post(url.addandedituser.concat(userIdEdit), user, httpOptionsJson);
     }    
     ///Добабление или обновление принтеров
-    addandeditprinter(printer:Printer){
-        return this.http.post(url.addandeditprinter, printer, httpOptionsJson);
+    addandeditprinter(printer:Printer,userIdEdit:string){
+        return this.http.post(url.addandeditprinter.concat(userIdEdit), printer, httpOptionsJson);
     }    
     ///Добабление или обновление Коммутаторов
-    addandeditswitch(switchs:Swithe) {
-        return this.http.post(url.addandeditswitch, switchs, httpOptionsJson);
+    addandeditswitch(switchs:Swithe,userIdEdit:string) {
+        return this.http.post(url.addandeditswitch.concat(userIdEdit), switchs, httpOptionsJson);
     }    
     ///Добабление или обновление сканера
-    addandeditscaner(scaner:ScanerAndCamer){
-        return this.http.post(url.addandeditscaner, scaner, httpOptionsJson);
+    addandeditscaner(scaner:ScanerAndCamer,userIdEdit:string){
+        return this.http.post(url.addandeditscaner.concat(userIdEdit), scaner, httpOptionsJson);
     }  
     ///Добабление или обновление мфу
-    addandeditmfu(mfu:Mfu){
-        return this.http.post(url.addandeditmfu, mfu, httpOptionsJson);
+    addandeditmfu(mfu:Mfu,userIdEdit:string){
+        return this.http.post(url.addandeditmfu.concat(userIdEdit), mfu, httpOptionsJson);
     }     
     ///Добабление или обновление системного блока
-    addandeditsysblok(sysblock:SysBlock){
-        return this.http.post(url.addandeditsysblock, sysblock, httpOptionsJson);
+    addandeditsysblok(sysblock:SysBlock,userIdEdit:string){
+        return this.http.post(url.addandeditsysblock.concat(userIdEdit), sysblock, httpOptionsJson);
     }     
     ///Добабление или обновление монитора
-    addandeditmonitor(monutor:Monitor){
-        return this.http.post(url.addandeditmonitor, monutor, httpOptionsJson);
+    addandeditmonitor(monutor:Monitor,userIdEdit:string){
+        return this.http.post(url.addandeditmonitor.concat(userIdEdit), monutor, httpOptionsJson);
     }     
     ///Редактирование или добавление отдела
     addandeditotdel(otdel:Otdel){
         return this.http.post(url.addandeditotdel,otdel,httpOptionsJson);
     }
     ///Редактирование или добавление телефонов
-    addandedittelephon(telephon:Telephon){
-        return this.http.post(url.addandedittelephon,telephon,httpOptionsJson);
+    addandedittelephon(telephon:Telephon,userIdEdit:string){
+        return this.http.post(url.addandedittelephon.concat(userIdEdit),telephon,httpOptionsJson);
     }
     ///Редактирование или добавление ИБП
-    addandeditblockpower(blockpower:BlockPower){
-        return this.http.post(url.addandeditblockpower,blockpower,httpOptionsJson);
+    addandeditblockpower(blockpower:BlockPower,userIdEdit:string){
+        return this.http.post(url.addandeditblockpower.concat(userIdEdit),blockpower,httpOptionsJson);
     }
     ///Редактирование или добавление Наименование системного блока
     addAndEditNameSysBlock(nameSysBlock:NameSysBlock){
