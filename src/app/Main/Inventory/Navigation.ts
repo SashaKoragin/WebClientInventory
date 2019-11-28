@@ -12,6 +12,7 @@ import { Analitics } from '../../Inventory/Analitics/View/Analitics';
 import { BookAccounting } from '../../Inventory/Documents/BookAccounting/View/BookAccounting';
 import { Synchronization } from '../../Inventory/Process/Synchronization/View/Synchronization';
 import { Log } from '../../Inventory/JurnalLog/View/Log';
+import { NgxPermissionsGuard } from 'ngx-permissions';
 
 const appRoutes: Routes = [
 {
@@ -37,28 +38,63 @@ const appRoutes: Routes = [
         },
         {
             path: 'documents',
-            component: DocumentSelect
+            component: DocumentSelect,
+            canActivate: [NgxPermissionsGuard],
+            data: {
+               permissions: {
+               only: ['Администратор','Редактор','Оператор'],
+               }
+            }
         },
         {
             path: 'book',
-            component: BookAccounting
+            component: BookAccounting,
+            canActivate: [NgxPermissionsGuard],
+            data: {
+               permissions: {
+               only: ['Администратор','Редактор','Оператор'],
+               }
+            }
         },
         {
             path:'analitics',
-            component:Analitics
+            component:Analitics,
+            canActivate: [NgxPermissionsGuard],
+            data: {
+               permissions: {
+               only: ['Администратор','Редактор','Оператор'],
+               }
+            }
         },
         {
             path:'error',
-            component:ErrorInventory
+            component:ErrorInventory,
+            canActivate: [NgxPermissionsGuard],
+            data: {
+               permissions: {
+               only: ['Администратор','Редактор','Оператор'],
+               }
+            }
         },
         {
             path:'process',
-            component:Synchronization
-
+            component:Synchronization,
+            canActivate: [NgxPermissionsGuard],
+            data: {
+               permissions: {
+               only: ['Администратор','Редактор'],
+               }
+            }
         },
         {
             path:'log',
-            component:Log
+            component:Log,
+            canActivate: [NgxPermissionsGuard],
+            data: {
+               permissions: {
+               only: ['Администратор','Редактор'],
+               }
+            }
         }
     ]
     }

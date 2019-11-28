@@ -1,10 +1,11 @@
-import { Component, OnInit,OnDestroy, ViewChild,ElementRef  } from '@angular/core';
+import { Component, OnInit, ViewChild,ElementRef  } from '@angular/core';
 import {PostInventar, EditAndAdd, AuthIdentificationSignalR } from '../../../Post RequestService/PostRequest';
 import {MatTableDataSource,MatPaginator, MatSort } from '@angular/material';
 import { UserTableModel, TelephonsTableModel, OtdelTableModel } from '../../AddFullModel/ModelTable/TableModel';
 import { UsersIsActualsStats } from '../../ModelInventory/InventoryModel';
 import { ImportToExcel } from '../../AddFullModel/ModelTable/PublicFunction';
 import { ModelSelect } from '../../AllSelectModel/ParametrModel';
+
 
 @Component(({
     selector: 'equepment',
@@ -17,12 +18,10 @@ export class User implements OnInit {
 
     constructor(public selectall: PostInventar,public editandadd:EditAndAdd,public SignalR:AuthIdentificationSignalR) { }
 
-
-
     @ViewChild('TEMPLATEUSERS',{static: true}) templateUsers: ElementRef;
     @ViewChild('TEMPLATEOTDELS',{static: true}) templateOtdels: ElementRef;
     @ViewChild('TEMPLATETELEPHONE',{static: true}) templateTelephone: ElementRef;
- 
+    
     isload:boolean = true;
     loadMessage:string[] = []
     public serveranswer:string = null; //Ответ с сервера
@@ -85,11 +84,11 @@ export class User implements OnInit {
 
    async loadsModel(){
     var message = null;  
+    await this.selectall.allrule();
     await this.selectall.alluser();
     await this.selectall.allposition();
     await this.selectall.alltelephone();
     await this.selectall.allotdel();
-    this.loadMessage.push(message);
     message =await this.user.addtableModel(this.selectall.select,this.paginator,this.sort,this.tableusers,this.templateUsers);
     this.loadMessage.push(message);
     await this.selectall.allstatisticsusers();

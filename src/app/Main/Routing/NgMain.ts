@@ -15,6 +15,8 @@ import { AngularMaterialModule} from '../MaterialLibary/MaterialLibary';
 import { SignalRConfiguration, SignalRModule } from 'ng2-signalr';
 import { AuthIdentificationSignalR } from '../../Post RequestService/PostRequest';
 import { ServerHost } from '../../AdressGetPost/AdressInventory';
+import { NgxPermissionsModule } from 'ngx-permissions';
+
 export function createConfig(): SignalRConfiguration {
     const c = new SignalRConfiguration();
     c.logging = true;
@@ -32,7 +34,8 @@ export function createConfig(): SignalRConfiguration {
         AngularMaterialModule,
         HttpClientModule,
         AppRoutingModule,
-        SignalRModule.forRoot(createConfig)
+        NgxPermissionsModule.forRoot(),
+        SignalRModule.forRoot(createConfig),
     ],
     declarations: [
         Root
@@ -44,6 +47,7 @@ export function createConfig(): SignalRConfiguration {
 export class Maining {
     constructor(router: Router) {
         //console.log(router.url)
+        
         //Для Debuger
     }
 

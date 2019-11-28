@@ -10,6 +10,7 @@ import {MatDatepickerInputEvent} from '@angular/material/datepicker';
 import { ElementRef } from '@angular/core';
 import { BroadcastEventListener } from 'ng2-signalr';
 import { deserialize } from 'class-transformer';
+import { Rules } from '../../ModelInventory/InventoryModel';
 const moment = _rollupMoment || _moment;
 
 export class OtdelTableModel implements INewLogicaTable<Otdel>{
@@ -197,13 +198,13 @@ export class UserTableModel implements INewLogicaTable<Users>  {
     this.subscribeservers();
   }
 
-  public displayedColumns = ['IdUser','Name','TabelNumber','Telephon.SerNumber','Telephon.Telephon_','Telephon.TelephonUndeground','Position.NamePosition','Otdel.NameOtdel','StatusActual','ActionsColumn'];
+  public displayedColumns = ['IdUser','Name','TabelNumber','Telephon.SerNumber','Telephon.Telephon_','Telephon.TelephonUndeground','Position.NamePosition','Otdel.NameOtdel','Rule.NameRules','NameUser','Passwords','StatusActual','ActionsColumn'];
   public dataSource: MatTableDataSource<Users> = new MatTableDataSource<Users>();
   public modelvalid:ModelValidation = new ModelValidation()
   public otdels: Otdel[];
   public model: Users = new Users();
 
-
+  public rule:Rules[];
   public position: Position[];
   public modeltable: Users[];
   public telephone:Telephon[];
@@ -216,6 +217,7 @@ export class UserTableModel implements INewLogicaTable<Users>  {
   public filteredOtdel:any;
   public filteredPosition:any;
   public filteredTelephone:any;
+  public filteredRule:any;
   //Подписка
   public subscribe:any = null;
  //Шаблоны для манипулирования DOM
@@ -294,6 +296,7 @@ export class UserTableModel implements INewLogicaTable<Users>  {
     this.model.Otdel?this.model.IdOtdel = this.model.Otdel.IdOtdel:this.model.IdOtdel=null;
     this.model.Position?this.model.IdPosition = this.model.Position.IdPosition:this.model.IdPosition=null;
     this.model.Telephon?this.model.IdTelephon = this.model.Telephon.IdTelephon:this.model.IdTelephon=null;
+    this.model.Rule?this.model.IdRule = this.model.Rule.IdRule:this.model.IdRule = null;
     this.isEdit = true;
     this.model.ModelIsEdit = false;
     //Поиск индекса и замена модели по индексу в таблице
@@ -310,6 +313,7 @@ export class UserTableModel implements INewLogicaTable<Users>  {
     this.filteredOtdel = this.otdels.slice();
     this.filteredPosition = this.position.slice();
     this.filteredTelephone = this.telephone.slice();
+    this.filteredRule = this.rule.slice();
   }
   
   newmodel(): Users {
@@ -331,6 +335,7 @@ export class UserTableModel implements INewLogicaTable<Users>  {
     this.temlateList = this.fulltemplate.nativeElement.querySelectorAll("mat-form-field[id=template]");
     this.rowList = this.table.nativeElement.querySelectorAll("div[class='"+index+"']");
     for (var row of this.rowList){
+      if(this.temlateList[i])
         row.append(this.temlateList[i])
         i++;
      }
@@ -340,6 +345,7 @@ export class UserTableModel implements INewLogicaTable<Users>  {
   removetemplate():void{
     var i = 0;
     for (var row of this.rowList){
+      if(this.temlateList[i])
        row.removeChild(this.temlateList[i]);
        this.fulltemplate.nativeElement.append(this.temlateList[i])
       i++;
@@ -403,9 +409,11 @@ export class UserTableModel implements INewLogicaTable<Users>  {
         this.otdels = model.Otdels;
         this.telephone = model.Telephon;
         this.position = model.Position;
+        this.rule = model.Rule;
         this.filteredOtdel = this.otdels.slice();
         this.filteredPosition = this.position.slice();
         this.filteredTelephone = this.telephone.slice();
+        this.filteredRule = this.rule.slice();
         return "Модель пользователей заполнена";
     }
 

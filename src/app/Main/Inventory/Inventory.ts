@@ -18,6 +18,7 @@ import { BookAccounting } from '../../Inventory/Documents/BookAccounting/View/Bo
 import { UploadsFile } from '../../Inventory/AddFullModel/ModelLoadFileToServet/View/Upload';
 import { Synchronization } from '../../Inventory/Process/Synchronization/View/Synchronization';
 import { Log } from '../../Inventory/JurnalLog/View/Log';
+import { NgxPermissionsModule } from 'ngx-permissions';
 
 @NgModule(({
     imports: [
@@ -25,6 +26,7 @@ import { Log } from '../../Inventory/JurnalLog/View/Log';
         CommonModule,
         AngularMaterialModule,
         ReactiveFormsModule,
+        NgxPermissionsModule,
         AppRoutingModule,
         MccColorPickerModule.forRoot({
             empty_color: 'transparent',

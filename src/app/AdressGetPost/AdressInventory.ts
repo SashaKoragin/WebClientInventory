@@ -1,10 +1,11 @@
-export const ServerHost:string = 'I7751-W40204180'  //localhost
-//export const ServerHost:string = 'localhost' 
+//export const ServerHost:string = 'I7751-W40204180'  //localhost
+export const ServerHost:string = 'localhost' 
 export const ServerPort:string = '8182'
 
 export class AdressInventarka {
     public autificationInventar = `http://${ServerHost}:${ServerPort}/Inventarka/Authorization`;
     public alluser = `http://${ServerHost}:${ServerPort}/Inventarka/AllUsers`;
+    public allrule = `http://${ServerHost}:${ServerPort}/Inventarka/AllRules`;
     public allotdelget = `http://${ServerHost}:${ServerPort}/Inventarka/AllOtdels`;
     public addandedituser = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditUser?userIdEdit=`;
     public addandeditprinter = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditPrinter?userIdEdit=`;

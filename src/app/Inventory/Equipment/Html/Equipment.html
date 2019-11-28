@@ -120,14 +120,18 @@
                             
                          <ng-container matColumnDef="ActionsColumn">  
                             <th mat-header-cell *matHeaderCellDef>
+                              <ng-template [ngxPermissionsExcept]="['Оператор','Просмотр']">
                                 <button mat-icon-button color="primary" [disabled]="printer.isAdd" focusable="false" (click)="printer.add()">
                                     <i class="material-icons">person_add</i>
                                 </button>
+                              </ng-template>
                             </th>
                             <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
-                            <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="printer.isEdit" color="accent" (click)="printer.edit(row)">
-                                <i class="material-icons">edit</i>
-                            </button>
+                                <ng-template [ngxPermissionsExcept]="['Просмотр']">
+                                 <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="printer.isEdit" color="accent" (click)="printer.edit(row)">
+                                  <i class="material-icons">edit</i>
+                                 </button>
+                                </ng-template>
                             <div *ngIf="row.ModelIsEdit" >
                                     <button  mat-icon-button type="submit" [disabled]="printer.modelvalid.getRowValidatorModel[1].invalid" color="primary" focusable="false" (click)="printer.save()">
                                             <i class="material-icons">check</i>
@@ -346,14 +350,18 @@
 
                      <ng-container matColumnDef="ActionsColumn">  
                         <th mat-header-cell *matHeaderCellDef>
-                            <button mat-icon-button color="primary" [disabled]="scaner.isAdd" focusable="false" (click)="scaner.add()">
+                            <ng-template [ngxPermissionsExcept]="['Оператор','Просмотр']">
+                              <button mat-icon-button color="primary" [disabled]="scaner.isAdd" focusable="false" (click)="scaner.add()">
                                 <i class="material-icons">person_add</i>
-                            </button>
+                              </button>
+                            </ng-template>
                         </th>
                         <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
-                        <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="scaner.isEdit" color="accent" (click)="scaner.edit(row)">
-                            <i class="material-icons">edit</i>
-                        </button>
+                            <ng-template [ngxPermissionsExcept]="['Просмотр']">
+                              <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="scaner.isEdit" color="accent" (click)="scaner.edit(row)">
+                                <i class="material-icons">edit</i>
+                              </button>
+                            </ng-template>
                         <div *ngIf="row.ModelIsEdit" >
                                 <button  mat-icon-button type="submit" [disabled]="scaner.modelvalid.getRowValidatorModel[1].invalid" color="primary" focusable="false" (click)="scaner.save()">
                                         <i class="material-icons">check</i>
@@ -579,14 +587,18 @@
 
                      <ng-container matColumnDef="ActionsColumn">  
                         <th mat-header-cell *matHeaderCellDef>
-                            <button mat-icon-button color="primary" [disabled]="mfu.isAdd" focusable="false" (click)="mfu.add()">
+                            <ng-template [ngxPermissionsExcept]="['Оператор','Просмотр']">
+                              <button mat-icon-button color="primary" [disabled]="mfu.isAdd" focusable="false" (click)="mfu.add()">
                                 <i class="material-icons">person_add</i>
-                            </button>
+                              </button>
+                            </ng-template>
                         </th>
                         <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
-                        <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="mfu.isEdit" color="accent" (click)="mfu.edit(row)">
-                            <i class="material-icons">edit</i>
-                        </button>
+                            <ng-template [ngxPermissionsExcept]="['Просмотр']">
+                              <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="mfu.isEdit" color="accent" (click)="mfu.edit(row)">
+                                <i class="material-icons">edit</i>
+                              </button>
+                            </ng-template>
                         <div *ngIf="row.ModelIsEdit" >
                                 <button  mat-icon-button type="submit" [disabled]="mfu.modelvalid.getRowValidatorModel[1].invalid" color="primary" focusable="false" (click)="mfu.save()">
                                         <i class="material-icons">check</i>
@@ -813,14 +825,18 @@
     
                          <ng-container matColumnDef="ActionsColumn">  
                             <th mat-header-cell *matHeaderCellDef>
-                                <button mat-icon-button color="primary" [disabled]="sysblok.isAdd" focusable="false" (click)="sysblok.add()">
+                                <ng-template [ngxPermissionsExcept]="['Оператор','Просмотр']">
+                                  <button mat-icon-button color="primary" [disabled]="sysblok.isAdd" focusable="false" (click)="sysblok.add()">
                                     <i class="material-icons">person_add</i>
-                                </button>
+                                  </button>
+                                </ng-template>
                             </th>
                             <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
-                            <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="sysblok.isEdit" color="accent" (click)="sysblok.edit(row)">
-                                <i class="material-icons">edit</i>
-                            </button>
+                                <ng-template [ngxPermissionsExcept]="['Просмотр']">
+                                  <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="sysblok.isEdit" color="accent" (click)="sysblok.edit(row)">
+                                   <i class="material-icons">edit</i>
+                                  </button>
+                                </ng-template>
                             <div *ngIf="row.ModelIsEdit" >
                                     <button  mat-icon-button type="submit" [disabled]="sysblok.modelvalid.getRowValidatorModel[2].invalid" color="primary" focusable="false" (click)="sysblok.save()">
                                             <i class="material-icons">check</i>
@@ -1000,14 +1016,18 @@
 
                      <ng-container matColumnDef="ActionsColumn">  
                         <th mat-header-cell *matHeaderCellDef>
-                            <button mat-icon-button color="primary" [disabled]="monitor.isAdd" focusable="false" (click)="monitor.add()">
+                            <ng-template [ngxPermissionsExcept]="['Оператор','Просмотр']">
+                              <button mat-icon-button color="primary" [disabled]="monitor.isAdd" focusable="false" (click)="monitor.add()">
                                 <i class="material-icons">person_add</i>
-                            </button>
+                              </button>
+                            </ng-template>
                         </th>
                         <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
-                        <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="monitor.isEdit" color="accent" (click)="monitor.edit(row)">
-                            <i class="material-icons">edit</i>
-                        </button>
+                            <ng-template [ngxPermissionsExcept]="['Просмотр']">
+                              <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="monitor.isEdit" color="accent" (click)="monitor.edit(row)">
+                                <i class="material-icons">edit</i>
+                              </button>
+                            </ng-template>
                         <div *ngIf="row.ModelIsEdit" >
                                 <button  mat-icon-button type="submit" [disabled]="monitor.modelvalid.getRowValidatorModel[3].invalid" color="primary" focusable="false" (click)="monitor.save()">
                                         <i class="material-icons">check</i>
@@ -1198,14 +1218,18 @@
 
                     <ng-container matColumnDef="ActionsColumn">  
                         <th mat-header-cell *matHeaderCellDef>
-                            <button mat-icon-button color="primary" [disabled]="blockpower.isAdd" focusable="false" (click)="blockpower.add()">
+                            <ng-template [ngxPermissionsExcept]="['Оператор','Просмотр']">
+                              <button mat-icon-button color="primary" [disabled]="blockpower.isAdd" focusable="false" (click)="blockpower.add()">
                                 <i class="material-icons">person_add</i>
-                            </button>
+                              </button>
+                            </ng-template>
                         </th>
                         <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
-                        <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="blockpower.isEdit" color="accent" (click)="blockpower.edit(row)">
-                            <i class="material-icons">edit</i>
-                        </button>
+                            <ng-template [ngxPermissionsExcept]="['Просмотр']">
+                              <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="blockpower.isEdit" color="accent" (click)="blockpower.edit(row)">
+                                <i class="material-icons">edit</i>
+                              </button>
+                            </ng-template>
                         <div *ngIf="row.ModelIsEdit" >
                                 <button  mat-icon-button type="submit" [disabled]="blockpower.modelvalid.getRowValidatorModel[5].invalid" color="primary" focusable="false" (click)="blockpower.save()">
                                         <i class="material-icons">check</i>
@@ -1408,14 +1432,18 @@
 
                   <ng-container matColumnDef="ActionsColumn">  
                       <th mat-header-cell *matHeaderCellDef>
-                          <button mat-icon-button color="primary" [disabled]="switch.isAdd" focusable="false" (click)="switch.add()">
-                              <i class="material-icons">person_add</i>
-                          </button>
+                          <ng-template [ngxPermissionsExcept]="['Оператор','Просмотр']">
+                            <button mat-icon-button color="primary" [disabled]="switch.isAdd" focusable="false" (click)="switch.add()">
+                                <i class="material-icons">person_add</i>
+                            </button>
+                          </ng-template>
                       </th>
                       <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
-                      <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="switch.isEdit" color="accent" (click)="switch.edit(row)">
-                          <i class="material-icons">edit</i>
-                      </button>
+                          <ng-template [ngxPermissionsExcept]="['Просмотр']">
+                            <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="switch.isEdit" color="accent" (click)="switch.edit(row)">
+                              <i class="material-icons">edit</i>
+                            </button>
+                          </ng-template>
                       <div *ngIf="row.ModelIsEdit" >
                               <button  mat-icon-button type="submit" [disabled]="switch.modelvalid.getRowValidatorModel[7].invalid" color="primary" focusable="false" (click)="switch.save()">
                                       <i class="material-icons">check</i>

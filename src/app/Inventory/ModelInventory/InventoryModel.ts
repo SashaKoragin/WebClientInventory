@@ -101,7 +101,7 @@ export class FullSelectedModel{
    UsersIsActualsStats:UsersIsActualsStats[];
    Classification:Classification[];
    ModelSwithe:ModelSwithes[];
-
+   Rule:Rules[];
 }
 
 ///Модель отвертов с сервера
@@ -138,7 +138,7 @@ export class Users{
     public BlockPower?:BlockPower[];
     public Document?:Document;
     public Telephon?:Telephon;
-    public Rules?: Rules;
+    public Rule?: Rules;
     public Position?: Position;
     public Otdel?: Otdel;
     public ModelIsEdit?: boolean = false;

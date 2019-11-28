@@ -1,4 +1,4 @@
-import { SignalR, ISignalRConnection, IConnectionOptions, BroadcastEventListener, ConnectionStatus } from 'ng2-signalr';
+import { SignalR, ISignalRConnection, IConnectionOptions, ConnectionStatus } from 'ng2-signalr';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Users, Autorization, Printer, Kabinet, 
@@ -13,8 +13,8 @@ import { ModelSelect, LogicaSelect } from '../Inventory/AllSelectModel/ParametrM
 import { DocumentReport } from '../Inventory/AllSelectModel/Report/ReportModel';
 import { UploadFile } from '../Inventory/AddFullModel/ModelTable/FileModel';
 import { BookModels } from '../Inventory/ModelInventory/ViewInventory';
-
-
+import { Rules } from '../Inventory/ModelInventory/InventoryModel';
+import { NgxPermissionsService } from 'ngx-permissions';
 const url: AdressInventarka = new AdressInventarka();
 const httpOptionsJson = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -26,12 +26,11 @@ const httpOptionsJson = {
 })
 export class AuthIdentificationSignalR {
     
-    constructor(public signalR: SignalR) { }
+    constructor(public signalR: SignalR, public permissionsService: NgxPermissionsService) { }
 
    public iduser:string = null;
    public conect: ISignalRConnection = null;
    public status: ConnectionStatus = null;
-
     createconection(users:Users) {
         try {
             var options: IConnectionOptions = {
@@ -43,13 +42,16 @@ export class AuthIdentificationSignalR {
                 executeStatusChangeInZone: true
                 //Можно задать ping интервал
             }
-            console.log('Создали соединение!!!');
+            console.log('Создали соединение!');
+            this.permissionsService.addPermission(users.Rule.NameRules);
+            console.log('Подключили роли!');
             this.conect = this.signalR.createConnection(options);
             this.statusSubscriSignalR()
         } catch (e) {
             alert(e.toString());
         }
     }
+
     ///Запуск подписи на событие
    async startserverSignalR() {
         if (this.status === null) {
@@ -61,6 +63,8 @@ export class AuthIdentificationSignalR {
         }
 
     stopserverSignalR() {
+        this.permissionsService.flushPermissions();
+        console.log('Отключили роли!');
         if (this.status.name === 'connected') {
             console.log('Остановили сервер!');
             console.log('Отписались от статуса соединения!');
@@ -154,6 +158,15 @@ export class PostInventar {
             }
          });
     }
+
+    async allrule(){
+        this.select.Rule = await this.http.get(url.allrule,httpOptionsJson).toPromise().then(model=>{
+            if(model){
+                return deserializeArray<Rules>(Rules,model.toString());
+            }
+        })
+    }
+
     //Запрос на все принтера
     async allprinters(){
         this.select.Printer = await this.http.get(url.allprinters,httpOptionsJson).toPromise().then(model=>{
@@ -326,7 +339,7 @@ export class PostInventar {
 
 
 
- ///Все запросы для заполнение данных по пользователю
+ ///Все запросы для заполнение данных по технике
  public async fullusers(){
        await this.alluser();
        await this.allposition();
