@@ -6,11 +6,11 @@ import { ModelValidation } from '../ValidationModel/UserValidation';
 import { EditAndAdd, AuthIdentificationSignalR } from '../../../Post RequestService/PostRequest';
 import * as _moment from 'moment';
 import * as _rollupMoment from 'moment';
-import {MatDatepickerInputEvent} from '@angular/material/datepicker';
 import { ElementRef } from '@angular/core';
 import { BroadcastEventListener } from 'ng2-signalr';
 import { deserialize } from 'class-transformer';
 import { Rules } from '../../ModelInventory/InventoryModel';
+import { FormControl } from '@angular/forms';
 const moment = _rollupMoment || _moment;
 
 export class OtdelTableModel implements INewLogicaTable<Otdel>{
@@ -4031,9 +4031,10 @@ export class NameSupplyTableModel implements INewLogicaTable<Supply> {
   public dataSource: MatTableDataSource<Supply> = new MatTableDataSource<Supply>();
 
   getTime:string;
-  onChangeEventDate(event: MatDatepickerInputEvent<Date>): void {
-    this.model.DatePostavki =moment(event.target.value).format('DD-MM-YYYY');
-    this.getTime = `/Date(${moment(event.target.value,'DD-MM-YYYY').add(1,'day').valueOf()})/`;
+
+  private getDateTimeNotUpdate():void{
+    this.model.DatePostavki =moment(this.date.value).format('DD-MM-YYYY');
+    this.getTime = `/Date(${moment(this.date.value,'DD-MM-YYYY').valueOf()})/`;
   }
 
   isAdd: boolean;
@@ -4042,8 +4043,11 @@ export class NameSupplyTableModel implements INewLogicaTable<Supply> {
   index: number;
   modeltable: Supply[];
   modelToServer: Supply;
+  date = new FormControl(new Date());
+
   //Подписка
   public subscribe:any = null;
+
   //Шаблоны для манипулирования DOM
   temlateList:any //Заложенный шаблон Массив
   rowList:any    //Строка по номеру из БД Массив 
@@ -4111,15 +4115,17 @@ export class NameSupplyTableModel implements INewLogicaTable<Supply> {
   edit(model: Supply): void {
     model.ModelIsEdit = true;
     this.model =JSON.parse(JSON.stringify(model));
+    console.log(model.DatePostavki);
+    model.DatePostavki.match(/T/g) !== null?this.date = new FormControl(new Date(model.DatePostavki.split("T")[0])):this.date = new FormControl(new Date(model.DatePostavki.split("-").reverse().join("-")))
     this.addtemplate(model.IdSupply)
     this.isEditAndAddTrue();
   }
 
   public save(): void {
     this.modifimethod();
-     this.editandadd.addAndEditNameSupply(this.modelToServer).toPromise().then((model:ModelReturn<Supply>)=>{
+    this.editandadd.addAndEditNameSupply(this.modelToServer).toPromise().then((model:ModelReturn<Supply>)=>{
       console.log(model.Message);
-     });
+    });
     //Запрос на сохранение и обновление данных
   }
 
@@ -4174,8 +4180,9 @@ export class NameSupplyTableModel implements INewLogicaTable<Supply> {
     }
   }
 
-  modifimethod(): void {
-    this.modelToServer = JSON.parse(JSON.stringify(this.model)) ;
+  modifimethod():void {
+    this.modelToServer = JSON.parse(JSON.stringify(this.model));
+    this.getDateTimeNotUpdate();
     this.modelToServer.DatePostavki = this.getTime;
     delete this.modelToServer.DataCreate;
     this.isEdit = true;  

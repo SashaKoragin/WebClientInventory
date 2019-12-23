@@ -1,14 +1,17 @@
 
   .osnova {
-      display: table;
-      width: 100%;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
   }
   
   .text {
-      margin: 20px;
       font-size: 25px;
+      float: left;
       font-style: italic;
       color: black;
+      margin: 0px;
   }
   .contents{
     width: 100%;
@@ -44,8 +47,8 @@
       font-style: italic;
       color: black;
       text-align: right;
-      display: table-cell;
       vertical-align: top;
+      display: inline-grid;
   }
   .contentpage {
       padding: 20px;

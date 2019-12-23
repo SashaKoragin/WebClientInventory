@@ -15,10 +15,12 @@ export class MainInventar {
     fullpath: string = null;
     model: string = null;
     welcome:string = null;
+    rule:string = null;
     nestedTreeControl: NestedTreeControl<ModelInventar>;
     nestedDataSource: MatTreeNestedDataSource<ModelInventar>;
     constructor(database: Inventar, public authService: AuthIdentification) {
         this.welcome = 'Добро пожаловать: ' + authService.fullSelect.Users.Name;
+        this.rule = 'Ваша роль: '+ authService.fullSelect.Users.Rule.NameRules;
         this.nestedTreeControl = new NestedTreeControl<ModelInventar>(this._getChildren);
         this.nestedDataSource = new MatTreeNestedDataSource();
         database.dataChange.subscribe(data => this.nestedDataSource.data = data);

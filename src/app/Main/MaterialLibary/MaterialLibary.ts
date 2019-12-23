@@ -84,6 +84,7 @@ import { MatSelectFilterModule} from 'mat-select-filter';
         MatTabsModule,
         ScrollingModule,
         MatToolbarModule,
+        
         MatTooltipModule,
         MatTreeModule
     ],
@@ -95,7 +96,8 @@ import { MatSelectFilterModule} from 'mat-select-filter';
               userSelect: true
             }
           },
-        },
+          
+        }
       ],
 }) as any)
 export class AngularMaterialModule { }

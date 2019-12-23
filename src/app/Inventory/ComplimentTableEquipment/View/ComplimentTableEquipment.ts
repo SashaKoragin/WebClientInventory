@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild,ElementRef } from '@angular/core';
-
 import { PostInventar, EditAndAdd, AuthIdentificationSignalR } from '../../../Post RequestService/PostRequest';
 import { NameSysBlockTableModel,NameModelSwitheTableModel, NameMonitorTableModel, NameModelBlokPowerTableModel, NameProizvoditelBlockPowerTableModel, NameFullModelTableModel, NameFullProizvoditelTableModel, NameClassificationTableModel, NameCopySaveTableModel, NameSupplyTableModel, NameKabinetTableModel, NameStatusingTableModel } from '../../AddFullModel/ModelTable/TableModel';
 import {MatPaginator} from '@angular/material';
