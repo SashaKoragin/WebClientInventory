@@ -222,7 +222,7 @@
         
             <mat-form-field id="template" class="validation">
                 <mat-select (click)="user.calbackfiltersAll()" [placeholder]="user.model.Telephon?.Telephon_" [(ngModel)]="user.model.Telephon" name="telephon">
-                    <mat-select-filter class="filter" [placeholder]="user.model.Telephon?.Telephon_" [displayMember]="'SerNumber'" [array]="user.telephone" (filteredReturn)="user.filteredTelephone =$event">
+                    <mat-select-filter class="filter" [placeholder]="user.model.Telephon?.Telephon_" [displayMember]="'Telephon_'" [array]="user.telephone" (filteredReturn)="user.filteredTelephone =$event">
                       </mat-select-filter>
                         <mat-option [value]='null'>None</mat-option>
                         <mat-option *ngFor="let telephon of user.filteredTelephone" [value]="telephon">
