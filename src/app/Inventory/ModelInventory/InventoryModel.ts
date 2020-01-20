@@ -139,6 +139,7 @@ export class Users{
     public Document?:Document;
     public Telephon?:Telephon;
     public Rule?: Rules;
+    public StatusUser?: StatusUser;
     public Position?: Position;
     public Otdel?: Otdel;
     public ModelIsEdit?: boolean = false;
@@ -168,6 +169,12 @@ export class SysBlock {
 export class Rules {
     public IdRule?: number;
     public NameRules?: string;
+}
+
+export class StatusUser{
+    public IdStatusUser:number;
+    public StatusText:string;
+    public ColorStatus:string;
 }
 
 export class Statusing {
