@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild,ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild,ElementRef, OnDestroy } from '@angular/core';
 import { PostInventar, EditAndAdd, AuthIdentificationSignalR } from '../../../Post RequestService/PostRequest';
 import { NameSysBlockTableModel,NameModelSwitheTableModel, NameMonitorTableModel, NameModelBlokPowerTableModel, NameProizvoditelBlockPowerTableModel, NameFullModelTableModel, NameFullProizvoditelTableModel, NameClassificationTableModel, NameCopySaveTableModel, NameSupplyTableModel, NameKabinetTableModel, NameStatusingTableModel } from '../../AddFullModel/ModelTable/TableModel';
 import {MatPaginator} from '@angular/material';
@@ -9,7 +9,8 @@ import {MatPaginator} from '@angular/material';
     providers: [EditAndAdd]
 }) as any)
 
-export class ComplimentTableEquipment implements OnInit{
+export class ComplimentTableEquipment implements OnInit,OnDestroy{
+
     constructor(public editandadd:EditAndAdd,public selectAll:PostInventar,public SignalR:AuthIdentificationSignalR) { }
 
    //Шаблоны
@@ -118,4 +119,18 @@ export class ComplimentTableEquipment implements OnInit{
         await this.selectAll.allmodelswithes();
     }
 
+    ngOnDestroy(): void {
+        this.nameSysBlock.subscribeAddAndUpdate.unsubscribe();
+        this.nameMonitor.subscribeAddAndUpdate.unsubscribe();
+        this.nameModelBlokPower.subscribeAddAndUpdate.unsubscribe();
+        this.nameProizvoditelBlock.subscribeAddAndUpdate.unsubscribe();
+        this.nameFullModel.subscribeAddAndUpdate.unsubscribe();
+        this.nameFullProizvoditel.subscribeAddAndUpdate.unsubscribe();
+        this.nameClassification.subscribeAddAndUpdate.unsubscribe();
+        this.nameCopySave.subscribeAddAndUpdate.unsubscribe();
+        this.nameKabinet.subscribeAddAndUpdate.unsubscribe();
+        this.nameSupply.subscribeAddAndUpdate.unsubscribe();
+        this.nameStatusing.subscribeAddAndUpdate.unsubscribe();
+        this.nameModelSwithe.subscribeAddAndUpdate.unsubscribe();
+    }
 }

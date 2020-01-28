@@ -1,6 +1,6 @@
 import { SignalR, ISignalRConnection, IConnectionOptions, ConnectionStatus } from 'ng2-signalr';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Users, Autorization, Printer, Kabinet, 
          ScanerAndCamer, Mfu, SysBlock, Monitor,
          BlockPower, UsersIsActualsStats, Classification,
@@ -15,6 +15,8 @@ import { UploadFile } from '../Inventory/AddFullModel/ModelTable/FileModel';
 import { BookModels } from '../Inventory/ModelInventory/ViewInventory';
 import { Rules } from '../Inventory/ModelInventory/InventoryModel';
 import { NgxPermissionsService } from 'ngx-permissions';
+import { removeListener } from 'cluster';
+import { User } from '../Inventory/User/View/User';
 const url: AdressInventarka = new AdressInventarka();
 const httpOptionsJson = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -443,6 +445,43 @@ export class EditAndAdd{
     ///Редактирование или добавление ModelSwithe
     addAndEditModelSwitch(nameModelSwitch:ModelSwithes){
         return this.http.post(url.addandeditmodelswith,nameModelSwitch,httpOptionsJson);
+    }
+    
+    ///Удаление Пользователя
+    deleteUser(model:Users,userIdEdit:string){
+        return this.http.post(url.deleteUser.concat(userIdEdit),model,httpOptionsJson);
+    }
+    ///Удаление Системных блоков
+    deleteSysBlock(model:SysBlock,userIdEdit:string){
+        return this.http.post(url.deleteSysBlock.concat(userIdEdit),model,httpOptionsJson);
+    }
+    ///Удаление мониторов
+    deleteMonitor(model:Monitor,userIdEdit:string){
+        return this.http.post(url.deleteMonitor.concat(userIdEdit),model,httpOptionsJson);
+    }
+    ///Удаление принтеров
+    deletePrinter(model:Printer,userIdEdit:string){
+        return this.http.post(url.deletePrinter.concat(userIdEdit),model,httpOptionsJson);
+    }
+    ///Удаление сканера или камеры
+    deleteScannerAndCamera(model:ScanerAndCamer,userIdEdit:string){
+        return this.http.post(url.deleteScannerAndCamera.concat(userIdEdit),model,httpOptionsJson);
+    }
+    ///Удаление МФУ
+    deleteMfu(model:Mfu,userIdEdit:string){
+        return this.http.post(url.deleteMfu.concat(userIdEdit),model,httpOptionsJson);
+    }
+    ///Удаление ИБП
+    deleteBlockPower(model:BlockPower,userIdEdit:string){
+        return this.http.post(url.deleteBlockPower.concat(userIdEdit),model,httpOptionsJson);
+    }
+    ///Удаление коммутаторов
+    deleteSwitch(model:Swithe,userIdEdit:string){
+        return this.http.post(url.deleteSwitch.concat(userIdEdit),model,httpOptionsJson);
+    }
+    ///Удаление телефонов
+    deleteTelephone(model:Telephon,userIdEdit:string){
+        return this.http.post(url.deleteTelephone.concat(userIdEdit),model,httpOptionsJson);
     }
 }
 @Injectable()

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { PostInventar, EditAndAdd, AuthIdentificationSignalR } from '../../../Post RequestService/PostRequest';
 import { PrinterTableModel, ScanerAndCamerTableModel, MfuTableModel, SysBlockTableModel, MonitorsTableModel, TelephonsTableModel, BlockPowerTableModel, SwitchTableModel } from '../../AddFullModel/ModelTable/TableModel';
 import {MatPaginator, MatSort} from '@angular/material';
@@ -13,7 +13,8 @@ import { DatePipe } from '@angular/common';
 
 }) as any)
 
-export class Equipment implements OnInit {
+export class Equipment implements OnInit,OnDestroy {
+
   constructor(public editandadd:EditAndAdd,public selectAll:PostInventar,private dp: DatePipe,public SignalR:AuthIdentificationSignalR) { }
 
    
@@ -115,6 +116,23 @@ export class Equipment implements OnInit {
    await this.selectAll.allproizvoditelblockpower();
    await this.selectAll.allmodelblockpower();
    await this.selectAll.allmodelswithes();
+  }
+
+  ngOnDestroy(): void {
+    this.printer.subscribeDelete.unsubscribe();
+    this.printer.subscribeAddAndUpdate.unsubscribe();
+    this.scaner.subscribeDelete.unsubscribe();
+    this.scaner.subscribeAddAndUpdate.unsubscribe();
+    this.mfu.subscribeDelete.unsubscribe();
+    this.mfu.subscribeAddAndUpdate.unsubscribe();
+    this.sysblok.subscribeDelete.unsubscribe();
+    this.sysblok.subscribeAddAndUpdate.unsubscribe();
+    this.monitor.subscribeDelete.unsubscribe();
+    this.monitor.subscribeAddAndUpdate.unsubscribe();
+    this.blockpower.subscribeDelete.unsubscribe();
+    this.blockpower.subscribeAddAndUpdate.unsubscribe();
+    this.switch.subscribeDelete.unsubscribe();
+    this.switch.subscribeAddAndUpdate.unsubscribe();
   }
 
 }

@@ -1,9 +1,11 @@
 import { Users, FullSelectedModel, Otdel, Position, Printer, Mfu, ScanerAndCamer, SysBlock, CopySave,
    Monitor,NameSysBlock,Supply,Classification,Swithe,
-  Kabinet,FullModel,Statusing,FullProizvoditel, ModelReturn, NameMonitor, Telephon,BlockPower,ModelBlockPower,ProizvoditelBlockPower, INewLogicaTable,ModelSwithes  } from '../../ModelInventory/InventoryModel';
-import { MatTableDataSource,MatPaginator,MatSort } from '@angular/material';
+  Kabinet,FullModel,Statusing,FullProizvoditel, ModelReturn, NameMonitor, Telephon,BlockPower,ModelBlockPower,ProizvoditelBlockPower,
+   INewLogicaTable, ModelSwithes, ModeleReturn  } from '../../ModelInventory/InventoryModel';
+import { MatTableDataSource,MatPaginator,MatSort, } from '@angular/material';
 import { ModelValidation } from '../ValidationModel/UserValidation';
 import { EditAndAdd, AuthIdentificationSignalR } from '../../../Post RequestService/PostRequest';
+import {ConvertDate } from '../../AddFunctionConvertDate/ConvertDateModel';
 import * as _moment from 'moment';
 import * as _rollupMoment from 'moment';
 import { ElementRef } from '@angular/core';
@@ -11,10 +13,11 @@ import { BroadcastEventListener } from 'ng2-signalr';
 import { deserialize } from 'class-transformer';
 import { Rules } from '../../ModelInventory/InventoryModel';
 import { FormControl } from '@angular/forms';
+import { from } from 'rxjs';
 const moment = _rollupMoment || _moment;
 
 export class OtdelTableModel implements INewLogicaTable<Otdel>{
- 
+
   constructor(public editandadd:EditAndAdd, public SignalR:AuthIdentificationSignalR){
     this.subscribeservers();
   }
@@ -31,7 +34,8 @@ export class OtdelTableModel implements INewLogicaTable<Otdel>{
 
   public filteredUser:any;
   //Подписка
-  public subscribe:any = null;
+  public subscribeAddAndUpdate:any = null;
+
   //Шаблоны для манипулирования DOM
     temlateList:any //Заложенный шаблон Массив
     rowList:any    //Строка по номеру из БД Массив 
@@ -39,9 +43,9 @@ export class OtdelTableModel implements INewLogicaTable<Otdel>{
     table:ElementRef<any>  //Полный шаблон для манипуляции
  
     public subscribeservers(){
-      this.subscribe = new BroadcastEventListener<Otdel>('SubscribeOtdel');
-      this.SignalR.conect.listen(this.subscribe);
-      this.subscribe.subscribe((substring:string) =>{
+      this.subscribeAddAndUpdate = new BroadcastEventListener<Otdel>('SubscribeOtdel');
+      this.SignalR.conect.listen(this.subscribeAddAndUpdate);
+      this.subscribeAddAndUpdate.subscribe((substring:string) =>{
         var submodel = deserialize<Otdel>(Otdel,substring);
         if(this.isEdit){
           this.isEditAndAddFalse();
@@ -111,7 +115,11 @@ export class OtdelTableModel implements INewLogicaTable<Otdel>{
      });
     //Запрос на сохранение и обновление данных
   }
-
+  ///Удаление
+  delete(): void {
+    throw new Error("Method not implemented.");
+  }
+  //Отмена
   public cancel(model: Otdel): void {
     model.ModelIsEdit = false;
     this.isEditAndAddFalse(); 
@@ -194,6 +202,7 @@ export class OtdelTableModel implements INewLogicaTable<Otdel>{
 }
 
 export class UserTableModel implements INewLogicaTable<Users>  {
+
   constructor(public editandadd:EditAndAdd, public SignalR:AuthIdentificationSignalR){
     this.subscribeservers();
   }
@@ -219,7 +228,8 @@ export class UserTableModel implements INewLogicaTable<Users>  {
   public filteredTelephone:any;
   public filteredRule:any;
   //Подписка
-  public subscribe:any = null;
+  public subscribeAddAndUpdate:any = null;
+  public subscribeDelete:any = null;
  //Шаблоны для манипулирования DOM
  temlateList:any //Заложенный шаблон Массив
  rowList:any    //Строка по номеру из БД Массив 
@@ -227,9 +237,18 @@ export class UserTableModel implements INewLogicaTable<Users>  {
  table:ElementRef  //Полный шаблон для манипуляции
 
  public subscribeservers(){
-  this.subscribe = new BroadcastEventListener<Users>('SubscribeUser');
-  this.SignalR.conect.listen(this.subscribe);
-  this.subscribe.subscribe((substring:string) =>{
+  this.subscribeAddAndUpdate = new BroadcastEventListener<Users>('SubscribeUser');
+  this.subscribeDelete = new BroadcastEventListener<string>('SubscribeDeleteUser');
+  this.SignalR.conect.listen(this.subscribeAddAndUpdate);
+  this.SignalR.conect.listen(this.subscribeDelete);
+  this.subscribeDelete.subscribe((model:ModeleReturn<Users>)=>{
+    if(model.Index===0){
+      let index: number = this.dataSource.data.findIndex(item => item.IdUser === model.Model.IdUser);
+      this.dataSource.data.splice(index,1);
+      this.dataSource._updateChangeSubscription();
+    }
+  })
+  this.subscribeAddAndUpdate.subscribe((substring:string) =>{
     var submodel = deserialize<Users>(Users,substring);
     if(this.isEdit){
       this.isEditAndAddFalse();
@@ -362,12 +381,19 @@ export class UserTableModel implements INewLogicaTable<Users>  {
 
   public save(): void {
       this.modifimethod();
-      this.editandadd.addandedituser(this.model,this.SignalR.iduser).toPromise().then((model:ModelReturn<Users>)=>{
+      this.editandadd.addandedituser(this.model,this.SignalR.iduser).subscribe((model:ModelReturn<Users>)=>{
         console.log(model.Message);
        });
       //Запрос на сохранение и обновление данных
     }
-
+    //Удаление
+  public delete(model: Users): void {
+    var converter = new ConvertDate();
+      this.editandadd.deleteUser(converter.convertDateToServer<Users>(JSON.parse(JSON.stringify(model))),this.SignalR.iduser).toPromise().then((model:ModeleReturn<Users>)=>{
+        alert(model.Message);
+      });
+    }
+  //Отмена
   public cancel(user: Users): void {
       user.ModelIsEdit = false;
       this.isEditAndAddFalse(); 
@@ -455,7 +481,8 @@ export class SwitchTableModel implements INewLogicaTable<Swithe>{
   public filteredUser:any;
   public filteredSupples:any;
   //Подписка
-  public subscribe:any = null;
+  public subscribeAddAndUpdate:any = null;
+  public subscribeDelete:any = null;
 
   temlateList: any;
   rowList: any;
@@ -463,9 +490,20 @@ export class SwitchTableModel implements INewLogicaTable<Swithe>{
   table: ElementRef<any>;
 
   public subscribeservers(){
-    this.subscribe = new BroadcastEventListener<Swithe>('SubscribeSwithe');
-    this.SignalR.conect.listen(this.subscribe);
-    this.subscribe.subscribe((substring:string) =>{
+    this.subscribeAddAndUpdate = new BroadcastEventListener<Swithe>('SubscribeSwithe');
+    this.subscribeDelete = new BroadcastEventListener<string>('SubscribeDeleteSwitch');
+    this.SignalR.conect.listen(this.subscribeAddAndUpdate);
+    this.SignalR.conect.listen(this.subscribeDelete);
+
+    this.subscribeDelete.subscribe((model:ModeleReturn<Swithe>)=>{
+      if(model.Index===0){
+        let index: number = this.dataSource.data.findIndex(item => item.IdSwithes === model.Model.IdSwithes);
+        this.dataSource.data.splice(index,1);
+        this.dataSource._updateChangeSubscription();
+      }
+    })
+
+    this.subscribeAddAndUpdate.subscribe((substring:string) =>{
       var submodel = deserialize<Swithe>(Swithe,substring);
       if(this.isEdit){
         this.isEditAndAddFalse();
@@ -573,7 +611,15 @@ export class SwitchTableModel implements INewLogicaTable<Swithe>{
      });
     //Запрос на сохранение и обновление данных
   }
-
+  ///Удаление
+  delete(model:Swithe): void {
+    var converter = new ConvertDate();
+    this.modelToServer = converter.convertDateToServer<Swithe>(JSON.parse(JSON.stringify(model)));
+    this.editandadd.deleteSwitch(this.modelToServer,this.SignalR.iduser).toPromise().then((model:ModeleReturn<Swithe>)=>{
+        alert(model.Message);
+    });
+  }
+  ///Отмена
   cancel(model: Swithe): void {
     model.ModelIsEdit = false;
     this.isEditAndAddFalse(); 
@@ -703,7 +749,8 @@ export class PrinterTableModel implements INewLogicaTable<Printer> {
   public filteredUser:any;
   public filteredSupples:any;
   //Подписка
-  public subscribe:any = null;
+  public subscribeAddAndUpdate:any = null;
+  public subscribeDelete:any = null;
   //Шаблоны для манипулирования DOM
   temlateList:any //Заложенный шаблон Массив
   rowList:any    //Строка по номеру из БД Массив 
@@ -711,9 +758,20 @@ export class PrinterTableModel implements INewLogicaTable<Printer> {
   table:ElementRef<any>  //Полный шаблон для манипуляции
 
   public subscribeservers(){
-    this.subscribe = new BroadcastEventListener<Printer>('SubscribePrinter');
-    this.SignalR.conect.listen(this.subscribe);
-    this.subscribe.subscribe((substring:string) =>{
+    this.subscribeAddAndUpdate = new BroadcastEventListener<Printer>('SubscribePrinter');
+    this.SignalR.conect.listen(this.subscribeAddAndUpdate);
+    this.subscribeDelete = new BroadcastEventListener<string>('SubscribeDeletePrinter');
+    this.SignalR.conect.listen(this.subscribeDelete);
+
+    this.subscribeDelete.subscribe((model:ModeleReturn<Printer>)=>{
+      if(model.Index===0){
+        let index: number = this.dataSource.data.findIndex(item => item.IdPrinter === model.Model.IdPrinter);
+        this.dataSource.data.splice(index,1);
+        this.dataSource._updateChangeSubscription();
+      }
+    })
+
+    this.subscribeAddAndUpdate.subscribe((substring:string) =>{
       var submodel = deserialize<Printer>(Printer,substring);
       if(this.isEdit){
         this.isEditAndAddFalse();
@@ -822,7 +880,16 @@ export class PrinterTableModel implements INewLogicaTable<Printer> {
      });
     //Запрос на сохранение и обновление данных
   }
+  ///Удаление
 
+  delete(model:Printer): void {
+    var converter = new ConvertDate();
+    this.modelToServer = converter.convertDateToServer<Printer>(JSON.parse(JSON.stringify(model)));
+      this.editandadd.deletePrinter(this.modelToServer,this.SignalR.iduser).toPromise().then((model:ModeleReturn<Printer>)=>{
+         alert(model.Message);
+     });
+  }
+  ///Отмена
   public cancel(model: Printer): void {
     model.ModelIsEdit = false;
     this.isEditAndAddFalse(); 
@@ -959,7 +1026,8 @@ export class ScanerAndCamerTableModel implements INewLogicaTable<ScanerAndCamer>
   public filteredUser:any;
   public filteredSupples:any;
   //Подписка
-  public subscribe:any = null;
+  public subscribeAddAndUpdate:any = null;
+  public subscribeDelete:any = null;
     //Шаблоны для манипулирования DOM
   temlateList:any //Заложенный шаблон Массив
   rowList:any    //Строка по номеру из БД Массив 
@@ -967,9 +1035,20 @@ export class ScanerAndCamerTableModel implements INewLogicaTable<ScanerAndCamer>
   table:ElementRef<any>  //Полный шаблон для манипуляции
 
   public subscribeservers(){
-    this.subscribe = new BroadcastEventListener<ScanerAndCamer>('SubscribeScanerAndCamer');
-    this.SignalR.conect.listen(this.subscribe);
-    this.subscribe.subscribe((substring:string) =>{
+    this.subscribeAddAndUpdate = new BroadcastEventListener<ScanerAndCamer>('SubscribeScanerAndCamer');
+    this.SignalR.conect.listen(this.subscribeAddAndUpdate);
+    this.subscribeDelete = new BroadcastEventListener<string>('SubscribeDeleteScannerAndCamera');
+    this.SignalR.conect.listen(this.subscribeDelete);
+
+    this.subscribeDelete.subscribe((model:ModeleReturn<ScanerAndCamer>)=>{
+      if(model.Index===0){
+        let index: number = this.dataSource.data.findIndex(item => item.IdScaner === model.Model.IdScaner);
+        this.dataSource.data.splice(index,1);
+        this.dataSource._updateChangeSubscription();
+      }
+    })
+
+    this.subscribeAddAndUpdate.subscribe((substring:string) =>{
       var submodel = deserialize<ScanerAndCamer>(ScanerAndCamer,substring);
       if(this.isEdit){
         this.isEditAndAddFalse();
@@ -1077,7 +1156,15 @@ export class ScanerAndCamerTableModel implements INewLogicaTable<ScanerAndCamer>
      });
     //Запрос на сохранение и обновление данных
   }
-
+  ///Удаление
+  delete(model:ScanerAndCamer): void {
+    var converter = new ConvertDate();
+    this.modelToServer = converter.convertDateToServer<ScanerAndCamer>(JSON.parse(JSON.stringify(model)));
+    this.editandadd.deleteScannerAndCamera(this.modelToServer,this.SignalR.iduser).toPromise().then((model:ModeleReturn<ScanerAndCamer>)=>{
+      alert(model.Message);
+  });
+  }
+  ///Отмена
  public cancel(model: ScanerAndCamer):void {
     model.ModelIsEdit = false;
     this.isEditAndAddFalse(); 
@@ -1214,7 +1301,8 @@ export class MfuTableModel implements INewLogicaTable<Mfu>  {
   public filteredUser:any;
   public filteredSupples:any;
   //Подписка
-  public subscribe:any = null;
+  public subscribeAddAndUpdate:any = null;
+  public subscribeDelete:any = null;
   //Шаблоны для манипулирования DOM
   temlateList:any //Заложенный шаблон Массив
   rowList:any    //Строка по номеру из БД Массив 
@@ -1222,9 +1310,20 @@ export class MfuTableModel implements INewLogicaTable<Mfu>  {
   table:ElementRef<any>  //Полный шаблон для манипуляции
 
   public subscribeservers(){
-    this.subscribe = new BroadcastEventListener<Mfu>('SubscribeMfu');
-    this.SignalR.conect.listen(this.subscribe);
-    this.subscribe.subscribe((substring:string) =>{
+    this.subscribeAddAndUpdate = new BroadcastEventListener<Mfu>('SubscribeMfu');
+    this.SignalR.conect.listen(this.subscribeAddAndUpdate);
+    this.subscribeDelete = new BroadcastEventListener<string>('SubscribeDeleteMfu');
+    this.SignalR.conect.listen(this.subscribeDelete);
+
+    this.subscribeDelete.subscribe((model:ModeleReturn<Mfu>)=>{
+      if(model.Index===0){
+        let index: number = this.dataSource.data.findIndex(item => item.IdMfu === model.Model.IdMfu);
+        this.dataSource.data.splice(index,1);
+        this.dataSource._updateChangeSubscription();
+      }
+    })
+
+    this.subscribeAddAndUpdate.subscribe((substring:string) =>{
       var submodel = deserialize<Mfu>(Mfu,substring);
       if(this.isEdit){
         this.isEditAndAddFalse();
@@ -1334,7 +1433,15 @@ export class MfuTableModel implements INewLogicaTable<Mfu>  {
      });
     //Запрос на сохранение и обновление данных
   }
-
+  ///Удаление
+  delete(model: Mfu): void {
+    var converter = new ConvertDate();
+    this.modelToServer = converter.convertDateToServer<Mfu>(JSON.parse(JSON.stringify(model)));
+      this.editandadd.deleteMfu(this.modelToServer,this.SignalR.iduser).toPromise().then((model:ModeleReturn<Swithe>)=>{
+       alert(model.Message);
+    });
+  }
+  ///Отмена
   cancel(model: Mfu): void {
     model.ModelIsEdit = false;
     this.isEditAndAddFalse(); 
@@ -1470,7 +1577,8 @@ export class SysBlockTableModel implements INewLogicaTable<SysBlock>  {
   public filteredUser:any;
   public filteredSupples:any;
   //Подписка
-  public subscribe:any = null;
+  public subscribeAddAndUpdate:any = null;
+  public subscribeDelete:any = null;
   //Шаблоны для манипулирования DOM
   temlateList:any //Заложенный шаблон Массив
   rowList:any    //Строка по номеру из БД Массив 
@@ -1478,9 +1586,20 @@ export class SysBlockTableModel implements INewLogicaTable<SysBlock>  {
   table:ElementRef<any>  //Полный шаблон для манипуляции
 
   public subscribeservers(){
-    this.subscribe = new BroadcastEventListener<SysBlock>('SubscribeSysBlok');
-    this.SignalR.conect.listen(this.subscribe);
-    this.subscribe.subscribe((substring:string) =>{
+    this.subscribeAddAndUpdate = new BroadcastEventListener<SysBlock>('SubscribeSysBlok');
+    this.SignalR.conect.listen(this.subscribeAddAndUpdate);
+    this.subscribeDelete = new BroadcastEventListener<string>('SubscribeDeleteSystemUnit');
+    this.SignalR.conect.listen(this.subscribeDelete);
+    
+    this.subscribeDelete.subscribe((model:ModeleReturn<SysBlock>)=>{
+      if(model.Index===0){
+        let index: number = this.dataSource.data.findIndex(item => item.IdSysBlock === model.Model.IdSysBlock);
+        this.dataSource.data.splice(index,1);
+        this.dataSource._updateChangeSubscription();
+      }
+    })
+
+    this.subscribeAddAndUpdate.subscribe((substring:string) =>{
       var submodel = deserialize<SysBlock>(SysBlock,substring);
       if(this.isEdit){
         this.isEditAndAddFalse();
@@ -1589,7 +1708,15 @@ export class SysBlockTableModel implements INewLogicaTable<SysBlock>  {
      });
     //Запрос на сохранение и обновление данных
   }
-  
+    ///Удаление
+  delete(model: SysBlock): void {
+    var converter = new ConvertDate();
+    this.modelToServer = converter.convertDateToServer<SysBlock>(JSON.parse(JSON.stringify(model)));
+     this.editandadd.deleteSysBlock(this.modelToServer,this.SignalR.iduser).toPromise().then((model:ModeleReturn<SysBlock>)=>{
+        alert(model.Message);
+    });
+  }
+    ///Отмена
   public cancel(model: SysBlock): void {
     model.ModelIsEdit = false;
     this.isEditAndAddFalse(); 
@@ -1722,7 +1849,8 @@ export class MonitorsTableModel implements INewLogicaTable<Monitor>  {
   public filteredUser:any;
   public filteredSupples:any;
   //Подписка
-  public subscribe:any = null;
+  public subscribeAddAndUpdate:any = null;
+  public subscribeDelete:any = null;
   //Шаблоны для манипулирования DOM
   temlateList:any //Заложенный шаблон Массив
   rowList:any    //Строка по номеру из БД Массив 
@@ -1730,9 +1858,20 @@ export class MonitorsTableModel implements INewLogicaTable<Monitor>  {
   table:ElementRef<any>  //Полный шаблон для манипуляции
 
   public subscribeservers(){
-    this.subscribe = new BroadcastEventListener<Monitor>('SubscribeMonitor');
-    this.SignalR.conect.listen(this.subscribe);
-    this.subscribe.subscribe((substring:string) =>{
+    this.subscribeAddAndUpdate = new BroadcastEventListener<Monitor>('SubscribeMonitor');
+    this.SignalR.conect.listen(this.subscribeAddAndUpdate);
+    this.subscribeDelete = new BroadcastEventListener<string>('SubscribeDeleteMonitor');
+    this.SignalR.conect.listen(this.subscribeDelete);
+
+    this.subscribeDelete.subscribe((model:ModeleReturn<Monitor>)=>{
+      if(model.Index===0){
+        let index: number = this.dataSource.data.findIndex(item => item.IdMonitor === model.Model.IdMonitor);
+        this.dataSource.data.splice(index,1);
+        this.dataSource._updateChangeSubscription();
+      }
+    })
+
+    this.subscribeAddAndUpdate.subscribe((substring:string) =>{
       var submodel = deserialize<Monitor>(Monitor,substring);
       if(this.isEdit){
         this.isEditAndAddFalse();
@@ -1844,7 +1983,15 @@ export class MonitorsTableModel implements INewLogicaTable<Monitor>  {
      });
     //Запрос на сохранение и обновление данных
   }
-
+  ///Удаление
+  delete(model: Monitor): void {
+    var converter = new ConvertDate();
+    this.modelToServer = converter.convertDateToServer<Monitor>(JSON.parse(JSON.stringify(model)));
+    this.editandadd.deleteMonitor(this.modelToServer,this.SignalR.iduser).toPromise().then((model:ModeleReturn<Swithe>)=>{
+      alert(model.Message);
+  });
+  }
+  ///Отмена
   cancel(model: Monitor): void {
     model.ModelIsEdit = false;
     this.isEditAndAddFalse(); 
@@ -1971,7 +2118,9 @@ export class TelephonsTableModel implements INewLogicaTable<Telephon> {
   public filteredKabinet:any;
   public filteredSupples:any;
   public filteredStatusing:any;
-  public subscribe:any = null;
+  //Подписка
+  public subscribeAddAndUpdate:any = null;
+  public subscribeDelete:any = null;
   //Шаблоны для манипулирования DOM
    temlateList:any //Заложенный шаблон Массив
    rowList:any    //Строка по номеру из БД Массив 
@@ -1979,9 +2128,20 @@ export class TelephonsTableModel implements INewLogicaTable<Telephon> {
    table:ElementRef  //Полный шаблон для манипуляции
 
   public subscribeservers(){
-    this.subscribe = new BroadcastEventListener<Telephon>('SubscribeTelephone');
-    this.SignalR.conect.listen(this.subscribe);
-    this.subscribe.subscribe((substring:string) =>{
+    this.subscribeAddAndUpdate = new BroadcastEventListener<Telephon>('SubscribeTelephone');
+    this.SignalR.conect.listen(this.subscribeAddAndUpdate);
+    this.subscribeDelete = new BroadcastEventListener<string>('SubscribeDeleteTelephone');
+    this.SignalR.conect.listen(this.subscribeDelete);
+
+    this.subscribeDelete.subscribe((model:ModeleReturn<Users>)=>{
+      if(model.Index===0){
+        let index: number = this.dataSource.data.findIndex(item => item.IdTelephon === model.Model.IdTelephon);
+        this.dataSource.data.splice(index,1);
+        this.dataSource._updateChangeSubscription();
+      }
+    })
+
+    this.subscribeAddAndUpdate.subscribe((substring:string) =>{
       var submodel = deserialize<Telephon>(Telephon,substring);
       if(this.isEdit){
         this.isEditAndAddFalse();
@@ -2118,7 +2278,15 @@ public async add():Promise<void> {
      });
     //Запрос на сохранение и обновление данных
   }
-
+  ///Удаление
+  delete(model: Telephon): void {
+    var converter = new ConvertDate();
+    this.modelToServer = converter.convertDateToServer<Telephon>(JSON.parse(JSON.stringify(model)));
+    this.editandadd.deleteTelephone(this.modelToServer,this.SignalR.iduser).toPromise().then((model:ModeleReturn<Telephon>)=>{
+        alert(model.Message);
+    });
+  }
+  ///Отмена
   public cancel(model: Telephon): void {
     model.ModelIsEdit = false;
     this.isEditAndAddFalse(); 
@@ -2220,7 +2388,8 @@ export class BlockPowerTableModel implements INewLogicaTable<BlockPower> {
   public filteredSupples:any;
   public filteredProizvoditel:any;
   //Подписка
-  public subscribe:any = null;
+  public subscribeAddAndUpdate:any = null;
+  public subscribeDelete:any = null;
   //Шаблоны для манипулирования DOM
   temlateList:any //Заложенный шаблон Массив
   rowList:any    //Строка по номеру из БД Массив 
@@ -2228,9 +2397,20 @@ export class BlockPowerTableModel implements INewLogicaTable<BlockPower> {
   table:ElementRef<any>  //Полный шаблон для манипуляции
 
   public subscribeservers(){
-    this.subscribe = new BroadcastEventListener<BlockPower>('SubscribeBlockPower');
-    this.SignalR.conect.listen(this.subscribe);
-    this.subscribe.subscribe((substring:string) =>{
+    this.subscribeAddAndUpdate = new BroadcastEventListener<BlockPower>('SubscribeBlockPower');
+    this.SignalR.conect.listen(this.subscribeAddAndUpdate);
+    this.subscribeDelete = new BroadcastEventListener<string>('SubscribeDeleteBlockPower');
+    this.SignalR.conect.listen(this.subscribeDelete);
+
+    this.subscribeDelete.subscribe((model:ModeleReturn<BlockPower>)=>{
+      if(model.Index===0){
+        let index: number = this.dataSource.data.findIndex(item => item.IdBlockPowers === model.Model.IdBlockPowers);
+        this.dataSource.data.splice(index,1);
+        this.dataSource._updateChangeSubscription();
+      }
+    })
+
+    this.subscribeAddAndUpdate.subscribe((substring:string) =>{
       var submodel = deserialize<BlockPower>(BlockPower,substring);
       if(this.isEdit){
         this.isEditAndAddFalse();
@@ -2340,7 +2520,15 @@ export class BlockPowerTableModel implements INewLogicaTable<BlockPower> {
      });
     //Запрос на сохранение и обновление данных
   }
-
+  ///Удаление
+  delete(model: BlockPower): void {
+    var converter = new ConvertDate();
+    this.modelToServer = converter.convertDateToServer<BlockPower>(JSON.parse(JSON.stringify(model)));
+    this.editandadd.deleteBlockPower(this.modelToServer,this.SignalR.iduser).toPromise().then((model:ModeleReturn<Swithe>)=>{
+      alert(model.Message);
+  });
+  }
+  ///Отмена
   public cancel(model: BlockPower):void {
     model.ModelIsEdit = false;
     this.isEditAndAddFalse(); 
@@ -2462,7 +2650,7 @@ export class NameSysBlockTableModel implements INewLogicaTable<NameSysBlock> {
   modeltable: NameSysBlock[];
 
   //Подписка
-  public subscribe:any = null;
+  public subscribeAddAndUpdate:any = null;
   //Шаблоны для манипулирования DOM
   temlateList: any;
   rowList: any;
@@ -2470,9 +2658,9 @@ export class NameSysBlockTableModel implements INewLogicaTable<NameSysBlock> {
   table: ElementRef<any>;
 
   public subscribeservers(){
-    this.subscribe = new BroadcastEventListener<NameSysBlock>('SubscribeNameSysBlock');
-    this.SignalR.conect.listen(this.subscribe);
-    this.subscribe.subscribe((substring:string) =>{
+    this.subscribeAddAndUpdate = new BroadcastEventListener<NameSysBlock>('SubscribeNameSysBlock');
+    this.SignalR.conect.listen(this.subscribeAddAndUpdate);
+    this.subscribeAddAndUpdate.subscribe((substring:string) =>{
       var submodel = deserialize<NameSysBlock>(NameSysBlock,substring);
       if(this.isEdit){
         this.isEditAndAddFalse();
@@ -2542,7 +2730,11 @@ export class NameSysBlockTableModel implements INewLogicaTable<NameSysBlock> {
      });
     //Запрос на сохранение и обновление данных
   }
-
+  ///Удаление
+  delete(): void {
+    throw new Error("Method not implemented.");
+  }
+  ///Отмена
   public cancel(model: NameSysBlock): void {
     model.ModelIsEdit = false;
     this.isEditAndAddFalse(); 
@@ -2634,7 +2826,7 @@ export class NameMonitorTableModel implements INewLogicaTable<NameMonitor> {
   index: number;
   modeltable: NameMonitor[];
   //Подписка
-  public subscribe:any = null;
+  public subscribeAddAndUpdate:any = null;
   //Шаблоны для манипулирования DOM
   temlateList: any;
   rowList: any;
@@ -2642,9 +2834,9 @@ export class NameMonitorTableModel implements INewLogicaTable<NameMonitor> {
   table: ElementRef<any>;
 
   public subscribeservers(){
-    this.subscribe = new BroadcastEventListener<NameMonitor>('SubscribeNameMonitor');
-    this.SignalR.conect.listen(this.subscribe);
-    this.subscribe.subscribe((substring:string) =>{
+    this.subscribeAddAndUpdate = new BroadcastEventListener<NameMonitor>('SubscribeNameMonitor');
+    this.SignalR.conect.listen(this.subscribeAddAndUpdate);
+    this.subscribeAddAndUpdate.subscribe((substring:string) =>{
       var submodel = deserialize<NameMonitor>(NameMonitor,substring);
       if(this.isEdit){
         this.isEditAndAddFalse();
@@ -2714,7 +2906,11 @@ export class NameMonitorTableModel implements INewLogicaTable<NameMonitor> {
      });
     //Запрос на сохранение и обновление данных
   }
-
+  ///Удаление
+  delete(): void {
+    throw new Error("Method not implemented.");
+  }
+  ///Отмена
   public cancel(model: NameMonitor): void {
     model.ModelIsEdit = false;
     this.isEditAndAddFalse(); 
@@ -2807,7 +3003,7 @@ export class NameModelBlokPowerTableModel implements INewLogicaTable<ModelBlockP
   index: number;
   modeltable: ModelBlockPower[];
   //Подписка
-  public subscribe:any = null;
+  public subscribeAddAndUpdate:any = null;
   //Шаблоны для манипулирования DOM
   temlateList: any;
   rowList: any;
@@ -2815,9 +3011,9 @@ export class NameModelBlokPowerTableModel implements INewLogicaTable<ModelBlockP
   table: ElementRef<any>;
 
   public subscribeservers(){
-    this.subscribe = new BroadcastEventListener<ModelBlockPower>('SubscribeModelBlockPower');
-    this.SignalR.conect.listen(this.subscribe);
-    this.subscribe.subscribe((substring:string) =>{
+    this.subscribeAddAndUpdate = new BroadcastEventListener<ModelBlockPower>('SubscribeModelBlockPower');
+    this.SignalR.conect.listen(this.subscribeAddAndUpdate);
+    this.subscribeAddAndUpdate.subscribe((substring:string) =>{
       var submodel = deserialize<ModelBlockPower>(ModelBlockPower,substring);
       if(this.isEdit){
         this.isEditAndAddFalse();
@@ -2887,7 +3083,11 @@ export class NameModelBlokPowerTableModel implements INewLogicaTable<ModelBlockP
      });
     //Запрос на сохранение и обновление данных
   }
-
+  ///Удаление
+  delete(): void {
+    throw new Error("Method not implemented.");
+  }
+  ///Отмена
   public cancel(model: ModelBlockPower): void {
     model.ModelIsEdit = false;
     this.isEditAndAddFalse(); 
@@ -2979,7 +3179,7 @@ export class NameProizvoditelBlockPowerTableModel implements INewLogicaTable<Pro
   index: number;
   modeltable: ProizvoditelBlockPower[];
   //Подписка
-  public subscribe:any = null;
+  public subscribeAddAndUpdate:any = null;
   //Шаблоны для манипулирования DOM
   temlateList: any;
   rowList: any;
@@ -2987,9 +3187,9 @@ export class NameProizvoditelBlockPowerTableModel implements INewLogicaTable<Pro
   table: ElementRef<any>;
 
   public subscribeservers(){
-    this.subscribe = new BroadcastEventListener<ProizvoditelBlockPower>('SubscribeProizvoditelBlockPower');
-    this.SignalR.conect.listen(this.subscribe);
-    this.subscribe.subscribe((substring:string) =>{
+    this.subscribeAddAndUpdate = new BroadcastEventListener<ProizvoditelBlockPower>('SubscribeProizvoditelBlockPower');
+    this.SignalR.conect.listen(this.subscribeAddAndUpdate);
+    this.subscribeAddAndUpdate.subscribe((substring:string) =>{
       var submodel = deserialize<ProizvoditelBlockPower>(ProizvoditelBlockPower,substring);
       if(this.isEdit){
         this.isEditAndAddFalse();
@@ -3059,7 +3259,11 @@ export class NameProizvoditelBlockPowerTableModel implements INewLogicaTable<Pro
      });
     //Запрос на сохранение и обновление данных
   }
-
+  ///Удаление
+  delete(): void {
+    throw new Error("Method not implemented.");
+  }
+  ///Отмена
   public cancel(model: ProizvoditelBlockPower): void {
     model.ModelIsEdit = false;
     this.isEditAndAddFalse(); 
@@ -3157,7 +3361,7 @@ export class NameFullModelTableModel implements INewLogicaTable<FullModel> {
   public classification:Classification[]
   public filteredClassification:any;
   //Подписка
-  public subscribe:any = null;
+  public subscribeAddAndUpdate:any = null;
   //Шаблоны для манипулирования DOM
   temlateList: any;
   rowList: any;
@@ -3165,9 +3369,9 @@ export class NameFullModelTableModel implements INewLogicaTable<FullModel> {
   table: ElementRef<any>;
 
   public subscribeservers(){
-    this.subscribe = new BroadcastEventListener<FullModel>('SubscribeFullModel');
-    this.SignalR.conect.listen(this.subscribe);
-    this.subscribe.subscribe((substring:string) =>{
+    this.subscribeAddAndUpdate = new BroadcastEventListener<FullModel>('SubscribeFullModel');
+    this.SignalR.conect.listen(this.subscribeAddAndUpdate);
+    this.subscribeAddAndUpdate.subscribe((substring:string) =>{
       var submodel = deserialize<FullModel>(FullModel,substring);
       if(this.isEdit){
         this.isEditAndAddFalse();
@@ -3237,7 +3441,11 @@ export class NameFullModelTableModel implements INewLogicaTable<FullModel> {
      });
     //Запрос на сохранение и обновление данных
   }
-
+  ///Удаление
+  delete(): void {
+    throw new Error("Method not implemented.");
+  }
+  ///Отмена
   public cancel(model: FullModel): void {
     model.ModelIsEdit = false;
     this.isEditAndAddFalse(); 
@@ -3335,7 +3543,7 @@ export class NameFullProizvoditelTableModel implements INewLogicaTable<FullProiz
   index: number;
   modeltable: FullProizvoditel[];
   //Подписка
-  public subscribe:any = null;
+  public subscribeAddAndUpdate:any = null;
   //Шаблоны для манипулирования DOM
   temlateList:any //Заложенный шаблон Массив
   rowList:any    //Строка по номеру из БД Массив 
@@ -3343,9 +3551,9 @@ export class NameFullProizvoditelTableModel implements INewLogicaTable<FullProiz
   table:ElementRef<any>  //Полный шаблон для манипуляции
 
   public subscribeservers(){
-    this.subscribe = new BroadcastEventListener<FullProizvoditel>('SubscribeFullProizvoditel');
-    this.SignalR.conect.listen(this.subscribe);
-    this.subscribe.subscribe((substring:string) =>{
+    this.subscribeAddAndUpdate = new BroadcastEventListener<FullProizvoditel>('SubscribeFullProizvoditel');
+    this.SignalR.conect.listen(this.subscribeAddAndUpdate);
+    this.subscribeAddAndUpdate.subscribe((substring:string) =>{
       var submodel = deserialize<FullProizvoditel>(FullProizvoditel,substring);
       if(this.isEdit){
         this.isEditAndAddFalse();
@@ -3415,7 +3623,11 @@ export class NameFullProizvoditelTableModel implements INewLogicaTable<FullProiz
      });
     //Запрос на сохранение и обновление данных
   }
-
+  ///Удаление
+  delete(): void {
+    throw new Error("Method not implemented.");
+  }
+  ///Отмена
   public cancel(model: FullProizvoditel): void {
     model.ModelIsEdit = false;
     this.isEditAndAddFalse(); 
@@ -3510,7 +3722,7 @@ export class NameClassificationTableModel implements INewLogicaTable<Classificat
   index: number;
   modeltable: Classification[];
   //Подписка
-  public subscribe:any = null;
+  public subscribeAddAndUpdate:any = null;
   //Шаблоны для манипулирования DOM
   temlateList:any //Заложенный шаблон Массив
   rowList:any    //Строка по номеру из БД Массив 
@@ -3518,9 +3730,9 @@ export class NameClassificationTableModel implements INewLogicaTable<Classificat
   table:ElementRef<any>  //Полный шаблон для манипуляции
 
   public subscribeservers(){
-    this.subscribe = new BroadcastEventListener<Classification>('SubscribeClassification');
-    this.SignalR.conect.listen(this.subscribe);
-    this.subscribe.subscribe((substring:string) =>{
+    this.subscribeAddAndUpdate = new BroadcastEventListener<Classification>('SubscribeClassification');
+    this.SignalR.conect.listen(this.subscribeAddAndUpdate);
+    this.subscribeAddAndUpdate.subscribe((substring:string) =>{
       var submodel = deserialize<Classification>(Classification,substring);
       if(this.isEdit){
         this.isEditAndAddFalse();
@@ -3590,7 +3802,11 @@ export class NameClassificationTableModel implements INewLogicaTable<Classificat
      });
     //Запрос на сохранение и обновление данных
   }
-
+  ///Удаление
+  delete(): void {
+    throw new Error("Method not implemented.");
+  }
+  ///Отмена
   public cancel(model: Classification): void {
     model.ModelIsEdit = false;
     this.isEditAndAddFalse(); 
@@ -3685,7 +3901,7 @@ export class NameCopySaveTableModel implements INewLogicaTable<CopySave> {
   index: number;
   modeltable: CopySave[];
   //Подписка
-  public subscribe:any = null;
+  public subscribeAddAndUpdate:any = null;
   //Шаблоны для манипулирования DOM
   temlateList:any //Заложенный шаблон Массив
   rowList:any    //Строка по номеру из БД Массив 
@@ -3693,9 +3909,9 @@ export class NameCopySaveTableModel implements INewLogicaTable<CopySave> {
   table:ElementRef<any>  //Полный шаблон для манипуляции
 
   public subscribeservers(){
-    this.subscribe = new BroadcastEventListener<CopySave>('SubscribeCopySave');
-    this.SignalR.conect.listen(this.subscribe);
-    this.subscribe.subscribe((substring:string) =>{
+    this.subscribeAddAndUpdate = new BroadcastEventListener<CopySave>('SubscribeCopySave');
+    this.SignalR.conect.listen(this.subscribeAddAndUpdate);
+    this.subscribeAddAndUpdate.subscribe((substring:string) =>{
       var submodel = deserialize<CopySave>(CopySave,substring);
       if(this.isEdit){
         this.isEditAndAddFalse();
@@ -3766,7 +3982,11 @@ export class NameCopySaveTableModel implements INewLogicaTable<CopySave> {
      });
     //Запрос на сохранение и обновление данных
   }
-
+  ///Удаление
+  delete(): void {
+    throw new Error("Method not implemented.");
+  }
+  ///Отмена
   public cancel(model: CopySave): void {
     model.ModelIsEdit = false;
     this.isEditAndAddFalse(); 
@@ -3861,7 +4081,7 @@ export class NameKabinetTableModel implements INewLogicaTable<Kabinet> {
   index: number;
   modeltable: Kabinet[];
    //Подписка
-   public subscribe:any = null;
+   public subscribeAddAndUpdate:any = null;
   //Шаблоны для манипулирования DOM
   temlateList:any //Заложенный шаблон Массив
   rowList:any    //Строка по номеру из БД Массив 
@@ -3869,9 +4089,9 @@ export class NameKabinetTableModel implements INewLogicaTable<Kabinet> {
   table:ElementRef<any>  //Полный шаблон для манипуляции
 
   public subscribeservers(){
-    this.subscribe = new BroadcastEventListener<Kabinet>('SubscribeKabinet');
-    this.SignalR.conect.listen(this.subscribe);
-    this.subscribe.subscribe((substring:string) =>{
+    this.subscribeAddAndUpdate = new BroadcastEventListener<Kabinet>('SubscribeKabinet');
+    this.SignalR.conect.listen(this.subscribeAddAndUpdate);
+    this.subscribeAddAndUpdate.subscribe((substring:string) =>{
       var submodel = deserialize<Kabinet>(Kabinet,substring);
       if(this.isEdit){
         this.isEditAndAddFalse();
@@ -3941,7 +4161,11 @@ export class NameKabinetTableModel implements INewLogicaTable<Kabinet> {
      });
     //Запрос на сохранение и обновление данных
   }
-
+  ///Удаление
+  delete(): void {
+    throw new Error("Method not implemented.");
+  }
+  ///Отмена
   cancel(model: Kabinet): void {
     model.ModelIsEdit = false;
     this.isEditAndAddFalse(); 
@@ -4046,7 +4270,7 @@ export class NameSupplyTableModel implements INewLogicaTable<Supply> {
   date = new FormControl(new Date());
 
   //Подписка
-  public subscribe:any = null;
+  public subscribeAddAndUpdate:any = null;
 
   //Шаблоны для манипулирования DOM
   temlateList:any //Заложенный шаблон Массив
@@ -4055,9 +4279,9 @@ export class NameSupplyTableModel implements INewLogicaTable<Supply> {
   table:ElementRef<any>  //Полный шаблон для манипуляции
   
   public subscribeservers(){
-    this.subscribe = new BroadcastEventListener<Supply>('SubscribeSupply');
-    this.SignalR.conect.listen(this.subscribe);
-    this.subscribe.subscribe((substring:string) =>{
+    this.subscribeAddAndUpdate = new BroadcastEventListener<Supply>('SubscribeSupply');
+    this.SignalR.conect.listen(this.subscribeAddAndUpdate);
+    this.subscribeAddAndUpdate.subscribe((substring:string) =>{
       var submodel = deserialize<Supply>(Supply,substring);
       if(this.isEdit){
         this.isEditAndAddFalse();
@@ -4128,7 +4352,11 @@ export class NameSupplyTableModel implements INewLogicaTable<Supply> {
     });
     //Запрос на сохранение и обновление данных
   }
-
+  ///Удаление
+  delete(): void {
+    throw new Error("Method not implemented.");
+  }
+  ///Отмена
   public cancel(model: Supply): void {
     model.ModelIsEdit = false;
     this.isEditAndAddFalse(); 
@@ -4227,7 +4455,7 @@ export class NameStatusingTableModel implements INewLogicaTable<Statusing> {
   index: number;
   modeltable: Statusing[];
   //Подписка
-  public subscribe:any = null;
+  public subscribeAddAndUpdate:any = null;
   //Шаблоны для манипулирования DOM
   temlateList:any //Заложенный шаблон Массив
   rowList:any    //Строка по номеру из БД Массив 
@@ -4235,9 +4463,9 @@ export class NameStatusingTableModel implements INewLogicaTable<Statusing> {
   table:ElementRef<any>  //Полный шаблон для манипуляции
 
   public subscribeservers(){
-    this.subscribe = new BroadcastEventListener<Statusing>('SubscribeStatusing');
-    this.SignalR.conect.listen(this.subscribe);
-    this.subscribe.subscribe((substring:string) =>{
+    this.subscribeAddAndUpdate = new BroadcastEventListener<Statusing>('SubscribeStatusing');
+    this.SignalR.conect.listen(this.subscribeAddAndUpdate);
+    this.subscribeAddAndUpdate.subscribe((substring:string) =>{
       var submodel = deserialize<Statusing>(Statusing,substring);
       if(this.isEdit){
         this.isEditAndAddFalse();
@@ -4307,7 +4535,11 @@ export class NameStatusingTableModel implements INewLogicaTable<Statusing> {
      });
     //Запрос на сохранение и обновление данных
   }
-
+  ///Удаление
+  delete(): void {
+    throw new Error("Method not implemented.");
+  }
+  ///Отмена
   public cancel(model: Statusing): void {
     model.ModelIsEdit = false;
     this.isEditAndAddFalse(); 
@@ -4402,7 +4634,7 @@ export class NameModelSwitheTableModel implements INewLogicaTable<ModelSwithes> 
   index: number;
   modeltable: ModelSwithes[];
   //Подписка
-  public subscribe:any = null;
+  public subscribeAddAndUpdate:any = null;
   //Шаблоны для манипулирования DOM
   temlateList:any //Заложенный шаблон Массив
   rowList:any    //Строка по номеру из БД Массив 
@@ -4410,9 +4642,9 @@ export class NameModelSwitheTableModel implements INewLogicaTable<ModelSwithes> 
   table:ElementRef<any>  //Полный шаблон для манипуляции
 
   public subscribeservers(){
-    this.subscribe = new BroadcastEventListener<ModelSwithes>('SubscribeModelSwithe');
-    this.SignalR.conect.listen(this.subscribe);
-    this.subscribe.subscribe((substring:string) =>{
+    this.subscribeAddAndUpdate = new BroadcastEventListener<ModelSwithes>('SubscribeModelSwithe');
+    this.SignalR.conect.listen(this.subscribeAddAndUpdate);
+    this.subscribeAddAndUpdate.subscribe((substring:string) =>{
       var submodel = deserialize<ModelSwithes>(ModelSwithes,substring);
       if(this.isEdit){
         this.isEditAndAddFalse();
@@ -4482,7 +4714,11 @@ export class NameModelSwitheTableModel implements INewLogicaTable<ModelSwithes> 
      });
     //Запрос на сохранение и обновление данных
   }
-
+  ///Удаление
+  delete(): void {
+    throw new Error("Method not implemented.");
+  }
+  ///Отмена
   cancel(model: ModelSwithes): void {
     model.ModelIsEdit = false;
     this.isEditAndAddFalse(); 

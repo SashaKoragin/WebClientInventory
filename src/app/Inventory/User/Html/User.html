@@ -20,12 +20,12 @@
 
             <ng-container matColumnDef="IdUser">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
-                <td [style.background]="(row.StatusActual) ? 'darkkhaki' : 'red'" mat-cell *matCellDef="let row" [matTooltip]="row.IdUser">{{row.IdUser}}</td>
+                <td [style.background]="row.StatusUser?.ColorStatus" mat-cell *matCellDef="let row" [matTooltip]="row.IdUser">{{row.IdUser}}</td>
             </ng-container>
 
             <ng-container matColumnDef="Name">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Имя пользователя</th>
-                <td [style.background]="(row.StatusActual) ? 'darkkhaki' : 'red'" mat-cell *matCellDef="let row" [matTooltip]="row.Name">
+                <td [style.background]="row.StatusUser?.ColorStatus" mat-cell *matCellDef="let row" [matTooltip]="row.Name">
                 <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Name}}</Label> 
                 <div [ngClass]=row.IdUser.toString() id="{{row.IdUser}}" [style.display]="!row.ModelIsEdit ? 'none':'block'">
                 </div>
@@ -34,7 +34,7 @@
 
             <ng-container matColumnDef="TabelNumber">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Табельный номер</th>
-                <td [style.background]="(row.StatusActual) ? 'darkkhaki' : 'red'" mat-cell *matCellDef="let row" [matTooltip]="row.TabelNumber">
+                <td [style.background]="row.StatusUser?.ColorStatus" mat-cell *matCellDef="let row" [matTooltip]="row.TabelNumber">
                    <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.TabelNumber}}</Label> 
                    <div [ngClass]=row.IdUser.toString() id="{{row.IdUser}}" [style.display]="!row.ModelIsEdit ? 'none':'block'">
                    </div>
@@ -44,7 +44,7 @@
             
             <ng-container matColumnDef="Telephon.SerNumber">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header>Серийный номер телефона</th>
-                    <td [style.background]="(row.StatusActual) ? 'darkkhaki' : 'red'" mat-cell *matCellDef="let row" [matTooltip]="row.Telephon?.SerNumber">
+                    <td [style.background]="row.StatusUser?.ColorStatus" mat-cell *matCellDef="let row" [matTooltip]="row.Telephon?.SerNumber">
                        <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Telephon?.SerNumber}}</Label> 
                        <div [ngClass]=row.IdUser.toString() id="{{row.IdUser}}" [style.display]="!row.ModelIsEdit ? 'none':'block'">
                        </div>
@@ -53,7 +53,7 @@
 
             <ng-container matColumnDef="Telephon.Telephon_">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header>Внутренний номер</th>
-                    <td [style.background]="(row.StatusActual) ? 'darkkhaki' : 'red'" mat-cell *matCellDef="let row" [matTooltip]="row.Telephon?.Telephon_">
+                    <td [style.background]="row.StatusUser?.ColorStatus" mat-cell *matCellDef="let row" [matTooltip]="row.Telephon?.Telephon_">
                         <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Telephon?.Telephon_}}</Label> 
                         <div [ngClass]=row.IdUser.toString() id="{{row.IdUser}}" [style.display]="!row.ModelIsEdit ? 'none':'block'">
                         </div>
@@ -62,7 +62,7 @@
               
             <ng-container matColumnDef="Telephon.TelephonUndeground">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header>Городской номер</th>
-                    <td [style.background]="(row.StatusActual) ? 'darkkhaki' : 'red'" mat-cell *matCellDef="let row" [matTooltip]="row.Telephon?.TelephonUndeground">
+                    <td [style.background]="row.StatusUser?.ColorStatus" mat-cell *matCellDef="let row" [matTooltip]="row.Telephon?.TelephonUndeground">
                         <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Telephon?.TelephonUndeground}}</Label> 
                         <div [style.display]="!row.ModelIsEdit ? 'none':'block'">
                             <label>{{user.model?.Telephon?.TelephonUndeground}}</label> 
@@ -72,7 +72,7 @@
 
             <ng-container matColumnDef="Position.NamePosition">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Должность</th>
-                <td [style.background]="(row.StatusActual) ? 'darkkhaki' : 'red'" mat-cell *matCellDef="let row" [matTooltip]="row.Position?.NamePosition">
+                <td [style.background]="row.StatusUser?.ColorStatus" mat-cell *matCellDef="let row" [matTooltip]="row.Position?.NamePosition">
                         <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Position?.NamePosition}}</Label>
                         <div [ngClass]=row.IdUser.toString() id="{{row.IdUser}}" [style.display]="!row.ModelIsEdit ? 'none':'block'">
                         </div>
@@ -81,7 +81,7 @@
 
             <ng-container matColumnDef="Otdel.NameOtdel">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Отдел</th>
-                <td [style.background]="(row.StatusActual) ? 'darkkhaki' : 'red'" mat-cell *matCellDef="let row" [matTooltip]="row.Otdel?.NameOtdel">
+                <td [style.background]="row.StatusUser?.ColorStatus" mat-cell *matCellDef="let row" [matTooltip]="row.Otdel?.NameOtdel">
                     <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Otdel?.NameOtdel}}</Label>
                     <div [ngClass]=row.IdUser.toString() id="{{row.IdUser}}" [style.display]="!row.ModelIsEdit ? 'none':'block'">
                     </div>
@@ -91,7 +91,7 @@
             
             <ng-container matColumnDef="Rule.NameRules">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Роль</th>
-                <td [style.background]="(row.StatusActual) ? 'darkkhaki' : 'red'" mat-cell *matCellDef="let row" [matTooltip]="row.Rule?.NameRules">
+                <td [style.background]="row.StatusUser?.ColorStatus" mat-cell *matCellDef="let row" [matTooltip]="row.Rule?.NameRules">
                     <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Rule?.NameRules}}</Label>
                     <div [ngClass]=row.IdUser.toString() id="{{row.IdUser}}" [style.display]="!row.ModelIsEdit ? 'none':'block'">
                     </div>
@@ -100,7 +100,7 @@
 
             <ng-container matColumnDef="NameUser">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Login</th>
-                <td [style.background]="(row.StatusActual) ? 'darkkhaki' : 'red'" mat-cell *matCellDef="let row" [matTooltip]="row.NameUser">
+                <td [style.background]="row.StatusUser?.ColorStatus" mat-cell *matCellDef="let row" [matTooltip]="row.NameUser">
                     <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.NameUser}}</Label>
                     <div [ngClass]=row.IdUser.toString() id="{{row.IdUser}}" [style.display]="!row.ModelIsEdit ? 'none':'block'">
                     </div> 
@@ -110,7 +110,7 @@
             
             <ng-container matColumnDef="Passwords">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Passwords</th>
-                <td [style.background]="(row.StatusActual) ? 'darkkhaki' : 'red'" mat-cell *matCellDef="let row" [matTooltip]="row.Passwords">
+                <td [style.background]="row.StatusUser?.ColorStatus" mat-cell *matCellDef="let row" [matTooltip]="row.Passwords">
                     <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Passwords}}</Label>
                     <div [ngClass]=row.IdUser.toString() id="{{row.IdUser}}" [style.display]="!row.ModelIsEdit ? 'none':'block'">
                     </div> 
@@ -119,8 +119,8 @@
 
             <ng-container matColumnDef="StatusActual">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Актуальность</th>
-                <td [style.background]="(row.StatusActual) ? 'darkkhaki' : 'red'" mat-cell *matCellDef="let row">
-                        {{(row.StatusActual) ? "Работает" : "Уволен" }}
+                <td [style.background]="row.StatusUser?.ColorStatus" mat-cell *matCellDef="let row">
+                        {{row.StatusUser?.StatusText}}
                 </td>
             </ng-container>
  
@@ -132,12 +132,17 @@
                     </button>
                    </ng-template>
                 </th>
-                <td [style.background]="(row.StatusActual) ? 'darkkhaki' : 'red'" mat-cell *matCellDef="let row">
-                   <ng-template [ngxPermissionsExcept]="['Просмотр']">
-                    <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="user.isEdit" color="accent" (click)="user.edit(row)">
-                     <i class="material-icons">edit</i>
-                    </button>
+                <td [style.background]="row.StatusUser?.ColorStatus" mat-cell *matCellDef="let row">
+                    <ng-template [ngxPermissionsExcept]="['Просмотр']">
+                       <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="user.isEdit" color="accent" (click)="user.edit(row)">
+                             <i class="material-icons">edit</i>
+                       </button>
                    </ng-template>
+                   <ng-template [ngxPermissionsExcept]="['Просмотр','Оператор','Редактор']">
+                       <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="user.isEdit" (click)="user.delete(row)">
+                           <i class="material-icons">delete</i>
+                       </button>
+                    </ng-template>
                 <div *ngIf="row.ModelIsEdit" >
                         <button  mat-icon-button type="submit" [disabled]="user.modelvalid.getRowValidatorModel[0].invalid" color="primary" focusable="false" (click)="user.save()">
                                 <i class="material-icons">check</i>
@@ -478,6 +483,11 @@
                        <ng-template [ngxPermissionsExcept]="['Просмотр']">
                         <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="telephone.isEdit" color="accent" (click)="telephone.edit(row)">
                          <i class="material-icons">edit</i>
+                        </button>
+                       </ng-template>
+                       <ng-template [ngxPermissionsExcept]="['Просмотр','Оператор','Редактор']">
+                        <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="telephone.isEdit" (click)="telephone.delete(row)">
+                            <i class="material-icons">delete</i>
                         </button>
                        </ng-template>
                   <div *ngIf="row.ModelIsEdit" >

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild,ElementRef  } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import {PostInventar, EditAndAdd, AuthIdentificationSignalR } from '../../../Post RequestService/PostRequest';
 import {MatTableDataSource,MatPaginator, MatSort } from '@angular/material';
 import { UserTableModel, TelephonsTableModel, OtdelTableModel } from '../../AddFullModel/ModelTable/TableModel';
@@ -14,7 +14,7 @@ import { ModelSelect } from '../../AllSelectModel/ParametrModel';
     providers: [EditAndAdd]
 }) as any)
 
-export class User implements OnInit {
+export class User implements OnInit,OnDestroy {
 
     constructor(public selectall: PostInventar,public editandadd:EditAndAdd,public SignalR:AuthIdentificationSignalR) { }
 
@@ -102,4 +102,14 @@ export class User implements OnInit {
     this.dataSource.data = this.selectall.select.UsersIsActualsStats;
     this.isload = false;
 }
+
+ngOnDestroy(): void {
+    this.user.subscribeDelete.unsubscribe()
+    this.user.subscribeAddAndUpdate.unsubscribe()
+    this.telephone.subscribeDelete.unsubscribe()
+    this.telephone.subscribeAddAndUpdate.unsubscribe()
 }
+
+}
+
+

@@ -132,6 +132,11 @@
                                   <i class="material-icons">edit</i>
                                  </button>
                                 </ng-template>
+                                <ng-template [ngxPermissionsExcept]="['Просмотр','Оператор','Редактор']">
+                                  <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="printer.isEdit" (click)="printer.delete(row)">
+                                      <i class="material-icons">delete</i>
+                                  </button>
+                               </ng-template>
                             <div *ngIf="row.ModelIsEdit" >
                                     <button  mat-icon-button type="submit" [disabled]="printer.modelvalid.getRowValidatorModel[1].invalid" color="primary" focusable="false" (click)="printer.save()">
                                             <i class="material-icons">check</i>
@@ -362,6 +367,11 @@
                                 <i class="material-icons">edit</i>
                               </button>
                             </ng-template>
+                            <ng-template [ngxPermissionsExcept]="['Просмотр','Оператор','Редактор']">
+                              <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="scaner.isEdit" (click)="scaner.delete(row)">
+                                  <i class="material-icons">delete</i>
+                              </button>
+                           </ng-template>
                         <div *ngIf="row.ModelIsEdit" >
                                 <button  mat-icon-button type="submit" [disabled]="scaner.modelvalid.getRowValidatorModel[1].invalid" color="primary" focusable="false" (click)="scaner.save()">
                                         <i class="material-icons">check</i>
@@ -599,6 +609,11 @@
                                 <i class="material-icons">edit</i>
                               </button>
                             </ng-template>
+                            <ng-template [ngxPermissionsExcept]="['Просмотр','Оператор','Редактор']">
+                              <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="mfu.isEdit" (click)="mfu.delete(row)">
+                                  <i class="material-icons">delete</i>
+                              </button>
+                           </ng-template>
                         <div *ngIf="row.ModelIsEdit" >
                                 <button  mat-icon-button type="submit" [disabled]="mfu.modelvalid.getRowValidatorModel[1].invalid" color="primary" focusable="false" (click)="mfu.save()">
                                         <i class="material-icons">check</i>
@@ -837,6 +852,11 @@
                                    <i class="material-icons">edit</i>
                                   </button>
                                 </ng-template>
+                                <ng-template [ngxPermissionsExcept]="['Просмотр','Оператор','Редактор']">
+                                  <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="sysblok.isEdit" (click)="sysblok.delete(row)">
+                                      <i class="material-icons">delete</i>
+                                  </button>
+                               </ng-template>
                             <div *ngIf="row.ModelIsEdit" >
                                     <button  mat-icon-button type="submit" [disabled]="sysblok.modelvalid.getRowValidatorModel[2].invalid" color="primary" focusable="false" (click)="sysblok.save()">
                                             <i class="material-icons">check</i>
@@ -1028,6 +1048,11 @@
                                 <i class="material-icons">edit</i>
                               </button>
                             </ng-template>
+                            <ng-template [ngxPermissionsExcept]="['Просмотр','Оператор','Редактор']">
+                              <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="monitor.isEdit" (click)="monitor.delete(row)">
+                                  <i class="material-icons">delete</i>
+                              </button>
+                           </ng-template>
                         <div *ngIf="row.ModelIsEdit" >
                                 <button  mat-icon-button type="submit" [disabled]="monitor.modelvalid.getRowValidatorModel[3].invalid" color="primary" focusable="false" (click)="monitor.save()">
                                         <i class="material-icons">check</i>
@@ -1230,6 +1255,11 @@
                                 <i class="material-icons">edit</i>
                               </button>
                             </ng-template>
+                            <ng-template [ngxPermissionsExcept]="['Просмотр','Оператор','Редактор']">
+                              <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="blockpower.isEdit" (click)="blockpower.delete(row)">
+                                  <i class="material-icons">delete</i>
+                              </button>
+                           </ng-template>
                         <div *ngIf="row.ModelIsEdit" >
                                 <button  mat-icon-button type="submit" [disabled]="blockpower.modelvalid.getRowValidatorModel[5].invalid" color="primary" focusable="false" (click)="blockpower.save()">
                                         <i class="material-icons">check</i>
@@ -1444,6 +1474,11 @@
                               <i class="material-icons">edit</i>
                             </button>
                           </ng-template>
+                          <ng-template [ngxPermissionsExcept]="['Просмотр','Оператор','Редактор']">
+                            <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="switch.isEdit" (click)="switch.delete(row)">
+                                <i class="material-icons">delete</i>
+                            </button>
+                         </ng-template>
                       <div *ngIf="row.ModelIsEdit" >
                               <button  mat-icon-button type="submit" [disabled]="switch.modelvalid.getRowValidatorModel[7].invalid" color="primary" focusable="false" (click)="switch.save()">
                                       <i class="material-icons">check</i>

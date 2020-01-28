@@ -86,6 +86,14 @@ export class Select implements AfterViewInit{
       XLSX.writeFile(wb, 'Отчет.xlsx');
     }
 
+    ///Цвет ячейки из БД статус
+    returnColorColumns(row:any):string{
+      if(row.match(/#/)){
+        return row;
+      }
+      return null;
+    }
+
     ///Подгрузка панели задач
     ngAfterViewInit(): void {
       if(this.elementpanel){
