@@ -70,4 +70,15 @@ export class AdressInventarka {
     public addAndEditNameClassification = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditNameClassification`;
     public addAndEditNameFullProizvoditel = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditNameFullProizvoditel`;
     public addAndEditNameCopySave = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditNameCopySave`;
+
+    ///Удаление записей
+    public deleteUser = `http://${ServerHost}:${ServerPort}/Inventarka/DeleteUser?userIdEdit=`;
+    public deleteSysBlock = `http://${ServerHost}:${ServerPort}/Inventarka/DeleteSysBlock?userIdEdit=`;
+    public deleteMonitor = `http://${ServerHost}:${ServerPort}/Inventarka/DeleteMonitor?userIdEdit=`;
+    public deletePrinter = `http://${ServerHost}:${ServerPort}/Inventarka/DeletePrinter?userIdEdit=`;
+    public deleteScannerAndCamera = `http://${ServerHost}:${ServerPort}/Inventarka/DeleteScannerAndCamera?userIdEdit=`;
+    public deleteMfu = `http://${ServerHost}:${ServerPort}/Inventarka/DeleteMfu?userIdEdit=`;
+    public deleteBlockPower = `http://${ServerHost}:${ServerPort}/Inventarka/DeleteBlockPower?userIdEdit=`;
+    public deleteSwitch = `http://${ServerHost}:${ServerPort}/Inventarka/DeleteSwitch?userIdEdit=`;
+    public deleteTelephone = `http://${ServerHost}:${ServerPort}/Inventarka/DeleteTelephone?userIdEdit=`;
 }

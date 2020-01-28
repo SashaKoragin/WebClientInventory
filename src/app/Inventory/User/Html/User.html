@@ -133,11 +133,16 @@
                    </ng-template>
                 </th>
                 <td [style.background]="row.StatusUser?.ColorStatus" mat-cell *matCellDef="let row">
-                   <ng-template [ngxPermissionsExcept]="['Просмотр']">
-                    <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="user.isEdit" color="accent" (click)="user.edit(row)">
-                     <i class="material-icons">edit</i>
-                    </button>
+                    <ng-template [ngxPermissionsExcept]="['Просмотр']">
+                       <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="user.isEdit" color="accent" (click)="user.edit(row)">
+                             <i class="material-icons">edit</i>
+                       </button>
                    </ng-template>
+                   <ng-template [ngxPermissionsExcept]="['Просмотр','Оператор','Редактор']">
+                       <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="user.isEdit" (click)="user.delete(row)">
+                           <i class="material-icons">delete</i>
+                       </button>
+                    </ng-template>
                 <div *ngIf="row.ModelIsEdit" >
                         <button  mat-icon-button type="submit" [disabled]="user.modelvalid.getRowValidatorModel[0].invalid" color="primary" focusable="false" (click)="user.save()">
                                 <i class="material-icons">check</i>
@@ -478,6 +483,11 @@
                        <ng-template [ngxPermissionsExcept]="['Просмотр']">
                         <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="telephone.isEdit" color="accent" (click)="telephone.edit(row)">
                          <i class="material-icons">edit</i>
+                        </button>
+                       </ng-template>
+                       <ng-template [ngxPermissionsExcept]="['Просмотр','Оператор','Редактор']">
+                        <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="telephone.isEdit" (click)="telephone.delete(row)">
+                            <i class="material-icons">delete</i>
                         </button>
                        </ng-template>
                   <div *ngIf="row.ModelIsEdit" >

@@ -43,6 +43,8 @@ export interface INewLogicaTable<T> {
     edit(model: T): void;
     //Сохранение
     save():void;
+    //Удаление
+    delete(model: T):void;
     //Отмена
     cancel(model: T):void;
     //Создание новой модели
@@ -484,4 +486,12 @@ export class UsersIsActualsStats{
     public IdPosition:number;
     public TabelNumber:string;
     public StatusActual:boolean;
+}
+
+///Модель возврата данных по SignalR
+export class ModeleReturn<T>{
+  public Guid:string;
+  public Index:number;
+  public Message:string;
+  public Model:T;
 }
