@@ -136,6 +136,12 @@ export class PostInventar {
             { responseType: 'arraybuffer', headers: new HttpHeaders({ 'Content-Type': 'application/json' }) })
     }
     
+    public downLoadXlsxSql(idView:number){
+        return this.http.get(url.getFileXlsx.concat(idView.toString()), { 
+            responseType: 'arraybuffer', headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+        })
+    }
+
     ///Выборка всего из БД в всех пользователей
     async alluser() {
     this.select.Users = await this.http.get(url.alluser, httpOptionsJson).toPromise().then((model)=>{
@@ -488,6 +494,7 @@ export class EditAndAdd{
 export class SelectAllParametrs{
     constructor(private http: HttpClient) { }
     
+
 
    addselectallparametrs(model:ModelSelect){
         return this.http.post(url.selectparametr,model,httpOptionsJson);
