@@ -84,7 +84,6 @@ import { MatSelectFilterModule} from 'mat-select-filter';
         MatTabsModule,
         ScrollingModule,
         MatToolbarModule,
-        
         MatTooltipModule,
         MatTreeModule
     ],

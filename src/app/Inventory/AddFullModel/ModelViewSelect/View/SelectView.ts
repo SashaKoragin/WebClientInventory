@@ -1,4 +1,4 @@
-import { Component,Input,ViewChild, ElementRef,Renderer2, AfterViewInit} from '@angular/core';
+import { Component,Input,ViewChild, ElementRef,Renderer2, AfterViewInit, TemplateRef} from '@angular/core';
 import {GenerateParametrs, LogicaDataBase } from '../../../AllSelectModel/GenerateParametrFront';
 import { MatPaginator,MatTableDataSource} from '@angular/material';
 import { SelectAllParametrs } from '../../../../Post RequestService/PostRequest';
@@ -11,19 +11,15 @@ import { Table } from '../../ModelTable/DynamicTableModel';
     styleUrls: ['../Html/SelectView.css'],
 }) as any)
 
-export class Select implements AfterViewInit{
+export class Select {
 
-    constructor(private renderer: Renderer2) {}
 
-    private elementpanel: ElementRef
     @ViewChild('TABLE',{static: false}) table: ElementRef;
 
-    //Панель инструментов
-    @ViewChild('TOOLPANEL',{static:false}) toolspanels: ElementRef;
-    @Input() set panels(value: ElementRef) {
-       this.elementpanel = value;
-       this.ngAfterViewInit();
-     }
+    //Шаблон кнопок в таблице
+    @Input() logicstooltable: TemplateRef<any>;
+    //Шаблон Панель инструментов
+    @Input() toolpanel: TemplateRef<any>;
     
     @Input() logica:LogicaDataBase;
     @Input() columns:Table;
@@ -31,9 +27,6 @@ export class Select implements AfterViewInit{
     @Input() select:SelectAllParametrs;
 
     @ViewChild('tables',{static: false}) paginator: MatPaginator;
-    allcountproblem:number = 0
-    displayedColumns:any
-    dataSource:MatTableDataSource<any> = new MatTableDataSource<any>();
 
     update(){
        try {
@@ -46,14 +39,14 @@ export class Select implements AfterViewInit{
             this.logica.errornull = true;
               if(model !== "null")
               {
-               this.dataSource.data =(JSON.parse(model)[this.columns.Type]);
-               this.displayedColumns = this.columns.Colums.map(c => c.columnDef);
-               this.allcountproblem = this.dataSource.data.length;
+               this.columns.Model.data = (JSON.parse(model)[this.columns.Type])
+               this.columns.displayedColumns = this.columns.Colums.map(c => c.columnDef);
+               this.columns.allCountRow = this.columns.Model.data.length;
               }
               else{
                  this.logica.errornull = false;  //Показать ошибку пустых данных
               }
-              this.dataSource.paginator = this.paginator;
+              this.columns.Model.paginator = this.paginator;
               this.logica.logicaprogress();    //Открываем логику данных
               this.logica.logicadatabase();    //Закрываем логику загрузки
              })
@@ -70,18 +63,24 @@ export class Select implements AfterViewInit{
     back() {
         this.logica.logicadatabase();; //Закрываем логику Данных
         this.logica.logicaselect(); //Открываем логику загрузки
-        this.displayedColumns = null;
+        this.columns.displayedColumns = null;
     }
 
     FilterDataTable(filterValue: string) {
-        this.dataSource.filter = filterValue.trim().toLowerCase();
+      this.columns.Model.filter = filterValue.trim().toLowerCase();
     }
 
 
-    ExportTOExcel()
-    {
+    ExportTOExcel(){
       const ws: XLSX.WorkSheet=XLSX.utils.table_to_sheet(this.table.nativeElement);
       const wb: XLSX.WorkBook = XLSX.utils.book_new();
+      var wscols = [];
+      for (var key in ws) {
+       if (key.indexOf('1')==1){
+          wscols.push({wpx: 200})
+       }
+      }
+      ws["!cols"] = wscols;
       XLSX.utils.book_append_sheet(wb, ws, 'Таблица');
       XLSX.writeFile(wb, 'Отчет.xlsx');
     }
@@ -93,13 +92,5 @@ export class Select implements AfterViewInit{
       }
       return null;
     }
-
-    ///Подгрузка панели задач
-    ngAfterViewInit(): void {
-      if(this.elementpanel){
-        this.renderer.appendChild(this.toolspanels.nativeElement,this.elementpanel.nativeElement)
-        }
-    }
-
 
 }

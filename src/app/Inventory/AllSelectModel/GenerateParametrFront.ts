@@ -31,10 +31,10 @@ class SelectCompanent {
 }
 //Клас полей значений для проверки Validation
 export class FormSelect {
-   public  numberPole = new FormControl('', [forbiddenNameValidator(/^((\d{1,10}\/{1})+(\d{1,10})|(\d{0,10})|(^$))$/)]);
-   public  stringPole = new FormControl();
-   public  datePole = new FormControl('', [forbiddenNameValidator(/^((((3[01]|[12][0-9]|0[1-9])\.(1[012]|0[1 9])\.((?:19|20)\d{2}))\/{1})+((3[01]|[12][0-9]|0[1-9])\.(1[012]|0[1 9])\.((?:19|20)\d{2}))|((3[01]|[12][0-9]|0[1-9])\.(1[012]|0[1 9])\.((?:19|20)\d{2}))|(^$))$/)]);
-}
+    public  numberPole = new FormControl('', [forbiddenNameValidator(/^((\d{1,10}\/{1})+(\d{1,10})|(\d{0,10})|(^$))$/)]);
+    public  stringPole = new FormControl();
+    public  datePole = new FormControl('', [forbiddenNameValidator(/^((((3[01]|[12][0-9]|0[1-9])\.(1[012]|0[1-9])\.((?:19|20)\d{2}))\/{1})+((3[01]|[12][0-9]|0[1-9])\.(1[012]|0[1-9])\.((?:19|20)\d{2}))|((3[01]|[12][0-9]|0[1-9])\.(1[012]|0[1-9])\.((?:19|20)\d{2}))|(^$))$/)]);
+    public  elementRefPole = new FormControl();}
 //Параметры создания на вместе с подстановкой
 export class SelectParam {
     //Наименование параметра
@@ -134,7 +134,13 @@ export class GenerateParametrs{
             newparam.paramvalue = '';
             newparam.isvisible = param.isVisibleField;
             newparam.select = null;
-            if(param.typeColumnField == 'varchar' || param.typeColumnField == 'smalldatetime'){
+            if(param.typeColumnField == 'elementRef')
+            {
+                newparam.template = 4;
+                newparam.formTemplate = new FormSelect().elementRefPole;
+            }
+            else{
+              if(param.typeColumnField == 'varchar' || param.typeColumnField == 'smalldatetime'){
                 newparam.numеrtemplate = true;
                 if(param.typeColumnField == 'varchar')
                 {
@@ -146,11 +152,12 @@ export class GenerateParametrs{
                     newparam.template = 1;
                     newparam.formTemplate = new FormSelect().datePole;
                 }
-            }
-            else{
+              }
+              else{
                 newparam.numеrtemplate = false;
                 newparam.template = 3;
                 newparam.formTemplate = new FormSelect().numberPole;
+              }
             }
             parametrs.push(newparam);
        }
@@ -193,13 +200,13 @@ export class GenerateParametrs{
         return logica;
     }
 
-        ///Генерит команду в бд для схемы xml
-        generatecommandxml(columnDynamic:Table = null):LogicaSelect {
-            var generate = new GenerateFullCommand();
-            var logica = generate.generateCommand(generate.generateVisibleDynamic(this.selectedtoserver, this.parametrs, columnDynamic),this.parametrs);
-            logica.idField = this.selectedtoserver.idField;
-            return logica;
-        }
+    ///Генерит команду в бд для схемы xml
+    generatecommandxml(columnDynamic:Table = null):LogicaSelect {
+        var generate = new GenerateFullCommand();
+        var logica = generate.generateCommand(generate.generateVisibleDynamic(this.selectedtoserver, this.parametrs, columnDynamic),this.parametrs);
+        logica.idField = this.selectedtoserver.idField;
+        return logica;
+    }
 }
 
 class GenerateFullCommand {

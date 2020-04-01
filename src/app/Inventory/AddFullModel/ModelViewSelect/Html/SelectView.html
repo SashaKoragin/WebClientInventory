@@ -1,6 +1,7 @@
 <div class="head" [style.display]="logica?.select ? 'grid' : 'none'">
         <div class="button"><button mat-button (click)="update()">Обновить</button></div>
-            <div class="grid-container2" *ngFor="let selectvalue of selecting?.parametrs">
+            <div *ngFor="let selectvalue of selecting?.parametrs">
+              <div class="grid-container2" [style.display]="selectvalue.template===4 ? 'none' : 'grid'">
                 <div class="grid-item2">
                     <label>{{selectvalue.name}}</label>
                 </div>
@@ -54,8 +55,9 @@
                         <label class="lableerror" *ngIf="selectvalue.formTemplate.invalid" [ngClass]="'error'">Не соответствует формату цифр</label>
                     </mat-form-field>
                 </div>
-                </div>
-           </div>
+              </div>
+            </div>
+        </div>
     <div  [style.display]="logica?.date ? 'none' : 'grid'">
       <div class="button"><button mat-button (click)="back()">Назад</button></div>
     <div *ngIf="logica.errornull; else notfound">
@@ -66,18 +68,19 @@
                     </mat-form-field>
                     <button mat-button (click)="ExportTOExcel()">Выгрузить</button>
                   </form>
-           <div class="panel" #TOOLPANEL></div>
+        <div class="panel" [ngTemplateOutlet]="toolpanel" ></div>
         <div class="mat-elevation-z8" #TABLE >
-            <table mat-table   #table [dataSource]="dataSource">
+            <table mat-table   #table [dataSource]="columns.Model">
                 <ng-container *ngFor="let column of columns.Colums" [matColumnDef]="column.columnDef">
                     <th mat-header-cell [style.background]="column.color" *matHeaderCellDef>{{ column.header }}</th>
-                    <td mat-cell [style.background]="column.color==='null'?returnColorColumns(column.cell(row)):column.color" *matCellDef="let row" [matTooltip]="column.cell(row)==='undefined'?'Отсутствует':column.cell(row)">{{ column.cell(row)==='undefined'?'Отсутствует':column.cell(row) }}</td>
+                    <td mat-cell [style.background]="column.color==='null'?returnColorColumns(column.cell(row)):column.color" *matCellDef="let row">
+                    <div  [ngTemplateOutlet]="column.cell(row) === 'Button' ? logicstooltable : lableText"  [ngTemplateOutletContext]="{row:row,column:column}"></div>
                 </ng-container>
-                <tr  mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-                <tr  mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                <tr  mat-header-row *matHeaderRowDef="columns.displayedColumns; sticky: true"></tr>
+                <tr  mat-row *matRowDef="let row; columns: columns.displayedColumns;"></tr>
             </table>
         </div>
-        <mat-paginator class="paginator"  #tables [pageSizeOptions]="[10, 50, 100,allcountproblem]" showFirstLastButtons ="true"></mat-paginator>
+        <mat-paginator class="paginator"  #tables [pageSizeOptions]="[10, 50, 100,columns.allCountRow]" showFirstLastButtons ="true"></mat-paginator>
     </div>
     </div>
 <div [style.display]="logica?.progress ? 'none':'inline'">
@@ -87,4 +90,8 @@
 
 <ng-template #notfound>
         <h4>По данной выборки нет данных!!!</h4>
+</ng-template>
+
+<ng-template #lableText let-row='row' let-column='column'>
+    <Label [matTooltip]="column.cell(row)==='undefined'?'Отсутствует':column.cell(row)">{{column.cell(row)==='undefined'?'Отсутствует':column.cell(row)}}</Label>
 </ng-template>

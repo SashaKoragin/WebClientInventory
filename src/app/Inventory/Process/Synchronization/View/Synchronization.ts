@@ -1,4 +1,4 @@
-import { Component,OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component,OnInit } from '@angular/core';
 import { GenerateParametrs, LogicaDataBase } from '../../../AllSelectModel/GenerateParametrFront';
 import { DynamicTableColumnModel, Table } from '../../../AddFullModel/ModelTable/DynamicTableModel';
 import { SelectAllParametrs,PostInventar } from '../../../../Post RequestService/PostRequest';
@@ -22,7 +22,6 @@ export class Synchronization implements OnInit {
     columns:Table = this.dinamicmodel.columnssynhronization[0];
 
   
-    @ViewChild('TOOLPANEL',{static: false}) toolspanels: ElementRef;
     logica2:LogicaDataBase = new LogicaDataBase();
     selecting2:GenerateParametrs;
     columns2:Table = this.dinamicmodel.columnssynhronization[1];
