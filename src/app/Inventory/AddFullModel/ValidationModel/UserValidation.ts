@@ -56,6 +56,16 @@ export class ModelValidation  {
         return  (nameModel == undefined||nameModel.NameModel == undefined)  ?  { 'error': true  } : null
     };
 
+    public validationNumber(control: AbstractControl): ValidationErrors{
+        control.value
+        var regx = new RegExp(/^\d+$/,'g')
+        if(regx.test(control.value)){
+            return null;
+        }
+        else{
+            return { 'error': true  };
+        }
+    }
 
     ///Валидационная модель проверки Групп
     getRowValidatorModel: FormGroup[] =[
@@ -105,6 +115,13 @@ export class ModelValidation  {
             'Model':new FormControl({value: new ModelSwithes()}, [Validators.required, this.validationFullModelSwith]),
             'SerNum':new FormControl(null, Validators.required),
             'InventarNum':new FormControl(null, Validators.required)
-            })
+            }),
+        new FormGroup({
+            'Identifikator':new FormControl(null, [Validators.required,Validators.maxLength(32),this.validationNumber]),
+            }),
+        new FormGroup({
+            'IdOtdelNumber':new FormControl(null, [Validators.required,Validators.maxLength(2),Validators.max(99),Validators.min(1)]),
+            'NameGroup':new FormControl(null,[Validators.required,Validators.maxLength(64)])
+        })
         ];
  }

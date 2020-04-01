@@ -1,22 +1,21 @@
 import { SignalR, ISignalRConnection, IConnectionOptions, ConnectionStatus } from 'ng2-signalr';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders} from '@angular/common/http';
 import { Users, Autorization, Printer, Kabinet, 
          ScanerAndCamer, Mfu, SysBlock, Monitor,
-         BlockPower, UsersIsActualsStats, Classification,
+         BlockPower, UsersIsActualsStats, Classification,Rules,
          FullSelectedModel, NameMonitor, FullProizvoditel, Statusing, 
          FullModel, CopySave, NameSysBlock, Otdel,Position,
-         Telephon,Supply,ModelBlockPower,ProizvoditelBlockPower,Swithe,ModelSwithes } from '../Inventory/ModelInventory/InventoryModel';
+         Telephon,Supply,ModelBlockPower,ProizvoditelBlockPower,Swithe,ModelSwithes, MailIdentifier, MailGroup } from '../Inventory/ModelInventory/InventoryModel';
 import { AdressInventarka, ServerHost } from '../AdressGetPost/AdressInventory';
 import { deserializeArray } from 'class-transformer';
 import { ModelSelect, LogicaSelect } from '../Inventory/AllSelectModel/ParametrModel';
 import { DocumentReport } from '../Inventory/AllSelectModel/Report/ReportModel';
 import { UploadFile } from '../Inventory/AddFullModel/ModelTable/FileModel';
 import { BookModels } from '../Inventory/ModelInventory/ViewInventory';
-import { Rules } from '../Inventory/ModelInventory/InventoryModel';
 import { NgxPermissionsService } from 'ngx-permissions';
-import { removeListener } from 'cluster';
-import { User } from '../Inventory/User/View/User';
+
+
 const url: AdressInventarka = new AdressInventarka();
 const httpOptionsJson = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -26,6 +25,7 @@ const httpOptionsJson = {
 @Injectable({
     providedIn: 'root'
 })
+
 export class AuthIdentificationSignalR {
     
     constructor(public signalR: SignalR, public permissionsService: NgxPermissionsService) { }
@@ -136,6 +136,12 @@ export class PostInventar {
             { responseType: 'arraybuffer', headers: new HttpHeaders({ 'Content-Type': 'application/json' }) })
     }
     
+    public downLoadXlsxSql(idView:number){
+        return this.http.get(url.getFileXlsx.concat(idView.toString()), { 
+            responseType: 'arraybuffer', headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+        })
+    }
+
     ///Выборка всего из БД в всех пользователей
     async alluser() {
     this.select.Users = await this.http.get(url.alluser, httpOptionsJson).toPromise().then((model)=>{
@@ -144,6 +150,24 @@ export class PostInventar {
             }
          });
     }
+    ///Все идентификаторы пользователей
+    async allmailidentifies(){
+        this.select.MailIdentifier = await this.http.get(url.allmailidentifies,httpOptionsJson).toPromise().then((model)=>{
+            if(model){
+                return deserializeArray<MailIdentifier>(MailIdentifier,model.toString());
+            }
+        })
+    }
+
+    ///Все группы пользователей
+    async allmailgroup(){
+        this.select.MailGroup = await this.http.get(url.allmailgroups,httpOptionsJson).toPromise().then((model)=>{
+            if(model){
+                return deserializeArray<MailGroup>(MailGroup,model.toString());
+            }
+        })
+    }
+
     //Вытащить все отделы из БД
     async allotdel(){
     this.select.Otdels = await this.http.get(url.allotdelget,httpOptionsJson).toPromise().then((model)=>{
@@ -446,7 +470,14 @@ export class EditAndAdd{
     addAndEditModelSwitch(nameModelSwitch:ModelSwithes){
         return this.http.post(url.addandeditmodelswith,nameModelSwitch,httpOptionsJson);
     }
-    
+    ///Только редактирование идентификатора и группы
+    editModelMailIdentifier(nameMailIdentifier:MailIdentifier){
+        return this.http.post(url.addAndEditMailIdentifies,nameMailIdentifier,httpOptionsJson);
+    }
+    //Добавление редактирование Группы
+    editModelMailGroup(nameMailGroup:MailGroup){
+            return this.http.post(url.addAndEditMailGroups,nameMailGroup,httpOptionsJson);
+    }
     ///Удаление Пользователя
     deleteUser(model:Users,userIdEdit:string){
         return this.http.post(url.deleteUser.concat(userIdEdit),model,httpOptionsJson);
@@ -488,7 +519,6 @@ export class EditAndAdd{
 export class SelectAllParametrs{
     constructor(private http: HttpClient) { }
     
-
    addselectallparametrs(model:ModelSelect){
         return this.http.post(url.selectparametr,model,httpOptionsJson);
     }
@@ -524,5 +554,21 @@ export class SelectAllParametrs{
     public addfiledb(upload:UploadFile){
         return this.http.post(url.addfiledb,upload,httpOptionsJson);
     }
-      //arraybuffer,blob
+    ///Просмотр Body Письма
+    public visibilityBodyMail(idMail:number){
+        return this.http.post(url.visibilityBodyMail,idMail,httpOptionsJson);
+    }
+    ///Вложение письма
+    public async outputMail(idMail:number){
+        var blob = await this.http.post(url.outputMail,idMail,
+            { responseType: 'arraybuffer', headers: new HttpHeaders({ 'Content-Type': 'application/json' }) }).toPromise().then(data=>{
+                var blob = new Blob([data], { type: 'application/zip' });
+                return blob;
+            });
+        return blob;
+    }
+    ///Удаление письма
+    public deleteMail(idMail:number){
+        return this.http.post(url.deleteMail,idMail,httpOptionsJson);
+    }
 }

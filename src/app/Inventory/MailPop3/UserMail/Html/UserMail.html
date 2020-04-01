@@ -1,0 +1,162 @@
+<h1>Идентификаторы и группы пользователей</h1>
+<mat-tab-group [style.display]="isload ? 'none' : 'grid'">
+    <mat-tab label="Идентификаторы пользователей">        
+        <div class="mat-elevation-z8">
+            <form class="search">
+                <mat-form-field class="search_blok">
+                      <span matPrefix><i class="material-icons">youtube_searched_for</i></span>
+                      <input matInput (keyup)="identifier.filterstable($event.target.value)" placeholder="Поиск данных">
+                </mat-form-field>
+                <button class="actual" mat-button (click)="excel.ExportTOExcel(tableMailIdentifier)">Выгрузить идентификаторы</button>
+              </form>
+              <div class="tables" #TABLEMAILIDENTIFIER >  
+                <table mat-table [dataSource]="identifier.dataSource" matSort>
+                    <ng-container matColumnDef="IdUser">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
+                        <td mat-cell *matCellDef="let row" [matTooltip]="row.IdUser">{{row.IdUser}}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="User.Name">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Имя пользователя</th>
+                        <td mat-cell *matCellDef="let row" [matTooltip]="row.User?.Name">{{row.User?.Name}}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="User.TabelNumber">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Табельный номер пользователя</th>
+                        <td mat-cell *matCellDef="let row" [matTooltip]="row.User?.TabelNumber">{{row.User?.TabelNumber}}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="IdentifierUser">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Почтовый идентификатор</th>
+                          <td  mat-cell *matCellDef="let row" [matTooltip]="IdentifierUser">
+                             <div [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.IdentifierUser}}</div>
+                              <div [ngClass]=row.IdUser.toString() id="{{row.IdUser}}" [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                              </div>
+                          </td>
+                    </ng-container>
+                    <ng-container matColumnDef="MailGroup.NameGroup">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Наименование группы</th>
+                          <td mat-cell *matCellDef="let row" [matTooltip]="row.MailGroup?.NameGroup">
+                            <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.MailGroup?.NameGroup}}</Label>
+                              <div [ngClass]=row.IdUser.toString() id="{{row.IdUser}}" [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                              </div>
+                          </td>
+                    </ng-container>
+                    <ng-container matColumnDef="MailGroup.IdOtdelNumber">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Номер группы</th>
+                        <td mat-cell *matCellDef="let row" [matTooltip]="row.MailGroup?.IdOtdelNumber">{{row.MailGroup?.IdOtdelNumber}}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="ActionsColumn">  
+                        <th mat-header-cell *matHeaderCellDef>Функции</th>
+                        <td mat-cell *matCellDef="let row">
+                             <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="identifier.isEdit" color="accent" (click)="identifier.edit(row)">
+                              <i class="material-icons">edit</i>
+                             </button>
+                        <div *ngIf="row.ModelIsEdit" >
+                                <button  mat-icon-button type="submit" [disabled]="mailgroup.modelvalid.getRowValidatorModel[8].invalid" color="primary" focusable="false" (click)="identifier.save()">
+                                        <i class="material-icons">check</i>
+                                </button>
+                                <button mat-icon-button color="primary" focusable="false" (click)="identifier.cancel(row)">
+                                    <i class="material-icons">cancel</i>
+                                </button>
+                        </div>
+                     </td>
+                     </ng-container>
+                     <tr mat-header-row *matHeaderRowDef="identifier.displayedColumns; sticky: true"></tr>
+                     <tr mat-row *matRowDef="let row; columns: identifier.displayedColumns;"></tr>
+                </table>
+              </div>
+              <mat-paginator class="paginator" #identifiers [pageSizeOptions]="[5, 10, 25, paginatoridentifier.length]" showFirstLastButtons="true"></mat-paginator> 
+        </div>
+
+        <div [style.display]="'none'" #TEMPLATEMAILIDENTIFIER>
+            <mat-form-field id="template" class="validation">
+                <input matInput  placeholder="Почтовый идентификатор" [formControl]="mailgroup.modelvalid?.getRowValidatorModel[8].get('Identifikator')" [ngModel]="identifier.model?.IdentifierUser" (ngModelChange)="identifier.model.IdentifierUser = $event"/>
+            </mat-form-field> 
+            <mat-form-field id="template" class="validation">
+                <mat-select (click)="identifier.calbackfiltersAll()"  [placeholder]="identifier.model.MailGroup?.NameGroup" [(ngModel)]="identifier.model.MailGroup" name="models">
+                   <mat-select-filter class="filter" [placeholder]="identifier.model.MailGroup?.NameGroup" [displayMember]="'NameGroup'" [array]="identifier.group" (filteredReturn)="identifier.filteredMailGroup =$event">
+                    </mat-select-filter>
+                      <mat-option [value]='null'>None</mat-option>
+                      <mat-option *ngFor="let models of identifier.filteredMailGroup" [value]="models">
+                        {{models.NameGroup}}
+                      </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </mat-tab>
+    <mat-tab label="Группы пользователей">        
+        <div class="mat-elevation-z8">
+            <form class="search">
+                <mat-form-field class="search_blok">
+                      <span matPrefix><i class="material-icons">youtube_searched_for</i></span>
+                      <input matInput (keyup)="mailgroup.filterstable($event.target.value)" placeholder="Поиск данных">
+                </mat-form-field>
+                <button class="actual" mat-button (click)="excel.ExportTOExcel(tableMailGroup)">Выгрузить группы пользователей</button>
+              </form>
+
+              <div class="tables" #TABLEMAILGROUP>  
+                <table mat-table [dataSource]="mailgroup.dataSource" matSort>
+                    <ng-container matColumnDef="IdGroupMail">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
+                        <td mat-cell *matCellDef="let row" [matTooltip]="row.IdGroupMail">{{row.IdGroupMail}}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="NameGroup">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Наименование группы</th>
+                          <td  mat-cell *matCellDef="let row" [matTooltip]="row.NameGroup">
+                             <div [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.NameGroup}}</div>
+                              <div [ngClass]=row.IdGroupMail.toString() id="{{row.IdGroupMail}}" [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                              </div>
+                          </td>
+                    </ng-container>
+                    <ng-container matColumnDef="IdOtdelNumber">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Номер группы</th>
+                          <td mat-cell *matCellDef="let row" [matTooltip]="row.IdOtdelNumber">
+                            <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.IdOtdelNumber}}</Label>
+                              <div [ngClass]=row.IdGroupMail.toString() id="{{row.IdGroupMail}}" [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                              </div>
+                          </td>
+                    </ng-container>
+                    <ng-container matColumnDef="ActionsColumn">  
+                        <th mat-header-cell *matHeaderCellDef>
+                              <button mat-icon-button color="primary" [disabled]="mailgroup.isAdd" focusable="false" (click)="mailgroup.add()">
+                                  <i class="material-icons">person_add</i>
+                              </button>
+                        </th>
+                        <td mat-cell *matCellDef="let row">
+                              <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="mailgroup.isEdit" color="accent" (click)="mailgroup.edit(row)">
+                                <i class="material-icons">edit</i>
+                              </button>
+                        <div *ngIf="row.ModelIsEdit" >
+                                <button  mat-icon-button type="submit" [disabled]="mailgroup.modelvalid.getRowValidatorModel[9].invalid" color="primary" focusable="false" (click)="mailgroup.save()">
+                                        <i class="material-icons">check</i>
+                               </button>
+                               <button mat-icon-button color="primary" focusable="false" (click)="mailgroup.cancel(row)">
+                                    <i class="material-icons">cancel</i>
+                                </button>
+                        </div>
+                     </td>
+                     </ng-container>
+                     <tr mat-header-row *matHeaderRowDef="mailgroup.displayedColumns; sticky: true"></tr>
+                     <tr mat-row *matRowDef="let row; columns: mailgroup.displayedColumns;"></tr>
+                </table>
+              </div>
+              <mat-paginator class="paginator" #mailgroups [pageSizeOptions]="[5, 10, 25, paginatormailgroup.length]" showFirstLastButtons="true"></mat-paginator> 
+        </div>
+
+        <div [style.display]="'none'" #TEMPLATEMAILGROUP>
+            <mat-form-field id="template" class="validation">
+                <input matInput   placeholder="Наименование группы" [formControl]="mailgroup.modelvalid?.getRowValidatorModel[9].get('NameGroup')" [ngModel]="mailgroup.model?.NameGroup" (ngModelChange)="mailgroup.model.NameGroup = $event"/>
+            </mat-form-field> 
+            <mat-form-field id="template" class="validation">
+                <input matInput type="number" placeholder="Номер группы"  [formControl]="mailgroup.modelvalid?.getRowValidatorModel[9].get('IdOtdelNumber')" [ngModel]="mailgroup.model?.IdOtdelNumber" (ngModelChange)="mailgroup.model.IdOtdelNumber = $event"/>
+            </mat-form-field> 
+        </div>
+
+    </mat-tab>
+</mat-tab-group>
+
+<div [style.display]="isload ? 'inline':'none'">
+    <p>Идет загрузка данных подождите пожалуйста!!!</p>
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    <div class="messages" *ngFor="let message of loadMessage">
+        <p>{{message}}</p>
+    </div>
+</div>

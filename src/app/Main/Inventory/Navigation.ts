@@ -13,6 +13,8 @@ import { BookAccounting } from '../../Inventory/Documents/BookAccounting/View/Bo
 import { Synchronization } from '../../Inventory/Process/Synchronization/View/Synchronization';
 import { Log } from '../../Inventory/JurnalLog/View/Log';
 import { NgxPermissionsGuard } from 'ngx-permissions';
+import { MailPop3 } from '../../Inventory/MailPop3/Mail/View/MailPop3';
+import { UserMail } from '../../Inventory/MailPop3/UserMail/View/UserMail';
 
 const appRoutes: Routes = [
 {
@@ -95,6 +97,14 @@ const appRoutes: Routes = [
                only: ['Администратор','Редактор'],
                }
             }
+        },
+        {
+            path:'mail',
+            component:MailPop3,
+        },
+        {
+            path:'userandgroup',
+            component:UserMail
         }
     ]
     }

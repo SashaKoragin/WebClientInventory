@@ -378,6 +378,7 @@
                     <input matInput (keyup)="telephone.filterstable($event.target.value)" placeholder="Поиск данных">
               </mat-form-field>
               <button class="actual" mat-button (click)="excel.ExportTOExcel(tabletelephones)">Выгрузить телефоны</button>
+              <button class="actual" mat-button (click)="getTelephoneFull()">Запрос по всем привязанным телефонам</button>
             </form>
           <div class="tables" #TABLETELEPHONES >
             <table mat-table [dataSource]="telephone.dataSource" matSort>

@@ -104,6 +104,8 @@ export class FullSelectedModel{
    Classification:Classification[];
    ModelSwithe:ModelSwithes[];
    Rule:Rules[];
+   MailIdentifier:MailIdentifier[];
+   MailGroup:MailGroup[];
 }
 
 ///Модель отвертов с сервера
@@ -494,4 +496,22 @@ export class ModeleReturn<T>{
   public Index:number;
   public Message:string;
   public Model:T;
+}
+
+//Идентификатор
+export class MailIdentifier{
+    public IdUser:number;
+    public IdGroupMail?:number;
+    public IdentifierUser:string;
+    public MailGroup?:MailGroup;
+    public User?:User;
+    public ModelIsEdit?: boolean = false;
+}
+
+//Группы обанентов
+export class MailGroup{
+    public IdGroupMail:number;
+    public IdOtdelNumber?:number;
+    public NameGroup?:string;
+    public ModelIsEdit?: boolean = false;
 }

@@ -19,6 +19,8 @@ import { UploadsFile } from '../../Inventory/AddFullModel/ModelLoadFileToServet/
 import { Synchronization } from '../../Inventory/Process/Synchronization/View/Synchronization';
 import { Log } from '../../Inventory/JurnalLog/View/Log';
 import { NgxPermissionsModule } from 'ngx-permissions';
+import { MailPop3 } from '../../Inventory/MailPop3/Mail/View/MailPop3';
+import { UserMail } from '../../Inventory/MailPop3/UserMail/View/UserMail';
 
 @NgModule(({
     imports: [
@@ -34,7 +36,7 @@ import { NgxPermissionsModule } from 'ngx-permissions';
           }),
     ],
     declarations: [
-        MainInventar, Equipment, Invent, User,DocumentSelect,ErrorInventory,Select,UploadsFile,ComplimentTableEquipment,Analitics,BookAccounting,Synchronization,Log
+        MainInventar,MailPop3,UserMail, Equipment, Invent, User,DocumentSelect,ErrorInventory,Select,UploadsFile,ComplimentTableEquipment,Analitics,BookAccounting,Synchronization,Log
     ]
     
 }) as any)

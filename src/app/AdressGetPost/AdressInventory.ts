@@ -41,7 +41,9 @@ export class AdressInventarka {
     public allsupply = `http://${ServerHost}:${ServerPort}/Inventarka/AllSupply`;
     public allmodelblockpower = `http://${ServerHost}:${ServerPort}/Inventarka/AllModelBlockPower`;
     public allproizvoditelblockpower = `http://${ServerHost}:${ServerPort}/Inventarka/AllProizvoditelBlockPower`;
-    public allclasification= `http://${ServerHost}:${ServerPort}/Inventarka/AllClasification`
+    public allclasification= `http://${ServerHost}:${ServerPort}/Inventarka/AllClasification`;
+    public allmailidentifies = `http://${ServerHost}:${ServerPort}/Inventarka/AllMailIdentifies`;
+    public allmailgroups = `http://${ServerHost}:${ServerPort}/Inventarka/AllMailGroups`;
 
     public selectparametr = `http://${ServerHost}:${ServerPort}/Inventarka/GenerateSqlSelect`;
     public selectxml = `http://${ServerHost}:${ServerPort}/Inventarka/SelectXml`;
@@ -71,6 +73,10 @@ export class AdressInventarka {
     public addAndEditNameFullProizvoditel = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditNameFullProizvoditel`;
     public addAndEditNameCopySave = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditNameCopySave`;
 
+    public addAndEditMailIdentifies = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditMailIdentifies`;
+    public addAndEditMailGroups = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditMailGroups`;
+    ///Получение файла по get запросу параметр int для выбора View
+    public getFileXlsx = `http://${ServerHost}:${ServerPort}/Inventarka/GenerateFileXlsxSqlView?idView=`;
     ///Удаление записей
     public deleteUser = `http://${ServerHost}:${ServerPort}/Inventarka/DeleteUser?userIdEdit=`;
     public deleteSysBlock = `http://${ServerHost}:${ServerPort}/Inventarka/DeleteSysBlock?userIdEdit=`;
@@ -81,4 +87,9 @@ export class AdressInventarka {
     public deleteBlockPower = `http://${ServerHost}:${ServerPort}/Inventarka/DeleteBlockPower?userIdEdit=`;
     public deleteSwitch = `http://${ServerHost}:${ServerPort}/Inventarka/DeleteSwitch?userIdEdit=`;
     public deleteTelephone = `http://${ServerHost}:${ServerPort}/Inventarka/DeleteTelephone?userIdEdit=`;
+
+    ///Работа с почтой Mail
+    public visibilityBodyMail = `http://${ServerHost}:${ServerPort}/Inventarka/VisibilityBodyMail`;
+    public outputMail = `http://${ServerHost}:${ServerPort}/Inventarka/OutputMail`;
+    public deleteMail = `http://${ServerHost}:${ServerPort}/Inventarka/DeleteMail`;
 }

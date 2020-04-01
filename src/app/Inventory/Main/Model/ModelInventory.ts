@@ -36,6 +36,17 @@ export class Inventar {
         ], types: null, pages: null, fullpath: null, model: null,isrule:null
         },
         {
+            otdelfunc: 'Почта',
+            children: [{
+                otdelfunc: null,
+                children: null, types: 'Письма входящие', pages: './mail', fullpath: 'Почта\\Письма входящие', model: 'Письма входящие',isrule:null
+            },
+            {
+                otdelfunc: null,
+                children: null, types: 'Пользователи и группы', pages: './userandgroup', fullpath: 'Статистика\\Пользователи и группы', model: 'Статистика',isrule:null
+            }], types: null, pages: null, fullpath: null, model: null,isrule:null
+        },
+        {
             otdelfunc: 'Статистика',
             children:  [{
                 otdelfunc: null,

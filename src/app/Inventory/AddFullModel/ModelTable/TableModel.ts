@@ -1,7 +1,7 @@
 import { Users, FullSelectedModel, Otdel, Position, Printer, Mfu, ScanerAndCamer, SysBlock, CopySave,
    Monitor,NameSysBlock,Supply,Classification,Swithe,
   Kabinet,FullModel,Statusing,FullProizvoditel, ModelReturn, NameMonitor, Telephon,BlockPower,ModelBlockPower,ProizvoditelBlockPower,
-   INewLogicaTable, ModelSwithes, ModeleReturn  } from '../../ModelInventory/InventoryModel';
+   INewLogicaTable, ModelSwithes, ModeleReturn,MailIdentifier,MailGroup,Rules  } from '../../ModelInventory/InventoryModel';
 import { MatTableDataSource,MatPaginator,MatSort, } from '@angular/material';
 import { ModelValidation } from '../ValidationModel/UserValidation';
 import { EditAndAdd, AuthIdentificationSignalR } from '../../../Post RequestService/PostRequest';
@@ -11,7 +11,6 @@ import * as _rollupMoment from 'moment';
 import { ElementRef } from '@angular/core';
 import { BroadcastEventListener } from 'ng2-signalr';
 import { deserialize } from 'class-transformer';
-import { Rules } from '../../ModelInventory/InventoryModel';
 import { FormControl } from '@angular/forms';
 import { from } from 'rxjs';
 const moment = _rollupMoment || _moment;
@@ -4786,6 +4785,418 @@ export class NameModelSwitheTableModel implements INewLogicaTable<ModelSwithes> 
     this.dataSource.sort = sort;
     return "Модели комутаторов заполнены";
   }
+
+  isEditAndAddTrue(): void {
+    this.isEdit = true;
+    this.isAdd = true;
+  }
+
+  isEditAndAddFalse(): void {
+    this.isAdd = false;
+    this.isEdit = false;
+  }
+}
+
+export class MailIdentifiersTableModel implements INewLogicaTable<MailIdentifier>{
+
+  constructor(public editandadd:EditAndAdd, public SignalR:AuthIdentificationSignalR){
+    this.subscribeservers();
+   }
+   displayedColumns: any[] = ['IdUser','User.Name','User.TabelNumber','IdentifierUser','MailGroup.NameGroup','MailGroup.IdOtdelNumber','ActionsColumn'];
+   public dataSource: MatTableDataSource<MailIdentifier> = new MatTableDataSource<MailIdentifier>();
+   public modelvalid:ModelValidation = new ModelValidation()
+   public group:MailGroup[];
+
+   isAdd: boolean;
+   isEdit: boolean;
+   model: MailIdentifier = new MailIdentifier();
+   modelToServer: MailIdentifier;
+   index: number;
+   modeltable: MailIdentifier[];
+
+   public filteredMailGroup:any;
+
+   //Подписка
+   public subscribeAddAndUpdate:any = null;
+   //Шаблоны для манипулирования DOM
+   temlateList:any //Заложенный шаблон Массив
+   rowList:any    //Строка по номеру из БД Массив 
+   fulltemplate:ElementRef<any>  //Полный шаблон для манипуляции
+   table:ElementRef<any>  //Полный шаблон для манипуляции
+ 
+   public subscribeservers(){
+    this.subscribeAddAndUpdate = new BroadcastEventListener<MailIdentifier>('SubscribeModelMailIdentifier');
+    this.SignalR.conect.listen(this.subscribeAddAndUpdate);
+    this.subscribeAddAndUpdate.subscribe((substring:string) =>{
+      var submodel = deserialize<MailIdentifier>(MailIdentifier,substring);
+      if(this.isEdit){
+        this.isEditAndAddFalse();
+        this.removetemplate();
+        this.model=submodel
+      }
+      var index = this.dataSource.data.find(x=>x.IdUser === submodel.IdUser);
+      var indexzero = this.dataSource.data.find(x=>x.IdUser===0);
+      try{
+        if(indexzero){
+          ///Для изменявшего
+          this.dataSource.data.find(x=>x.IdUser===0).IdUser = submodel.IdUser;
+        }
+        else{
+           if(index){
+             ///Для остальных пользователей изменение
+              this.dataSource.data[this.dataSource.data.indexOf(index)] = submodel;
+              this.modeltable[this.modeltable.indexOf(index)] = submodel;
+           }
+           else{
+               ///Для остальных пользователей добавление
+              this.dataSource.data.push(submodel);
+              this.modeltable.push(submodel);
+           }
+        }
+          this.dataSource._updateChangeSubscription();
+        }
+      catch(e){
+        console.log(e);
+      }
+    });
+  }
+
+  castomefiltermodel() {
+    this.dataSource.filterPredicate = (data, filter) => {
+      var tot = false;
+      for (let column of this.displayedColumns) {
+          if(typeof data[column]!=='undefined'){
+            if ((column in data) && (new Date(data[column].toString()).toString() == "Invalid Date")) {
+              tot = (tot || data[column].toString().trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+            } else {
+ 
+               var date = new Date(data[column].toString());
+               var m = date.toDateString().slice(4, 7) + " " + date.getDate() + " " + date.getFullYear();
+               tot = (tot || m.toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1); 
+              }
+          }
+          else{
+            if(data[column.split('.')[0]]!==null){
+              if( typeof(data[column.split('.')[0]]) ==='object'){
+                if(data[column.split('.')[0]][column.split('.')[1]]){
+                  if(typeof(data[column.split('.')[0]][column.split('.')[1]])!=='number'){
+                    tot = (tot || data[column.split('.')[0]][column.split('.')[1]].trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+                  }
+                }
+              }
+            }
+            }
+          }
+    return tot;
+  }
+  }
+
+  public filterstable(filterValue: string): void {
+    filterValue = filterValue.trim(); // Remove whitespace
+    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
+    this.dataSource.filter = filterValue;
+  }
+
+  public calbackfiltersAll():void{
+    this.filteredMailGroup = this.group.slice();
+  }
+
+  public async add():Promise<void> {
+    throw new Error("Method not implemented.");
+  }  
+
+   edit(model: MailIdentifier): void {
+     model.ModelIsEdit = true;
+     this.model =JSON.parse(JSON.stringify(model));
+     this.addtemplate(model.IdUser)
+     this.isEditAndAddTrue();
+  }
+
+  public save(): void {
+    this.modifimethod();
+    var converter = new ConvertDate();
+    this.modelToServer = converter.convertDateToServer<MailIdentifier>(JSON.parse(JSON.stringify(this.model)));
+     this.editandadd.editModelMailIdentifier(this.modelToServer).toPromise().then((model:ModelReturn<MailIdentifier>)=>{
+      console.log(model.Message);
+     });
+    //Запрос на сохранение и обновление данных
+  }
+
+  ///Удаление
+  delete(): void {
+    throw new Error("Method not implemented.");
+  }
+
+  ///Отмена
+  cancel(model: MailIdentifier): void {
+      model.ModelIsEdit = false;
+      this.isEditAndAddFalse(); 
+      if(this.index>0)
+      {
+        this.dataSource.data.pop();
+        this.index = 0;
+      }
+      else{
+        var userdefault = this.modeltable.find(x=>x.IdUser===this.model.IdUser);
+        this.dataSource.data[this.modeltable.indexOf(userdefault)] = model;
+        this.index = 0;
+      }
+      this.dataSource._updateChangeSubscription();
+      this.removetemplate();
+  }
+
+
+  newmodel(): MailIdentifier {
+    throw new Error("Method not implemented.");
+  }
+
+
+  //Костыль дожидаемся обновление DOM
+  async delay(ms: number):Promise<void> {
+      await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log("Задержка подгрузки DOM!!!"));
+  }
+
+  ///Добавить шаблон в строку это просто жесть
+  async addtemplate(index:number):Promise<void>{
+      var i = 0;
+      await this.delay(10);
+      this.temlateList = this.fulltemplate.nativeElement.querySelectorAll("mat-form-field[id=template]");
+      this.rowList = this.table.nativeElement.querySelectorAll("div[class='"+index+"']");
+      for (var row of this.rowList){
+         row.append(this.temlateList[i])
+         i++;
+      }
+  }
+
+    ///Удалить шаблон из строки и востановить текущий шаблон
+  removetemplate():void{
+      var i = 0;
+      for (var row of this.rowList){
+       row.removeChild(this.temlateList[i]);
+        this.fulltemplate.nativeElement.append(this.temlateList[i])
+        i++;
+      }
+  }
+
+  modifimethod(): void {
+    this.model.MailGroup?this.model.IdGroupMail = this.model.MailGroup.IdGroupMail:this.model.IdGroupMail=null;
+    this.isEdit = true;
+    this.model.ModelIsEdit = false;
+    //Поиск индекса и замена модели по индексу в таблице
+    this.index = 0;
+  }
+
+
+
+
+  public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef<any>, template: ElementRef<any>): Promise<string> {
+    this.table = table;  //Таблица
+    this.fulltemplate = template; //Заложенный шаблон
+    this.modeltable =JSON.parse(JSON.stringify(model.MailIdentifier));
+    this.dataSource.data = model.MailIdentifier;
+    this.castomefiltermodel();
+    this.group =model.MailGroup;
+    this.filteredMailGroup = this.group.slice();
+    this.dataSource.paginator = paginator;
+    this.dataSource.sort = sort;
+    return "Модели идентификаторов заполнены";
+  }
+
+
+  isEditAndAddTrue(): void {
+    this.isEdit = true;
+    this.isAdd = true;
+  }
+
+  isEditAndAddFalse(): void {
+    this.isAdd = false;
+    this.isEdit = false;
+  }
+}
+
+
+export class MailGroupTableModel implements INewLogicaTable<MailGroup>{
+
+  constructor(public editandadd:EditAndAdd, public SignalR:AuthIdentificationSignalR){
+    this.subscribeservers();
+  }
+
+   displayedColumns: any[] = ['IdGroupMail','NameGroup','IdOtdelNumber','ActionsColumn'];
+   public dataSource: MatTableDataSource<MailGroup> = new MatTableDataSource<MailGroup>();
+   public modelvalid:ModelValidation = new ModelValidation()
+
+   isAdd: boolean;
+   isEdit: boolean;
+   model: MailGroup = new MailGroup();
+   modelToServer: MailGroup;
+   index: number;
+   modeltable: MailGroup[];
+   //Подписка
+   public subscribeAddAndUpdate:any = null;
+
+   //Шаблоны для манипулирования DOM
+   temlateList:any //Заложенный шаблон Массив
+   rowList:any    //Строка по номеру из БД Массив 
+   fulltemplate:ElementRef<any>  //Полный шаблон для манипуляции
+   table:ElementRef<any>  //Полный шаблон для манипуляции
+
+
+   public subscribeservers(){
+    this.subscribeAddAndUpdate = new BroadcastEventListener<MailGroup>('SubscribeModelMailGroups');
+    this.SignalR.conect.listen(this.subscribeAddAndUpdate);
+    this.subscribeAddAndUpdate.subscribe((substring:string) =>{
+      var submodel = deserialize<MailGroup>(MailGroup,substring);
+      if(this.isEdit){
+        this.isEditAndAddFalse();
+        this.removetemplate();
+        this.model=submodel
+      }
+      var index = this.dataSource.data.find(x=>x.IdGroupMail === submodel.IdGroupMail);
+      var indexzero = this.dataSource.data.find(x=>x.IdGroupMail===0);
+      try{
+        if(indexzero){
+          ///Для изменявшего
+          this.dataSource.data.find(x=>x.IdGroupMail===0).IdGroupMail = submodel.IdGroupMail;
+        }
+        else{
+           if(index){
+             ///Для остальных пользователей изменение
+              this.dataSource.data[this.dataSource.data.indexOf(index)] = submodel;
+              this.modeltable[this.modeltable.indexOf(index)] = submodel;
+           }
+           else{
+               ///Для остальных пользователей добавление
+              this.dataSource.data.push(submodel);
+              this.modeltable.push(submodel);
+           }
+        }
+          this.dataSource._updateChangeSubscription();
+        }
+      catch(e){
+        console.log(e);
+      }
+    });
+  }
+
+  calbackfiltersAll(): void {
+    throw new Error("Method not implemented.");
+  }
+
+  public filterstable(filterValue: string): void {
+    filterValue = filterValue.trim(); // Remove whitespace
+    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
+    this.dataSource.filter = filterValue;
+  }
+
+  public async add():Promise<void> {
+    this.isEditAndAddTrue();
+    var newmodel = this.newmodel();
+    this.dataSource.data.push(newmodel); 
+    this.modeltable.push(newmodel); 
+    this.index = this.dataSource.data.length;
+    this.model = newmodel;
+    await this.dataSource._updateChangeSubscription();
+    await this.dataSource.paginator.lastPage();
+    this.addtemplate(newmodel.IdGroupMail);
+  }   
+
+  edit(model: MailGroup): void {
+    model.ModelIsEdit = true;
+    this.model =JSON.parse(JSON.stringify(model));
+    this.addtemplate(model.IdGroupMail);
+    this.isEditAndAddTrue();
+ }
+
+  public save(): void {
+    this.modifimethod();
+    var converter = new ConvertDate();
+    this.modelToServer = converter.convertDateToServer<MailGroup>(JSON.parse(JSON.stringify(this.model)));
+    this.editandadd.editModelMailGroup(this.modelToServer).toPromise().then((model:ModelReturn<MailGroup>)=>{
+      if(model.Model === null){
+        this.isEditAndAddFalse(); 
+        this.dataSource.data.pop();
+        this.dataSource._updateChangeSubscription();
+        this.removetemplate();
+      }
+      alert(model.Message);
+    });
+    //Запрос на сохранение и обновление данных
+  }
+
+  ///Удаление
+  delete(): void {
+    throw new Error("Method not implemented.");
+  }
+
+  ///Отмена
+  cancel(model: MailGroup): void {
+      model.ModelIsEdit = false;
+      this.isEditAndAddFalse(); 
+      if(this.index>0)
+      {
+        this.dataSource.data.pop();
+        this.index = 0;
+      }
+      else{
+        var userdefault = this.modeltable.find(x=>x.IdGroupMail===this.model.IdGroupMail);
+        this.dataSource.data[this.modeltable.indexOf(userdefault)] = model;
+        this.index = 0;
+      }
+      this.dataSource._updateChangeSubscription();
+      this.removetemplate();
+  }
+
+  newmodel(): MailGroup {
+    var newuser: MailGroup = new MailGroup();
+    newuser.ModelIsEdit = true;
+    newuser.IdGroupMail = 0;
+    return newuser;
+  }
+
+  //Костыль дожидаемся обновление DOM
+  async delay(ms: number):Promise<void> {
+    await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log("Задержка подгрузки DOM!!!"));
+  }
+
+  ///Добавить шаблон в строку это просто жесть
+  async addtemplate(index:number):Promise<void>{
+    var i = 0;
+    await this.delay(10);
+    this.temlateList = this.fulltemplate.nativeElement.querySelectorAll("mat-form-field[id=template]");
+    this.rowList = this.table.nativeElement.querySelectorAll("div[class='"+index+"']");
+    for (var row of this.rowList){
+       row.append(this.temlateList[i])
+       i++;
+    }
+  }
+
+  ///Удалить шаблон из строки и востановить текущий шаблон
+  removetemplate():void{
+    var i = 0;
+     for (var row of this.rowList){
+      row.removeChild(this.temlateList[i]);
+       this.fulltemplate.nativeElement.append(this.temlateList[i])
+        i++;
+     }
+  }
+
+  modifimethod(): void {
+    this.isEdit = true;
+    this.model.ModelIsEdit = false;
+    //Поиск индекса и замена модели по индексу в таблице
+    this.index = 0;
+  }
+
+  public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef<any>, template: ElementRef<any>): Promise<string> {
+    this.table = table;  //Таблица
+    this.fulltemplate = template; //Заложенный шаблон
+    this.modeltable =JSON.parse(JSON.stringify(model.MailGroup));
+    this.dataSource.data = model.MailGroup;
+    this.dataSource.paginator = paginator;
+    this.dataSource.sort = sort;
+    return "Модели групп заполнены";
+  }
+
 
   isEditAndAddTrue(): void {
     this.isEdit = true;
