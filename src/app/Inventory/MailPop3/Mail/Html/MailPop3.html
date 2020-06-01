@@ -1,4 +1,12 @@
 
+<b class="text">Выбор писем:</b>
+<mat-form-field class="selectin_sql">
+        <mat-select placeholder="Выборки" [(ngModel)]="dinamicmodel.mainselectmail"  name="sel" (selectionChange)="selectserver($event)">
+            <mat-option *ngFor="let sel of dinamicmodel.mailView" [value]="sel">
+                {{sel.text}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
 <selectsql [(logica)]="logica" [(selecting)]="selecting" [(columns)]="columns" [(select)]="select" [logicstooltable]='LOGICSTOOLTABLE' [toolpanel]='TOOLPANEL'></selectsql>
 
 

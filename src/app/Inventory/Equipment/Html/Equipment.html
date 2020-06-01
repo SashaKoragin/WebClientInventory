@@ -1360,7 +1360,7 @@
                     <span matPrefix><i class="material-icons">youtube_searched_for</i></span>
                     <input matInput (keyup)="switch.filterstable($event.target.value)" placeholder="Поиск данных">
               </mat-form-field>
-              <button class="actual" mat-button (click)="excel.ExportTOExcel(tableblockpowers)">Выгрузить ИБП</button>
+              <button class="actual" mat-button (click)="excel.ExportTOExcel(tableswithes)">Выгрузить Коммутаторы</button>
             </form>
               <div class="tables" #TABLESWITHES>
                 <table mat-table [dataSource]="switch.dataSource" matSort>

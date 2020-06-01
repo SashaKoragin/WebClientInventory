@@ -508,10 +508,16 @@ export class MailIdentifier{
     public ModelIsEdit?: boolean = false;
 }
 
-//Группы обанентов
+//Группы абонентов
 export class MailGroup{
     public IdGroupMail:number;
     public IdOtdelNumber?:number;
     public NameGroup?:string;
     public ModelIsEdit?: boolean = false;
+}
+
+//Модель манипуляции с почтой
+export class WebMailModel{
+    public idField: number;
+    public nameGroupModelField:string
 }
