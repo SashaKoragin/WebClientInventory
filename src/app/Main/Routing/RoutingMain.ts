@@ -9,7 +9,7 @@ const appRoutes: Routes = [
     {
         path: 'Inventory',
         loadChildren: ()=> InventarModule,
-        canLoad: [AuthInventar],
+        canLoad: [AuthInventar]
     }
 
 

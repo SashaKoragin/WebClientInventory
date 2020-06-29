@@ -80,3 +80,9 @@ td.mat-cell{
 .search{
   width: 50%;
 }
+::ng-deep.mat-menu-panel{
+  max-width: none !important;
+}
+.MenuButton{
+  width: max-content;;
+}

@@ -140,7 +140,7 @@ export class Invent implements OnInit {
 
      uploadModel(model:ModelUserAndEquipment){
          if(model.IdUserOtdel){
-         this.select.generatedocument(new DocumentReport(3,this.authService.fullSelect.Users.IdUser,model.IdUser,1)).subscribe(data =>{
+         this.select.generatedocument(new DocumentReport(3,this.authService.autorization.idUserField,model.IdUser,1)).subscribe(data =>{
             var blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
             var url = window.URL.createObjectURL(blob);
             var a = document.createElement('a');

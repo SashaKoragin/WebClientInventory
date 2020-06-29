@@ -12,6 +12,8 @@
               <div class="tables" #TABLEMAILIDENTIFIER >  
                 <table mat-table [dataSource]="identifier.dataSource" matSort>
                     <ng-container matColumnDef="IdUser">
+
+
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
                         <td mat-cell *matCellDef="let row" [matTooltip]="row.IdUser">{{row.IdUser}}</td>
                     </ng-container>

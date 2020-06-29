@@ -93,3 +93,11 @@ th, td {
 .actual:hover {
      background-color: orange;
 }
+
+::ng-deep.mat-menu-panel{
+  max-width: none !important;
+}
+
+.MenuButton{
+  width: max-content;;
+}

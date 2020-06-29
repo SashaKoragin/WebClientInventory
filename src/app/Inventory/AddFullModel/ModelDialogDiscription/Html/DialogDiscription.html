@@ -1,0 +1,29 @@
+<div class="header">Форма для описания заявки!</div>
+<div class="content_info">
+    <div class="row">
+        <div class="col-2">
+            Категория:
+        </div>
+        <div class="col">
+            {{data.name}}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-2">
+            Описание:
+        </div>
+        <div class="col">
+            {{data.info}}
+        </div>
+    </div>
+</div>
+<div class="content_discription">
+    <label class="desc">Описание проблемы:</label>
+    <div class="col">
+        <textarea class="UF_DESCRIPTION" [(ngModel)]="data.discription"></textarea>
+    </div>
+</div>
+<div>
+    <button class="actualred" (click)="closeDialog()" mat-button>Закрыть (Отменить)</button>
+    <button class="actualgreen" [mat-dialog-close]="data" mat-button>Отправить (Создать)</button>
+</div>

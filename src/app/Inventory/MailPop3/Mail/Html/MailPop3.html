@@ -1,23 +1,34 @@
-
-<selectsql [(logica)]="logica" [(selecting)]="selecting" [(columns)]="columns" [(select)]="select" [logicstooltable]='LOGICSTOOLTABLE' [toolpanel]='TOOLPANEL'></selectsql>
+<b class="text">Выбор писем:</b>
+<mat-form-field class="selectin_sql">
+    <mat-select placeholder="Выборки" [(ngModel)]="dinamicmodel.mainselectmail" name="sel"
+        (selectionChange)="selectserver($event)">
+        <mat-option *ngFor="let sel of dinamicmodel.mailView" [value]="sel">
+            {{sel.text}}
+        </mat-option>
+    </mat-select>
+</mat-form-field>
+<selectsql [(logica)]="logica" [(selecting)]="selecting" [(columns)]="columns" [(select)]="select"
+    [logicstooltable]='LOGICSTOOLTABLE' [toolpanel]='TOOLPANEL'></selectsql>
 
 
 <ng-template class="panel" #TOOLPANEL>
-      <div class="textState">
-          {{statusText}}
-      </div>
-  </ng-template>
+    <div class="textState">
+        {{statusText}}
+    </div>
+</ng-template>
 
 
 
-<ng-template #LOGICSTOOLTABLE  let-row='row' >
-    <button class="bt" mat-icon-button color="primary" matTooltip="Просмотреть описание"  (click)="visilibytyBody(row)" >
+
+
+<ng-template #LOGICSTOOLTABLE let-row='row'>
+    <button class="bt" mat-icon-button color="primary" matTooltip="Просмотреть описание" (click)="visilibytyBody(row)">
         <i class="material-icons">visibility</i>
     </button>
-    <button class="bt" mat-icon-button color="primary" matTooltip="Выгрузить файл"  (click)="donloadFile(row)" >
+    <button class="bt" mat-icon-button color="primary" matTooltip="Выгрузить файл" (click)="donloadFile(row)">
         <i class="material-icons">input</i>
     </button>
-    <button class="bt" mat-icon-button color="primary" matTooltip="Удалить письмо"  (click)="deleteRow(row)" >
-      <i class="material-icons">delete</i>
+    <button class="bt" mat-icon-button color="primary" matTooltip="Удалить письмо" (click)="deleteRow(row)">
+        <i class="material-icons">delete</i>
     </button>
 </ng-template>
