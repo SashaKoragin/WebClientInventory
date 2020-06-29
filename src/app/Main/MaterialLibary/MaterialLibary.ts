@@ -44,6 +44,7 @@ import { CdkTreeModule } from '@angular/cdk/tree';
 import { MatSelectFilterModule} from 'mat-select-filter';
 
 
+
 @NgModule(({
     exports: [
 
@@ -60,7 +61,6 @@ import { MatSelectFilterModule} from 'mat-select-filter';
         MatChipsModule,
         MatStepperModule,
         MatDatepickerModule,
-        MatDialogModule,
         MatDividerModule,
         MatExpansionModule,
         MatGridListModule,
@@ -85,7 +85,8 @@ import { MatSelectFilterModule} from 'mat-select-filter';
         ScrollingModule,
         MatToolbarModule,
         MatTooltipModule,
-        MatTreeModule
+        MatTreeModule,
+        MatDialogModule
     ],
     providers: [
         {

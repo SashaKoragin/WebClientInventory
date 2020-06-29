@@ -1,9 +1,11 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { PostInventar, EditAndAdd, AuthIdentificationSignalR } from '../../../Post RequestService/PostRequest';
-import { PrinterTableModel, ScanerAndCamerTableModel, MfuTableModel, SysBlockTableModel, MonitorsTableModel, TelephonsTableModel, BlockPowerTableModel, SwitchTableModel } from '../../AddFullModel/ModelTable/TableModel';
-import {MatPaginator, MatSort} from '@angular/material';
+import { Component, OnInit, ViewChild,Pipe, PipeTransform, ElementRef } from '@angular/core';
+import { PostInventar, EditAndAdd, AuthIdentificationSignalR, AuthIdentification } from '../../../Post RequestService/PostRequest';
+import { PrinterTableModel, ScanerAndCamerTableModel, MfuTableModel, SysBlockTableModel, MonitorsTableModel, BlockPowerTableModel, SwitchTableModel } from '../../AddFullModel/ModelTable/TableModel';
+import {MatPaginator, MatSort, MatDialog} from '@angular/material';
 import { ImportToExcel } from '../../AddFullModel/ModelTable/PublicFunction';
 import { DatePipe } from '@angular/common';
+
+
 
 @Component(({
     selector: 'equepment',
@@ -15,7 +17,13 @@ import { DatePipe } from '@angular/common';
 
 export class Equipment implements OnInit {
 
-  constructor(public editandadd:EditAndAdd,public selectAll:PostInventar,private dp: DatePipe,public SignalR:AuthIdentificationSignalR) { }
+  constructor(
+    public editandadd:EditAndAdd,
+    public selectAll:PostInventar,
+    private dp: DatePipe,
+    public SignalR:AuthIdentificationSignalR,
+    public authService: AuthIdentification,
+    public dialog: MatDialog) { }
 
    
    datetemplate(date:any){
@@ -104,6 +112,7 @@ export class Equipment implements OnInit {
   }
 
  async sendserver(){
+   await this.selectAll.allTemplate();
    await this.selectAll.alluser();
    await this.selectAll.allnamemonitor();
    await this.selectAll.allcopysave();
@@ -116,6 +125,9 @@ export class Equipment implements OnInit {
    await this.selectAll.allproizvoditelblockpower();
    await this.selectAll.allmodelblockpower();
    await this.selectAll.allmodelswithes();
+   
   }
+
+
 
 }

@@ -1,6 +1,6 @@
-//export const ServerHost:string = 'I7751-W40204180'  //localhost
-export const ServerHost:string = 'localhost' 
-export const ServerPort:string = '8182'
+export const ServerHost: string = 'I7751-W40204180'  //localhost
+//export const ServerHost: string = 'localhost'
+export const ServerPort: string = '8182'
 //К примеру новая структура
 
 export class AdressInventarka {
@@ -17,12 +17,12 @@ export class AdressInventarka {
     public addandeditotdel = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditOtdel`;
     public addandedittelephon = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditTelephone?userIdEdit=`;
     public addandeditblockpower = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditBlockPower?userIdEdit=`;
-    public addandeditswitch =`http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditSwith?userIdEdit=`;
+    public addandeditswitch = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditSwith?userIdEdit=`;
     public addandeditmodelswith = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditModelSwith`;
 
     public allmodelswithes = `http://${ServerHost}:${ServerPort}/Inventarka/AllModelSwithes`;
     public allswithes = `http://${ServerHost}:${ServerPort}/Inventarka/AllSwithes`;
-    public allstatistics =`http://${ServerHost}:${ServerPort}/Inventarka/AllActualsProcedureUsers`;
+    public allstatistics = `http://${ServerHost}:${ServerPort}/Inventarka/AllActualsProcedureUsers`;
     public allsysblock = `http://${ServerHost}:${ServerPort}/Inventarka/AllSysBlok`;
     public allmonitor = `http://${ServerHost}:${ServerPort}/Inventarka/AllMonitors`;
     public allmfu = `http://${ServerHost}:${ServerPort}/Inventarka/AllMfu`;
@@ -41,13 +41,13 @@ export class AdressInventarka {
     public allsupply = `http://${ServerHost}:${ServerPort}/Inventarka/AllSupply`;
     public allmodelblockpower = `http://${ServerHost}:${ServerPort}/Inventarka/AllModelBlockPower`;
     public allproizvoditelblockpower = `http://${ServerHost}:${ServerPort}/Inventarka/AllProizvoditelBlockPower`;
-    public allclasification= `http://${ServerHost}:${ServerPort}/Inventarka/AllClasification`;
+    public allclasification = `http://${ServerHost}:${ServerPort}/Inventarka/AllClasification`;
     public allmailidentifies = `http://${ServerHost}:${ServerPort}/Inventarka/AllMailIdentifies`;
     public allmailgroups = `http://${ServerHost}:${ServerPort}/Inventarka/AllMailGroups`;
 
     public selectparametr = `http://${ServerHost}:${ServerPort}/Inventarka/GenerateSqlSelect`;
     public selectxml = `http://${ServerHost}:${ServerPort}/Inventarka/SelectXml`;
-    
+
     public deletedocument = `http://${ServerHost}:${ServerPort}/Inventarka/DeleteDocument`;
 
     public generatedocument = `http://${ServerHost}:${ServerPort}/Inventarka/Invoice`;
@@ -55,14 +55,14 @@ export class AdressInventarka {
     public selectdocument = `http://${ServerHost}:${ServerPort}/Inventarka/LoadDocument`;
     public selectbook = `http://${ServerHost}:${ServerPort}/Inventarka/LoadBook`
 
-    public actualIpAdresComputers =`http://${ServerHost}:${ServerPort}/Inventarka/ActualComputerIp`
+    public actualIpAdresComputers = `http://${ServerHost}:${ServerPort}/Inventarka/ActualComputerIp`
     public actualstatusModel = `http://${ServerHost}:${ServerPort}/Inventarka/ActualUsers`;
     public telephoneHelper = `http://${ServerHost}:${ServerPort}/Inventarka/GenerateTelephoneHelper`;
     public bookModels = `http://${ServerHost}:${ServerPort}/Inventarka/GenerateBookAccounting`;
     ///Вспомогательные таблицы маршруты к ним
 
     public addAndEditNameSysBlock = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditNameSysBlock`;
-    public addAndEditNameMonitor =`http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditNameMonitor`;
+    public addAndEditNameMonitor = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditNameMonitor`;
     public addAndEditNameModelBlokPower = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditNameModelBlokPower`;
     public addAndEditNameProizvoditelBlockPower = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditNameProizvoditelBlockPower`;
     public addAndEditNameSupply = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditNameSupply`;
@@ -92,4 +92,8 @@ export class AdressInventarka {
     public visibilityBodyMail = `http://${ServerHost}:${ServerPort}/Inventarka/VisibilityBodyMail`;
     public outputMail = `http://${ServerHost}:${ServerPort}/Inventarka/OutputMail`;
     public deleteMail = `http://${ServerHost}:${ServerPort}/Inventarka/DeleteMail`;
+
+    ///Работа с СТО support.tax.nalog.ru
+    public allTemplateSupport = `http://${ServerHost}:${ServerPort}/Inventarka/AllTemplateSupport`;
+    public serviceSupport = `http://${ServerHost}:${ServerPort}/Inventarka/ServiceSupport`;
 }

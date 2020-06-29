@@ -43,3 +43,7 @@ text-align: center;
     50% { color: rgb(183, 65, 14);}
     100% { color: rgb(128, 0, 0);}
 }
+.errorsModel{
+    align-items: center;
+    text-align: center;
+}

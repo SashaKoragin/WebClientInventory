@@ -1,4 +1,4 @@
-import { SignalR, ISignalRConnection, IConnectionOptions, ConnectionStatus } from 'ng2-signalr';
+import { SignalR, ISignalRConnection, IConnectionOptions, ConnectionStatus, BroadcastEventListener } from 'ng2-signalr';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {
@@ -16,7 +16,9 @@ import { DocumentReport } from '../Inventory/AllSelectModel/Report/ReportModel';
 import { UploadFile } from '../Inventory/AddFullModel/ModelTable/FileModel';
 import { BookModels } from '../Inventory/ModelInventory/ViewInventory';
 import { NgxPermissionsService } from 'ngx-permissions';
-import { WebMailModel } from '../Inventory/ModelInventory/InventoryModel';
+import { WebMailModel, FullTemplateSupport, ModelParametrSupport } from '../Inventory/ModelInventory/InventoryModel';
+import { userInfo } from 'os';
+import { Router, NavigationExtras } from '@angular/router';
 
 
 const url: AdressInventarka = new AdressInventarka();
@@ -36,11 +38,15 @@ export class AuthIdentificationSignalR {
     public iduser: string = null;
     public conect: ISignalRConnection = null;
     public status: ConnectionStatus = null;
-    createconection(users: Users) {
+    public autorization: AuthIdentification = null;
+
+    createconection(autorizationUsers: AuthIdentification) {
         try {
-            var options: IConnectionOptions = {
+            this.autorization = autorizationUsers;
+            var options: IConnectionOptions =
+            {
                 hubName: 'SignalRinventory',
-                qs: { iduser: users.IdUser, user: users.Name, tabelnumbers: users.TabelNumber },
+                qs: { iduser: autorizationUsers.autorization.idUserField, user: autorizationUsers.autorization.nameField, tabelnumbers: autorizationUsers.autorization.tabelNumberField },
                 url: `http://${ServerHost}:8059/signalr`,
                 executeErrorsInZone: true,
                 executeEventsInZone: true,
@@ -48,7 +54,7 @@ export class AuthIdentificationSignalR {
                 //Можно задать ping интервал
             }
             console.log('Создали соединение!');
-            this.permissionsService.addPermission(users.Rule.NameRules);
+            this.permissionsService.addPermission(autorizationUsers.autorization.ruleField);
             console.log('Подключили роли!');
             this.conect = this.signalR.createConnection(options);
             this.statusSubscriSignalR()
@@ -82,6 +88,11 @@ export class AuthIdentificationSignalR {
     private statusSubscriSignalR() {
         this.conect.status.subscribe((state: ConnectionStatus) => {
             this.status = state;
+            if (state.name === "disconnected") {
+                this.startserverSignalR();
+                this.autorization.logoutDisconnect();
+                alert("Потеря соединения с сайтом Обновите страницу!!!");
+            }
         });
     }
 }
@@ -91,30 +102,37 @@ export class AuthIdentificationSignalR {
 })
 export class AuthIdentification {
 
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient, public router: Router) { }
 
-    fullSelect: Autorization;
-    user: Users = new Users();
-    error: string;
+    autorization: Autorization = new Autorization();
 
-    logins: string = null;
-    password: string = null;
 
 
     isLoggedIn = false;
     redirectUrl: string;
 
     login() {
-        this.error = null;
-        this.user.Passwords = this.password;
-        this.user.NameUser = this.logins;
-        return this.http.post(url.autificationInventar, this.user, httpOptionsJson);
+        this.autorization.errorAutorizationField = null;
+        return this.http.post(url.autificationInventar, this.autorization, httpOptionsJson);
     }
 
     logout(): void {
         this.isLoggedIn = false;
-        this.user = new Users();
-        this.error = null;
+        this.autorization.errorAutorizationField = null;
+        this.autorization = new Autorization();
+    }
+
+    ///Потеря контекста с сайтом
+    logoutDisconnect(): void {
+        this.isLoggedIn = false;
+        this.autorization.errorAutorizationField = null;
+        this.autorization = new Autorization();
+        let redirect = this.redirectUrl ? this.redirectUrl : '/InventoryLogin';
+        let navigationExtras: NavigationExtras = {
+            queryParamsHandling: 'preserve',
+            preserveFragment: true
+        };
+        this.router.navigate([redirect], navigationExtras);
     }
 }
 
@@ -365,10 +383,16 @@ export class PostInventar {
         });
     }
 
+    async allTemplate() {
+        this.select.FullTemplateSupport = await this.http.get(url.allTemplateSupport, httpOptionsJson).toPromise().then(model => {
+            if (model) {
+                return deserializeArray<FullTemplateSupport>(FullTemplateSupport, model.toString());
+            }
+        })
+    }
 
 
-
-    ///Все запросы для заполнение данных по технике
+    ///Все запросы для заполнение данных по технике после актулизации пользователей
     public async fullusers() {
         await this.alluser();
         await this.allposition();
@@ -517,6 +541,11 @@ export class EditAndAdd {
     deleteTelephone(model: Telephon, userIdEdit: string) {
         return this.http.post(url.deleteTelephone.concat(userIdEdit), model, httpOptionsJson);
     }
+    ///Создание заявки на СТО
+    createSupport(modelParametrSupport: ModelParametrSupport) {
+        return this.http.post(url.serviceSupport, modelParametrSupport, httpOptionsJson);
+    }
+
 }
 @Injectable()
 export class SelectAllParametrs {

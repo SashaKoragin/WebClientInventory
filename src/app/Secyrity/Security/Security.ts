@@ -11,16 +11,15 @@ import { deserialize } from 'class-transformer';
 })
 export class LoginInventarization {
 
-    constructor(public authService: AuthIdentification, public router: Router,public selectall:PostInventar, private signalR: AuthIdentificationSignalR) { }
+    constructor(public authService: AuthIdentification, public router: Router, public selectall: PostInventar, private signalR: AuthIdentificationSignalR) { }
 
     login() {
         try {
-        if ((this.authService.password !== null) &&
-            (this.authService.logins !== null)) {
-            this.authService.login().subscribe((model) => {
-                if (model) {
-                    this.authService.fullSelect = deserialize(Autorization, model.toString());
-                    this.signalR.createconection(this.authService.fullSelect.Users);
+
+            this.authService.login().subscribe((model: Autorization) => {
+                this.authService.autorization = model;
+                if (this.authService.autorization.errorAutorizationField === null) {
+                    this.signalR.createconection(this.authService);
                     this.signalR.startserverSignalR();
                     let redirect = this.authService.redirectUrl ? this.authService.redirectUrl : '/Inventory';
                     this.authService.isLoggedIn = true;
@@ -31,12 +30,9 @@ export class LoginInventarization {
                     this.router.navigate([redirect], navigationExtras);
                     return;
                 }
-                this.authService.error = 'Не правильный Логин/Пароль';
                 return;
             });
-        } else {
-            this.authService.error = 'Не введен Логин/Пароль';
-            }
+
         } catch (e) {
             alert(e);
         };
