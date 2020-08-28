@@ -88,6 +88,21 @@ export class AdressInventarka {
     public deleteSwitch = `http://${ServerHost}:${ServerPort}/Inventarka/DeleteSwitch?userIdEdit=`;
     public deleteTelephone = `http://${ServerHost}:${ServerPort}/Inventarka/DeleteTelephone?userIdEdit=`;
 
+
+    ///Серверное оборудование 
+    public allServerEquipment = `http://${ServerHost}:${ServerPort}/Inventarka/AllServerEquipment`;
+    public allModelSeverEquipment = `http://${ServerHost}:${ServerPort}/Inventarka/AllModelSeverEquipment`;
+    public allManufacturerSeverEquipment = `http://${ServerHost}:${ServerPort}/Inventarka/AllManufacturerSeverEquipment`;
+    public allTypeServer = `http://${ServerHost}:${ServerPort}/Inventarka/AllTypeServer`;
+
+    //Редактирование серверного оборудования
+    public addAndEditServerEquipment = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditServerEquipment?userIdEdit=`;
+    public addAndEditModelSeverEquipment = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditModelSeverEquipment`;
+    public addAndEditManufacturerSeverEquipment = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditManufacturerSeverEquipment`;
+    public addAndEditTypeServer = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditTypeServer`;
+    //Удаление серверного оборудования
+    public deleteServerEquipment = `http://${ServerHost}:${ServerPort}/Inventarka/DeleteServerEquipment?userIdEdit=`;
+
     ///Работа с почтой Mail
     public visibilityBodyMail = `http://${ServerHost}:${ServerPort}/Inventarka/VisibilityBodyMail`;
     public outputMail = `http://${ServerHost}:${ServerPort}/Inventarka/OutputMail`;
@@ -96,4 +111,9 @@ export class AdressInventarka {
     ///Работа с СТО support.tax.nalog.ru
     public allTemplateSupport = `http://${ServerHost}:${ServerPort}/Inventarka/AllTemplateSupport`;
     public serviceSupport = `http://${ServerHost}:${ServerPort}/Inventarka/ServiceSupport`;
+
+    ///Снять статусы со списанной техники
+    public isCheckStatusNull = `http://${ServerHost}:${ServerPort}/Inventarka/IsCheckStatusNull`;
+    ///Генерация Qr code для техники
+    public generateQrCode = `http://${ServerHost}:${ServerPort}/Inventarka/GenerateQrCode?serialNumber=`;
 }

@@ -44,7 +44,7 @@ export class Inventar {
             {
                 otdelfunc: null,
                 children: null, types: 'Пользователи и группы', pages: './userandgroup', fullpath: 'Статистика\\Пользователи и группы', model: 'Статистика', isrule: null
-            }], types: null, pages: null, fullpath: null, model: null, isrule: null
+            }], types: null, pages: null, fullpath: null, model: null, isrule: ['Просмотр']
         },
         {
             otdelfunc: 'Статистика',

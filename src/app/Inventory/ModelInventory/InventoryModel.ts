@@ -3,10 +3,15 @@ import { User } from '../User/View/User';
 import { ElementRef } from '@angular/core';
 import { Book } from './ViewInventory';
 import { AuthIdentification } from '../../Post RequestService/PostRequest';
+import { strict } from 'assert';
+
 
 
 
 export interface INewLogicaTable<T> {
+
+    //Создание заявки на СТО
+    createSTO(model: T, template: FullTemplateSupport, authService: AuthIdentification, dialog: MatDialog): void;
     //В связи с неоправдано низкой скоростью обработки таблиц выносим шаблоны редактирования отдельно отсюда 3 новых приватных метода
     //Задержка является костылем надо думать как исправить
     //Колонки массив названий
@@ -42,9 +47,6 @@ export interface INewLogicaTable<T> {
     add(): Promise<void>;
     //Редактирование
     edit(model: T): void;
-
-    //Создание заявки на СТО
-    createSTO(model: T, template: FullTemplateSupport, authService: AuthIdentification, dialog: MatDialog): void;
     //Сохранение
     save(): void;
     //Удаление
@@ -102,6 +104,10 @@ export class FullSelectedModel {
     Telephon: Telephon[];
     BlockPower: BlockPower[];
     Supply: Supply[];
+    ServerEquipment: ServerEquipment[];
+    ModelSeverEquipment: ModelSeverEquipment[];
+    ManufacturerSeverEquipment: ManufacturerSeverEquipment[];
+    TypeServer: TypeServer[];
     ModelBlockPower: ModelBlockPower[];
     ProizvoditelBlockPower: ProizvoditelBlockPower[];
     UsersIsActualsStats: UsersIsActualsStats[];
@@ -280,6 +286,7 @@ export class Monitor {
     public IdModelMonitor: number;
     public IdNumberKabinet?: number;
     public IdSupply?: number;
+    public ServiceNum: string;
     public SerNum: string;
     public InventarNumMonitor: string;
     public Coment: string;
@@ -478,7 +485,9 @@ export class Telephon {
     public NameTelephone: string;
     public Telephon_: string;
     public TelephonUndeground: string;
+    public ServiceNum: string;
     public SerNumber: string;
+    public InventarNum: string;
     public IpTelephon: string;
     public MacTelephon: string;
     public Coment: string;
@@ -486,6 +495,49 @@ export class Telephon {
     public Statusing?: Statusing;
     public Supply: Supply;
     public Kabinet?: Kabinet;
+    public ModelIsEdit?: boolean = false;
+}
+
+export class ServerEquipment {
+    public Id: number;
+    public IdManufacturerSeverEquipment?: number;
+    public IdModelSeverEquipment?: number;
+    public IdSupply?: number;
+    public IdTypeServer?: number;
+    public IdNumberKabinet?: number;
+    public ServiceNum: string;
+    public SerNum: string;
+    public InventarNum: string;
+    public NameServer: string;
+    public IpAdress: string;
+    public Coment: string;
+    public IdStatus: number;
+    public IdHistory?: string;
+    public ModelSeverEquipment?: ModelSeverEquipment;
+    public ManufacturerSeverEquipment?: ManufacturerSeverEquipment;
+    public TypeServer?: TypeServer;
+    public Statusing?: Statusing;
+    public Supply: Supply;
+    public Kabinet?: Kabinet;
+
+    public ModelIsEdit?: boolean = false;
+}
+
+export class ModelSeverEquipment {
+    public IdModelSeverEquipment: number;
+    public NameModel: string;
+    public ModelIsEdit?: boolean = false;
+}
+
+export class ManufacturerSeverEquipment {
+    public IdManufacturerSeverEquipment: number;
+    public NameManufacturer: string;
+    public ModelIsEdit?: boolean = false;
+}
+
+export class TypeServer {
+    public IdTypeServer: number;
+    public NameType: string;
     public ModelIsEdit?: boolean = false;
 }
 

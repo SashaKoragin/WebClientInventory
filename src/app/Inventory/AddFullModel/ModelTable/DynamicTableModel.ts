@@ -48,11 +48,15 @@ export class DynamicTableColumnModel {
   //Журнал логирования
   public log: SelectTableModel[] = [{ text: "Журнал логов редактирования", indexsevr: 21, indexcolumnmodel: 0 },
   { text: "Вся техника на отдел", indexsevr: 22, indexcolumnmodel: 1 },
+  { text: "Вся техника в БД", indexsevr: 29, indexcolumnmodel: 2 },
+  { text: "Списанная техника в БД", indexsevr: 31, indexcolumnmodel: 3 },
   ]
 
   //Журнал таблицы с логом
   public columnslog: Table[] = [{ Type: "HistoryLog", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 },
-  { Type: "TecnicalOtdel", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 }
+  { Type: "TecnicalOtdel", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 },
+  { Type: "AllTechnics", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 },
+  { Type: "AllTechnics", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 },
   ];
 
   /////Почта письма

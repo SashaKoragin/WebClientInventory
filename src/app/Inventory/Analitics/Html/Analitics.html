@@ -1,6 +1,6 @@
 <b class="text">Выбор выборки ошибок:</b>
 <mat-form-field class="selectin_sql">
-        <mat-select  placeholder="Выборки" [(ngModel)]="dinamicmodel.mainselectstatistic"  name="sel" (selectionChange)="analiticsserver($event)">
+        <mat-select placeholder="Выборки" [(ngModel)]="dinamicmodel.mainselectstatistic"  name="sel" (selectionChange)="analiticsserver($event)">
             <mat-option *ngFor="let sel of dinamicmodel.selectserverstatistic" [value]="sel">
                 {{sel.text}}
             </mat-option>

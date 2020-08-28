@@ -1,5 +1,5 @@
 import { FormGroup, FormControl, Validators,AbstractControl,ValidationErrors} from '@angular/forms';
-import { Otdel, Position, FullProizvoditel, FullModel, NameSysBlock, NameMonitor, ProizvoditelBlockPower, ModelBlockPower, ModelSwithes } from '../../ModelInventory/InventoryModel';
+import { Otdel, Position, FullProizvoditel, FullModel, NameSysBlock, NameMonitor, ProizvoditelBlockPower, ModelBlockPower, ModelSwithes, ModelSeverEquipment, ManufacturerSeverEquipment, TypeServer } from '../../ModelInventory/InventoryModel';
 
 
 
@@ -54,6 +54,11 @@ export class ModelValidation  {
     public validationFullModelSwith(control: AbstractControl): ValidationErrors  {
         var nameModel = control.value as ModelSwithes;
         return  (nameModel == undefined||nameModel.NameModel == undefined)  ?  { 'error': true  } : null
+    };
+    //Валидация типа серверного оборудования
+    public validationTypeServer(control: AbstractControl): ValidationErrors  {
+        var nameModel = control.value as TypeServer;
+        return  (nameModel == undefined||nameModel.NameType == undefined)  ?  { 'error': true  } : null
     };
 
     public validationNumber(control: AbstractControl): ValidationErrors{
@@ -122,6 +127,9 @@ export class ModelValidation  {
         new FormGroup({
             'IdOtdelNumber':new FormControl(null, [Validators.required,Validators.maxLength(2),Validators.max(99),Validators.min(1)]),
             'NameGroup':new FormControl(null,[Validators.required,Validators.maxLength(64)])
+        }),
+        new FormGroup({
+            'TypeServer':new FormControl({value:new TypeServer()},[Validators.required,this.validationTypeServer])
         })
         ];
  }
