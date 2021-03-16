@@ -1,3 +1,7 @@
+.modeltable{
+  display: inline-flex;
+}
+
 
 .procedure{
   margin-top: 30px;
@@ -100,4 +104,14 @@ th, td {
 
 .MenuButton{
   width: max-content;;
+}
+
+.modelUser{
+  margin: 15;
+  width: 40%;
+}
+
+.modelRule{
+  margin: 15;
+  width: 40%;
 }

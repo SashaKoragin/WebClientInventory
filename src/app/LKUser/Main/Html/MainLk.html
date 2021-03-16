@@ -1,0 +1,121 @@
+<h1>Техника личного кабинета</h1>
+<mat-tab-group class="contentLk" [style.display]="isload ? 'none' : 'grid'">
+  <mat-tab label="Техника">
+    <div class="mat-elevation-z8">
+      <form class="search">
+        <mat-form-field class="search_blok">
+          <span matPrefix><i class="material-icons">youtube_searched_for</i></span>
+          <input matInput (keyup)="alltechnic.filterstable($event.target.value)" placeholder="Поиск данных">
+        </mat-form-field>
+        <button class="actual" mat-button (click)="excel.ExportTOExcel(tablealltechnic)">Выгрузить технику в
+          XSLX</button>
+        <button class="actual" mat-button (click)="telephoneHelp()">Телефонный справочник</button>
+      </form>
+      <div class="tables" #TABLEALLTECHNICS>
+        <table mat-table [dataSource]="alltechnic.dataSource" matSort>
+
+          <ng-container matColumnDef="Logic">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Заявки</th>
+            <td [style.background]="row.Color" mat-cell *matCellDef="let row">
+              <button mat-icon-button [style.display]="row.IdCategoriaSupport===0?'none':'inline'"
+                [matMenuTriggerFor]="menu" color="primary" matTooltip="Меню">
+                <mat-icon>more_vert</mat-icon>
+                <mat-menu #menu="matMenu">
+                  <div class="MenuButton"
+                    *ngFor="let template of selectAll.select.FullTemplateSupport | filters:[row.IdCategoriaSupport]">
+                    <button mat-menu-item (click)="alltechnic.createSTO(row,template,authService,dialog)"
+                      [matTooltip]="template.InfoTemplate">
+                      <mat-icon>input</mat-icon>
+                      {{template.Name}}
+                    </button>
+                  </div>
+                </mat-menu>
+              </button>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Item">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Категория</th>
+            <td [style.background]="row.Color" mat-cell *matCellDef="let row" [matTooltip]="row.Item">
+              {{row.Item}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Users">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Пользователь</th>
+            <td [style.background]="row.Color" mat-cell *matCellDef="let row" [matTooltip]="row.Name">
+              {{row.Name}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="NameManufacturer">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Производитель</th>
+            <td [style.background]="row.Color" mat-cell *matCellDef="let row" [matTooltip]="row.NameManufacturer">
+              {{row.NameManufacturer}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="NameModel">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Модель</th>
+            <td [style.background]="row.Color" mat-cell *matCellDef="let row" [matTooltip]="row.NameModel">
+              {{row.NameModel}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="SerNum">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Серийный номер</th>
+            <td [style.background]="row.Color" mat-cell *matCellDef="let row" [matTooltip]="row.SerNum">
+              {{row.SerNum}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="ServiceNum">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Сервисный номер</th>
+            <td [style.background]="row.Color" mat-cell *matCellDef="let row" [matTooltip]="row.ServiceNum">
+              {{row.ServiceNum}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="NameServer">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Наименование</th>
+            <td [style.background]="row.Color" mat-cell *matCellDef="let row" [matTooltip]="row.NameServer">
+              {{row.NameServer}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="IpAdress">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Ip адресс</th>
+            <td [style.background]="row.Color" mat-cell *matCellDef="let row" [matTooltip]="row.IpAdress">
+              {{row.IpAdress}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="NumberKabinet">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Номер кабинета</th>
+            <td [style.background]="row.Color" mat-cell *matCellDef="let row" [matTooltip]="row.NumberKabinet">
+              {{row.NumberKabinet}}
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="alltechnic.displayedColumns; sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; columns: alltechnic.displayedColumns;"></tr>
+        </table>
+      </div>
+      <mat-paginator class="paginator" #alltechnics [pageSizeOptions]="[5, 10, 25, paginatoralltechnic.length]"
+        showFirstLastButtons="true"></mat-paginator>
+    </div>
+    <div [style.display]="'none'" #TEMPLATEALLTECHNIC>
+
+    </div>
+  </mat-tab>
+</mat-tab-group>
+
+
+
+
+<div [style.display]="isload ? 'inline':'none'">
+  <p>Идет загрузка данных подождите пожалуйста!!!</p>
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  <div class="messages" *ngFor="let message of loadMessage">
+    <p>{{message}}</p>
+  </div>
+</div>

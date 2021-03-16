@@ -6,7 +6,11 @@ import { AuthIdentification } from '../../Post RequestService/PostRequest';
 
 
 
+
 export interface INewLogicaTable<T> {
+
+    //Создание заявки на СТО
+    createSTO(model: T, template: FullTemplateSupport, authService: AuthIdentification, dialog: MatDialog): void;
     //В связи с неоправдано низкой скоростью обработки таблиц выносим шаблоны редактирования отдельно отсюда 3 новых приватных метода
     //Задержка является костылем надо думать как исправить
     //Колонки массив названий
@@ -17,6 +21,8 @@ export interface INewLogicaTable<T> {
     isAdd: boolean;
     //Редактируем
     isEdit: boolean;
+    //Модель CallBack в случае ошибке обновления на сервере
+    modelCancelError: T;
     //Модель расширения
     model: T;
     //Индекс
@@ -42,9 +48,6 @@ export interface INewLogicaTable<T> {
     add(): Promise<void>;
     //Редактирование
     edit(model: T): void;
-
-    //Создание заявки на СТО
-    createSTO(model: T, template: FullTemplateSupport, authService: AuthIdentification, dialog: MatDialog): void;
     //Сохранение
     save(): void;
     //Удаление
@@ -72,9 +75,10 @@ export class DesirilizeXml {
     Book: Book = new Book();
 }
 
-export class TehnicalSql {
+export class TehnicalSqlAndTreeAis3 {
     Users: Users[] = null;
     Otdel: Otdel[] = null;
+    AllTemplateAndTree: AllTemplateAndTree[] = null;
 }
 
 export class Documents {
@@ -91,6 +95,7 @@ export class FullSelectedModel {
     Mfu: Mfu[];
     Swithes: Swithe[];
     SysBlok: SysBlock[];
+    Token: Token[];
     Monitors: Monitor[];
     NameMonitors: NameMonitor[];
     CopySave: CopySave[];
@@ -102,15 +107,21 @@ export class FullSelectedModel {
     Telephon: Telephon[];
     BlockPower: BlockPower[];
     Supply: Supply[];
+    ServerEquipment: ServerEquipment[];
+    ModelSeverEquipment: ModelSeverEquipment[];
+    ManufacturerSeverEquipment: ManufacturerSeverEquipment[];
+    TypeServer: TypeServer[];
     ModelBlockPower: ModelBlockPower[];
     ProizvoditelBlockPower: ProizvoditelBlockPower[];
     UsersIsActualsStats: UsersIsActualsStats[];
     Classification: Classification[];
     ModelSwithe: ModelSwithes[];
     Rule: Rules[];
+    RuleUsers: RuleUsers[];
     MailIdentifier: MailIdentifier[];
     MailGroup: MailGroup[];
     FullTemplateSupport: FullTemplateSupport[]; //Модель шаблонов для СТО
+    AllTechnics: AllTechnics[]; //Модель для ЛК
 }
 
 ///Модель отвертов с сервера
@@ -125,7 +136,7 @@ export class Autorization {
 
     public idUserField: number = 0;
     public nameField: string = null;
-    public ruleField: string = null;
+    public ruleField: string[] = null;
     public tabelNumberField: string = null;
     public errorAutorizationField: string = null;
     public loginField: string = null;
@@ -138,27 +149,29 @@ export class Users {
     public SmallName?: string;
     public IdOtdel?: number;
     public IdPosition?: number;
-    public IdRule?: number;
     public TabelNumber?: string;
     public IdTelephon?: number;
     public NameUser?: string;
     public Passwords?: string;
+    public StatusActual: number;
     public IdHistory?: string;
     public Mfu?: Mfu[];
     public Swithe?: Swithe[];
     public Monitors?: Monitor[];
     public SysBlock?: SysBlock[];
     public Printer?: Printer[];
+    public Token?: Token[];
     public ScanerAndCamer?: ScanerAndCamer[];
     public BlockPower?: BlockPower[];
     public Document?: Document;
     public Telephon?: Telephon;
-    public Rule?: Rules;
+    public RuleAndUsers?: RuleAndUsers;
     public StatusUser?: StatusUser;
     public Position?: Position;
     public Otdel?: Otdel;
     public ModelIsEdit?: boolean = false;
 }
+
 export class SysBlock {
     public IdSysBlock: number;
     public IdUser?: number;
@@ -173,12 +186,40 @@ export class SysBlock {
     public Coment: string;
     public IdStatus: number;
     public IdHistory: string;
+    public Token?: Token[];
     public Statusing: Statusing;
     public NameSysBlock: NameSysBlock;
     public Kabinet?: Kabinet;
     public Supply?: Supply;
     public User?: Users;
     public ModelIsEdit?: boolean = false;
+}
+
+export class Token {
+    public IdToken: number;
+    public IdUser: number;
+    public IdSupply: number;
+    public IdSysBlock: number;
+    public ProizvoditelName: string;
+    public SerNum: string;
+    public Coment: string;
+    public IdStatus: number;
+    public IdHistory: string;
+    public Statusing?: Statusing;
+    public Supply: Supply;
+    public SysBlock: SysBlock;
+    public Kabinet?: Kabinet; ///В БД ЭТОЙ МОДЕЛИ НЕТ ТЯНЕТ ИЗ СИСТЕСМНЫХ БЛОКОВ ИСПОЛЬЗУЕТСЯ ДЛЯ СТАТИСТИКИ
+    public User?: Users;
+    public ModelIsEdit?: boolean = false;
+}
+
+export class RuleAndUsers {
+    public Id: number;
+    public IdUser: number;
+    public IdRule: number;
+    public Rule: Rules;
+    public User: Users;
+
 }
 
 export class Rules {
@@ -280,6 +321,7 @@ export class Monitor {
     public IdModelMonitor: number;
     public IdNumberKabinet?: number;
     public IdSupply?: number;
+    public ServiceNum: string;
     public SerNum: string;
     public InventarNumMonitor: string;
     public Coment: string;
@@ -478,7 +520,9 @@ export class Telephon {
     public NameTelephone: string;
     public Telephon_: string;
     public TelephonUndeground: string;
+    public ServiceNum: string;
     public SerNumber: string;
+    public InventarNum: string;
     public IpTelephon: string;
     public MacTelephon: string;
     public Coment: string;
@@ -486,6 +530,49 @@ export class Telephon {
     public Statusing?: Statusing;
     public Supply: Supply;
     public Kabinet?: Kabinet;
+    public ModelIsEdit?: boolean = false;
+}
+
+export class ServerEquipment {
+    public Id: number;
+    public IdManufacturerSeverEquipment?: number;
+    public IdModelSeverEquipment?: number;
+    public IdSupply?: number;
+    public IdTypeServer?: number;
+    public IdNumberKabinet?: number;
+    public ServiceNum: string;
+    public SerNum: string;
+    public InventarNum: string;
+    public NameServer: string;
+    public IpAdress: string;
+    public Coment: string;
+    public IdStatus: number;
+    public IdHistory?: string;
+    public ModelSeverEquipment?: ModelSeverEquipment;
+    public ManufacturerSeverEquipment?: ManufacturerSeverEquipment;
+    public TypeServer?: TypeServer;
+    public Statusing?: Statusing;
+    public Supply: Supply;
+    public Kabinet?: Kabinet;
+
+    public ModelIsEdit?: boolean = false;
+}
+
+export class ModelSeverEquipment {
+    public IdModelSeverEquipment: number;
+    public NameModel: string;
+    public ModelIsEdit?: boolean = false;
+}
+
+export class ManufacturerSeverEquipment {
+    public IdManufacturerSeverEquipment: number;
+    public NameManufacturer: string;
+    public ModelIsEdit?: boolean = false;
+}
+
+export class TypeServer {
+    public IdTypeServer: number;
+    public NameType: string;
     public ModelIsEdit?: boolean = false;
 }
 
@@ -529,7 +616,7 @@ export class MailGroup {
 
 //Модель манипуляции с почтой
 export class WebMailModel {
-    public idField: number;
+    public idMailField: string;
     public nameGroupModelField: string
 }
 //Шаблоны СТО
@@ -538,6 +625,7 @@ export class FullTemplateSupport {
     public Name: string;
     public InfoTemplate: string;
     public IdCategiria: number;
+    public Description: string;
     public CategoriaTemplate: CategoriaTemplate[];
 }
 //Категория шаблона СТО
@@ -561,7 +649,8 @@ export class ModelParametrSupport {
         IdPrinter: number = 0,
         IdSysBlock: number = 0,
         IdScanner: number = 0,
-        IdTelephon: number = 0) {
+        IdTelephon: number = 0,
+        IdCalendarVks: number = 0) {
         this.loginField = Login;
         this.passwordField = Password;
         this.idTemplateField = IdTemplate;
@@ -573,6 +662,7 @@ export class ModelParametrSupport {
         this.idSysBlockField = IdSysBlock;
         this.idScannerField = IdScanner;
         this.idTelephonField = IdTelephon;
+        this.idCalendarVksField = IdCalendarVks;
     }
     public loginField: string;
     public passwordField: string;
@@ -585,6 +675,7 @@ export class ModelParametrSupport {
     public idSysBlockField: number;
     public idScannerField: number;
     public idTelephonField: number;
+    public idCalendarVksField: number;
     public errorField: string = null;
     public step3ResponseSupportField: string = null;
     public templateSupportField: TemplateSupport[] = null;
@@ -603,4 +694,58 @@ export class TemplateSupport {
     public selectParametrField: string;
     public templateParametrTypeField: string;
     public isImportantField: boolean;
+}
+
+///Класс\Модель для личного кабинета
+export class AllTechnics {
+    public Id: number;
+    public IdCategoriaSupport: number;
+    public Item: string;
+    public Name: string;
+    public NameType: string;
+    public NameManufacturer: string;
+    public NameModel: string;
+    public SerNum: string;
+    public InventarNum: string;
+    public ServiceNum: string;
+    public NameServer: string;
+    public IpAdress: string;
+    public Mac: string;
+    public NumberKabinet: string;
+    public Coment: string;
+    public IdStatus?: number;
+    public NameStatus: string;
+    public Color: string;
+    public IdUser?: number;
+    public IdOtdel?: number;
+    public Telephon: string;
+}
+//Роли пользователя
+export class RuleAllAndUsers {
+    public RuleUsers: RuleUsers[];
+}
+
+export class RuleUsers {
+    public idField: number;
+    public idUserField: number;
+    public idRuleField: number;
+    public nameRulesField: string;
+}
+
+
+
+
+export class AllTemplateAndTree {
+    public TableTemplate: TableTemplate;
+}
+
+export class TableTemplate {
+    public TableTasks: TableTasks[];
+    public Names: string;
+    public Category: string;
+}
+
+export class TableTasks {
+    public Path: string;
+    public Type: string;
 }

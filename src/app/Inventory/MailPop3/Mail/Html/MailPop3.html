@@ -7,8 +7,9 @@
         </mat-option>
     </mat-select>
 </mat-form-field>
-<selectsql [(logica)]="logica" [(selecting)]="selecting" [(columns)]="columns" [(select)]="select"
-    [logicstooltable]='LOGICSTOOLTABLE' [toolpanel]='TOOLPANEL'></selectsql>
+<selectsql #SqlModel [(logica)]="logica" [(selecting)]="selecting" [(columns)]="columns" [(select)]="select"
+    [logicstooltable]='dinamicmodel.mainselectmail.indexsevr ===33?LOGICSTOOLCALENDARVKS:LOGICSTOOLTABLE'
+    [toolpanel]='TOOLPANEL'></selectsql>
 
 
 <ng-template class="panel" #TOOLPANEL>
@@ -16,10 +17,6 @@
         {{statusText}}
     </div>
 </ng-template>
-
-
-
-
 
 <ng-template #LOGICSTOOLTABLE let-row='row'>
     <button class="bt" mat-icon-button color="primary" matTooltip="Просмотреть описание" (click)="visilibytyBody(row)">
@@ -29,6 +26,24 @@
         <i class="material-icons">input</i>
     </button>
     <button class="bt" mat-icon-button color="primary" matTooltip="Удалить письмо" (click)="deleteRow(row)">
+        <i class="material-icons">delete</i>
+    </button>
+</ng-template>
+
+<ng-template #LOGICSTOOLCALENDARVKS let-row='row'>
+    <button mat-icon-button [matMenuTriggerFor]="menu" color="primary" matTooltip="Меню">
+        <mat-icon>more_vert</mat-icon>
+        <mat-menu #menu="matMenu">
+            <div class="MenuButton" *ngFor="let template of selectAll.select.FullTemplateSupport | filters:[7]">
+                <button mat-menu-item (click)="createSTO(row, template, authService, dialog)"
+                    [matTooltip]="template.InfoTemplate">
+                    <mat-icon>input</mat-icon>
+                    {{template.Name}}
+                </button>
+            </div>
+        </mat-menu>
+    </button>
+    <button class="bt" mat-icon-button color="primary" matTooltip="Удалить ВКС" (click)="deleteRow(row)">
         <i class="material-icons">delete</i>
     </button>
 </ng-template>

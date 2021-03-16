@@ -4,14 +4,7 @@ import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { AuthIdentification, AuthIdentificationSignalR } from '../../../Post RequestService/PostRequest';
 
-@Pipe({
-    name: 'filters'
-})
-export class FilterParametrs implements PipeTransform {
-    public transform(value: any[], keys: number[]) {
-        return  value.filter(item=>keys.indexOf(item.IdCategiria)!==-1); 
-    }
-}
+
 
 @Component(({
     selector: 'app-root',
@@ -24,12 +17,14 @@ export class MainInventar {
     fullpath: string = null;
     model: string = null;
     welcome: string = null;
-    rule: string = null;
+    rules: string[] = [];
+    selected: string = this.rules[0];
     nestedTreeControl: NestedTreeControl<ModelInventar>;
     nestedDataSource: MatTreeNestedDataSource<ModelInventar>;
     constructor(database: Inventar, authService: AuthIdentification) {
         this.welcome = 'Добро пожаловать: ' + authService.autorization.nameField;
-        this.rule = 'Ваша роль: ' + authService.autorization.ruleField;
+        this.rules = authService.autorization.ruleField;
+        this.selected = this.rules[0];
         this.nestedTreeControl = new NestedTreeControl<ModelInventar>(this._getChildren);
         this.nestedDataSource = new MatTreeNestedDataSource();
         database.dataChange.subscribe(data => this.nestedDataSource.data = data);

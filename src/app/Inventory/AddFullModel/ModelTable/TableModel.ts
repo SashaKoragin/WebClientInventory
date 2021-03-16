@@ -1,8 +1,8 @@
 import {
   Users, FullSelectedModel, Otdel, Position, Printer, Mfu, ScanerAndCamer, SysBlock, CopySave,
   Monitor, NameSysBlock, Supply, Classification, Swithe,
-  Kabinet, FullModel, Statusing, FullProizvoditel, ModelReturn, NameMonitor, Telephon, BlockPower, ModelBlockPower, ProizvoditelBlockPower,
-  INewLogicaTable, ModelSwithes, ModeleReturn, MailIdentifier, MailGroup, Rules
+  Kabinet, FullModel, Statusing, FullProizvoditel, ModelReturn, NameMonitor, Telephon, BlockPower, ModelBlockPower, ProizvoditelBlockPower, ModelSwithes, ModeleReturn, MailIdentifier, MailGroup, ServerEquipment, Token,
+  FullTemplateSupport, ModelParametrSupport, ModelSeverEquipment, ManufacturerSeverEquipment, TypeServer, AllTechnics, RuleUsers
 } from '../../ModelInventory/InventoryModel';
 import { MatTableDataSource, MatPaginator, MatSort, MatDialog } from '@angular/material';
 import { ModelValidation } from '../ValidationModel/UserValidation';
@@ -10,14 +10,88 @@ import { EditAndAdd, AuthIdentificationSignalR, AuthIdentification } from '../..
 import { ConvertDate } from '../../AddFunctionConvertDate/ConvertDateModel';
 import * as _moment from 'moment';
 import * as _rollupMoment from 'moment';
-import { ElementRef } from '@angular/core';
+import { ElementRef, ViewChild } from '@angular/core';
 import { BroadcastEventListener } from 'ng2-signalr';
 import { deserialize } from 'class-transformer';
 import { FormControl } from '@angular/forms';
-import { from } from 'rxjs';
-import { FullTemplateSupport, ModelParametrSupport } from '../../ModelInventory/InventoryModel';
 import { ModelDialog, DialogDiscription } from '../ModelDialogDiscription/View/DialogDiscription';
+import { SelectionModel } from '@angular/cdk/collections';
+import { INewLogicaTable } from '../../ModelInventory/InventoryModel';
 const moment = _rollupMoment || _moment;
+
+///Добавление ролей в БД на пользователя 
+export class AddAndDeleteRuleUser {
+
+  constructor(public editandadd: EditAndAdd) { }
+
+  public loaded: boolean = false;
+  public displayedColumnsUser = ['Select', 'NameUser', 'TabelNumber'];
+  public dataSourceUser: MatTableDataSource<Users> = new MatTableDataSource<Users>();
+  table: ElementRef<any>;  //Полный шаблон для манипуляции
+
+  @ViewChild('roles', { static: true }) paginatorUserRoles: MatPaginator;
+  public displayedColumnsRule = ['Select', 'IdRule', 'NameRules'];
+  public dataSourceRule: MatTableDataSource<RuleUsers> = new MatTableDataSource<RuleUsers>();
+  public firstUser: string = null;
+
+  public filterstableRule(filterValue: string): void {
+    filterValue = filterValue.trim();  //Remove whitespace
+    filterValue = filterValue.toLowerCase();  //MatTableDataSource defaults to lowercase matches
+    this.dataSourceRule.filter = filterValue;
+  }
+
+
+  public filterstableUser(filterValue: string): void {
+    filterValue = filterValue.trim();  //Remove whitespace
+    filterValue = filterValue.toLowerCase();  //MatTableDataSource defaults to lowercase matches
+    this.dataSourceUser.filter = filterValue;
+  }
+
+  selectionUsers = new SelectionModel<Users>(false, []);
+
+  selectUserDb() {
+    if (this.selectionUsers.selected.length === 1) {
+      this.firstUser = "Роли пользователя: " + this.selectionUsers.selected[0].Name
+      this.editandadd.ruleAndUsers(this.selectionUsers.selected[0].IdUser).toPromise().then((model: RuleUsers[]) => {
+        if (model) {
+          this.dataSourceRule.data = model;
+        }
+      });
+    }
+    else {
+      this.firstUser = null;
+      this.dataSourceRule.data = null;
+      this.dataSourceRule._updateChangeSubscription();
+    }
+  }
+
+  isChechRule(row: RuleUsers): boolean {
+    if (row.idField !== null) {
+      return true;
+    }
+    return false;
+  }
+
+  enableRule(row: RuleUsers) {
+    row.idUserField = this.selectionUsers.selected[0].IdUser;
+    this.editandadd.addandDeleteRuleUser(row).toPromise().then((model: RuleUsers[]) => {
+      if (model) {
+        this.dataSourceRule.data = model;
+      }
+    })
+  }
+
+  public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef): Promise<string> {
+    this.table = table;
+    this.dataSourceUser.data = JSON.parse(JSON.stringify(model.Users));
+    this.dataSourceUser.paginator = paginator;
+    this.dataSourceUser.sort = sort;
+    return "Модель пользователей заполнена";
+  }
+}
+
+
+
 
 export class OtdelTableModel implements INewLogicaTable<Otdel>{
 
@@ -33,6 +107,8 @@ export class OtdelTableModel implements INewLogicaTable<Otdel>{
 
   public isEdit: boolean = false;
   public isAdd: boolean = false;
+
+  modelCancelError: Otdel = new Otdel();
   public model: Otdel = new Otdel();
   public index: number;
   public modeltable: Otdel[];
@@ -53,6 +129,7 @@ export class OtdelTableModel implements INewLogicaTable<Otdel>{
     this.SignalR.conect.listen(this.subscribeAddAndUpdate);
     this.subscribeAddAndUpdate.subscribe((substring: string) => {
       var submodel = deserialize<Otdel>(Otdel, substring);
+      this.index = 0;
       if (this.isEdit) {
         this.isEditAndAddFalse();
         this.removetemplate();
@@ -109,6 +186,7 @@ export class OtdelTableModel implements INewLogicaTable<Otdel>{
 
   public edit(model: Otdel): void {
     model.ModelIsEdit = true;
+    this.modelCancelError = JSON.parse(JSON.stringify(model));
     this.model = JSON.parse(JSON.stringify(model));
     this.addtemplate(model.IdOtdel)
     this.isEditAndAddTrue();
@@ -117,7 +195,10 @@ export class OtdelTableModel implements INewLogicaTable<Otdel>{
   public save(): void {
     this.modifimethod();
     this.editandadd.addandeditotdel(this.model).toPromise().then((model: ModelReturn<Otdel>) => {
-      console.log(model.Message);
+      if (model.Model === null) {
+        alert(model.Message)
+        this.cancel(this.modelCancelError);
+      }
     });
     //Запрос на сохранение и обновление данных
   }
@@ -181,7 +262,6 @@ export class OtdelTableModel implements INewLogicaTable<Otdel>{
     this.isEdit = true;
     this.model.ModelIsEdit = false;
     //Поиск индекса и замена модели по индексу в таблице
-    this.index = 0;
   }
 
   public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef, template: ElementRef): Promise<string> {
@@ -191,7 +271,7 @@ export class OtdelTableModel implements INewLogicaTable<Otdel>{
     this.dataSource.sort = sort;
     this.dataSource.paginator = paginator;
     this.dataSource.data = model.Otdels;
-    this.user = model.Users;
+    this.user = model.Users.filter(x => x.StatusActual !== 2);
     this.filteredUser = this.user.slice();
     return "Модель отделов заполнена";
   }
@@ -214,6 +294,7 @@ export class UserTableModel implements INewLogicaTable<Users>  {
 
   createSTO(model: Users, template: FullTemplateSupport, authService: AuthIdentification, dialog: MatDialog): void {
     var modelDialog = new ModelDialog();
+    modelDialog.discription = template.Description;
     modelDialog.info = template.InfoTemplate;
     modelDialog.name = template.Name;
     modelDialog.idTemplate = template.IdTemplate;
@@ -270,13 +351,14 @@ export class UserTableModel implements INewLogicaTable<Users>  {
   }
 
 
-  public displayedColumns = ['Logic', 'IdUser', 'Name', 'TabelNumber', 'Telephon.SerNumber', 'Telephon.Telephon_', 'Telephon.TelephonUndeground', 'Position.NamePosition', 'Otdel.NameOtdel', 'Rule.NameRules', 'StatusActual', 'ActionsColumn'];
+  public displayedColumns = ['Logic', 'IdUser', 'Name', 'TabelNumber', 'Telephon.SerNumber', 'Telephon.Telephon_', 'Telephon.TelephonUndeground', 'Position.NamePosition', 'Otdel.NameOtdel', 'StatusActual', 'ActionsColumn'];
   public dataSource: MatTableDataSource<Users> = new MatTableDataSource<Users>();
   public modelvalid: ModelValidation = new ModelValidation()
   public otdels: Otdel[];
+  public modelCancelError: Users = new Users();
   public model: Users = new Users();
 
-  public rule: Rules[];
+  //public rule: Rules[];
   public position: Position[];
   public modeltable: Users[];
   public telephone: Telephon[];
@@ -289,7 +371,7 @@ export class UserTableModel implements INewLogicaTable<Users>  {
   public filteredOtdel: any;
   public filteredPosition: any;
   public filteredTelephone: any;
-  public filteredRule: any;
+  //public filteredRule: any;
   //Подписка
   public subscribeAddAndUpdate: any = null;
   public subscribeDelete: any = null;
@@ -313,6 +395,7 @@ export class UserTableModel implements INewLogicaTable<Users>  {
     })
     this.subscribeAddAndUpdate.subscribe((substring: string) => {
       var submodel = deserialize<Users>(Users, substring);
+      this.index = 0;
       if (this.isEdit) {
         this.isEditAndAddFalse();
         this.removetemplate();
@@ -378,11 +461,9 @@ export class UserTableModel implements INewLogicaTable<Users>  {
     this.model.Otdel ? this.model.IdOtdel = this.model.Otdel.IdOtdel : this.model.IdOtdel = null;
     this.model.Position ? this.model.IdPosition = this.model.Position.IdPosition : this.model.IdPosition = null;
     this.model.Telephon ? this.model.IdTelephon = this.model.Telephon.IdTelephon : this.model.IdTelephon = null;
-    this.model.Rule ? this.model.IdRule = this.model.Rule.IdRule : this.model.IdRule = null;
+    //this.model.Rule ? this.model.IdRule = this.model.Rule.IdRule : this.model.IdRule = null;
     this.isEdit = true;
     this.model.ModelIsEdit = false;
-    //Поиск индекса и замена модели по индексу в таблице
-    this.index = 0;
   }
 
   public filterstable(filterValue: string): void {
@@ -395,7 +476,7 @@ export class UserTableModel implements INewLogicaTable<Users>  {
     this.filteredOtdel = this.otdels.slice();
     this.filteredPosition = this.position.slice();
     this.filteredTelephone = this.telephone.slice();
-    this.filteredRule = this.rule.slice();
+    // this.filteredRule = this.rule.slice();
   }
 
   newmodel(): Users {
@@ -436,6 +517,7 @@ export class UserTableModel implements INewLogicaTable<Users>  {
   ///Редактирование 
   public edit(user: Users): void {
     user.ModelIsEdit = true;
+    this.modelCancelError = JSON.parse(JSON.stringify(user));
     this.model = JSON.parse(JSON.stringify(user));
     this.isEditAndAddTrue();
     this.addtemplate(user.IdUser)
@@ -444,7 +526,10 @@ export class UserTableModel implements INewLogicaTable<Users>  {
   public save(): void {
     this.modifimethod();
     this.editandadd.addandedituser(this.model, this.SignalR.iduser).subscribe((model: ModelReturn<Users>) => {
-      console.log(model.Message);
+      if (model.Model === null) {
+        alert(model.Message)
+        this.cancel(this.modelCancelError);
+      }
     });
     //Запрос на сохранение и обновление данных
   }
@@ -492,15 +577,15 @@ export class UserTableModel implements INewLogicaTable<Users>  {
     this.dataSource.paginator = paginator;
     this.dataSource.sort = sort
     this.castomefiltermodel();
-    this.dataSource.data = model.Users
+    this.dataSource.data = model.Users;
     this.otdels = model.Otdels;
     this.telephone = model.Telephon;
     this.position = model.Position;
-    this.rule = model.Rule;
+    // this.rule = model.Rule;
     this.filteredOtdel = this.otdels.slice();
     this.filteredPosition = this.position.slice();
     this.filteredTelephone = this.telephone.slice();
-    this.filteredRule = this.rule.slice();
+    // this.filteredRule = this.rule.slice();
     return "Модель пользователей заполнена";
   }
 
@@ -530,10 +615,11 @@ export class SwitchTableModel implements INewLogicaTable<Swithe>{
   public supples: Supply[]
   public user: Users[];
 
-  displayedColumns = ['IdSwithes', 'User.Name', 'Supply.DatePostavki', 'ModelSwithes.NameModel', 'ModelSwithes.CountPort', 'ServiceNum', 'SerNum', 'InventarNum', 'Coment', 'Kabinet.NumberKabinet', 'Statusing.Name', 'ActionsColumn'];
+  displayedColumns = ['Logic', 'IdSwithes', 'User.Name', 'Supply.DatePostavki', 'ModelSwithe.NameModel', 'ModelSwithe.CountPort', 'ServiceNum', 'SerNum', 'InventarNum', 'Coment', 'Kabinet.NumberKabinet', 'Statusing.Name', 'ActionsColumn'];
   dataSource: MatTableDataSource<Swithe> = new MatTableDataSource<Swithe>();
   isAdd: boolean;
   isEdit: boolean;
+  modelCancelError: Swithe = new Swithe();
   model: Swithe = new Swithe();
   modelToServer: Swithe;
   index: number;
@@ -569,6 +655,7 @@ export class SwitchTableModel implements INewLogicaTable<Swithe>{
 
     this.subscribeAddAndUpdate.subscribe((substring: string) => {
       var submodel = deserialize<Swithe>(Swithe, substring);
+      this.index = 0;
       if (this.isEdit) {
         this.isEditAndAddFalse();
         this.removetemplate();
@@ -658,6 +745,7 @@ export class SwitchTableModel implements INewLogicaTable<Swithe>{
 
   public edit(model: Swithe): void {
     model.ModelIsEdit = true;
+    this.modelCancelError = JSON.parse(JSON.stringify(model));
     this.model = JSON.parse(JSON.stringify(model));
     this.addtemplate(model.IdSwithes)
     this.isEditAndAddTrue();
@@ -670,7 +758,10 @@ export class SwitchTableModel implements INewLogicaTable<Swithe>{
       this.modelToServer.Supply.DatePostavki = `/Date(${new Date(this.modelToServer.Supply.DatePostavki).getTime()})/`;
     }
     this.editandadd.addandeditswitch(this.modelToServer, this.SignalR.iduser).toPromise().then((model: ModelReturn<Swithe>) => {
-      console.log(model.Message);
+      if (model.Model === null) {
+        alert(model.Message)
+        this.cancel(this.modelCancelError);
+      }
     });
     //Запрос на сохранение и обновление данных
   }
@@ -748,7 +839,6 @@ export class SwitchTableModel implements INewLogicaTable<Swithe>{
     }
     this.isEdit = true;
     this.model.ModelIsEdit = false;
-    this.index = 0;
   }
 
   public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef<any>, template: ElementRef<any>): Promise<string> {
@@ -762,7 +852,7 @@ export class SwitchTableModel implements INewLogicaTable<Swithe>{
     this.kabinet = model.Kabinet;
     this.models = model.ModelSwithe;
     this.statusing = model.Statusing;
-    this.user = model.Users;
+    this.user = model.Users.filter(x => x.StatusActual !== 2);
     this.supples = model.Supply;
     this.filteredKabinet = this.kabinet.slice();
     this.filteredModels = this.models.slice();
@@ -782,13 +872,604 @@ export class SwitchTableModel implements INewLogicaTable<Swithe>{
   }
 }
 
+export class ServerEquipmentTableModel implements INewLogicaTable<ServerEquipment>{
+
+  constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
+    this.subscribeservers();
+  }
+
+  createSTO(model: ServerEquipment, template: FullTemplateSupport, authService: AuthIdentification, dialog: MatDialog): void {
+    throw new Error("Method not implemented.");
+  }
+
+  public modelvalid: ModelValidation = new ModelValidation()
+  public kabinet: Kabinet[];
+  public statusing: Statusing[];
+  public supples: Supply[];
+  public typeServer: TypeServer[];
+  public modelSeverEquipment: ModelSeverEquipment[];
+  public manufacturerSeverEquipment: ManufacturerSeverEquipment[];
+
+  displayedColumns = ['Logic', 'Id', 'Supply.DatePostavki', 'TypeServer.NameType', 'ModelSeverEquipment.NameModel', 'ManufacturerSeverEquipment.NameManufacturer', 'ServiceNum', 'SerNum', 'InventarNum', 'NameServer', 'IpAdress', 'Coment', 'Kabinet.NumberKabinet', 'Statusing.Name', 'ActionsColumn'];
+
+  dataSource: MatTableDataSource<ServerEquipment> = new MatTableDataSource<ServerEquipment>();
+  isAdd: boolean;
+  isEdit: boolean;
+  modelCancelError: ServerEquipment = new ServerEquipment();
+  model: ServerEquipment = new ServerEquipment();
+  modelToServer: ServerEquipment;
+  index: number;
+  modeltable: ServerEquipment[];
+
+  public filteredKabinet: any;
+  public filteredTypeServer: any;
+  public filteredStatusing: any;
+  public filteredSupples: any;
+  public filteredModelSeverEquipment: any;
+  public filteredManufacturerSeverEquipment: any;
+
+  //Подписка
+  public subscribeAddAndUpdate: any = null;
+  public subscribeDelete: any = null;
+
+  temlateList: any;
+  rowList: any;
+  fulltemplate: ElementRef<any>;
+  table: ElementRef<any>;
+
+  public subscribeservers() {
+    this.subscribeAddAndUpdate = new BroadcastEventListener<ServerEquipment>('SubscribeServerEquipment');
+    this.subscribeDelete = new BroadcastEventListener<string>('SubscribeDeleteServerEquipment');
+    this.SignalR.conect.listen(this.subscribeAddAndUpdate);
+    this.SignalR.conect.listen(this.subscribeDelete);
+
+    this.subscribeDelete.subscribe((model: ModeleReturn<ServerEquipment>) => {
+      if (model.Index === 0) {
+        let index: number = this.dataSource.data.findIndex(item => item.Id === model.Model.Id);
+        this.dataSource.data.splice(index, 1);
+        this.dataSource._updateChangeSubscription();
+      }
+    })
+
+    this.subscribeAddAndUpdate.subscribe((substring: string) => {
+      var submodel = deserialize<ServerEquipment>(ServerEquipment, substring);
+      this.index = 0;
+      if (this.isEdit) {
+        this.isEditAndAddFalse();
+        this.removetemplate();
+        this.model = submodel
+      }
+      var index = this.dataSource.data.find(x => x.Id === submodel.Id);
+      var indexzero = this.dataSource.data.find(x => x.Id === 0);
+      try {
+        if (indexzero) {
+          ///Для изменявшего
+          this.dataSource.data.find(x => x.Id === 0).IdHistory = submodel.IdHistory;
+          this.dataSource.data.find(x => x.Id === 0).Id = submodel.Id;
+        }
+        else {
+          if (index) {
+            ///Для остальных пользователей изменение
+            this.dataSource.data[this.dataSource.data.indexOf(index)] = submodel;
+            this.modeltable[this.modeltable.indexOf(index)] = submodel;
+          }
+          else {
+            ///Для остальных пользователей добавление
+            this.dataSource.data.push(submodel);
+            this.modeltable.push(submodel);
+          }
+        }
+        this.dataSource._updateChangeSubscription();
+      }
+      catch (e) {
+        console.log(e);
+      }
+    });
+  }
+
+  castomefiltermodel() {
+    this.dataSource.filterPredicate = (data, filter) => {
+      var tot = false;
+      for (let column of this.displayedColumns) {
+        if (typeof data[column] !== 'undefined') {
+          if ((column in data) && (new Date(data[column].toString()).toString() == "Invalid Date")) {
+            tot = (tot || data[column].toString().trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+          } else {
+
+            var date = new Date(data[column].toString());
+            var m = date.toDateString().slice(4, 7) + " " + date.getDate() + " " + date.getFullYear();
+            tot = (tot || m.toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+          }
+        }
+        else {
+          if (data[column.split('.')[0]] !== null) {
+            if (typeof (data[column.split('.')[0]]) === 'object') {
+              if (data[column.split('.')[0]][column.split('.')[1]]) {
+                tot = (tot || data[column.split('.')[0]][column.split('.')[1]].trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+              }
+            }
+          }
+        }
+      }
+      return tot;
+    }
+  }
+
+  public filterstable(filterValue: string): void {
+    filterValue = filterValue.trim(); // Remove whitespace
+    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
+    this.dataSource.filter = filterValue;
+  }
+
+  public calbackfiltersAll(): void {
+    this.filteredKabinet = this.kabinet.slice();
+    this.filteredManufacturerSeverEquipment = this.manufacturerSeverEquipment.slice();
+    this.filteredStatusing = this.statusing.slice();
+    this.filteredModelSeverEquipment = this.modelSeverEquipment.slice();
+    this.filteredSupples = this.supples.slice();
+    this.filteredTypeServer = this.typeServer.slice();
+  }
+
+  public async add(): Promise<void> {
+    this.isEditAndAddTrue();
+    var newmodel = this.newmodel();
+    this.dataSource.data.push(newmodel);
+    this.modeltable.push(newmodel);
+    this.index = this.dataSource.data.length;
+    this.model = newmodel;
+    await this.dataSource._updateChangeSubscription();
+    await this.dataSource.paginator.lastPage();
+    this.addtemplate(newmodel.Id)
+  }
+
+  public edit(model: ServerEquipment): void {
+    model.ModelIsEdit = true;
+    this.modelCancelError = JSON.parse(JSON.stringify(model));
+    this.model = JSON.parse(JSON.stringify(model));
+    this.addtemplate(model.Id)
+    this.isEditAndAddTrue();
+  }
+
+  save(): void {
+    this.modifimethod();
+    this.modelToServer = JSON.parse(JSON.stringify(this.model));
+    if (this.modelToServer.Supply) {
+      this.modelToServer.Supply.DatePostavki = `/Date(${new Date(this.modelToServer.Supply.DatePostavki).getTime()})/`;
+    }
+    this.editandadd.addAndEditServerEquipment(this.modelToServer, this.SignalR.iduser).toPromise().then((model: ModelReturn<ServerEquipment>) => {
+      if (model.Model === null) {
+        alert(model.Message)
+        this.cancel(this.modelCancelError);
+      }
+    });
+    //Запрос на сохранение и обновление данных
+  }
+
+  ///Удаление
+  delete(model: ServerEquipment): void {
+    var converter = new ConvertDate();
+    this.modelToServer = converter.convertDateToServer<ServerEquipment>(JSON.parse(JSON.stringify(model)));
+    this.editandadd.deleteServerEquipment(this.modelToServer, this.SignalR.iduser).toPromise().then((model: ModeleReturn<ServerEquipment>) => {
+      alert(model.Message);
+    });
+  }
+
+  ///Отмена
+  cancel(model: ServerEquipment): void {
+    model.ModelIsEdit = false;
+    this.isEditAndAddFalse();
+    if (this.index > 0) {
+      this.dataSource.data.pop();
+      this.index = 0;
+    }
+    else {
+      var userdefault = this.modeltable.find(x => x.Id === this.model.Id);
+      this.dataSource.data[this.modeltable.indexOf(userdefault)] = model;
+      this.index = 0;
+    }
+    this.dataSource._updateChangeSubscription();
+    this.removetemplate();
+  }
+
+  newmodel(): ServerEquipment {
+    var newuser: ServerEquipment = new ServerEquipment()
+    newuser.ModelIsEdit = true;
+    newuser.Id = 0;
+    return newuser;
+  }
+
+  //Костыль дожидаемся обновление DOM
+  async delay(ms: number): Promise<void> {
+    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+  }
+
+  async addtemplate(index: number): Promise<void> {
+    var i = 0;
+    await this.delay(10);
+    this.temlateList = this.fulltemplate.nativeElement.querySelectorAll("mat-form-field[id=template]");
+    this.rowList = this.table.nativeElement.querySelectorAll("div[class='" + index + "']");
+    for (var row of this.rowList) {
+      row.append(this.temlateList[i])
+      i++;
+    }
+  }
+
+  removetemplate(): void {
+    var i = 0;
+    for (var row of this.rowList) {
+      row.removeChild(this.temlateList[i]);
+      this.fulltemplate.nativeElement.append(this.temlateList[i])
+      i++;
+    }
+  }
+
+  modifimethod(): void {
+    this.model.ManufacturerSeverEquipment ? this.model.IdManufacturerSeverEquipment = this.model.ManufacturerSeverEquipment.IdManufacturerSeverEquipment : this.model.IdManufacturerSeverEquipment = null;
+    this.model.ModelSeverEquipment ? this.model.IdModelSeverEquipment = this.model.ModelSeverEquipment.IdModelSeverEquipment : this.model.IdModelSeverEquipment = null;
+    this.model.Statusing ? this.model.IdStatus = this.model.Statusing.IdStatus : this.model.IdStatus = null;
+    this.model.Kabinet ? this.model.IdNumberKabinet = this.model.Kabinet.IdNumberKabinet : this.model.IdNumberKabinet = null;
+    this.model.TypeServer ? this.model.IdTypeServer = this.model.TypeServer.IdTypeServer : this.model.IdTypeServer = null;
+    if (this.model.Supply) {
+      this.model.IdSupply = this.model.Supply.IdSupply
+      this.model.Supply.DataCreate = null;
+      if (this.model.Supply.DatePostavki.length <= 10) {
+        this.model.Supply.DatePostavki = this.model.Supply.DatePostavki.split("-").reverse().join("-") + "T00:00:00.000Z"
+      }
+    }
+    else {
+      this.model.IdSupply = null;
+    }
+    this.isEdit = true;
+    this.model.ModelIsEdit = false;
+  }
+
+  public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef<any>, template: ElementRef<any>): Promise<string> {
+    this.table = table;  //Таблица
+    this.fulltemplate = template; //Заложенный шаблон
+    this.modeltable = JSON.parse(JSON.stringify(model.ServerEquipment));
+    this.dataSource.paginator = paginator;
+    this.dataSource.sort = sort
+    this.castomefiltermodel();
+    this.dataSource.data = model.ServerEquipment;
+    this.kabinet = model.Kabinet;
+    this.modelSeverEquipment = model.ModelSeverEquipment;
+    this.manufacturerSeverEquipment = model.ManufacturerSeverEquipment;
+    this.statusing = model.Statusing;
+    this.supples = model.Supply;
+    this.typeServer = model.TypeServer;
+    this.filteredKabinet = this.kabinet.slice();
+    this.filteredModelSeverEquipment = this.modelSeverEquipment.slice();
+    this.filteredStatusing = this.statusing.slice();
+    this.filteredManufacturerSeverEquipment = this.manufacturerSeverEquipment.slice();
+    this.filteredSupples = this.supples.slice();
+    this.filteredTypeServer = this.typeServer.slice();
+    return "Модель сервисного оборудования заполнена";
+  }
+
+  isEditAndAddTrue(): void {
+    this.isEdit = true;
+    this.isAdd = true;
+  }
+
+  isEditAndAddFalse(): void {
+    this.isAdd = false;
+    this.isEdit = false;
+  }
+}
+
+export class TokenTableModel implements INewLogicaTable<Token>{
+
+  constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
+    this.subscribeservers();
+  }
+
+  createSTO(model: Token, template: FullTemplateSupport, authService: AuthIdentification, dialog: MatDialog): void {
+    throw new Error("Method not implemented.");
+  }
+
+  public modelvalid: ModelValidation = new ModelValidation()
+  public statusing: Statusing[];
+  public supples: Supply[];
+  public user: Users[];
+  
+  public SysBlockAllModel: SysBlock[];
+  public sysblock: SysBlock[];
+  
+  public displayedColumns = ['Logic', 'IdToken', 'User.Name', 'Supply.DatePostavki', 'ProizvoditelName', 'SerNum', 'SysBlock.NameComputer', 'SysBlock.ServiceNum', 'SysBlock.SerNum', 'SysBlock.InventarNumSysBlok', 'SysBlock.IpAdress', 'SysBlock.Kabinet.NumberKabinet', 'Coment', 'Statusing.Name', 'ActionsColumn']
+  dataSource: MatTableDataSource<Token> = new MatTableDataSource<Token>();
+  isAdd: boolean;
+  isEdit: boolean;
+
+  modelCancelError: Token = new Token();
+  model: Token = new Token();
+  modelToServer: Token;
+  index: number;
+  modeltable: Token[];
+
+  public filteredSupples: any;
+  public filteredUser: any;
+  public filteredSysBlock: any;
+  public filteredStatusing: any;
+
+  //Подписка
+  public subscribeAddAndUpdate: any = null;
+  public subscribeDelete: any = null;
+
+  temlateList: any;
+  rowList: any;
+  fulltemplate: ElementRef<any>;
+  table: ElementRef<any>;
+
+
+  public subscribeservers() {
+    this.subscribeAddAndUpdate = new BroadcastEventListener<Token>('SubscribeToken');
+    this.subscribeDelete = new BroadcastEventListener<string>('SubscribeDeleteToken');
+    this.SignalR.conect.listen(this.subscribeAddAndUpdate);
+    this.SignalR.conect.listen(this.subscribeDelete);
+
+    this.subscribeDelete.subscribe((model: ModeleReturn<Token>) => {
+      if (model.Index === 0) {
+        let index: number = this.dataSource.data.findIndex(item => item.IdToken === model.Model.IdToken);
+        this.dataSource.data.splice(index, 1);
+        this.dataSource._updateChangeSubscription();
+      }
+    })
+
+    this.subscribeAddAndUpdate.subscribe((substring: string) => {
+      var submodel = deserialize<Token>(Token, substring);
+      this.index = 0;
+      if (this.isEdit) {
+        this.isEditAndAddFalse();
+        this.removetemplate();
+        this.model = submodel
+      }
+      var index = this.dataSource.data.find(x => x.IdToken === submodel.IdToken);
+      var indexzero = this.dataSource.data.find(x => x.IdToken === 0);
+      try {
+        if (indexzero) {
+          ///Для изменявшего
+          this.dataSource.data.find(x => x.IdToken === 0).IdHistory = submodel.IdHistory;
+          this.dataSource.data.find(x => x.IdToken === 0).IdToken = submodel.IdToken;
+        }
+        else {
+          if (index) {
+            ///Для остальных пользователей изменение
+            this.dataSource.data[this.dataSource.data.indexOf(index)] = submodel;
+            this.modeltable[this.modeltable.indexOf(index)] = submodel;
+          }
+          else {
+            ///Для остальных пользователей добавление
+            this.dataSource.data.push(submodel);
+            this.modeltable.push(submodel);
+          }
+        }
+        this.dataSource._updateChangeSubscription();
+      }
+      catch (e) {
+        console.log(e);
+      }
+    });
+  }
+
+  castomefiltermodel() {
+    this.dataSource.filterPredicate = (data, filter) => {
+      var tot = false;
+      for (let column of this.displayedColumns) {
+        if (typeof data[column] !== 'undefined') {
+          if ((column in data) && (new Date(data[column].toString()).toString() == "Invalid Date")) {
+            tot = (tot || data[column].toString().trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+          } else {
+
+            var date = new Date(data[column].toString());
+            var m = date.toDateString().slice(4, 7) + " " + date.getDate() + " " + date.getFullYear();
+            tot = (tot || m.toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+          }
+        }
+        else {
+          if (data[column.split('.')[0]] !== null) {
+            if (typeof (data[column.split('.')[0]]) === 'object') {
+              if (typeof (data[column.split('.')[0]][column.split('.')[1]]) === 'object') {
+                if (data[column.split('.')[0]][column.split('.')[1]][column.split('.')[2]]) {
+                  tot = (tot || data[column.split('.')[0]][column.split('.')[1]][column.split('.')[2]].trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+                }
+              }
+              else {
+                if (data[column.split('.')[0]][column.split('.')[1]]) {
+                  tot = (tot || data[column.split('.')[0]][column.split('.')[1]].trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+                }
+              }
+            }
+          }
+        }
+      }
+      return tot;
+    }
+  }
+
+  public filterstable(filterValue: string): void {
+    filterValue = filterValue.trim(); // Remove whitespace
+    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
+    this.dataSource.filter = filterValue;
+  }
+
+  public calbackfiltersAll(): void {
+    this.filteredStatusing = this.statusing.slice();
+    this.filteredSupples = this.supples.slice();
+    this.filteredUser = this.user.slice();
+    this.filteredSysBlock = this.sysblock.slice();
+  }
+
+  public async add(): Promise<void> {
+    this.isEditAndAddTrue();
+    var newmodel = this.newmodel();
+    this.dataSource.data.push(newmodel);
+    this.modeltable.push(newmodel);
+    this.index = this.dataSource.data.length;
+    this.model = newmodel;
+    await this.dataSource._updateChangeSubscription();
+    await this.dataSource.paginator.lastPage();
+    this.addtemplate(newmodel.IdToken)
+  }
+
+  public edit(model: Token): void {
+
+    this.sysblock = this.SysBlockAllModel.filter(x => x.IdUser === model.IdUser && new Array(undefined, null, 16).some(y => y === x.IdStatus))
+    model.ModelIsEdit = true;
+    this.modelCancelError = JSON.parse(JSON.stringify(model));
+    this.model = JSON.parse(JSON.stringify(model));
+    this.addtemplate(model.IdToken);
+    this.isEditAndAddTrue();
+  }
+
+  ///Конвертация даты поставки во вложенной моделе подготовка оправки на сервер
+  public sveDateTimeConvertModel(object: any) {
+    for (var property in object) {
+      if (typeof (object[property]) === 'object') {
+        object[property] = this.sveDateTimeConvertModel(object[property]);
+      }
+      else {
+        if (property === 'DatePostavki') {
+          object[property] = `/Date(${new Date(object[property]).getTime()})/`;
+        }
+      }
+    }
+    return object
+  }
+
+  save(): void {
+    this.modifimethod();
+    this.modelToServer = JSON.parse(JSON.stringify(this.model));
+    this.sveDateTimeConvertModel(this.modelToServer);
+    this.editandadd.addAndEditToken(this.modelToServer, this.SignalR.iduser).toPromise().then((model: ModelReturn<Token>) => {
+      if (model.Model === null) {
+        alert(model.Message)
+        this.cancel(this.modelCancelError);
+      }
+    });
+    //Запрос на сохранение и обновление данных
+  }
+
+  ///Удаление
+  delete(model: Token): void {
+    var converter = new ConvertDate();
+    this.modelToServer = converter.convertDateToServer<Token>(JSON.parse(JSON.stringify(model)));
+    this.editandadd.deleteToken(this.modelToServer, this.SignalR.iduser).toPromise().then((model: ModeleReturn<Token>) => {
+      alert(model.Message);
+    });
+  }
+
+  ///Отмена
+  cancel(model: Token): void {
+    model.ModelIsEdit = false;
+    this.isEditAndAddFalse();
+    if (this.index > 0) {
+      this.dataSource.data.pop();
+      this.index = 0;
+    }
+    else {
+      var userdefault = this.modeltable.find(x => x.IdToken === this.model.IdToken);
+      this.dataSource.data[this.modeltable.indexOf(userdefault)] = model;
+      this.index = 0;
+    }
+    this.dataSource._updateChangeSubscription();
+    this.removetemplate();
+    this.calbackfiltersAll();
+  }
+
+  newmodel(): Token {
+    var newuser: Token = new Token()
+    newuser.ModelIsEdit = true;
+    newuser.IdToken = 0;
+    return newuser;
+  }
+  //Костыль дожидаемся обновление DOM
+  async delay(ms: number): Promise<void> {
+    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+  }
+
+  async addtemplate(index: number): Promise<void> {
+    var i = 0;
+    await this.delay(10);
+    this.temlateList = this.fulltemplate.nativeElement.querySelectorAll("mat-form-field[id=template]");
+    this.rowList = this.table.nativeElement.querySelectorAll("div[class='" + index + "']");
+    for (var row of this.rowList) {
+      row.append(this.temlateList[i])
+      i++;
+    }
+  }
+
+  removetemplate(): void {
+    var i = 0;
+    for (var row of this.rowList) {
+      row.removeChild(this.temlateList[i]);
+      this.fulltemplate.nativeElement.append(this.temlateList[i])
+      i++;
+    }
+  }
+
+  modifimethod(): void {
+    this.model.Statusing ? this.model.IdStatus = this.model.Statusing.IdStatus : this.model.IdStatus = null;
+    this.model.User ? this.model.IdUser = this.model.User.IdUser : this.model.IdUser = null;
+    this.model.SysBlock ? this.model.IdSysBlock = this.model.SysBlock.IdSysBlock : this.model.IdSysBlock = null;
+    if (this.model.Supply) {
+      this.model.IdSupply = this.model.Supply.IdSupply
+      this.model.Supply.DataCreate = null;
+      if (this.model.Supply.DatePostavki.length <= 10) {
+        this.model.Supply.DatePostavki = this.model.Supply.DatePostavki.split("-").reverse().join("-") + "T00:00:00.000Z"
+      }
+    }
+    else {
+      this.model.IdSupply = null;
+    }
+    this.isEdit = true;
+    this.model.ModelIsEdit = false;
+  }
+
+  public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef<any>, template: ElementRef<any>): Promise<string> {
+    this.table = table;  //Таблица
+    this.fulltemplate = template; //Заложенный шаблон
+    this.modeltable = JSON.parse(JSON.stringify(model.Token));
+    this.dataSource.paginator = paginator;
+    this.dataSource.sort = sort
+    this.castomefiltermodel();
+    this.dataSource.data = model.Token;
+    this.statusing = model.Statusing;
+    this.supples = model.Supply;
+    this.user = model.Users.filter(x => x.StatusActual !== 2);
+    this.SysBlockAllModel = model.SysBlok;
+    this.sysblock = [];
+    this.filteredSupples = this.supples.slice();
+    this.filteredStatusing = this.statusing.slice();
+    this.filteredSysBlock = this.sysblock.slice();
+    this.filteredUser = this.user.slice();
+    return "Модель токенов заполнена";
+  }
+
+  isEditAndAddTrue(): void {
+    this.isEdit = true;
+    this.isAdd = true;
+  }
+
+  isEditAndAddFalse(): void {
+    this.sysblock = [];
+    this.isAdd = false;
+    this.isEdit = false;
+  }
+
+}
+
+
+
+
 export class PrinterTableModel implements INewLogicaTable<Printer> {
   constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
     this.subscribeservers();
   }
 
+
   createSTO(model: Printer, template: FullTemplateSupport, authService: AuthIdentification, dialog: MatDialog): void {
     var modelDialog = new ModelDialog();
+    modelDialog.discription = template.Description;
     modelDialog.info = template.InfoTemplate;
     modelDialog.name = template.Name;
     modelDialog.idTemplate = template.IdTemplate;
@@ -835,6 +1516,7 @@ export class PrinterTableModel implements INewLogicaTable<Printer> {
 
   isAdd: boolean;
   isEdit: boolean;
+  modelCancelError: Printer = new Printer();
   model: Printer = new Printer();
   modelToServer: Printer;
   index: number;
@@ -871,6 +1553,7 @@ export class PrinterTableModel implements INewLogicaTable<Printer> {
 
     this.subscribeAddAndUpdate.subscribe((substring: string) => {
       var submodel = deserialize<Printer>(Printer, substring);
+      this.index = 0;
       if (this.isEdit) {
         this.isEditAndAddFalse();
         this.removetemplate();
@@ -961,6 +1644,7 @@ export class PrinterTableModel implements INewLogicaTable<Printer> {
 
   public edit(model: Printer): void {
     model.ModelIsEdit = true;
+    this.modelCancelError = JSON.parse(JSON.stringify(model));
     this.model = JSON.parse(JSON.stringify(model));
     this.addtemplate(model.IdPrinter)
     this.isEditAndAddTrue();
@@ -973,7 +1657,10 @@ export class PrinterTableModel implements INewLogicaTable<Printer> {
       this.modelToServer.Supply.DatePostavki = `/Date(${new Date(this.modelToServer.Supply.DatePostavki).getTime()})/`;
     }
     this.editandadd.addandeditprinter(this.modelToServer, this.SignalR.iduser).toPromise().then((model: ModelReturn<Printer>) => {
-      console.log(model.Message);
+      if (model.Model === null) {
+        alert(model.Message)
+        this.cancel(this.modelCancelError);
+      }
     });
     //Запрос на сохранение и обновление данных
   }
@@ -1055,7 +1742,6 @@ export class PrinterTableModel implements INewLogicaTable<Printer> {
     }
     this.isEdit = true;
     this.model.ModelIsEdit = false;
-    this.index = 0;
   }
 
   public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef, template: ElementRef): Promise<string> {
@@ -1070,7 +1756,7 @@ export class PrinterTableModel implements INewLogicaTable<Printer> {
     this.models = model.Model.filter(x => x.IdClasification === 1);
     this.statusing = model.Statusing;
     this.proizvoditel = model.Proizvoditel;
-    this.user = model.Users;
+    this.user = model.Users.filter(x => x.StatusActual !== 2);
     this.supples = model.Supply;
     this.filteredKabinet = this.kabinet.slice();
     this.filteredModels = this.models.slice();
@@ -1099,6 +1785,7 @@ export class ScanerAndCamerTableModel implements INewLogicaTable<ScanerAndCamer>
 
   createSTO(model: ScanerAndCamer, template: FullTemplateSupport, authService: AuthIdentification, dialog: MatDialog): void {
     var modelDialog = new ModelDialog();
+    modelDialog.discription = template.Description;
     modelDialog.info = template.InfoTemplate;
     modelDialog.name = template.Name;
     modelDialog.idTemplate = template.IdTemplate;
@@ -1146,6 +1833,7 @@ export class ScanerAndCamerTableModel implements INewLogicaTable<ScanerAndCamer>
 
   isAdd: boolean;
   isEdit: boolean;
+  modelCancelError: ScanerAndCamer = new ScanerAndCamer();
   model: ScanerAndCamer = new ScanerAndCamer();
   modelToServer: ScanerAndCamer;
   index: number;
@@ -1182,6 +1870,7 @@ export class ScanerAndCamerTableModel implements INewLogicaTable<ScanerAndCamer>
 
     this.subscribeAddAndUpdate.subscribe((substring: string) => {
       var submodel = deserialize<ScanerAndCamer>(ScanerAndCamer, substring);
+      this.index = 0;
       if (this.isEdit) {
         this.isEditAndAddFalse();
         this.removetemplate();
@@ -1272,6 +1961,7 @@ export class ScanerAndCamerTableModel implements INewLogicaTable<ScanerAndCamer>
   }
   public edit(model: ScanerAndCamer): void {
     model.ModelIsEdit = true;
+    this.modelCancelError = JSON.parse(JSON.stringify(model));
     this.model = JSON.parse(JSON.stringify(model));
     this.addtemplate(model.IdScaner)
     this.isEditAndAddTrue();
@@ -1283,7 +1973,10 @@ export class ScanerAndCamerTableModel implements INewLogicaTable<ScanerAndCamer>
       this.modelToServer.Supply.DatePostavki = `/Date(${new Date(this.modelToServer.Supply.DatePostavki).getTime()})/`;
     }
     this.editandadd.addandeditscaner(this.modelToServer, this.SignalR.iduser).toPromise().then((model: ModelReturn<ScanerAndCamer>) => {
-      console.log(model.Message);
+      if (model.Model === null) {
+        alert(model.Message)
+        this.cancel(this.modelCancelError);
+      }
     });
     //Запрос на сохранение и обновление данных
   }
@@ -1362,7 +2055,6 @@ export class ScanerAndCamerTableModel implements INewLogicaTable<ScanerAndCamer>
     }
     this.isEdit = true;
     this.model.ModelIsEdit = false;
-    this.index = 0;
   }
 
   public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef, template: ElementRef): Promise<string> {
@@ -1377,7 +2069,7 @@ export class ScanerAndCamerTableModel implements INewLogicaTable<ScanerAndCamer>
     this.models = model.Model.filter(x => [2, 4].includes(x.IdClasification));;
     this.statusing = model.Statusing;
     this.proizvoditel = model.Proizvoditel;
-    this.user = model.Users;
+    this.user = model.Users.filter(x => x.StatusActual !== 2);
     this.supples = model.Supply;
     this.filteredKabinet = this.kabinet.slice();
     this.filteredModels = this.models.slice();
@@ -1407,6 +2099,7 @@ export class MfuTableModel implements INewLogicaTable<Mfu>  {
 
   createSTO(model: Mfu, template: FullTemplateSupport, authService: AuthIdentification, dialog: MatDialog): void {
     var modelDialog = new ModelDialog();
+    modelDialog.discription = template.Description;
     modelDialog.info = template.InfoTemplate;
     modelDialog.name = template.Name;
     modelDialog.idTemplate = template.IdTemplate;
@@ -1454,6 +2147,7 @@ export class MfuTableModel implements INewLogicaTable<Mfu>  {
 
   isAdd: boolean;
   isEdit: boolean;
+  modelCancelError: Mfu = new Mfu();
   model: Mfu = new Mfu();
   modelToServer: Mfu;
   index: number;
@@ -1491,6 +2185,7 @@ export class MfuTableModel implements INewLogicaTable<Mfu>  {
 
     this.subscribeAddAndUpdate.subscribe((substring: string) => {
       var submodel = deserialize<Mfu>(Mfu, substring);
+      this.index = 0;
       if (this.isEdit) {
         this.isEditAndAddFalse();
         this.removetemplate();
@@ -1582,6 +2277,7 @@ export class MfuTableModel implements INewLogicaTable<Mfu>  {
 
   public edit(model: Mfu): void {
     model.ModelIsEdit = true;
+    this.modelCancelError = JSON.parse(JSON.stringify(model));
     this.model = JSON.parse(JSON.stringify(model));
     this.addtemplate(model.IdMfu)
     this.isEditAndAddTrue();
@@ -1594,7 +2290,10 @@ export class MfuTableModel implements INewLogicaTable<Mfu>  {
       this.modelToServer.Supply.DatePostavki = `/Date(${new Date(this.modelToServer.Supply.DatePostavki).getTime()})/`;
     }
     this.editandadd.addandeditmfu(this.modelToServer, this.SignalR.iduser).toPromise().then((model: ModelReturn<Mfu>) => {
-      console.log(model.Message);
+      if (model.Model === null) {
+        alert(model.Message)
+        this.cancel(this.modelCancelError);
+      }
     });
     //Запрос на сохранение и обновление данных
   }
@@ -1675,7 +2374,6 @@ export class MfuTableModel implements INewLogicaTable<Mfu>  {
     }
     this.isEdit = true;
     this.model.ModelIsEdit = false;
-    this.index = 0;
   }
 
   public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef, template: ElementRef): Promise<string> {
@@ -1691,7 +2389,7 @@ export class MfuTableModel implements INewLogicaTable<Mfu>  {
     this.statusing = model.Statusing;
     this.proizvoditel = model.Proizvoditel;
     this.copySave = model.CopySave;
-    this.user = model.Users;
+    this.user = model.Users.filter(x => x.StatusActual !== 2);
     this.supples = model.Supply;
     this.filteredKabinet = this.kabinet.slice();
     this.filteredModels = this.models.slice();
@@ -1720,7 +2418,11 @@ export class SysBlockTableModel implements INewLogicaTable<SysBlock>  {
   }
   ///Запрос на СТО 
   public createSTO(model: SysBlock, template: FullTemplateSupport, authService: AuthIdentification, dialog: MatDialog) {
+    if (model.User) {
+      model.User.Otdel.User = null;
+    }
     var modelDialog = new ModelDialog();
+    modelDialog.discription = template.Description;
     modelDialog.info = template.InfoTemplate;
     modelDialog.name = template.Name;
     modelDialog.idTemplate = template.IdTemplate;
@@ -1767,6 +2469,7 @@ export class SysBlockTableModel implements INewLogicaTable<SysBlock>  {
 
   isAdd: boolean;
   isEdit: boolean;
+  modelCancelError: SysBlock = new SysBlock();
   model: SysBlock = new SysBlock();
   modelToServer: SysBlock;
   index: number;
@@ -1802,6 +2505,7 @@ export class SysBlockTableModel implements INewLogicaTable<SysBlock>  {
 
     this.subscribeAddAndUpdate.subscribe((substring: string) => {
       var submodel = deserialize<SysBlock>(SysBlock, substring);
+      this.index = 0;
       if (this.isEdit) {
         this.isEditAndAddFalse();
         this.removetemplate();
@@ -1892,6 +2596,7 @@ export class SysBlockTableModel implements INewLogicaTable<SysBlock>  {
 
   public edit(model: SysBlock): void {
     model.ModelIsEdit = true;
+    this.modelCancelError = JSON.parse(JSON.stringify(model));
     this.model = JSON.parse(JSON.stringify(model));
     this.addtemplate(model.IdSysBlock)
     this.isEditAndAddTrue();
@@ -1907,7 +2612,10 @@ export class SysBlockTableModel implements INewLogicaTable<SysBlock>  {
       this.modelToServer.Supply.DatePostavki = `/Date(${new Date(this.modelToServer.Supply.DatePostavki).getTime()})/`;
     }
     this.editandadd.addandeditsysblok(this.modelToServer, this.SignalR.iduser).subscribe((model: ModelReturn<SysBlock>) => {
-      console.log(model.Message);
+      if (model.Model === null) {
+        alert(model.Message)
+        this.cancel(this.modelCancelError);
+      }
     });
     //Запрос на сохранение и обновление данных
   }
@@ -1988,7 +2696,6 @@ export class SysBlockTableModel implements INewLogicaTable<SysBlock>  {
     }
     this.isEdit = true;
     this.model.ModelIsEdit = false;
-    this.index = 0;
   }
 
   public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef, template: ElementRef): Promise<string> {
@@ -2002,7 +2709,7 @@ export class SysBlockTableModel implements INewLogicaTable<SysBlock>  {
     this.kabinet = model.Kabinet;
     this.models = model.ModelSysBlok;
     this.statusing = model.Statusing;
-    this.user = model.Users;
+    this.user = model.Users.filter(x => x.StatusActual !== 2);
     this.supples = model.Supply;
     this.filteredKabinet = this.kabinet.slice();
     this.filteredModels = this.models.slice();
@@ -2028,10 +2735,46 @@ export class MonitorsTableModel implements INewLogicaTable<Monitor>  {
     this.subscribeservers();
   }
   createSTO(model: Monitor, template: FullTemplateSupport, authService: AuthIdentification, dialog: MatDialog): void {
-    throw new Error("Method not implemented.");
+    if (model.User) {
+      model.User.Otdel.User = null;
+    }
+    var modelDialog = new ModelDialog();
+    modelDialog.discription = template.Description;
+    modelDialog.info = template.InfoTemplate;
+    modelDialog.name = template.Name;
+    modelDialog.idTemplate = template.IdTemplate;
+    modelDialog.rowModel = model;
+    const dialogRef = dialog.open(DialogDiscription, {
+      width: "800px",
+      height: "500px",
+      data: modelDialog
+    })
+    dialogRef.afterClosed().subscribe((result: ModelDialog) => {
+      console.log(result);
+      var IdUser = model.IdUser;
+      if (result) {
+        if (result.isUserCreater) {
+          IdUser = authService.autorization.idUserField;
+        }
+        this.editandadd.createSupport(new ModelParametrSupport(
+          authService.autorization.loginField,
+          authService.autorization.passwordField,
+          template.IdTemplate, result.discription, IdUser, 0, model.IdMonitor)).toPromise().then((model: ModelParametrSupport) => {
+            console.log(model)
+            if (model.errorField) {
+              alert("Заявка не создана смотри ошибки!!! " + model.errorField)
+              return;
+            }
+            if (model.step3ResponseSupportField) {
+              alert("Заявка успешно создана!")
+              return;
+            }
+          });
+      }
+    });
   }
 
-  public displayedColumns = ['IdModel', 'User.Name', 'Supply.DatePostavki', 'NameMonitor.Name', 'SerNum', 'InventarNumMonitor', 'Kabinet.NumberKabinet', 'Coment', 'Statusing.Name', 'ActionsColumn'];
+  public displayedColumns = ['Logic', 'IdModel', 'User.Name', 'Supply.DatePostavki', 'NameMonitor.Name', 'ServiceNum', 'SerNum', 'InventarNumMonitor', 'Kabinet.NumberKabinet', 'Coment', 'Statusing.Name', 'ActionsColumn'];
   public dataSource: MatTableDataSource<Monitor> = new MatTableDataSource<Monitor>();
   public modelvalid: ModelValidation = new ModelValidation()
   public models: NameMonitor[];
@@ -2043,6 +2786,7 @@ export class MonitorsTableModel implements INewLogicaTable<Monitor>  {
 
   isAdd: boolean;
   isEdit: boolean;
+  modelCancelError: Monitor = new Monitor();
   model: Monitor = new Monitor();
   modelToServer: Monitor;
   index: number;
@@ -2078,6 +2822,7 @@ export class MonitorsTableModel implements INewLogicaTable<Monitor>  {
 
     this.subscribeAddAndUpdate.subscribe((substring: string) => {
       var submodel = deserialize<Monitor>(Monitor, substring);
+      this.index = 0;
       if (this.isEdit) {
         this.isEditAndAddFalse();
         this.removetemplate();
@@ -2166,14 +2911,11 @@ export class MonitorsTableModel implements INewLogicaTable<Monitor>  {
   }
 
   public edit(model: Monitor): void {
-    console.log(this.model);
-    console.log(this.dataSource.data);
     model.ModelIsEdit = true;
+    this.modelCancelError = JSON.parse(JSON.stringify(model));
     this.model = JSON.parse(JSON.stringify(model));
     this.addtemplate(model.IdMonitor)
     this.isEditAndAddTrue();
-    console.log(this.model);
-    console.log(this.dataSource.data);
   }
 
   public save(): void {
@@ -2183,7 +2925,10 @@ export class MonitorsTableModel implements INewLogicaTable<Monitor>  {
       this.modelToServer.Supply.DatePostavki = `/Date(${new Date(this.modelToServer.Supply.DatePostavki).getTime()})/`;
     }
     this.editandadd.addandeditmonitor(this.modelToServer, this.SignalR.iduser).toPromise().then((model: ModelReturn<Monitor>) => {
-      console.log(model.Message);
+      if (model.Model === null) {
+        alert(model.Message)
+        this.cancel(this.modelCancelError);
+      }
     });
     //Запрос на сохранение и обновление данных
   }
@@ -2265,7 +3010,6 @@ export class MonitorsTableModel implements INewLogicaTable<Monitor>  {
     }
     this.isEdit = true;
     this.model.ModelIsEdit = false;
-    this.index = 0;
   }
 
   public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef, template: ElementRef): Promise<string> {
@@ -2279,7 +3023,7 @@ export class MonitorsTableModel implements INewLogicaTable<Monitor>  {
     this.kabinet = model.Kabinet;
     this.models = model.NameMonitors;
     this.statusing = model.Statusing;
-    this.user = model.Users;
+    this.user = model.Users.filter(x => x.StatusActual !== 2);
     this.supples = model.Supply;
     this.filteredKabinet = this.kabinet.slice();
     this.filteredModels = this.models.slice();
@@ -2305,10 +3049,42 @@ export class TelephonsTableModel implements INewLogicaTable<Telephon> {
   constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
     this.subscribeservers();
   }
+
   createSTO(model: Telephon, template: FullTemplateSupport, authService: AuthIdentification, dialog: MatDialog): void {
-    throw new Error("Method not implemented.");
+    var modelDialog = new ModelDialog();
+    modelDialog.discription = template.Description;
+    modelDialog.info = template.InfoTemplate;
+    modelDialog.name = template.Name;
+    modelDialog.idTemplate = template.IdTemplate;
+    modelDialog.rowModel = model;
+    const dialogRef = dialog.open(DialogDiscription, {
+      width: "800px",
+      height: "500px",
+      data: modelDialog
+    })
+    dialogRef.afterClosed().subscribe((result: ModelDialog) => {
+      console.log(result);
+      if (result) {
+        var IdUser = authService.autorization.idUserField;
+        this.editandadd.createSupport(new ModelParametrSupport(
+          authService.autorization.loginField,
+          authService.autorization.passwordField,
+          template.IdTemplate, result.discription, IdUser, 0, 0, 0, 0, 0, model.IdTelephon)).toPromise().then((model: ModelParametrSupport) => {
+            console.log(model)
+            if (model.errorField) {
+              alert("Заявка не создана смотри ошибки!!! " + model.errorField)
+              return;
+            }
+            if (model.step3ResponseSupportField) {
+              alert("Заявка успешно создана!")
+              return;
+            }
+          });
+      }
+    });
   }
-  public displayedColumns = ['IdTelephone', 'Supply.DatePostavki', 'NameTelephone', 'Telephon_', 'TelephonUndeground', 'SerNumber', 'IpTelephon', 'MacTelephon', 'Kabinet.NumberKabinet', 'Coment', 'Statusing.Name', 'ActionsColumn'];
+
+  public displayedColumns = ['Logic', 'IdTelephone', 'Supply.DatePostavki', 'NameTelephone', 'Telephon_', 'TelephonUndeground', 'ServiceNum', 'SerNumber', 'InventarNum', 'IpTelephon', 'MacTelephon', 'Kabinet.NumberKabinet', 'Coment', 'Statusing.Name', 'ActionsColumn'];
   public dataSource: MatTableDataSource<Telephon> = new MatTableDataSource<Telephon>();
   public modelvalid: ModelValidation = new ModelValidation()
   public supples: Supply[]
@@ -2317,6 +3093,7 @@ export class TelephonsTableModel implements INewLogicaTable<Telephon> {
 
   isAdd: boolean;
   isEdit: boolean;
+  modelCancelError: Telephon = new Telephon();
   model: Telephon = new Telephon();
   index: number;
   modeltable: Telephon[];
@@ -2349,6 +3126,7 @@ export class TelephonsTableModel implements INewLogicaTable<Telephon> {
 
     this.subscribeAddAndUpdate.subscribe((substring: string) => {
       var submodel = deserialize<Telephon>(Telephon, substring);
+      this.index = 0;
       if (this.isEdit) {
         this.isEditAndAddFalse();
         this.removetemplate();
@@ -2366,10 +3144,6 @@ export class TelephonsTableModel implements INewLogicaTable<Telephon> {
             ///Для остальных пользователей изменение
             this.dataSource.data[this.dataSource.data.indexOf(index)] = submodel;
             this.modeltable[this.modeltable.indexOf(index)] = submodel;
-            console.log(this.modeltable[this.modeltable.indexOf(index)]);
-            console.log(this.dataSource.data);
-            console.log(this.isAdd);
-            console.log(this.isEdit);
           }
           else {
             ///Для остальных пользователей добавление
@@ -2417,7 +3191,6 @@ export class TelephonsTableModel implements INewLogicaTable<Telephon> {
     this.filteredSupples = this.supples.slice();
     this.filteredStatusing = this.statusing.slice();
   }
-
 
   newmodel(): Telephon {
     var newuser: Telephon = new Telephon()
@@ -2467,6 +3240,7 @@ export class TelephonsTableModel implements INewLogicaTable<Telephon> {
 
   public edit(model: Telephon): void {
     model.ModelIsEdit = true;
+    this.modelCancelError = JSON.parse(JSON.stringify(model));
     this.model = JSON.parse(JSON.stringify(model));
     this.addtemplate(model.IdTelephon)
     this.isEditAndAddTrue();
@@ -2479,7 +3253,10 @@ export class TelephonsTableModel implements INewLogicaTable<Telephon> {
       this.modelToServer.Supply.DatePostavki = `/Date(${new Date(this.modelToServer.Supply.DatePostavki).getTime()})/`
     }
     this.editandadd.addandedittelephon(this.modelToServer, this.SignalR.iduser).toPromise().then((model: ModelReturn<Telephon>) => {
-      console.log(model.Message);
+      if (model.Model === null) {
+        alert(model.Message)
+        this.cancel(this.modelCancelError);
+      }
     });
     //Запрос на сохранение и обновление данных
   }
@@ -2500,6 +3277,7 @@ export class TelephonsTableModel implements INewLogicaTable<Telephon> {
       this.index = 0;
     }
     else {
+
       var userdefault = this.modeltable.find(x => x.IdTelephon === this.model.IdTelephon);
       this.dataSource.data[this.modeltable.indexOf(userdefault)] = model;
       this.index = 0;
@@ -2529,7 +3307,7 @@ export class TelephonsTableModel implements INewLogicaTable<Telephon> {
     }
     this.model.ModelIsEdit = false;
     this.isEdit = true;
-    this.index = 0;
+    // this.index = 0;
   }
 
   public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef, template: ElementRef): Promise<string> {
@@ -2569,7 +3347,7 @@ export class BlockPowerTableModel implements INewLogicaTable<BlockPower> {
     throw new Error("Method not implemented.");
   }
 
-  public displayedColumns = ['IdBlockPowers', 'User.Name', 'Supply.DatePostavki', 'ProizvoditelBlockPower.Name', 'ModelBlockPower.Name', 'ZavNumber', 'ServiceNumber', 'InventarNumber', 'Coment', 'Kabinet.NumberKabinet', 'Statusing.Name', 'ActionsColumn'];
+  public displayedColumns = ['Logic', 'IdBlockPowers', 'User.Name', 'Supply.DatePostavki', 'ProizvoditelBlockPower.Name', 'ModelBlockPower.Name', 'ZavNumber', 'ServiceNumber', 'InventarNumber', 'Coment', 'Kabinet.NumberKabinet', 'Statusing.Name', 'ActionsColumn'];
   public dataSource: MatTableDataSource<BlockPower> = new MatTableDataSource<BlockPower>();
   public modelvalid: ModelValidation = new ModelValidation()
 
@@ -2583,6 +3361,7 @@ export class BlockPowerTableModel implements INewLogicaTable<BlockPower> {
 
   isAdd: boolean;
   isEdit: boolean;
+  modelCancelError: BlockPower = new BlockPower();
   model: BlockPower = new BlockPower();
   modelToServer: BlockPower;
   index: number;
@@ -2619,6 +3398,7 @@ export class BlockPowerTableModel implements INewLogicaTable<BlockPower> {
 
     this.subscribeAddAndUpdate.subscribe((substring: string) => {
       var submodel = deserialize<BlockPower>(BlockPower, substring);
+      this.index = 0;
       if (this.isEdit) {
         this.isEditAndAddFalse();
         this.removetemplate();
@@ -2710,6 +3490,7 @@ export class BlockPowerTableModel implements INewLogicaTable<BlockPower> {
 
   public edit(model: BlockPower): void {
     model.ModelIsEdit = true;
+    this.modelCancelError = JSON.parse(JSON.stringify(model));
     this.model = JSON.parse(JSON.stringify(model));
     this.addtemplate(model.IdBlockPowers)
     this.isEditAndAddTrue();
@@ -2722,7 +3503,10 @@ export class BlockPowerTableModel implements INewLogicaTable<BlockPower> {
       this.modelToServer.Supply.DatePostavki = `/Date(${new Date(this.modelToServer.Supply.DatePostavki).getTime()})/`;
     }
     this.editandadd.addandeditblockpower(this.modelToServer, this.SignalR.iduser).toPromise().then((model: ModelReturn<BlockPower>) => {
-      console.log(model.Message);
+      if (model.Model === null) {
+        alert(model.Message)
+        this.cancel(this.modelCancelError);
+      }
     });
     //Запрос на сохранение и обновление данных
   }
@@ -2804,7 +3588,6 @@ export class BlockPowerTableModel implements INewLogicaTable<BlockPower> {
     }
     this.isEdit = true;
     this.model.ModelIsEdit = false;
-    this.index = 0;
   }
 
   public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef, template: ElementRef): Promise<string> {
@@ -2820,7 +3603,7 @@ export class BlockPowerTableModel implements INewLogicaTable<BlockPower> {
     this.supples = model.Supply;
     this.models = model.ModelBlockPower;
     this.proizvoditel = model.ProizvoditelBlockPower;
-    this.user = model.Users;
+    this.user = model.Users.filter(x => x.StatusActual !== 2);
     this.filteredUser = this.user.slice();
     this.filteredProizvoditel = this.proizvoditel.slice()
     this.filteredModels = this.models.slice();
@@ -2853,6 +3636,7 @@ export class NameSysBlockTableModel implements INewLogicaTable<NameSysBlock> {
 
   isAdd: boolean;
   isEdit: boolean;
+  modelCancelError: NameSysBlock = new NameSysBlock();
   model: NameSysBlock = new NameSysBlock();
   index: number;
   modeltable: NameSysBlock[];
@@ -2870,6 +3654,7 @@ export class NameSysBlockTableModel implements INewLogicaTable<NameSysBlock> {
     this.SignalR.conect.listen(this.subscribeAddAndUpdate);
     this.subscribeAddAndUpdate.subscribe((substring: string) => {
       var submodel = deserialize<NameSysBlock>(NameSysBlock, substring);
+      this.index = 0;
       if (this.isEdit) {
         this.isEditAndAddFalse();
         this.removetemplate();
@@ -2926,6 +3711,7 @@ export class NameSysBlockTableModel implements INewLogicaTable<NameSysBlock> {
 
   public edit(model: NameSysBlock): void {
     model.ModelIsEdit = true;
+    this.modelCancelError = JSON.parse(JSON.stringify(model));
     this.model = JSON.parse(JSON.stringify(model));
     this.addtemplate(model.IdModelSysBlock)
     this.isEditAndAddTrue();
@@ -2934,7 +3720,10 @@ export class NameSysBlockTableModel implements INewLogicaTable<NameSysBlock> {
   public save(): void {
     this.modifimethod();
     this.editandadd.addAndEditNameSysBlock(this.model).toPromise().then((model: ModelReturn<NameSysBlock>) => {
-      console.log(model.Message);
+      if (model.Model === null) {
+        alert(model.Message)
+        this.cancel(this.modelCancelError);
+      }
     });
     //Запрос на сохранение и обновление данных
   }
@@ -2993,8 +3782,6 @@ export class NameSysBlockTableModel implements INewLogicaTable<NameSysBlock> {
   modifimethod(): void {
     this.isEdit = true;
     this.model.ModelIsEdit = false;
-    //Поиск индекса и замена модели по индексу в таблице
-    this.index = 0;
   }
 
   public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef, template: ElementRef): Promise<string> {
@@ -3032,6 +3819,7 @@ export class NameMonitorTableModel implements INewLogicaTable<NameMonitor> {
 
   isAdd: boolean;
   isEdit: boolean;
+  modelCancelError: NameMonitor = new NameMonitor();
   model: NameMonitor = new NameMonitor();
   index: number;
   modeltable: NameMonitor[];
@@ -3048,6 +3836,7 @@ export class NameMonitorTableModel implements INewLogicaTable<NameMonitor> {
     this.SignalR.conect.listen(this.subscribeAddAndUpdate);
     this.subscribeAddAndUpdate.subscribe((substring: string) => {
       var submodel = deserialize<NameMonitor>(NameMonitor, substring);
+      this.index = 0;
       if (this.isEdit) {
         this.isEditAndAddFalse();
         this.removetemplate();
@@ -3104,6 +3893,7 @@ export class NameMonitorTableModel implements INewLogicaTable<NameMonitor> {
 
   public edit(model: NameMonitor): void {
     model.ModelIsEdit = true;
+    this.modelCancelError = JSON.parse(JSON.stringify(model));
     this.model = JSON.parse(JSON.stringify(model));
     this.addtemplate(model.IdModelMonitor)
     this.isEditAndAddTrue();
@@ -3112,7 +3902,10 @@ export class NameMonitorTableModel implements INewLogicaTable<NameMonitor> {
   public save(): void {
     this.modifimethod();
     this.editandadd.addAndEditNameMonitor(this.model).toPromise().then((model: ModelReturn<NameMonitor>) => {
-      console.log(model.Message);
+      if (model.Model === null) {
+        alert(model.Message)
+        this.cancel(this.modelCancelError);
+      }
     });
     //Запрос на сохранение и обновление данных
   }
@@ -3172,8 +3965,6 @@ export class NameMonitorTableModel implements INewLogicaTable<NameMonitor> {
   modifimethod(): void {
     this.isEdit = true;
     this.model.ModelIsEdit = false;
-    //Поиск индекса и замена модели по индексу в таблице
-    this.index = 0;
   }
 
   public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef, template: ElementRef): Promise<string> {
@@ -3211,6 +4002,7 @@ export class NameModelBlokPowerTableModel implements INewLogicaTable<ModelBlockP
 
   isAdd: boolean;
   isEdit: boolean;
+  modelCancelError: ModelBlockPower = new ModelBlockPower();
   model: ModelBlockPower = new ModelBlockPower();
   index: number;
   modeltable: ModelBlockPower[];
@@ -3227,6 +4019,7 @@ export class NameModelBlokPowerTableModel implements INewLogicaTable<ModelBlockP
     this.SignalR.conect.listen(this.subscribeAddAndUpdate);
     this.subscribeAddAndUpdate.subscribe((substring: string) => {
       var submodel = deserialize<ModelBlockPower>(ModelBlockPower, substring);
+      this.index = 0;
       if (this.isEdit) {
         this.isEditAndAddFalse();
         this.removetemplate();
@@ -3283,6 +4076,7 @@ export class NameModelBlokPowerTableModel implements INewLogicaTable<ModelBlockP
 
   public edit(model: ModelBlockPower): void {
     model.ModelIsEdit = true;
+    this.modelCancelError = JSON.parse(JSON.stringify(model));
     this.model = JSON.parse(JSON.stringify(model));
     this.addtemplate(model.IdModelBP);
     this.isEditAndAddTrue();
@@ -3291,7 +4085,10 @@ export class NameModelBlokPowerTableModel implements INewLogicaTable<ModelBlockP
   public save(): void {
     this.modifimethod();
     this.editandadd.addAndEditNameModelBlokPower(this.model).toPromise().then((model: ModelReturn<ModelBlockPower>) => {
-      console.log(model.Message);
+      if (model.Model === null) {
+        alert(model.Message)
+        this.cancel(this.modelCancelError);
+      }
     });
     //Запрос на сохранение и обновление данных
   }
@@ -3350,8 +4147,6 @@ export class NameModelBlokPowerTableModel implements INewLogicaTable<ModelBlockP
   modifimethod(): void {
     this.isEdit = true;
     this.model.ModelIsEdit = false;
-    //Поиск индекса и замена модели по индексу в таблице
-    this.index = 0;
   }
 
   public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef, template: ElementRef): Promise<string> {
@@ -3389,6 +4184,7 @@ export class NameProizvoditelBlockPowerTableModel implements INewLogicaTable<Pro
 
   isAdd: boolean;
   isEdit: boolean;
+  modelCancelError: ProizvoditelBlockPower = new ProizvoditelBlockPower();
   model: ProizvoditelBlockPower = new ProizvoditelBlockPower();
   index: number;
   modeltable: ProizvoditelBlockPower[];
@@ -3405,6 +4201,7 @@ export class NameProizvoditelBlockPowerTableModel implements INewLogicaTable<Pro
     this.SignalR.conect.listen(this.subscribeAddAndUpdate);
     this.subscribeAddAndUpdate.subscribe((substring: string) => {
       var submodel = deserialize<ProizvoditelBlockPower>(ProizvoditelBlockPower, substring);
+      this.index = 0;
       if (this.isEdit) {
         this.isEditAndAddFalse();
         this.removetemplate();
@@ -3461,6 +4258,7 @@ export class NameProizvoditelBlockPowerTableModel implements INewLogicaTable<Pro
 
   public edit(model: ProizvoditelBlockPower): void {
     model.ModelIsEdit = true;
+    this.modelCancelError = JSON.parse(JSON.stringify(model));
     this.model = JSON.parse(JSON.stringify(model));
     this.addtemplate(model.IdProizvoditelBP)
     this.isEditAndAddTrue();
@@ -3469,7 +4267,10 @@ export class NameProizvoditelBlockPowerTableModel implements INewLogicaTable<Pro
   public save(): void {
     this.modifimethod();
     this.editandadd.addAndEditNameProizvoditelBlockPower(this.model).toPromise().then((model: ModelReturn<ProizvoditelBlockPower>) => {
-      console.log(model.Message);
+      if (model.Model === null) {
+        alert(model.Message)
+        this.cancel(this.modelCancelError);
+      }
     });
     //Запрос на сохранение и обновление данных
   }
@@ -3532,7 +4333,6 @@ export class NameProizvoditelBlockPowerTableModel implements INewLogicaTable<Pro
     var userdefault = this.modeltable.find(x => x.IdProizvoditelBP === this.model.IdProizvoditelBP);
     var indexold = this.modeltable.indexOf(userdefault);
     this.dataSource.data[indexold] = this.model;
-    this.index = 0;
   }
 
   public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef, template: ElementRef): Promise<string> {
@@ -3570,6 +4370,7 @@ export class NameFullModelTableModel implements INewLogicaTable<FullModel> {
 
   isAdd: boolean;
   isEdit: boolean;
+  modelCancelError: FullModel = new FullModel();
   model: FullModel = new FullModel();
   index: number;
   modeltable: FullModel[];
@@ -3589,6 +4390,7 @@ export class NameFullModelTableModel implements INewLogicaTable<FullModel> {
     this.SignalR.conect.listen(this.subscribeAddAndUpdate);
     this.subscribeAddAndUpdate.subscribe((substring: string) => {
       var submodel = deserialize<FullModel>(FullModel, substring);
+      this.index = 0;
       if (this.isEdit) {
         this.isEditAndAddFalse();
         this.removetemplate();
@@ -3645,6 +4447,7 @@ export class NameFullModelTableModel implements INewLogicaTable<FullModel> {
 
   edit(model: FullModel): void {
     model.ModelIsEdit = true;
+    this.modelCancelError = JSON.parse(JSON.stringify(model));
     this.model = JSON.parse(JSON.stringify(model));
     this.addtemplate(model.IdModel)
     this.isEditAndAddTrue();
@@ -3653,7 +4456,10 @@ export class NameFullModelTableModel implements INewLogicaTable<FullModel> {
   public save(): void {
     this.modifimethod();
     this.editandadd.addAndEditNameFullModel(this.model).toPromise().then((model: ModelReturn<FullModel>) => {
-      console.log(model.Message);
+      if (model.Model === null) {
+        alert(model.Message)
+        this.cancel(this.modelCancelError);
+      }
     });
     //Запрос на сохранение и обновление данных
   }
@@ -3716,8 +4522,6 @@ export class NameFullModelTableModel implements INewLogicaTable<FullModel> {
     this.model.Classification ? this.model.IdClasification = this.model.Classification.IdClasification : this.model.IdClasification = null;
     this.isEdit = true;
     this.model.ModelIsEdit = false;
-    //Поиск индекса и замена модели по индексу в таблице
-    this.index = 0;
   }
 
   public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef, template: ElementRef): Promise<string> {
@@ -3757,6 +4561,7 @@ export class NameFullProizvoditelTableModel implements INewLogicaTable<FullProiz
 
   isAdd: boolean;
   isEdit: boolean;
+  modelCancelError: FullProizvoditel = new FullProizvoditel();
   model: FullProizvoditel = new FullProizvoditel();
   index: number;
   modeltable: FullProizvoditel[];
@@ -3773,6 +4578,7 @@ export class NameFullProizvoditelTableModel implements INewLogicaTable<FullProiz
     this.SignalR.conect.listen(this.subscribeAddAndUpdate);
     this.subscribeAddAndUpdate.subscribe((substring: string) => {
       var submodel = deserialize<FullProizvoditel>(FullProizvoditel, substring);
+      this.index = 0;
       if (this.isEdit) {
         this.isEditAndAddFalse();
         this.removetemplate();
@@ -3829,6 +4635,7 @@ export class NameFullProizvoditelTableModel implements INewLogicaTable<FullProiz
 
   public edit(model: FullProizvoditel): void {
     model.ModelIsEdit = true;
+    this.modelCancelError = JSON.parse(JSON.stringify(model));
     this.model = JSON.parse(JSON.stringify(model));
     this.addtemplate(model.IdProizvoditel)
     this.isEditAndAddTrue();
@@ -3837,7 +4644,10 @@ export class NameFullProizvoditelTableModel implements INewLogicaTable<FullProiz
   public save(): void {
     this.modifimethod();
     this.editandadd.addAndEditNameFullProizvoditel(this.model).toPromise().then((model: ModelReturn<FullProizvoditel>) => {
-      console.log(model.Message);
+      if (model.Model === null) {
+        alert(model.Message)
+        this.cancel(this.modelCancelError);
+      }
     });
     //Запрос на сохранение и обновление данных
   }
@@ -3899,8 +4709,6 @@ export class NameFullProizvoditelTableModel implements INewLogicaTable<FullProiz
   modifimethod(): void {
     this.isEdit = true;
     this.model.ModelIsEdit = false;
-    //Поиск индекса и замена модели по индексу в таблице
-    this.index = 0;
   }
 
   public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef, template: ElementRef): Promise<string> {
@@ -3938,6 +4746,7 @@ export class NameClassificationTableModel implements INewLogicaTable<Classificat
 
   isAdd: boolean;
   isEdit: boolean;
+  modelCancelError: Classification = new Classification();
   model: Classification = new Classification();
   index: number;
   modeltable: Classification[];
@@ -3954,6 +4763,7 @@ export class NameClassificationTableModel implements INewLogicaTable<Classificat
     this.SignalR.conect.listen(this.subscribeAddAndUpdate);
     this.subscribeAddAndUpdate.subscribe((substring: string) => {
       var submodel = deserialize<Classification>(Classification, substring);
+      this.index = 0;
       if (this.isEdit) {
         this.isEditAndAddFalse();
         this.removetemplate();
@@ -4010,6 +4820,7 @@ export class NameClassificationTableModel implements INewLogicaTable<Classificat
 
   public edit(model: Classification): void {
     model.ModelIsEdit = true;
+    this.modelCancelError = JSON.parse(JSON.stringify(model));
     this.model = JSON.parse(JSON.stringify(model));
     this.addtemplate(model.IdClasification)
     this.isEditAndAddTrue();
@@ -4018,7 +4829,10 @@ export class NameClassificationTableModel implements INewLogicaTable<Classificat
   public save(): void {
     this.modifimethod();
     this.editandadd.addAndEditNameClassification(this.model).toPromise().then((model: ModelReturn<Classification>) => {
-      console.log(model.Message);
+      if (model.Model === null) {
+        alert(model.Message)
+        this.cancel(this.modelCancelError);
+      }
     });
     //Запрос на сохранение и обновление данных
   }
@@ -4080,8 +4894,6 @@ export class NameClassificationTableModel implements INewLogicaTable<Classificat
   modifimethod(): void {
     this.isEdit = true;
     this.model.ModelIsEdit = false;
-    //Поиск индекса и замена модели по индексу в таблице
-    this.index = 0;
   }
 
   public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef, template: ElementRef): Promise<string> {
@@ -4119,6 +4931,7 @@ export class NameCopySaveTableModel implements INewLogicaTable<CopySave> {
 
   isAdd: boolean;
   isEdit: boolean;
+  modelCancelError: CopySave = new CopySave();
   model: CopySave = new CopySave();
   index: number;
   modeltable: CopySave[];
@@ -4135,6 +4948,7 @@ export class NameCopySaveTableModel implements INewLogicaTable<CopySave> {
     this.SignalR.conect.listen(this.subscribeAddAndUpdate);
     this.subscribeAddAndUpdate.subscribe((substring: string) => {
       var submodel = deserialize<CopySave>(CopySave, substring);
+      this.index = 0;
       if (this.isEdit) {
         this.isEditAndAddFalse();
         this.removetemplate();
@@ -4192,6 +5006,7 @@ export class NameCopySaveTableModel implements INewLogicaTable<CopySave> {
 
   edit(model: CopySave): void {
     model.ModelIsEdit = true;
+    this.modelCancelError = JSON.parse(JSON.stringify(model));
     this.model = JSON.parse(JSON.stringify(model));
     this.addtemplate(model.IdCopySave)
     this.isEditAndAddTrue();
@@ -4200,7 +5015,10 @@ export class NameCopySaveTableModel implements INewLogicaTable<CopySave> {
   public save(): void {
     this.modifimethod();
     this.editandadd.addAndEditNameCopySave(this.model).toPromise().then((model: ModelReturn<CopySave>) => {
-      console.log(model.Message);
+      if (model.Model === null) {
+        alert(model.Message)
+        this.cancel(this.modelCancelError);
+      }
     });
     //Запрос на сохранение и обновление данных
   }
@@ -4262,8 +5080,6 @@ export class NameCopySaveTableModel implements INewLogicaTable<CopySave> {
   modifimethod(): void {
     this.isEdit = true;
     this.model.ModelIsEdit = false;
-    //Поиск индекса и замена модели по индексу в таблице
-    this.index = 0;
   }
 
   public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef, template: ElementRef): Promise<string> {
@@ -4296,11 +5112,12 @@ export class NameKabinetTableModel implements INewLogicaTable<Kabinet> {
     throw new Error("Method not implemented.");
   }
 
-  public displayedColumns = ['IdNumberKabinet', 'NumberKabinet', 'ActionsColumn'];
+  public displayedColumns = ['Logic', 'IdNumberKabinet', 'NumberKabinet', 'ActionsColumn'];
   public dataSource: MatTableDataSource<Kabinet> = new MatTableDataSource<Kabinet>();
 
   isAdd: boolean;
   isEdit: boolean;
+  modelCancelError: Kabinet = new Kabinet();
   model: Kabinet = new Kabinet();
   index: number;
   modeltable: Kabinet[];
@@ -4317,6 +5134,7 @@ export class NameKabinetTableModel implements INewLogicaTable<Kabinet> {
     this.SignalR.conect.listen(this.subscribeAddAndUpdate);
     this.subscribeAddAndUpdate.subscribe((substring: string) => {
       var submodel = deserialize<Kabinet>(Kabinet, substring);
+      this.index = 0;
       if (this.isEdit) {
         this.isEditAndAddFalse();
         this.removetemplate();
@@ -4373,6 +5191,7 @@ export class NameKabinetTableModel implements INewLogicaTable<Kabinet> {
 
   edit(model: Kabinet): void {
     model.ModelIsEdit = true;
+    this.modelCancelError = JSON.parse(JSON.stringify(model));
     this.model = JSON.parse(JSON.stringify(model));
     this.addtemplate(model.IdNumberKabinet)
     this.isEditAndAddTrue();
@@ -4381,7 +5200,10 @@ export class NameKabinetTableModel implements INewLogicaTable<Kabinet> {
   public save(): void {
     this.modifimethod();
     this.editandadd.addAndEditNameKabinet(this.model).toPromise().then((model: ModelReturn<Kabinet>) => {
-      console.log(model.Message);
+      if (model.Model === null) {
+        alert(model.Message)
+        this.cancel(this.modelCancelError);
+      }
     });
     //Запрос на сохранение и обновление данных
   }
@@ -4443,8 +5265,6 @@ export class NameKabinetTableModel implements INewLogicaTable<Kabinet> {
   modifimethod(): void {
     this.isEdit = true;
     this.model.ModelIsEdit = false;
-    //Поиск индекса и замена модели по индексу в таблице
-    this.index = 0;
   }
 
   public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef, template: ElementRef): Promise<string> {
@@ -4489,6 +5309,7 @@ export class NameSupplyTableModel implements INewLogicaTable<Supply> {
 
   isAdd: boolean;
   isEdit: boolean;
+  modelCancelError: Supply = new Supply();
   model: Supply = new Supply();
   index: number;
   modeltable: Supply[];
@@ -4509,6 +5330,7 @@ export class NameSupplyTableModel implements INewLogicaTable<Supply> {
     this.SignalR.conect.listen(this.subscribeAddAndUpdate);
     this.subscribeAddAndUpdate.subscribe((substring: string) => {
       var submodel = deserialize<Supply>(Supply, substring);
+      this.index = 0;
       if (this.isEdit) {
         this.isEditAndAddFalse();
         this.removetemplate();
@@ -4562,8 +5384,10 @@ export class NameSupplyTableModel implements INewLogicaTable<Supply> {
     await this.dataSource.paginator.lastPage();
     this.addtemplate(newmodel.IdSupply);
   }
+
   edit(model: Supply): void {
     model.ModelIsEdit = true;
+    this.modelCancelError = JSON.parse(JSON.stringify(model));
     this.model = JSON.parse(JSON.stringify(model));
     console.log(model.DatePostavki);
     model.DatePostavki.match(/T/g) !== null ? this.date = new FormControl(new Date(model.DatePostavki.split("T")[0])) : this.date = new FormControl(new Date(model.DatePostavki.split("-").reverse().join("-")))
@@ -4574,7 +5398,10 @@ export class NameSupplyTableModel implements INewLogicaTable<Supply> {
   public save(): void {
     this.modifimethod();
     this.editandadd.addAndEditNameSupply(this.modelToServer).toPromise().then((model: ModelReturn<Supply>) => {
-      console.log(model.Message);
+      if (model.Model === null) {
+        alert(model.Message)
+        this.cancel(this.modelCancelError);
+      }
     });
     //Запрос на сохранение и обновление данных
   }
@@ -4640,8 +5467,6 @@ export class NameSupplyTableModel implements INewLogicaTable<Supply> {
     delete this.modelToServer.DataCreate;
     this.isEdit = true;
     this.model.ModelIsEdit = false;
-    //Поиск индекса и замена модели по индексу в таблице
-    this.index = 0;
   }
 
   public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef, template: ElementRef): Promise<string> {
@@ -4679,6 +5504,7 @@ export class NameStatusingTableModel implements INewLogicaTable<Statusing> {
 
   isAdd: boolean;
   isEdit: boolean;
+  modelCancelError: Statusing = new Statusing();
   model: Statusing = new Statusing();
   index: number;
   modeltable: Statusing[];
@@ -4695,6 +5521,7 @@ export class NameStatusingTableModel implements INewLogicaTable<Statusing> {
     this.SignalR.conect.listen(this.subscribeAddAndUpdate);
     this.subscribeAddAndUpdate.subscribe((substring: string) => {
       var submodel = deserialize<Statusing>(Statusing, substring);
+      this.index = 0;
       if (this.isEdit) {
         this.isEditAndAddFalse();
         this.removetemplate();
@@ -4751,6 +5578,7 @@ export class NameStatusingTableModel implements INewLogicaTable<Statusing> {
 
   edit(model: Statusing): void {
     model.ModelIsEdit = true;
+    this.modelCancelError = JSON.parse(JSON.stringify(model));
     this.model = JSON.parse(JSON.stringify(model));
     this.addtemplate(model.IdStatus)
     this.isEditAndAddTrue();
@@ -4759,7 +5587,10 @@ export class NameStatusingTableModel implements INewLogicaTable<Statusing> {
   public save(): void {
     this.modifimethod();
     this.editandadd.addAndEditNameStatus(this.model).toPromise().then((model: ModelReturn<Statusing>) => {
-      console.log(model.Message);
+      if (model.Model === null) {
+        alert(model.Message)
+        this.cancel(this.modelCancelError);
+      }
     });
     //Запрос на сохранение и обновление данных
   }
@@ -4821,8 +5652,6 @@ export class NameStatusingTableModel implements INewLogicaTable<Statusing> {
   modifimethod(): void {
     this.isEdit = true;
     this.model.ModelIsEdit = false;
-    //Поиск индекса и замена модели по индексу в таблице
-    this.index = 0;
   }
 
   public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef, template: ElementRef): Promise<string> {
@@ -4860,6 +5689,7 @@ export class NameModelSwitheTableModel implements INewLogicaTable<ModelSwithes> 
 
   isAdd: boolean;
   isEdit: boolean;
+  modelCancelError: ModelSwithes = new ModelSwithes();
   model: ModelSwithes = new ModelSwithes();
   index: number;
   modeltable: ModelSwithes[];
@@ -4876,6 +5706,7 @@ export class NameModelSwitheTableModel implements INewLogicaTable<ModelSwithes> 
     this.SignalR.conect.listen(this.subscribeAddAndUpdate);
     this.subscribeAddAndUpdate.subscribe((substring: string) => {
       var submodel = deserialize<ModelSwithes>(ModelSwithes, substring);
+      this.index = 0;
       if (this.isEdit) {
         this.isEditAndAddFalse();
         this.removetemplate();
@@ -4932,6 +5763,7 @@ export class NameModelSwitheTableModel implements INewLogicaTable<ModelSwithes> 
 
   edit(model: ModelSwithes): void {
     model.ModelIsEdit = true;
+    this.modelCancelError = JSON.parse(JSON.stringify(model));
     this.model = JSON.parse(JSON.stringify(model));
     this.addtemplate(model.IdModelSwithes)
     this.isEditAndAddTrue();
@@ -4940,7 +5772,10 @@ export class NameModelSwitheTableModel implements INewLogicaTable<ModelSwithes> 
   public save(): void {
     this.modifimethod();
     this.editandadd.addAndEditModelSwitch(this.model).toPromise().then((model: ModelReturn<ModelSwithes>) => {
-      console.log(model.Message);
+      if (model.Model === null) {
+        alert(model.Message)
+        this.cancel(this.modelCancelError);
+      }
     });
     //Запрос на сохранение и обновление данных
   }
@@ -5002,8 +5837,6 @@ export class NameModelSwitheTableModel implements INewLogicaTable<ModelSwithes> 
   modifimethod(): void {
     this.isEdit = true;
     this.model.ModelIsEdit = false;
-    //Поиск индекса и замена модели по индексу в таблице
-    this.index = 0;
   }
 
   public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef<any>, template: ElementRef<any>): Promise<string> {
@@ -5027,6 +5860,564 @@ export class NameModelSwitheTableModel implements INewLogicaTable<ModelSwithes> 
   }
 }
 
+export class ModelSeverEquipmenTableModel implements INewLogicaTable<ModelSeverEquipment>{
+
+  constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
+    this.subscribeservers();
+  }
+
+  createSTO(model: ModelSeverEquipment, template: FullTemplateSupport, authService: AuthIdentification, dialog: MatDialog): void {
+    throw new Error("Method not implemented.");
+  }
+
+  public displayedColumns = ['IdModelSeverEquipment', 'NameModel', 'ActionsColumn'];
+  public dataSource: MatTableDataSource<ModelSeverEquipment> = new MatTableDataSource<ModelSeverEquipment>();
+
+  isAdd: boolean;
+  isEdit: boolean;
+  modelCancelError: ModelSeverEquipment = new ModelSeverEquipment();
+  model: ModelSeverEquipment = new ModelSeverEquipment();
+  index: number;
+  modeltable: ModelSeverEquipment[];
+  //Подписка
+  public subscribeAddAndUpdate: any = null;
+  //Шаблоны для манипулирования DOM
+  temlateList: any;
+  rowList: any;
+  fulltemplate: ElementRef<any>;
+  table: ElementRef<any>;
+
+  public subscribeservers() {
+    this.subscribeAddAndUpdate = new BroadcastEventListener<ModelSeverEquipment>('SubscribeModelSeverEquipment');
+    this.SignalR.conect.listen(this.subscribeAddAndUpdate);
+    this.subscribeAddAndUpdate.subscribe((substring: string) => {
+      var submodel = deserialize<ModelSeverEquipment>(ModelSeverEquipment, substring);
+      this.index = 0;
+      if (this.isEdit) {
+        this.isEditAndAddFalse();
+        this.removetemplate();
+        this.model = submodel
+      }
+      var index = this.dataSource.data.find(x => x.IdModelSeverEquipment === submodel.IdModelSeverEquipment);
+      var indexzero = this.dataSource.data.find(x => x.IdModelSeverEquipment === 0);
+      try {
+        if (indexzero) {
+          ///Для изменявшего
+          this.dataSource.data.find(x => x.IdModelSeverEquipment === 0).IdModelSeverEquipment = submodel.IdModelSeverEquipment;
+        }
+        else {
+          if (index) {
+            ///Для остальных пользователей изменение
+            this.dataSource.data[this.dataSource.data.indexOf(index)] = submodel;
+            this.modeltable[this.modeltable.indexOf(index)] = submodel;
+          }
+          else {
+            ///Для остальных пользователей добавление
+            this.dataSource.data.push(submodel);
+            this.modeltable.push(submodel);
+          }
+        }
+        this.dataSource._updateChangeSubscription();
+      }
+      catch (e) {
+        console.log(e);
+      }
+    });
+  }
+
+  calbackfiltersAll(): void {
+    throw new Error("Method not implemented.");
+  }
+
+  filterstable(filterValue: string): void {
+    filterValue = filterValue.trim(); // Remove whitespace
+    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
+    this.dataSource.filter = filterValue;
+  }
+
+  public async add(): Promise<void> {
+    this.isEditAndAddTrue();
+    var newmodel = this.newmodel();
+    this.dataSource.data.push(newmodel);
+    this.modeltable.push(newmodel);
+    this.index = this.dataSource.data.length;
+    this.model = newmodel;
+    await this.dataSource._updateChangeSubscription();
+    await this.dataSource.paginator.lastPage();
+    this.addtemplate(newmodel.IdModelSeverEquipment);
+  }
+
+  edit(model: ModelSeverEquipment): void {
+    model.ModelIsEdit = true;
+    this.modelCancelError = JSON.parse(JSON.stringify(model));
+    this.model = JSON.parse(JSON.stringify(model));
+    this.addtemplate(model.IdModelSeverEquipment)
+    this.isEditAndAddTrue();
+  }
+
+  public save(): void {
+    this.modifimethod();
+    this.editandadd.addAndEditModelSeverEquipment(this.model).toPromise().then((model: ModelReturn<ModelSeverEquipment>) => {
+      if (model.Model === null) {
+        alert(model.Message)
+        this.cancel(this.modelCancelError);
+      }
+    });
+    //Запрос на сохранение и обновление данных
+  }
+  ///Удаление
+  delete(): void {
+    throw new Error("Method not implemented.");
+  }
+  ///Отмена
+  cancel(model: ModelSeverEquipment): void {
+    model.ModelIsEdit = false;
+    this.isEditAndAddFalse();
+    if (this.index > 0) {
+      this.dataSource.data.pop();
+      this.index = 0;
+    }
+    else {
+      var userdefault = this.modeltable.find(x => x.IdModelSeverEquipment === this.model.IdModelSeverEquipment);
+      this.dataSource.data[this.modeltable.indexOf(userdefault)] = model;
+      this.index = 0;
+    }
+    this.dataSource._updateChangeSubscription();
+    this.removetemplate();
+  }
+
+  newmodel(): ModelSeverEquipment {
+    var newuser: ModelSeverEquipment = new ModelSeverEquipment();
+    newuser.ModelIsEdit = true;
+    newuser.IdModelSeverEquipment = 0;
+    return newuser;
+  }
+  //Костыль дожидаемся обновление DOM
+  async delay(ms: number): Promise<void> {
+    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+  }
+  ///Добавить шаблон в строку это просто жесть
+  async addtemplate(index: number): Promise<void> {
+    var i = 0;
+    await this.delay(10);
+    this.temlateList = this.fulltemplate.nativeElement.querySelectorAll("mat-form-field[id=template]");
+    this.rowList = this.table.nativeElement.querySelectorAll("div[class='" + index + "']");
+    for (var row of this.rowList) {
+      row.append(this.temlateList[i])
+      i++;
+    }
+  }
+  ///Удалить шаблон из строки и востановить текущий шаблон
+  removetemplate(): void {
+    var i = 0;
+    for (var row of this.rowList) {
+      row.removeChild(this.temlateList[i]);
+      this.fulltemplate.nativeElement.append(this.temlateList[i])
+      i++;
+    }
+  }
+
+  modifimethod(): void {
+    this.isEdit = true;
+    this.model.ModelIsEdit = false;
+  }
+
+  public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef<any>, template: ElementRef<any>): Promise<string> {
+    this.table = table;  //Таблица
+    this.fulltemplate = template; //Заложенный шаблон
+    this.modeltable = JSON.parse(JSON.stringify(model.ModelSeverEquipment));
+    this.dataSource.data = model.ModelSeverEquipment;
+    this.dataSource.paginator = paginator;
+    this.dataSource.sort = sort;
+    return "Модели сервисного оборудования заполнены";
+  }
+
+  isEditAndAddTrue(): void {
+    this.isEdit = true;
+    this.isAdd = true;
+  }
+
+  isEditAndAddFalse(): void {
+    this.isAdd = false;
+    this.isEdit = false;
+  }
+}
+
+export class ManufacturerSeverEquipmentTableModel implements INewLogicaTable<ManufacturerSeverEquipment>{
+
+  constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
+    this.subscribeservers();
+  }
+
+  createSTO(model: ManufacturerSeverEquipment, template: FullTemplateSupport, authService: AuthIdentification, dialog: MatDialog): void {
+    throw new Error("Method not implemented.");
+  }
+
+  public displayedColumns = ['IdManufacturerSeverEquipment', 'NameManufacturer', 'ActionsColumn'];
+  public dataSource: MatTableDataSource<ManufacturerSeverEquipment> = new MatTableDataSource<ManufacturerSeverEquipment>();
+
+  isAdd: boolean;
+  isEdit: boolean;
+  modelCancelError: ManufacturerSeverEquipment = new ManufacturerSeverEquipment();
+  model: ManufacturerSeverEquipment = new ManufacturerSeverEquipment();
+  index: number;
+  modeltable: ManufacturerSeverEquipment[];
+  //Подписка
+  public subscribeAddAndUpdate: any = null;
+  //Шаблоны для манипулирования DOM
+  temlateList: any;
+  rowList: any;
+  fulltemplate: ElementRef<any>;
+  table: ElementRef<any>;
+
+  public subscribeservers() {
+    this.subscribeAddAndUpdate = new BroadcastEventListener<ManufacturerSeverEquipment>('SubscribeManufacturerSeverEquipment');
+    this.SignalR.conect.listen(this.subscribeAddAndUpdate);
+    this.subscribeAddAndUpdate.subscribe((substring: string) => {
+      var submodel = deserialize<ManufacturerSeverEquipment>(ManufacturerSeverEquipment, substring);
+      this.index = 0;
+      if (this.isEdit) {
+        this.isEditAndAddFalse();
+        this.removetemplate();
+        this.model = submodel
+      }
+      var index = this.dataSource.data.find(x => x.IdManufacturerSeverEquipment === submodel.IdManufacturerSeverEquipment);
+      var indexzero = this.dataSource.data.find(x => x.IdManufacturerSeverEquipment === 0);
+      try {
+        if (indexzero) {
+          ///Для изменявшего
+          this.dataSource.data.find(x => x.IdManufacturerSeverEquipment === 0).IdManufacturerSeverEquipment = submodel.IdManufacturerSeverEquipment;
+        }
+        else {
+          if (index) {
+            ///Для остальных пользователей изменение
+            this.dataSource.data[this.dataSource.data.indexOf(index)] = submodel;
+            this.modeltable[this.modeltable.indexOf(index)] = submodel;
+          }
+          else {
+            ///Для остальных пользователей добавление
+            this.dataSource.data.push(submodel);
+            this.modeltable.push(submodel);
+          }
+        }
+        this.dataSource._updateChangeSubscription();
+      }
+      catch (e) {
+        console.log(e);
+      }
+    });
+  }
+
+  calbackfiltersAll(): void {
+    throw new Error("Method not implemented.");
+  }
+
+  filterstable(filterValue: string): void {
+    filterValue = filterValue.trim(); // Remove whitespace
+    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
+    this.dataSource.filter = filterValue;
+  }
+
+  public async add(): Promise<void> {
+    this.isEditAndAddTrue();
+    var newmodel = this.newmodel();
+    this.dataSource.data.push(newmodel);
+    this.modeltable.push(newmodel);
+    this.index = this.dataSource.data.length;
+    this.model = newmodel;
+    await this.dataSource._updateChangeSubscription();
+    await this.dataSource.paginator.lastPage();
+    this.addtemplate(newmodel.IdManufacturerSeverEquipment);
+  }
+
+  edit(model: ManufacturerSeverEquipment): void {
+    model.ModelIsEdit = true;
+    this.modelCancelError = JSON.parse(JSON.stringify(model));
+    this.model = JSON.parse(JSON.stringify(model));
+    this.addtemplate(model.IdManufacturerSeverEquipment)
+    this.isEditAndAddTrue();
+  }
+
+  public save(): void {
+    this.modifimethod();
+    this.editandadd.addAndEditManufacturerSeverEquipment(this.model).toPromise().then((model: ModelReturn<ManufacturerSeverEquipment>) => {
+      if (model.Model === null) {
+        alert(model.Message)
+        this.cancel(this.modelCancelError);
+      }
+    });
+    //Запрос на сохранение и обновление данных
+  }
+  ///Удаление
+  delete(): void {
+    throw new Error("Method not implemented.");
+  }
+  ///Отмена
+  cancel(model: ManufacturerSeverEquipment): void {
+    model.ModelIsEdit = false;
+    this.isEditAndAddFalse();
+    if (this.index > 0) {
+      this.dataSource.data.pop();
+      this.index = 0;
+    }
+    else {
+      var userdefault = this.modeltable.find(x => x.IdManufacturerSeverEquipment === this.model.IdManufacturerSeverEquipment);
+      this.dataSource.data[this.modeltable.indexOf(userdefault)] = model;
+      this.index = 0;
+    }
+    this.dataSource._updateChangeSubscription();
+    this.removetemplate();
+  }
+
+  newmodel(): ManufacturerSeverEquipment {
+    var newuser: ManufacturerSeverEquipment = new ManufacturerSeverEquipment();
+    newuser.ModelIsEdit = true;
+    newuser.IdManufacturerSeverEquipment = 0;
+    return newuser;
+  }
+
+  //Костыль дожидаемся обновление DOM
+  async delay(ms: number): Promise<void> {
+    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+  }
+  ///Добавить шаблон в строку это просто жесть
+  async addtemplate(index: number): Promise<void> {
+    var i = 0;
+    await this.delay(10);
+    this.temlateList = this.fulltemplate.nativeElement.querySelectorAll("mat-form-field[id=template]");
+    this.rowList = this.table.nativeElement.querySelectorAll("div[class='" + index + "']");
+    for (var row of this.rowList) {
+      row.append(this.temlateList[i])
+      i++;
+    }
+  }
+  ///Удалить шаблон из строки и востановить текущий шаблон
+  removetemplate(): void {
+    var i = 0;
+    for (var row of this.rowList) {
+      row.removeChild(this.temlateList[i]);
+      this.fulltemplate.nativeElement.append(this.temlateList[i])
+      i++;
+    }
+  }
+
+  modifimethod(): void {
+    this.isEdit = true;
+    this.model.ModelIsEdit = false;
+  }
+
+  public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef<any>, template: ElementRef<any>): Promise<string> {
+    this.table = table;  //Таблица
+    this.fulltemplate = template; //Заложенный шаблон
+    this.modeltable = JSON.parse(JSON.stringify(model.ManufacturerSeverEquipment));
+    this.dataSource.data = model.ManufacturerSeverEquipment;
+    this.dataSource.paginator = paginator;
+    this.dataSource.sort = sort;
+    return "Производители сервисного оборудования заполнены";
+  }
+
+  isEditAndAddTrue(): void {
+    this.isEdit = true;
+    this.isAdd = true;
+  }
+
+  isEditAndAddFalse(): void {
+    this.isAdd = false;
+    this.isEdit = false;
+  }
+}
+
+export class TypeServerTableModel implements INewLogicaTable<TypeServer>{
+
+  constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
+    this.subscribeservers();
+  }
+  createSTO(model: TypeServer, template: FullTemplateSupport, authService: AuthIdentification, dialog: MatDialog): void {
+    throw new Error("Method not implemented.");
+  }
+
+  public displayedColumns = ['IdTypeServer', 'NameType', 'ActionsColumn'];
+  public dataSource: MatTableDataSource<TypeServer> = new MatTableDataSource<TypeServer>();
+
+  isAdd: boolean;
+  isEdit: boolean;
+  modelCancelError: TypeServer = new TypeServer();
+  model: TypeServer = new TypeServer();
+  index: number;
+  modeltable: TypeServer[];
+
+  //Подписка
+  public subscribeAddAndUpdate: any = null;
+  //Шаблоны для манипулирования DOM
+  temlateList: any;
+  rowList: any;
+  fulltemplate: ElementRef<any>;
+  table: ElementRef<any>;
+
+  public subscribeservers() {
+    this.subscribeAddAndUpdate = new BroadcastEventListener<TypeServer>('SubscribeTypeServer');
+    this.SignalR.conect.listen(this.subscribeAddAndUpdate);
+    this.subscribeAddAndUpdate.subscribe((substring: string) => {
+      var submodel = deserialize<TypeServer>(TypeServer, substring);
+      this.index = 0;
+      if (this.isEdit) {
+        this.isEditAndAddFalse();
+        this.removetemplate();
+        this.model = submodel
+      }
+      var index = this.dataSource.data.find(x => x.IdTypeServer === submodel.IdTypeServer);
+      var indexzero = this.dataSource.data.find(x => x.IdTypeServer === 0);
+      try {
+        if (indexzero) {
+          ///Для изменявшего
+          this.dataSource.data.find(x => x.IdTypeServer === 0).IdTypeServer = submodel.IdTypeServer;
+        }
+        else {
+          if (index) {
+            ///Для остальных пользователей изменение
+            this.dataSource.data[this.dataSource.data.indexOf(index)] = submodel;
+            this.modeltable[this.modeltable.indexOf(index)] = submodel;
+          }
+          else {
+            ///Для остальных пользователей добавление
+            this.dataSource.data.push(submodel);
+            this.modeltable.push(submodel);
+          }
+        }
+        this.dataSource._updateChangeSubscription();
+      }
+      catch (e) {
+        console.log(e);
+      }
+    });
+  }
+
+  calbackfiltersAll(): void {
+    throw new Error("Method not implemented.");
+  }
+
+  filterstable(filterValue: string): void {
+    filterValue = filterValue.trim(); // Remove whitespace
+    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
+    this.dataSource.filter = filterValue;
+  }
+
+  public async add(): Promise<void> {
+    this.isEditAndAddTrue();
+    var newmodel = this.newmodel();
+    this.dataSource.data.push(newmodel);
+    this.modeltable.push(newmodel);
+    this.index = this.dataSource.data.length;
+    this.model = newmodel;
+    await this.dataSource._updateChangeSubscription();
+    await this.dataSource.paginator.lastPage();
+    this.addtemplate(newmodel.IdTypeServer);
+  }
+
+  edit(model: TypeServer): void {
+    model.ModelIsEdit = true;
+    this.modelCancelError = JSON.parse(JSON.stringify(model));
+    this.model = JSON.parse(JSON.stringify(model));
+    this.addtemplate(model.IdTypeServer)
+    this.isEditAndAddTrue();
+  }
+
+  public save(): void {
+    this.modifimethod();
+    this.editandadd.addAndEditTypeServer(this.model).toPromise().then((model: ModelReturn<TypeServer>) => {
+      if (model.Model === null) {
+        alert(model.Message)
+        this.cancel(this.modelCancelError);
+      }
+    });
+    //Запрос на сохранение и обновление данных
+  }
+
+  ///Удаление
+  delete(): void {
+    throw new Error("Method not implemented.");
+  }
+
+  ///Отмена
+  cancel(model: TypeServer): void {
+    model.ModelIsEdit = false;
+    this.isEditAndAddFalse();
+    if (this.index > 0) {
+      this.dataSource.data.pop();
+      this.index = 0;
+    }
+    else {
+      var userdefault = this.modeltable.find(x => x.IdTypeServer === this.model.IdTypeServer);
+      this.dataSource.data[this.modeltable.indexOf(userdefault)] = model;
+      this.index = 0;
+    }
+    this.dataSource._updateChangeSubscription();
+    this.removetemplate();
+  }
+
+  newmodel(): TypeServer {
+    var newuser: TypeServer = new TypeServer();
+    newuser.ModelIsEdit = true;
+    newuser.IdTypeServer = 0;
+    return newuser;
+  }
+
+  //Костыль дожидаемся обновление DOM
+  async delay(ms: number): Promise<void> {
+    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+  }
+  ///Добавить шаблон в строку это просто жесть
+  async addtemplate(index: number): Promise<void> {
+    var i = 0;
+    await this.delay(10);
+    this.temlateList = this.fulltemplate.nativeElement.querySelectorAll("mat-form-field[id=template]");
+    this.rowList = this.table.nativeElement.querySelectorAll("div[class='" + index + "']");
+    for (var row of this.rowList) {
+      row.append(this.temlateList[i])
+      i++;
+    }
+  }
+  ///Удалить шаблон из строки и востановить текущий шаблон
+  removetemplate(): void {
+    var i = 0;
+    for (var row of this.rowList) {
+      row.removeChild(this.temlateList[i]);
+      this.fulltemplate.nativeElement.append(this.temlateList[i])
+      i++;
+    }
+  }
+
+  modifimethod(): void {
+    this.isEdit = true;
+    this.model.ModelIsEdit = false;
+  }
+
+  public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef<any>, template: ElementRef<any>): Promise<string> {
+    this.table = table;  //Таблица
+    this.fulltemplate = template; //Заложенный шаблон
+    this.modeltable = JSON.parse(JSON.stringify(model.TypeServer));
+    this.dataSource.data = model.TypeServer;
+    this.dataSource.paginator = paginator;
+    this.dataSource.sort = sort;
+    return "Типы серверного оборудования заполнены";
+  }
+
+  isEditAndAddTrue(): void {
+    this.isEdit = true;
+    this.isAdd = true;
+  }
+
+  isEditAndAddFalse(): void {
+    this.isAdd = false;
+    this.isEdit = false;
+  }
+
+}
+
+
+
+
+
 export class MailIdentifiersTableModel implements INewLogicaTable<MailIdentifier>{
 
   constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
@@ -5042,6 +6433,7 @@ export class MailIdentifiersTableModel implements INewLogicaTable<MailIdentifier
 
   isAdd: boolean;
   isEdit: boolean;
+  modelCancelError: MailIdentifier = new MailIdentifier();
   model: MailIdentifier = new MailIdentifier();
   modelToServer: MailIdentifier;
   index: number;
@@ -5062,6 +6454,7 @@ export class MailIdentifiersTableModel implements INewLogicaTable<MailIdentifier
     this.SignalR.conect.listen(this.subscribeAddAndUpdate);
     this.subscribeAddAndUpdate.subscribe((substring: string) => {
       var submodel = deserialize<MailIdentifier>(MailIdentifier, substring);
+      this.index = 0;
       if (this.isEdit) {
         this.isEditAndAddFalse();
         this.removetemplate();
@@ -5140,6 +6533,7 @@ export class MailIdentifiersTableModel implements INewLogicaTable<MailIdentifier
 
   edit(model: MailIdentifier): void {
     model.ModelIsEdit = true;
+    this.modelCancelError = JSON.parse(JSON.stringify(model));
     this.model = JSON.parse(JSON.stringify(model));
     this.addtemplate(model.IdUser)
     this.isEditAndAddTrue();
@@ -5150,7 +6544,10 @@ export class MailIdentifiersTableModel implements INewLogicaTable<MailIdentifier
     var converter = new ConvertDate();
     this.modelToServer = converter.convertDateToServer<MailIdentifier>(JSON.parse(JSON.stringify(this.model)));
     this.editandadd.editModelMailIdentifier(this.modelToServer).toPromise().then((model: ModelReturn<MailIdentifier>) => {
-      console.log(model.Message);
+      if (model.Model === null) {
+        alert(model.Message)
+        this.cancel(this.modelCancelError);
+      }
     });
     //Запрос на сохранение и обновление данных
   }
@@ -5214,8 +6611,6 @@ export class MailIdentifiersTableModel implements INewLogicaTable<MailIdentifier
     this.model.MailGroup ? this.model.IdGroupMail = this.model.MailGroup.IdGroupMail : this.model.IdGroupMail = null;
     this.isEdit = true;
     this.model.ModelIsEdit = false;
-    //Поиск индекса и замена модели по индексу в таблице
-    this.index = 0;
   }
 
 
@@ -5262,6 +6657,7 @@ export class MailGroupTableModel implements INewLogicaTable<MailGroup>{
 
   isAdd: boolean;
   isEdit: boolean;
+  modelCancelError: MailGroup = new MailGroup();
   model: MailGroup = new MailGroup();
   modelToServer: MailGroup;
   index: number;
@@ -5281,6 +6677,7 @@ export class MailGroupTableModel implements INewLogicaTable<MailGroup>{
     this.SignalR.conect.listen(this.subscribeAddAndUpdate);
     this.subscribeAddAndUpdate.subscribe((substring: string) => {
       var submodel = deserialize<MailGroup>(MailGroup, substring);
+      this.index = 0;
       if (this.isEdit) {
         this.isEditAndAddFalse();
         this.removetemplate();
@@ -5337,6 +6734,7 @@ export class MailGroupTableModel implements INewLogicaTable<MailGroup>{
 
   edit(model: MailGroup): void {
     model.ModelIsEdit = true;
+    this.modelCancelError = JSON.parse(JSON.stringify(model));
     this.model = JSON.parse(JSON.stringify(model));
     this.addtemplate(model.IdGroupMail);
     this.isEditAndAddTrue();
@@ -5348,12 +6746,9 @@ export class MailGroupTableModel implements INewLogicaTable<MailGroup>{
     this.modelToServer = converter.convertDateToServer<MailGroup>(JSON.parse(JSON.stringify(this.model)));
     this.editandadd.editModelMailGroup(this.modelToServer).toPromise().then((model: ModelReturn<MailGroup>) => {
       if (model.Model === null) {
-        this.isEditAndAddFalse();
-        this.dataSource.data.pop();
-        this.dataSource._updateChangeSubscription();
-        this.removetemplate();
+        alert(model.Message)
+        this.cancel(this.modelCancelError);
       }
-      alert(model.Message);
     });
     //Запрос на сохранение и обновление данных
   }
@@ -5417,8 +6812,6 @@ export class MailGroupTableModel implements INewLogicaTable<MailGroup>{
   modifimethod(): void {
     this.isEdit = true;
     this.model.ModelIsEdit = false;
-    //Поиск индекса и замена модели по индексу в таблице
-    this.index = 0;
   }
 
   public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef<any>, template: ElementRef<any>): Promise<string> {
@@ -5441,4 +6834,123 @@ export class MailGroupTableModel implements INewLogicaTable<MailGroup>{
     this.isAdd = false;
     this.isEdit = false;
   }
+}
+
+export class AllTechnicsLkModel implements INewLogicaTable<AllTechnics>{
+
+  constructor(public editandadd: EditAndAdd) { }
+
+
+  createSTO(model: AllTechnics, template: FullTemplateSupport, authService: AuthIdentification, dialog: MatDialog): void {
+    var modelDialog = new ModelDialog();
+    modelDialog.discription = template.Description;
+    modelDialog.info = template.InfoTemplate;
+    modelDialog.name = template.Name;
+    modelDialog.idTemplate = template.IdTemplate;
+    modelDialog.rowModel = model;
+    modelDialog.isItDepartmen = false;
+    const dialogRef = dialog.open(DialogDiscription, {
+      width: "800px",
+      height: "500px",
+      data: modelDialog
+    })
+    dialogRef.afterClosed().subscribe((result: ModelDialog) => {
+      console.log(result);
+      if (result) {
+        var IdUser = authService.autorizationLk.idUserField;
+        var IdMfu = model.Item === "МФУ" ? model.Id : 0;
+        var IdMonitor = model.Item === "Монитор" ? model.Id : 0;
+        var IdPrinter = model.Item === "Принтер" ? model.Id : 0;
+        var IdSysBlock = model.Item === "СБ" ? model.Id : 0;
+        var IdScanner = model.Item === "Сканер/Камера" ? model.Id : 0;
+        var IdTelephon = model.Item === "Телефон" ? model.Id : 0;
+        this.editandadd.createSupport(new ModelParametrSupport(
+          authService.autorizationLk.loginField,
+          authService.autorizationLk.passwordField,
+          template.IdTemplate, result.discription, IdUser, IdMfu, IdMonitor, IdPrinter, IdSysBlock, IdScanner, IdTelephon)).toPromise().then((model: ModelParametrSupport) => {
+            console.log(model)
+            if (model.errorField) {
+              alert("Заявка не создана смотри ошибки!!! " + model.errorField)
+              return;
+            }
+            if (model.step3ResponseSupportField) {
+              alert("Заявка успешно создана!")
+              return;
+            }
+          });
+      }
+    });
+  }
+
+  public displayedColumns: any[] = ['Logic', 'Item', 'Users', 'NameManufacturer', 'NameModel', 'SerNum', 'ServiceNum', 'NameServer', 'IpAdress', 'NumberKabinet'];
+  public dataSource: MatTableDataSource<AllTechnics> = new MatTableDataSource<AllTechnics>();
+
+  isAdd: boolean;
+  isEdit: boolean;
+  modelCancelError: AllTechnics;
+  model: AllTechnics;
+  index: number;
+  modeltable: AllTechnics[];
+  temlateList: any;
+  rowList: any;
+  fulltemplate: ElementRef<any>;
+  table: ElementRef<any>;
+
+  public filterstable(filterValue: string): void {
+    filterValue = filterValue.trim(); // Remove whitespace
+    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
+    this.dataSource.filter = filterValue;
+  }
+
+
+
+  delay(ms: number): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
+  addtemplate(index: number): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
+  removetemplate(): void {
+    throw new Error("Method not implemented.");
+  }
+  add(): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
+  edit(model: AllTechnics): void {
+    throw new Error("Method not implemented.");
+  }
+  save(): void {
+    throw new Error("Method not implemented.");
+  }
+  delete(model: AllTechnics): void {
+    throw new Error("Method not implemented.");
+  }
+  cancel(model: AllTechnics): void {
+    throw new Error("Method not implemented.");
+  }
+  newmodel(): AllTechnics {
+    throw new Error("Method not implemented.");
+  }
+  calbackfiltersAll(): void {
+    throw new Error("Method not implemented.");
+  }
+  modifimethod(): void {
+    throw new Error("Method not implemented.");
+  }
+  public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef<any>, template: ElementRef<any>): Promise<string> {
+    this.table = table;
+    this.fulltemplate = template; //Заложенный шаблон
+    this.modeltable = JSON.parse(JSON.stringify(model.AllTechnics));
+    this.dataSource.data = model.AllTechnics;
+    this.dataSource.paginator = paginator;
+    this.dataSource.sort = sort;
+    return "Модель Техники ЛК заполнена";
+  }
+  isEditAndAddTrue(): void {
+    throw new Error("Method not implemented.");
+  }
+  isEditAndAddFalse(): void {
+    throw new Error("Method not implemented.");
+  }
+
 }

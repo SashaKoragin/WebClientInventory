@@ -6,7 +6,7 @@ import {
     CanActivateChild,
     CanLoad, Route
 } from '@angular/router';
-import { AuthIdentification } from  '../../Post RequestService/PostRequest';
+import { AuthIdentification } from  '../../../Post RequestService/PostRequest';
 
 @Injectable({
     providedIn: 'root'

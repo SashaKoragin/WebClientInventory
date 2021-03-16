@@ -18,23 +18,25 @@
 
             <div class="tables" #TABLEUSERS>
                 <table mat-table [dataSource]="user.dataSource" matSort>
-
                     <ng-container matColumnDef="Logic">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>Заявки</th>
                         <td [style.background]="row.StatusUser?.ColorStatus" mat-cell *matCellDef="let row">
-                            <button mat-icon-button [matMenuTriggerFor]="menu" color="primary" matTooltip="Меню">
-                                <mat-icon>more_vert</mat-icon>
-                                <mat-menu #menu="matMenu">
-                                    <div class="MenuButton"
-                                        *ngFor="let template of selectall.select.FullTemplateSupport | filters:[5,6]">
-                                        <button mat-menu-item (click)="user.createSTO(row,template,authService,dialog)"
-                                            [matTooltip]="template.InfoTemplate">
-                                            <mat-icon>input</mat-icon>
-                                            {{template.Name}}
-                                        </button>
-                                    </div>
-                                </mat-menu>
-                            </button>
+                            <ng-template [ngxPermissionsExcept]="['Просмотр']">
+                                <button mat-icon-button [matMenuTriggerFor]="menu" color="primary" matTooltip="Меню">
+                                    <mat-icon>more_vert</mat-icon>
+                                    <mat-menu #menu="matMenu">
+                                        <div class="MenuButton"
+                                            *ngFor="let template of selectall.select.FullTemplateSupport | filters:[5,6]">
+                                            <button mat-menu-item
+                                                (click)="user.createSTO(row,template,authService,dialog)"
+                                                [matTooltip]="template.InfoTemplate">
+                                                <mat-icon>input</mat-icon>
+                                                {{template.Name}}
+                                            </button>
+                                        </div>
+                                    </mat-menu>
+                                </button>
+                            </ng-template>
                         </td>
                     </ng-container>
 
@@ -126,18 +128,6 @@
                         </td>
                     </ng-container>
 
-
-                    <ng-container matColumnDef="Rule.NameRules">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Роль</th>
-                        <td [style.background]="row.StatusUser?.ColorStatus" mat-cell *matCellDef="let row"
-                            [matTooltip]="row.Rule?.NameRules">
-                            <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Rule?.NameRules}}</Label>
-                            <div [ngClass]=row.IdUser.toString() id="{{row.IdUser}}"
-                                [style.display]="!row.ModelIsEdit ? 'none':'block'">
-                            </div>
-                        </td>
-                    </ng-container>
-
                     <ng-container matColumnDef="StatusActual">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>Актуальность</th>
                         <td [style.background]="row.StatusUser?.ColorStatus" mat-cell *matCellDef="let row">
@@ -177,7 +167,6 @@
                                     <i class="material-icons">cancel</i>
                                 </button>
                             </div>
-
                         </td>
                     </ng-container>
                     <tr mat-header-row *matHeaderRowDef="user.displayedColumns; sticky: true"></tr>
@@ -304,22 +293,6 @@
                 </mat-select>
             </mat-form-field>
 
-            <ng-template ngxPermissionsOnly="Администратор">
-                <mat-form-field id="template" class="validation">
-                    <mat-select (click)="user.calbackfiltersAll()" [placeholder]="user.model.Rule?.NameRules"
-                        [(ngModel)]="user.model.Rule" name="rule">
-                        <mat-select-filter class="filter" [placeholder]="user.model.Rule?.NameRules"
-                            [displayMember]="'NameRules'" [array]="user.rule"
-                            (filteredReturn)="user.filteredRule =$event">
-                        </mat-select-filter>
-                        <mat-option [value]='null'>None</mat-option>
-                        <mat-option *ngFor="let rule of user.filteredRule" [value]="rule">
-                            {{rule.NameRules}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </ng-template>
-
         </div>
     </mat-tab>
     <mat-tab label="Отделы/Начальники">
@@ -433,6 +406,32 @@
             <div class="tables" #TABLETELEPHONES>
                 <table mat-table [dataSource]="telephone.dataSource" matSort>
 
+                    <ng-container matColumnDef="Logic">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Заявки</th>
+                        <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
+                            <ng-template [ngxPermissionsExcept]="['Просмотр']">
+                                <button mat-icon-button [matMenuTriggerFor]="menu" color="primary" matTooltip="Меню">
+                                    <mat-icon>more_vert</mat-icon>
+                                    <mat-menu #menu="matMenu">
+                                        <div class="MenuButton"
+                                            *ngFor="let template of selectall.select.FullTemplateSupport | filters:[6]">
+                                            <button mat-menu-item
+                                                (click)="telephone.createSTO(row,template,authService,dialog)"
+                                                [matTooltip]="template.InfoTemplate">
+                                                <mat-icon>input</mat-icon>
+                                                {{template.Name}}
+                                            </button>
+                                        </div>
+                                    </mat-menu>
+                                </button>
+                            </ng-template>
+                            <button mat-icon-button color="primary" matTooltip="Сформировать QR код"
+                                (click)="createQRCode(row.SerNumber)">
+                                <i class="material-icons">print</i>
+                            </button>
+                        </td>
+                    </ng-container>
+
                     <ng-container matColumnDef="IdTelephone">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
                         <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row"
@@ -481,6 +480,19 @@
                             </div>
                         </td>
                     </ng-container>
+
+                    <ng-container matColumnDef="ServiceNum">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Сервисный номер</th>
+                        <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row"
+                            [matTooltip]="row?.ServiceNum">
+                            <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row?.ServiceNum}}</Label>
+                            <div [ngClass]=row.IdTelephon.toString() id="{{row.IdTelephon}}"
+                                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            </div>
+                        </td>
+                    </ng-container>
+
+
                     <ng-container matColumnDef="SerNumber">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>Сирийный номер</th>
                         <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row"
@@ -491,6 +503,18 @@
                             </div>
                         </td>
                     </ng-container>
+
+                    <ng-container matColumnDef="InventarNum">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Инвентарный номер</th>
+                        <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row"
+                            [matTooltip]="row?.InventarNum ">
+                            <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row?.InventarNum }}</Label>
+                            <div [ngClass]=row.IdTelephon.toString() id="{{row.IdTelephon}}"
+                                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            </div>
+                        </td>
+                    </ng-container>
+
                     <ng-container matColumnDef="IpTelephon">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>Ip Адрес</th>
                         <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row"
@@ -623,9 +647,20 @@
             </mat-form-field>
 
             <mat-form-field id="template" class="validation">
+                <input matInput placeholder="Сервисный номер" [ngModel]="telephone.model?.ServiceNum"
+                    (ngModelChange)="telephone.model.ServiceNum = $event" />
+            </mat-form-field>
+
+
+            <mat-form-field id="template" class="validation">
                 <input matInput [formControl]="telephone.modelvalid?.getRowValidatorModel[4].get('SerNumber')"
                     placeholder="Сирийный номер" [ngModel]="telephone.model?.SerNumber"
                     (ngModelChange)="telephone.model.SerNumber = $event" />
+            </mat-form-field>
+
+            <mat-form-field id="template" class="validation">
+                <input matInput placeholder="Инвентарный номер" [ngModel]="telephone.model?.InventarNum"
+                    (ngModelChange)="telephone.model.InventarNum = $event" />
             </mat-form-field>
 
             <mat-form-field id="template" class="validation">
@@ -672,6 +707,87 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field>
+        </div>
+    </mat-tab>
+    <mat-tab label="Роли пользователей">
+        <div class="modeltable">
+            <div class="modelUser">
+                <form class="search">
+                    <mat-form-field class="search_blok">
+                        <span matPrefix><i class="material-icons">youtube_searched_for</i></span>
+                        <input matInput (keyup)="roleAndUser.filterstableUser($event.target.value)"
+                            placeholder="Поиск пользователя">
+                    </mat-form-field>
+                </form>
+                <div class="tables" #TABLEMODELRULES>
+                    <table mat-table [dataSource]="roleAndUser.dataSourceUser" matSort>
+                        <ng-container matColumnDef="Select">
+                            <th mat-header-cell *matHeaderCellDef>Выбор</th>
+                            <td mat-cell *matCellDef="let row">
+                                <ng-template ngxPermissionsOnly="Администратор">
+                                    <mat-checkbox (click)="$event.stopPropagation();"
+                                        (change)="roleAndUser.selectionUsers.toggle(row);roleAndUser.selectUserDb()"
+                                        [checked]="roleAndUser.selectionUsers.isSelected(row)">
+                                    </mat-checkbox>
+                                </ng-template>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="NameUser">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Имя пользователя</th>
+                            <td mat-cell *matCellDef="let row">{{row.Name}}</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="TabelNumber">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Табельный номер</th>
+                            <td mat-cell *matCellDef="let row">{{row.TabelNumber}}</td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="roleAndUser.displayedColumnsUser; sticky: true"></tr>
+                        <tr mat-row *matRowDef="let row; columns: roleAndUser.displayedColumnsUser;"></tr>
+                    </table>
+                </div>
+                <mat-paginator class="paginator" #userRoles [pageSizeOptions]="[10, 20, 50]"
+                    showFirstLastButtons="true"></mat-paginator>
+            </div>
+            <div class="modelRule">
+                <form class="search">
+                    <mat-form-field class="search_blok">
+                        <span matPrefix><i class="material-icons">youtube_searched_for</i></span>
+                        <input matInput (keyup)="roleAndUser.filterstableRule($event.target.value)"
+                            placeholder="Поиск роли">
+                    </mat-form-field>
+                </form>
+                <div class="tables">
+                    <label>{{roleAndUser.firstUser}}</label>
+                    <table mat-table [dataSource]="roleAndUser.dataSourceRule" matSort>
+                        <ng-container matColumnDef="Select">
+                            <th mat-header-cell *matHeaderCellDef>Добавить/Удалить</th>
+                            <td mat-cell *matCellDef="let row">
+                                <ng-template ngxPermissionsOnly="Администратор">
+                                    <mat-checkbox class="selectRule" (change)="roleAndUser.enableRule(row)"
+                                        [checked]="roleAndUser.isChechRule(row)"></mat-checkbox>
+                                </ng-template>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="IdRule">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>УН Роли</th>
+                            <td mat-cell *matCellDef="let row">{{row.idRuleField}}</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="NameRules">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Наименование роли</th>
+                            <td mat-cell *matCellDef="let row">{{row.nameRulesField}}</td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="roleAndUser.displayedColumnsRule; sticky: true"></tr>
+                        <tr mat-row *matRowDef="let row; columns: roleAndUser.displayedColumnsRule;"></tr>
+                    </table>
+                </div>
+                <mat-paginator class="paginator" #roles [pageSizeOptions]="[10, 20, 50]" showFirstLastButtons="true">
+                </mat-paginator>
+            </div>
         </div>
     </mat-tab>
 </mat-tab-group>

@@ -1,7 +1,7 @@
-<mat-tab-group>
-        <mat-tab label="Техника на пользователя">
-<div class="head" [style.display]="logica?.select ? 'grid' : 'none'">
-        <div class="button"><button mat-button (click)="updateUsers()">Обновить</button></div>
+<mat-tab-group (selectedTabChange)="selectViewSql($event)">
+    <mat-tab label="Техника на пользователя">
+        <div class="head" [style.display]="logica?.select ? 'grid' : 'none'">
+            <div class="button"><button mat-button (click)="updateUsers()">Обновить</button></div>
             <div class="grid-container2" *ngFor="let selectvalue of selecting?.parametrs">
                 <div class="grid-item2">
                     <label>{{selectvalue.name}}</label>
@@ -27,212 +27,232 @@
                         </mat-select>
                     </mat-form-field>
                 </div>
-                    <div class="grid-item2" [style.display]="selectvalue.template === 1 ? 'grid' : 'none'">
-                        <mat-form-field class="select">
-                            <input matInput type="text" 
-                                   #tooltip1="matTooltip"
-                                   matTooltip={{selectvalue.paramvalue}}
-                                   matTooltipPosition="right"
-                                   [(ngModel)]="selectvalue.paramvalue" [formControl]="selectvalue.formTemplate" >
-                            <label class="lableerror" *ngIf="selectvalue.formTemplate.invalid" [ngClass]="'error'">Не соответствует формату дате</label>
-                        </mat-form-field>
-                    </div>
-                    <div class="grid-item2" [style.display]="selectvalue.template === 2 ? 'grid' : 'none'">
-                        <mat-form-field class="select">
-                            <input matInput type="text" 
-                                   #tooltip2="matTooltip"
-                                   matTooltip={{selectvalue.paramvalue}}
-                                   matTooltipPosition="right"
-                                   [(ngModel)]="selectvalue.paramvalue" [formControl]="selectvalue.formTemplate">
-                            <label class="lableerror" *ngIf="selectvalue.formTemplate.invalid" [ngClass]="'error'">Не соответствует формату строке</label>
-                        </mat-form-field>
-                    </div>
-                <div class="grid-item2" [style.display]="selectvalue.template === 3 ? 'grid' : 'none'">
-                    <mat-form-field class="select">
-                        <input matInput type="text" 
-                               #tooltip3="matTooltip"
-                               matTooltip={{selectvalue.paramvalue}}
-                               matTooltipPosition="right" [(ngModel)]="selectvalue.paramvalue" [formControl]="selectvalue.formTemplate">
-                        <label class="lableerror" *ngIf="selectvalue.formTemplate.invalid" [ngClass]="'error'">Не соответствует формату цифр</label>
-                    </mat-form-field>
-                </div>
-                </div>
-           </div>
-    <div class="mat-app-background basic-container" [style.display]="logica?.date ? 'none' : 'grid'">
-      <div class="button"><button mat-button (click)="backUsers()">Назад</button></div>
-        <mat-tree  [dataSource]="dataSourceUser" [treeControl]="treeControlUser" class="tree">
-            <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
-                  <li class="mat-tree-node">
-                                <table class="table table-striped">
-                                        <tr>
-                                            <th>Имя оборудования</th>
-                                            <th>Наименование модели</th>
-                                            <th>Серийный номер</th>
-                                            <th>Сервисный номер</th>
-                                            <th>Инвентарный номер</th>
-                                            <th>Кабинет</th>
-                                            <th>Наименование компьютера</th>
-                                            <th>Ip Адрес</th>
-                                            <th>Примечание</th>
-                                        </tr>
-                                        <tbody>
-                                            <tr *ngFor="let type of node.model.Types">
-                                                <th>{{type?.Name}} </th>
-                                                <th>{{type?.NameModel}}</th>
-                                                <th>{{type?.SerNumber}}</th>
-                                                <th>{{type?.ServiceNumber}}</th>
-                                                <th>{{type?.InventerNumber}}</th>
-                                                <th>{{type?.Kabinet}}</th>
-                                                <th>{{type?.NameComputer}}</th>
-                                                <th>{{type?.IpAdress}}</th>
-                                                <th>{{type?.Status}}</th>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                  </li>
-                </mat-tree-node>
-                <mat-tree-node *matTreeNodeDef="let node; when: hasChildUser" matTreeNodePadding>
-                  <li>
-                        <div class="mat-tree-node">
-                        <button class="content" mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.model.Name">
-                                {{node.model.Children[0].Children.length===0 ? node.model.Children[0].Types.length : node.model.Children.length }}
-                        </button>
-                        <span>{{node.model.Name}}</span>
-                        </div>
-                    <ul [class.example-tree-invisible]="!treeControlUser.isExpanded(node)">
-                      <ng-container matTreeNodeOutlet>
-                      </ng-container>
-                    </ul>
-                  </li>
-                </mat-tree-node>
-              </mat-tree>
-    </div>
-<div [style.display]="logica?.progress ? 'none':'inline'">
-    <p>Идет загрузка данных подождите пожалуйста!!!</p>
-    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-</div>
-</mat-tab>
-   <mat-tab label="Техника на отдел по пользователям">
-   <div class="head" [style.display]="logica1?.select ? 'grid' : 'none'">
-    <div class="button"><button mat-button (click)="updateOtdels()">Обновить</button></div>
-        <div class="grid-container2" *ngFor="let selectvalue of selecting1?.parametrs">
-            <div class="grid-item2">
-                <label>{{selectvalue.name}}</label>
-            </div>
-            <div class="grid-item2">
-                <mat-checkbox [(ngModel)]="selectvalue.isvisible"></mat-checkbox>
-            </div>
-            <div class="grid-item2" [style.display]="selectvalue.template===2 ? 'grid' : 'none'">
-                <mat-form-field>
-                    <mat-select placeholder="Отбор данных!" [(ngModel)]="selectvalue.select" name="sel">
-                        <mat-option *ngFor="let sel of selecting1.selectparamString" [value]="sel">
-                            {{sel.viewValue}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
-            <div class="grid-item2" [style.display]="selectvalue.template !== 2 ? 'grid' : 'none'">
-                <mat-form-field>
-                    <mat-select placeholder="Отбор данных!" [(ngModel)]="selectvalue.select" name="sel">
-                        <mat-option *ngFor="let sel of selecting1.selectparamNumber" [value]="sel">
-                            {{sel.viewValue}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
                 <div class="grid-item2" [style.display]="selectvalue.template === 1 ? 'grid' : 'none'">
                     <mat-form-field class="select">
-                        <input matInput type="text" 
-                               #tooltip1="matTooltip"
-                               matTooltip={{selectvalue.paramvalue}}
-                               matTooltipPosition="right"
-                               [(ngModel)]="selectvalue.paramvalue" [formControl]="selectvalue.formTemplate" >
-                        <label class="lableerror" *ngIf="selectvalue.formTemplate.invalid" [ngClass]="'error'">Не соответствует формату дате</label>
+                        <input matInput type="text" #tooltip1="matTooltip" matTooltip={{selectvalue.paramvalue}}
+                            matTooltipPosition="right" [(ngModel)]="selectvalue.paramvalue"
+                            [formControl]="selectvalue.formTemplate">
+                        <label class="lableerror" *ngIf="selectvalue.formTemplate.invalid" [ngClass]="'error'">Не
+                            соответствует формату дате</label>
                     </mat-form-field>
                 </div>
                 <div class="grid-item2" [style.display]="selectvalue.template === 2 ? 'grid' : 'none'">
                     <mat-form-field class="select">
-                        <input matInput type="text" 
-                               #tooltip2="matTooltip"
-                               matTooltip={{selectvalue.paramvalue}}
-                               matTooltipPosition="right"
-                               [(ngModel)]="selectvalue.paramvalue" [formControl]="selectvalue.formTemplate">
-                        <label class="lableerror" *ngIf="selectvalue.formTemplate.invalid" [ngClass]="'error'">Не соответствует формату строке</label>
+                        <input matInput type="text" #tooltip2="matTooltip" matTooltip={{selectvalue.paramvalue}}
+                            matTooltipPosition="right" [(ngModel)]="selectvalue.paramvalue"
+                            [formControl]="selectvalue.formTemplate">
+                        <label class="lableerror" *ngIf="selectvalue.formTemplate.invalid" [ngClass]="'error'">Не
+                            соответствует формату строке</label>
                     </mat-form-field>
                 </div>
-            <div class="grid-item2" [style.display]="selectvalue.template === 3 ? 'grid' : 'none'">
-                <mat-form-field class="select">
-                    <input matInput type="text" 
-                           #tooltip3="matTooltip"
-                           matTooltip={{selectvalue.paramvalue}}
-                           matTooltipPosition="right" [(ngModel)]="selectvalue.paramvalue" [formControl]="selectvalue.formTemplate">
-                    <label class="lableerror" *ngIf="selectvalue.formTemplate.invalid" [ngClass]="'error'">Не соответствует формату цифр</label>
-                </mat-form-field>
-            </div>
-            </div>
-       </div>
-<div class="mat-app-background basic-container" [style.display]="logica1?.date ? 'none' : 'grid'">
-  <div class="button"><button mat-button (click)="backOtdels()">Назад</button></div>
-
-   <mat-tree  [dataSource]="dataSourceOtdel" [treeControl]="treeControlOtdel" class="tree">
-        <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
-         <li class="mat-tree-node">
-            <table class="table table-striped">
-                <tr>
-                    <th>Имя оборудования</th>
-                    <th>Наименование модели</th>
-                    <th>Сирийный номер</th>
-                    <th>Сервисный номер</th>
-                    <th>Инвентарный номер</th>
-                    <th>Кабинет</th>
-                    <th>Наименование компьютера</th>
-                    <th>Ip Адрес</th>
-                    <th>Примечание</th>
-                </tr>
-                <tbody>
-                    <tr *ngFor="let type of node.model.Types">
-                      <th>{{type?.Name}} </th>
-                      <th>{{type?.NameModel}}</th>
-                      <th>{{type?.SerNumber}}</th>
-                      <th>{{type?.ServiceNumber}}</th>
-                      <th>{{type?.InventerNumber}}</th>
-                      <th>{{type?.Kabinet}}</th>
-                      <th>{{type?.NameComputer}}</th>
-                      <th>{{type?.IpAdress}}</th>
-                      <th>{{type?.Status}}</th>
-                    </tr>
-                </tbody>
-            </table>
-         </li>
-        </mat-tree-node>  
-        <mat-tree-node *matTreeNodeDef="let node; when: hasChildOtdel" matTreeNodePadding>
-            <li>
-                <div class="mat-tree-node">
-                    <button class="content" mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.model.Name">
-                        {{node.model.Children[0].Children.length===0 ? node.model.Children[0].Types.length : node.model.Children.length }} 
-                    </button>
-                    <span>{{node.model.Name}}</span>
-                   <ng-template [ngxPermissionsExcept]="['Просмотр']">
-                      <div [style.display]="node.model.InputServer ?'inline':'none'" class="button">
-                        <button mat-button (click)="uploadModel(node.model)">Выгрузить модель</button>
-                      </div>
-                   </ng-template>
+                <div class="grid-item2" [style.display]="selectvalue.template === 3 ? 'grid' : 'none'">
+                    <mat-form-field class="select">
+                        <input matInput type="text" #tooltip3="matTooltip" matTooltip={{selectvalue.paramvalue}}
+                            matTooltipPosition="right" [(ngModel)]="selectvalue.paramvalue"
+                            [formControl]="selectvalue.formTemplate">
+                        <label class="lableerror" *ngIf="selectvalue.formTemplate.invalid" [ngClass]="'error'">Не
+                            соответствует формату цифр</label>
+                    </mat-form-field>
                 </div>
-               <ul [class.example-tree-invisible]="!treeControlOtdel.isExpanded(node)">
-                 <ng-container matTreeNodeOutlet>
-                 </ng-container>   
-               </ul>
-             </li>
-        </mat-tree-node> 
-    </mat-tree>  
+            </div>
+        </div>
+        <div class="mat-app-background basic-container" [style.display]="logica?.date ? 'none' : 'grid'">
+            <div class="button"><button mat-button (click)="backUsers()">Назад</button></div>
+            <mat-tree [dataSource]="dataSourceUser" [treeControl]="treeControlUser" class="tree">
+                <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
+                    <li class="mat-tree-node">
+                        <table class="table table-striped">
+                            <tr>
+                                <th>Имя оборудования</th>
+                                <th>Наименование модели</th>
+                                <th>Серийный номер</th>
+                                <th>Сервисный номер</th>
+                                <th>Инвентарный номер</th>
+                                <th>Кабинет</th>
+                                <th>Наименование компьютера</th>
+                                <th>Ip Адрес</th>
+                                <th>Примечание</th>
+                            </tr>
+                            <tbody>
+                                <tr *ngFor="let type of node.model.Types">
+                                    <th>{{type?.Name}} </th>
+                                    <th>{{type?.NameModel}}</th>
+                                    <th>{{type?.SerNumber}}</th>
+                                    <th>{{type?.ServiceNumber}}</th>
+                                    <th>{{type?.InventerNumber}}</th>
+                                    <th>{{type?.Kabinet}}</th>
+                                    <th>{{type?.NameComputer}}</th>
+                                    <th>{{type?.IpAdress}}</th>
+                                    <th>{{type?.Status}}</th>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </li>
+                </mat-tree-node>
+                <mat-tree-node *matTreeNodeDef="let node; when: hasChildUser" matTreeNodePadding>
+                    <li>
+                        <div class="mat-tree-node">
+                            <button class="content" mat-icon-button matTreeNodeToggle
+                                [attr.aria-label]="'toggle ' + node.model.Name">
+                                {{node.model.Children[0].Children.length===0 ? node.model.Children[0].Types.length : node.model.Children.length }}
+                            </button>
+                            <span>{{node.model.Name}}</span>
+                        </div>
+                        <ul [class.example-tree-invisible]="!treeControlUser.isExpanded(node)">
+                            <ng-container matTreeNodeOutlet>
+                            </ng-container>
+                        </ul>
+                    </li>
+                </mat-tree-node>
+            </mat-tree>
+        </div>
+        <div [style.display]="logica?.progress ? 'none':'inline'">
+            <p>Идет загрузка данных подождите пожалуйста!!!</p>
+            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+        </div>
+    </mat-tab>
+    <mat-tab label="Техника на отдел по пользователям">
+        <div class="head" [style.display]="logica1?.select ? 'grid' : 'none'">
+            <div class="button"><button mat-button (click)="updateOtdels()">Обновить</button></div>
+            <div class="grid-container2" *ngFor="let selectvalue of selecting1?.parametrs">
+                <div class="grid-item2">
+                    <label>{{selectvalue.name}}</label>
+                </div>
+                <div class="grid-item2">
+                    <mat-checkbox [(ngModel)]="selectvalue.isvisible"></mat-checkbox>
+                </div>
+                <div class="grid-item2" [style.display]="selectvalue.template===2 ? 'grid' : 'none'">
+                    <mat-form-field>
+                        <mat-select placeholder="Отбор данных!" [(ngModel)]="selectvalue.select" name="sel">
+                            <mat-option *ngFor="let sel of selecting1.selectparamString" [value]="sel">
+                                {{sel.viewValue}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="grid-item2" [style.display]="selectvalue.template !== 2 ? 'grid' : 'none'">
+                    <mat-form-field>
+                        <mat-select placeholder="Отбор данных!" [(ngModel)]="selectvalue.select" name="sel">
+                            <mat-option *ngFor="let sel of selecting1.selectparamNumber" [value]="sel">
+                                {{sel.viewValue}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="grid-item2" [style.display]="selectvalue.template === 1 ? 'grid' : 'none'">
+                    <mat-form-field class="select">
+                        <input matInput type="text" #tooltip1="matTooltip" matTooltip={{selectvalue.paramvalue}}
+                            matTooltipPosition="right" [(ngModel)]="selectvalue.paramvalue"
+                            [formControl]="selectvalue.formTemplate">
+                        <label class="lableerror" *ngIf="selectvalue.formTemplate.invalid" [ngClass]="'error'">Не
+                            соответствует формату дате</label>
+                    </mat-form-field>
+                </div>
+                <div class="grid-item2" [style.display]="selectvalue.template === 2 ? 'grid' : 'none'">
+                    <mat-form-field class="select">
+                        <input matInput type="text" #tooltip2="matTooltip" matTooltip={{selectvalue.paramvalue}}
+                            matTooltipPosition="right" [(ngModel)]="selectvalue.paramvalue"
+                            [formControl]="selectvalue.formTemplate">
+                        <label class="lableerror" *ngIf="selectvalue.formTemplate.invalid" [ngClass]="'error'">Не
+                            соответствует формату строке</label>
+                    </mat-form-field>
+                </div>
+                <div class="grid-item2" [style.display]="selectvalue.template === 3 ? 'grid' : 'none'">
+                    <mat-form-field class="select">
+                        <input matInput type="text" #tooltip3="matTooltip" matTooltip={{selectvalue.paramvalue}}
+                            matTooltipPosition="right" [(ngModel)]="selectvalue.paramvalue"
+                            [formControl]="selectvalue.formTemplate">
+                        <label class="lableerror" *ngIf="selectvalue.formTemplate.invalid" [ngClass]="'error'">Не
+                            соответствует формату цифр</label>
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+        <div class="mat-app-background basic-container" [style.display]="logica1?.date ? 'none' : 'grid'">
+            <div class="button"><button mat-button (click)="backOtdels()">Назад</button></div>
 
-</div>
-<div [style.display]="logica1?.progress ? 'none':'inline'">
-<p>Идет загрузка данных подождите пожалуйста!!!</p>
-<mat-progress-bar mode="indeterminate"></mat-progress-bar>
-</div>
-</mat-tab>
-<mat-tab label="Общая техника на отдел">
-        <selectsql [(logica)]="logicaotdel" [(selecting)]="selectingotdel" [(columns)]="columnsotdel" [(select)]="select"></selectsql>
-</mat-tab>
+            <mat-tree [dataSource]="dataSourceOtdel" [treeControl]="treeControlOtdel" class="tree">
+                <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
+                    <li class="mat-tree-node">
+                        <table class="table table-striped">
+                            <tr>
+                                <th>Имя оборудования</th>
+                                <th>Наименование модели</th>
+                                <th>Сирийный номер</th>
+                                <th>Сервисный номер</th>
+                                <th>Инвентарный номер</th>
+                                <th>Кабинет</th>
+                                <th>Наименование компьютера</th>
+                                <th>Ip Адрес</th>
+                                <th>Примечание</th>
+                            </tr>
+                            <tbody>
+                                <tr *ngFor="let type of node.model.Types">
+                                    <th>{{type?.Name}} </th>
+                                    <th>{{type?.NameModel}}</th>
+                                    <th>{{type?.SerNumber}}</th>
+                                    <th>{{type?.ServiceNumber}}</th>
+                                    <th>{{type?.InventerNumber}}</th>
+                                    <th>{{type?.Kabinet}}</th>
+                                    <th>{{type?.NameComputer}}</th>
+                                    <th>{{type?.IpAdress}}</th>
+                                    <th>{{type?.Status}}</th>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </li>
+                </mat-tree-node>
+                <mat-tree-node *matTreeNodeDef="let node; when: hasChildOtdel" matTreeNodePadding>
+                    <li>
+                        <div class="mat-tree-node">
+                            <button class="content" mat-icon-button matTreeNodeToggle
+                                [attr.aria-label]="'toggle ' + node.model.Name">
+                                {{node.model.Children[0].Children.length===0 ? node.model.Children[0].Types.length : node.model.Children.length }}
+                            </button>
+                            <span>{{node.model.Name}}</span>
+                            <ng-template [ngxPermissionsExcept]="['Просмотр']">
+                                <div [style.display]="node.model.InputServer ?'inline':'none'" class="button">
+                                    <button mat-button (click)="uploadModel(node.model)">Выгрузить модель</button>
+                                </div>
+                            </ng-template>
+                        </div>
+                        <ul [class.example-tree-invisible]="!treeControlOtdel.isExpanded(node)">
+                            <ng-container matTreeNodeOutlet>
+                            </ng-container>
+                        </ul>
+                    </li>
+                </mat-tree-node>
+            </mat-tree>
+
+        </div>
+        <div [style.display]="logica1?.progress ? 'none':'inline'">
+            <p>Идет загрузка данных подождите пожалуйста!!!</p>
+            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+        </div>
+    </mat-tab>
+    <mat-tab label="Общая техника на отдел">
+        <selectsql [(logica)]="logicaotdel" [(selecting)]="selectingotdel" [(columns)]="columnsotdel"
+            [(select)]="select"></selectsql>
+    </mat-tab>
+    <mat-tab label="Вся техника в БД">
+        <selectsql [(logica)]="logicaotdel1" [(selecting)]="selectingotdel1" [(columns)]="columnsotdel1"
+            [(select)]="select" [toolpanel]='TOOLPANEL'></selectsql>
+    </mat-tab>
+    <mat-tab label="Списанная техника в БД">
+        <selectsql #SqlDelo [(logica)]="logicaotdel2" [(selecting)]="selectingotdel2" [(columns)]="columnsotdel2"
+            [(select)]="select" [logicstooltable]='LOGICSTOOLTABLE'></selectsql>
+    </mat-tab>
 </mat-tab-group>
+
+
+<ng-template class="panel" #TOOLPANEL>
+    <button class="panelbutton" mat-button (click)="getAllTechnics()">Выгрузка с сервера всей техники в БД</button>
+    <button class="panelbutton" mat-button (click)="editandadd.createQRCode(null, true)">Формирование QR Code на всю
+        технику</button>
+</ng-template>
+
+<ng-template #LOGICSTOOLTABLE let-row='row'>
+    <button mat-icon-button color="primary" matTooltip="Снять статус списание" (click)="checkStatus(row)">
+        <i class="material-icons">check</i>
+    </button>
+</ng-template>

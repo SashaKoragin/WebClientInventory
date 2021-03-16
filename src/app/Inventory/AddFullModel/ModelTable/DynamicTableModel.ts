@@ -8,6 +8,7 @@ export class DynamicTableColumnModel {
     { text: "Не совпадения имен с Инвентарным номером", indexsevr: 16, indexcolumnmodel: 2 },
     { text: "Дубли имен компьютеров в БД", indexsevr: 17, indexcolumnmodel: 3 },
     { text: "Несоответствие имен по Ip Адресам", indexsevr: 20, indexcolumnmodel: 4 },
+    { text: "Ошибки привязки Токенов", indexsevr: 36, indexcolumnmodel: 5 }
   ]
   //Ошибки
   public mainselect: SelectTableModel = this.selectserver[0];
@@ -17,6 +18,7 @@ export class DynamicTableColumnModel {
   { Type: "InventarNotHostName", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 },
   { Type: "DoubleComputersName", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 },
   { Type: "NameHostIpAdress", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 },
+  { Type: "ErrorTokenUser", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 },
   ];
   //Аналитика
   public selectserverstatistic: SelectTableModel[] = [{ text: "Аналитика мониторы и Системные блоки", indexsevr: 8, indexcolumnmodel: 0 },
@@ -48,24 +50,30 @@ export class DynamicTableColumnModel {
   //Журнал логирования
   public log: SelectTableModel[] = [{ text: "Журнал логов редактирования", indexsevr: 21, indexcolumnmodel: 0 },
   { text: "Вся техника на отдел", indexsevr: 22, indexcolumnmodel: 1 },
+  { text: "Вся техника в БД", indexsevr: 29, indexcolumnmodel: 2 },
+  { text: "Списанная техника в БД", indexsevr: 31, indexcolumnmodel: 3 },
   ]
 
   //Журнал таблицы с логом
   public columnslog: Table[] = [{ Type: "HistoryLog", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 },
-  { Type: "TecnicalOtdel", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 }
+  { Type: "TecnicalOtdel", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 },
+  { Type: "AllTechnics", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 },
+  { Type: "AllTechnics", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 },
   ];
 
   /////Почта письма
   //Журнал логирования
   public mailView: SelectTableModel[] = [{ text: "Входящие письма", indexsevr: 25, indexcolumnmodel: 0 },
-  { text: "Исходящие письма", indexsevr: 27, indexcolumnmodel: 1 }]
+  { text: "Исходящие письма", indexsevr: 27, indexcolumnmodel: 1 },
+  { text: "Календарь ВКС", indexsevr: 33, indexcolumnmodel: 2 }]
 
   ///Переключение между режимами Исходящие и входящие письма
   public mainselectmail: SelectTableModel = this.mailView[0];
 
   ///Почта и письма
   public mail: Table[] = [{ Type: "MailIn", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 },
-  { Type: "MailOut", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 },]
+  { Type: "MailOut", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 },
+  { Type: "CalendarVksStp", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 }]
 
 }
 ///Класс селектора

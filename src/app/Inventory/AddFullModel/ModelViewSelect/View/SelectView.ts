@@ -57,6 +57,24 @@ export class Select {
     }
   }
 
+  updateProcedure() {
+    this.columns.Colums = [];    //Обнулить колонки
+    this.select.selectusersql(this.selecting.generatecommandxml(this.columns)).subscribe((model: string) => {
+      this.logica.errornull = true;
+      if (model !== "null") {
+        this.columns.Model.data = (JSON.parse(model)[this.columns.Type])
+        this.columns.displayedColumns = this.columns.Colums.map(c => c.columnDef);
+        this.columns.allCountRow = this.columns.Model.data.length;
+      }
+      else {
+        this.logica.errornull = false;  //Показать ошибку пустых данных
+      }
+      this.columns.Model.paginator = this.paginator;
+    })
+  }
+
+
+
   //Назад
   back() {
     this.logica.logicadatabase();; //Закрываем логику Данных

@@ -20,7 +20,12 @@ export class Inventar {
             children: [{
                 otdelfunc: null,
                 children: null, types: 'Все пользователи', pages: './users', fullpath: 'Пользователи\\Все пользователи', model: 'Все пользователи', isrule: null
-            }], types: null, pages: null, fullpath: null, model: null, isrule: null
+            },
+            {
+                otdelfunc: null,
+                children: null, types: 'Ветки в АИС 3', pages: './pathAis3', fullpath: 'Пользователи\\Ветки в АИС 3', model: 'Ветки в АИС 3', isrule: null
+            }
+            ], types: null, pages: null, fullpath: null, model: null, isrule: null
         },
         {
 
@@ -31,20 +36,24 @@ export class Inventar {
             },
             {
                 otdelfunc: null,
+                children: null, types: 'Токены и прочее', pages: './supportToken', fullpath: 'Техника\\Токены и прочее', model: 'Токены и прочее', isrule: null
+            },
+            {
+                otdelfunc: null,
                 children: null, types: 'Дополнительная к технике', pages: './techicalComplement', fullpath: 'Техника\\Дополнительная к технике', model: 'Дополнительная к технике', isrule: ['Просмотр']
             }
             ], types: null, pages: null, fullpath: null, model: null, isrule: null
         },
         {
-            otdelfunc: 'Почта',
+            otdelfunc: 'Почта и ВКС',
             children: [{
                 otdelfunc: null,
-                children: null, types: 'Письма Nalog', pages: './mail', fullpath: 'Почта\\Письма Nalog', model: 'Письма Nalog', isrule: null
+                children: null, types: 'Письма Nalog и ВКС', pages: './mail', fullpath: 'Почта\\Письма Nalog и ВКС', model: 'Письма Nalog и ВКС', isrule: null
             },
             {
                 otdelfunc: null,
                 children: null, types: 'Пользователи и группы', pages: './userandgroup', fullpath: 'Статистика\\Пользователи и группы', model: 'Статистика', isrule: null
-            }], types: null, pages: null, fullpath: null, model: null, isrule: null
+            }], types: null, pages: null, fullpath: null, model: null, isrule: ['Просмотр']
         },
         {
             otdelfunc: 'Статистика',

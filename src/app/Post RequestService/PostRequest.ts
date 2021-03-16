@@ -1,4 +1,4 @@
-import { SignalR, ISignalRConnection, IConnectionOptions, ConnectionStatus, BroadcastEventListener } from 'ng2-signalr';
+import { SignalR, ISignalRConnection, IConnectionOptions, ConnectionStatus } from 'ng2-signalr';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {
@@ -7,7 +7,7 @@ import {
     BlockPower, UsersIsActualsStats, Classification, Rules,
     FullSelectedModel, NameMonitor, FullProizvoditel, Statusing,
     FullModel, CopySave, NameSysBlock, Otdel, Position,
-    Telephon, Supply, ModelBlockPower, ProizvoditelBlockPower, Swithe, ModelSwithes, MailIdentifier, MailGroup
+    Telephon, Supply, ModelBlockPower, ProizvoditelBlockPower, Swithe, ModelSwithes, MailIdentifier, MailGroup, AllTechnics
 } from '../Inventory/ModelInventory/InventoryModel';
 import { AdressInventarka, ServerHost } from '../AdressGetPost/AdressInventory';
 import { deserializeArray } from 'class-transformer';
@@ -16,8 +16,7 @@ import { DocumentReport } from '../Inventory/AllSelectModel/Report/ReportModel';
 import { UploadFile } from '../Inventory/AddFullModel/ModelTable/FileModel';
 import { BookModels } from '../Inventory/ModelInventory/ViewInventory';
 import { NgxPermissionsService } from 'ngx-permissions';
-import { WebMailModel, FullTemplateSupport, ModelParametrSupport } from '../Inventory/ModelInventory/InventoryModel';
-import { userInfo } from 'os';
+import { WebMailModel, FullTemplateSupport, ModelParametrSupport, ServerEquipment, ModelSeverEquipment, ManufacturerSeverEquipment, TypeServer, RuleUsers, Token } from '../Inventory/ModelInventory/InventoryModel';
 import { Router, NavigationExtras } from '@angular/router';
 
 
@@ -33,7 +32,7 @@ const httpOptionsJson = {
 
 export class AuthIdentificationSignalR {
 
-    constructor(public signalR: SignalR, public permissionsService: NgxPermissionsService) { }
+    constructor(public signalR: SignalR) { }
 
     public iduser: string = null;
     public conect: ISignalRConnection = null;
@@ -53,9 +52,6 @@ export class AuthIdentificationSignalR {
                 executeStatusChangeInZone: true
                 //Можно задать ping интервал
             }
-            console.log('Создали соединение!');
-            this.permissionsService.addPermission(autorizationUsers.autorization.ruleField);
-            console.log('Подключили роли!');
             this.conect = this.signalR.createConnection(options);
             this.statusSubscriSignalR()
         } catch (e) {
@@ -63,7 +59,8 @@ export class AuthIdentificationSignalR {
         }
     }
 
-    ///Запуск подписи на событие
+
+    //Запуск подписи на событие
     async startserverSignalR() {
         if (this.status === null) {
             await this.conect.start();
@@ -74,9 +71,9 @@ export class AuthIdentificationSignalR {
     }
 
     stopserverSignalR() {
-        this.permissionsService.flushPermissions();
+
         console.log('Отключили роли!');
-        if (this.status.name === 'connected') {
+        if (new Array('connected', 'disconnected').some(x => x === this.status.name)) {
             console.log('Остановили сервер!');
             console.log('Отписались от статуса соединения!');
             this.conect.stop();
@@ -89,7 +86,7 @@ export class AuthIdentificationSignalR {
         this.conect.status.subscribe((state: ConnectionStatus) => {
             this.status = state;
             if (state.name === "disconnected") {
-                this.startserverSignalR();
+                this.stopserverSignalR();
                 this.autorization.logoutDisconnect();
                 alert("Потеря соединения с сайтом Обновите страницу!!!");
             }
@@ -102,12 +99,37 @@ export class AuthIdentificationSignalR {
 })
 export class AuthIdentification {
 
-    constructor(private http: HttpClient, public router: Router) { }
+    constructor(private http: HttpClient, public router: Router, public permissionsService: NgxPermissionsService) { }
+
+    autorizationLk: Autorization = new Autorization();
+    isLoggedInLk = false;
+    redirectUrlLk: string;
+    loginLk() {
+        this.autorizationLk.errorAutorizationField = null;
+        return this.http.post(url.autificationInventar, this.autorizationLk, httpOptionsJson);
+    }
+
+    logoutLk(): void {
+        this.isLoggedInLk = false;
+        this.autorizationLk.errorAutorizationField = null;
+        this.autorizationLk = new Autorization();
+        this.FlushRule();
+    }
+
+    ///Добавление ролей
+    public AddRuleService(rulesUser: string[]) {
+        console.log('Создали соединение!');
+        this.permissionsService.addPermission(rulesUser);
+        console.log('Подключили роли!');
+    }
+
+    //Удаление ролей
+    public FlushRule() {
+        this.permissionsService.flushPermissions();
+    }
+
 
     autorization: Autorization = new Autorization();
-
-
-
     isLoggedIn = false;
     redirectUrl: string;
 
@@ -120,6 +142,7 @@ export class AuthIdentification {
         this.isLoggedIn = false;
         this.autorization.errorAutorizationField = null;
         this.autorization = new Autorization();
+        this.FlushRule();
     }
 
     ///Потеря контекста с сайтом
@@ -127,7 +150,8 @@ export class AuthIdentification {
         this.isLoggedIn = false;
         this.autorization.errorAutorizationField = null;
         this.autorization = new Autorization();
-        let redirect = this.redirectUrl ? this.redirectUrl : '/InventoryLogin';
+        let redirect = '/InventoryLogin';
+        console.log("Перенаправили на страницу: " + redirect)
         let navigationExtras: NavigationExtras = {
             queryParamsHandling: 'preserve',
             preserveFragment: true
@@ -154,7 +178,17 @@ export class PostInventar {
     //Генерация справочника инспекции
     telephonehelp(model: ModelSelect) {
         return this.http.post(url.telephoneHelper, model,
-            { responseType: 'arraybuffer', headers: new HttpHeaders({ 'Content-Type': 'application/json' }) })
+            { responseType: 'arraybuffer', headers: new HttpHeaders({ 'Content-Type': 'application/json' }) }).subscribe(async model => {
+                var blob = new Blob([model], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+                var url = window.URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = "Телефонный справочник инспекции";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            });
     }
 
     public downLoadXlsxSql(idView: number) {
@@ -167,7 +201,9 @@ export class PostInventar {
     async alluser() {
         this.select.Users = await this.http.get(url.alluser, httpOptionsJson).toPromise().then((model) => {
             if (model) {
-                return deserializeArray<Users>(Users, model.toString());
+                var users = deserializeArray<Users>(Users, model.toString());
+                users.forEach(x => x.Otdel.User = null);
+                return users
             }
         });
     }
@@ -243,7 +279,7 @@ export class PostInventar {
     async allsysblok() {
         this.select.SysBlok = await this.http.get(url.allsysblock, httpOptionsJson).toPromise().then(model => {
             if (model) {
-                return deserializeArray<SysBlock>(SysBlock, model.toString())
+                return deserializeArray<SysBlock>(SysBlock, model.toString());
             }
         });
     }
@@ -310,7 +346,7 @@ export class PostInventar {
             if (model) {
                 return deserializeArray<NameSysBlock>(NameSysBlock, model.toString());
             }
-        });;
+        });
     }
     //Запрос на все модели мониторов
     async allnamemonitor() {
@@ -390,6 +426,55 @@ export class PostInventar {
             }
         })
     }
+    ///Выгрузка токенов
+    async allToken() {
+        this.select.Token = await this.http.get(url.alltoken, httpOptionsJson).toPromise().then(model => {
+            if (model) {
+                return deserializeArray<Token>(Token, model.toString());
+            }
+        })
+    }
+
+    async allServerEquipment() {
+        this.select.ServerEquipment = await this.http.get(url.allServerEquipment, httpOptionsJson).toPromise().then(model => {
+            if (model) {
+                return deserializeArray<ServerEquipment>(ServerEquipment, model.toString());
+            }
+        })
+    }
+
+    async allModelSeverEquipment() {
+        this.select.ModelSeverEquipment = await this.http.get(url.allModelSeverEquipment, httpOptionsJson).toPromise().then(model => {
+            if (model) {
+                return deserializeArray<ModelSeverEquipment>(ModelSeverEquipment, model.toString());
+            }
+        })
+    }
+
+    async allManufacturerSeverEquipment() {
+        this.select.ManufacturerSeverEquipment = await this.http.get(url.allManufacturerSeverEquipment, httpOptionsJson).toPromise().then(model => {
+            if (model) {
+                return deserializeArray<ManufacturerSeverEquipment>(ManufacturerSeverEquipment, model.toString());
+            }
+        })
+    }
+    ///Все типы серверов
+    async allTypeServer() {
+        this.select.TypeServer = await this.http.get(url.allTypeServer, httpOptionsJson).toPromise().then(model => {
+            if (model) {
+                return deserializeArray<TypeServer>(TypeServer, model.toString());
+            }
+        })
+    }
+
+    ///Вся техника на ЛК по людям и отделам
+    async allTechnics(idUser: number) {
+        this.select.AllTechnics = await this.http.get(url.allTechnicsLk.replace("{idUser}", idUser.toString()), httpOptionsJson).toPromise().then(model => {
+            if (model) {
+                return deserializeArray<AllTechnics>(AllTechnics, model.toString());
+            }
+        });
+    }
 
 
     ///Все запросы для заполнение данных по технике после актулизации пользователей
@@ -403,7 +488,6 @@ export class PostInventar {
         await this.allstatysing();
         await this.allsupply();
     }
-
 }
 
 @Injectable()
@@ -449,6 +533,14 @@ export class EditAndAdd {
     addandeditblockpower(blockpower: BlockPower, userIdEdit: string) {
         return this.http.post(url.addandeditblockpower.concat(userIdEdit), blockpower, httpOptionsJson);
     }
+    ///Редактирование или добавление Сервисного оборудования
+    addAndEditServerEquipment(nameServerEquipment: ServerEquipment, userIdEdit: string) {
+        return this.http.post(url.addAndEditServerEquipment.concat(userIdEdit), nameServerEquipment, httpOptionsJson);
+    }
+    ///Редактирование или добавление Сервисного оборудования
+    addAndEditToken(nameToken: Token, userIdEdit: string) {
+        return this.http.post(url.addandeditToken.concat(userIdEdit), nameToken, httpOptionsJson);
+    }
     ///Редактирование или добавление Наименование системного блока
     addAndEditNameSysBlock(nameSysBlock: NameSysBlock) {
         return this.http.post(url.addAndEditNameSysBlock, nameSysBlock, httpOptionsJson);
@@ -473,6 +565,7 @@ export class EditAndAdd {
     addAndEditNameStatus(nameStatusing: Statusing) {
         return this.http.post(url.addAndEditNameStatus, nameStatusing, httpOptionsJson);
     }
+
     ///Редактирование или добавление Номера кабинета
     addAndEditNameKabinet(nameKabinet: Kabinet) {
         return this.http.post(url.addAndEditNameKabinet, nameKabinet, httpOptionsJson);
@@ -496,6 +589,18 @@ export class EditAndAdd {
     ///Редактирование или добавление ModelSwithe
     addAndEditModelSwitch(nameModelSwitch: ModelSwithes) {
         return this.http.post(url.addandeditmodelswith, nameModelSwitch, httpOptionsJson);
+    }
+    ///Редактирование или добавление моделей серверов
+    addAndEditModelSeverEquipment(nameModelSeverEquipment: ModelSeverEquipment) {
+        return this.http.post(url.addAndEditModelSeverEquipment, nameModelSeverEquipment, httpOptionsJson);
+    }
+    ///Редактирование или добавление типа серверного оборудования
+    addAndEditTypeServer(nameTypeServer: TypeServer) {
+        return this.http.post(url.addAndEditTypeServer, nameTypeServer, httpOptionsJson);
+    }
+    ///Редактирование или добавление производитеолей серверов
+    addAndEditManufacturerSeverEquipment(nameManufacturerSeverEquipment: ManufacturerSeverEquipment) {
+        return this.http.post(url.addAndEditManufacturerSeverEquipment, nameManufacturerSeverEquipment, httpOptionsJson);
     }
     ///Только редактирование идентификатора и группы
     editModelMailIdentifier(nameMailIdentifier: MailIdentifier) {
@@ -533,6 +638,14 @@ export class EditAndAdd {
     deleteBlockPower(model: BlockPower, userIdEdit: string) {
         return this.http.post(url.deleteBlockPower.concat(userIdEdit), model, httpOptionsJson);
     }
+    ///Удаление Сервисного оборудования
+    deleteServerEquipment(model: ServerEquipment, userIdEdit: string) {
+        return this.http.post(url.deleteServerEquipment.concat(userIdEdit), model, httpOptionsJson);
+    }
+    ///Удаление Сервисного оборудования
+    deleteToken(model: Token, userIdEdit: string) {
+        return this.http.post(url.deleteToken.concat(userIdEdit), model, httpOptionsJson);
+    }
     ///Удаление коммутаторов
     deleteSwitch(model: Swithe, userIdEdit: string) {
         return this.http.post(url.deleteSwitch.concat(userIdEdit), model, httpOptionsJson);
@@ -541,11 +654,54 @@ export class EditAndAdd {
     deleteTelephone(model: Telephon, userIdEdit: string) {
         return this.http.post(url.deleteTelephone.concat(userIdEdit), model, httpOptionsJson);
     }
+    ///Добавление или удаления ролей пользователя
+    addandDeleteRuleUser(model: RuleUsers) {
+        return this.http.post(url.allAddandDeleteRuleUser, model, httpOptionsJson);
+    }
+
+
+
     ///Создание заявки на СТО
     createSupport(modelParametrSupport: ModelParametrSupport) {
         return this.http.post(url.serviceSupport, modelParametrSupport, httpOptionsJson);
     }
 
+    //Роли и пользователи по id
+    ruleAndUsers(idUser: number) {
+        return this.http.get(url.allRuleUser.replace("{idUser}", idUser.toString()))
+    }
+
+
+    ///Генерация QR Code для техники
+    createQRCode(serialNumber: string, isAll: boolean) {
+        this.http.post(url.generateQrCode.replace("{serialNumber}", serialNumber).replace("{isAll}", String(isAll)), null,
+            { responseType: 'arraybuffer', headers: new HttpHeaders({ 'Content-Type': 'application/json' }) }).subscribe(model => {
+                var blob = new Blob([model], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+                var url = window.URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = "QR Code Technical";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            });
+    }
+
+    createQRCodeOffice(numberOffice: string, isAll: boolean) {
+        this.http.post(url.generateQrCodeOffice.replace("{numberOffice}", numberOffice).replace("{isAll}", String(isAll)), null,
+            { responseType: 'arraybuffer', headers: new HttpHeaders({ 'Content-Type': 'application/json' }) }).subscribe(model => {
+                var blob = new Blob([model], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+                var url = window.URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = "QR Code Office";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            });
+    }
 }
 @Injectable()
 export class SelectAllParametrs {
@@ -603,4 +759,14 @@ export class SelectAllParametrs {
     public deleteMail(modelMail: WebMailModel) {
         return this.http.post(url.deleteMail, modelMail, httpOptionsJson);
     }
+    ///Снятие статуса 
+    public isCheckStatusNull(row: any) {
+        return this.http.post(url.isCheckStatusNull, row, httpOptionsJson);
+    }
+
+    ///Проверка по УН запущен ли процесс или нет
+    public isBeginTask(idTask: number) {
+       return this.http.get(url.isBeginTask.replace("{idTask}", idTask.toString()), httpOptionsJson)
+    }
+
 }

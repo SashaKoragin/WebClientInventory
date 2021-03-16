@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './Navigation';
-import { MainInventar, FilterParametrs } from '../../Inventory/Main/Main/MainInventory';
+import { MainInventar, } from '../../Inventory/Main/Main/MainInventory';
 import { CommonModule } from '@angular/common';
 import { AngularMaterialModule } from '../MaterialLibary/MaterialLibary';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -21,15 +21,21 @@ import { Log } from '../../Inventory/JurnalLog/View/Log';
 import { NgxPermissionsModule } from 'ngx-permissions';
 import { MailPop3 } from '../../Inventory/MailPop3/Mail/View/MailPop3';
 import { UserMail } from '../../Inventory/MailPop3/UserMail/View/UserMail';
-import { DialogDiscription } from '../../Inventory/AddFullModel/ModelDialogDiscription/View/DialogDiscription';
+import { PipeModule } from '../PipeModule/PipeInventory';
+import { DialogModule } from '../PipeModule/DialogModule';
+import { SupportToken } from '../../Inventory/Token/View/SupportToken';
+import { PathAis3 } from '../../Inventory/PathAis3/View/PathAis3';
 
 
 @NgModule(({
     imports: [
+
         FormsModule,
         CommonModule,
         AngularMaterialModule,
         ReactiveFormsModule,
+        PipeModule,
+        DialogModule,
         NgxPermissionsModule,
         AppRoutingModule,
         MccColorPickerModule.forRoot({
@@ -37,13 +43,12 @@ import { DialogDiscription } from '../../Inventory/AddFullModel/ModelDialogDiscr
             used_colors: ['#000000', '#FFF555']
         }),
     ],
-    entryComponents:[DialogDiscription],
     declarations: [
-         MainInventar, MailPop3, UserMail, Equipment, Invent, 
-         User, DocumentSelect, ErrorInventory,
-          Select, UploadsFile,
-          ComplimentTableEquipment, Analitics, FilterParametrs,
-          BookAccounting, Synchronization, Log, DialogDiscription
+        MainInventar, MailPop3, UserMail, Equipment, Invent, SupportToken,
+        User, DocumentSelect, ErrorInventory,
+        Select, UploadsFile,
+        ComplimentTableEquipment, Analitics,
+        BookAccounting, Synchronization, Log, PathAis3
     ]
 
 }) as any)
@@ -52,4 +57,4 @@ export class InventarModule {
 
 
 
- }
+}
