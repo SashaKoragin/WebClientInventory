@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { PostInventar, EditAndAdd, AuthIdentificationSignalR, AuthIdentification } from '../../../Post RequestService/PostRequest';
 import { MatTableDataSource, MatPaginator, MatSort, MatDialog } from '@angular/material';
-import { UserTableModel, TelephonsTableModel, OtdelTableModel } from '../../AddFullModel/ModelTable/TableModel';
+import { UserTableModel, TelephonsTableModel, OtdelTableModel, AddAndDeleteRuleUser } from '../../AddFullModel/ModelTable/TableModel';
 import { UsersIsActualsStats } from '../../ModelInventory/InventoryModel';
 import { ImportToExcel } from '../../AddFullModel/ModelTable/PublicFunction';
 import { ModelSelect } from '../../AllSelectModel/ParametrModel';
@@ -33,6 +33,7 @@ export class User implements OnInit {
     @ViewChild('TABLEOTDELS', { static: false }) tableotdels: ElementRef;
     @ViewChild('users', { static: true }) paginator: MatPaginator;
     @ViewChild('otdels', { static: true }) paginatorotdels: MatPaginator;
+
     @ViewChild(MatSort, { static: true }) sort: MatSort;
 
 
@@ -41,17 +42,29 @@ export class User implements OnInit {
 
     @ViewChild('TABLETELEPHONES', { static: false }) tabletelephones: ElementRef;
 
+    ///Таблица роли и пользователи
+    @ViewChild('TABLEMODELRULES', { static: false }) tableModelRule: ElementRef;
+    @ViewChild(MatSort, { static: true }) sortroleAndUser: MatSort;
+
+    @ViewChild('userRoles', { static: true })  paginatorRoles: MatPaginator;
+
+
+
+
     user: UserTableModel = new UserTableModel(this.editandadd, this.SignalR);
     otdel: OtdelTableModel = new OtdelTableModel(this.editandadd, this.SignalR);
+    //Роли пользователя
+    roleAndUser: AddAndDeleteRuleUser = new AddAndDeleteRuleUser(this.editandadd);
+
     excel: ImportToExcel = new ImportToExcel();
     public telephone: TelephonsTableModel = new TelephonsTableModel(this.editandadd, this.SignalR);
 
 
 
     ///Создание QR Code Model SerialNumber
-    createQRCode(serialNumber: string) {
+    createQRCode(serialNumber: string, isAll: boolean) {
         if (serialNumber) {
-            this.editandadd.createQRCode(serialNumber);
+            this.editandadd.createQRCode(serialNumber, isAll);
         }
         else {
             alert(`У оборудования отсутствует серийный номер - ${serialNumber}!`)
@@ -70,22 +83,13 @@ export class User implements OnInit {
     public dataSource: MatTableDataSource<UsersIsActualsStats> = new MatTableDataSource<UsersIsActualsStats>(this.selectall.select.UsersIsActualsStats);
 
     ngOnInit(): void {
+      
         this.loadsModel();
     }
 
     public async telephoneHelp() {
         this.serveranswer = 'Выгружаем справочник телефонов!!!'
-        await this.selectall.telephonehelp(new ModelSelect(10)).subscribe(async model => {
-            var blob = new Blob([model], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
-            var url = window.URL.createObjectURL(blob);
-            var a = document.createElement('a');
-            a.href = url;
-            a.download = "Телефонный справочник инспекции";
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);
-        });
+        await this.selectall.telephonehelp(new ModelSelect(10))
     }
 
     public async getTelephoneFull() {
@@ -129,9 +133,12 @@ export class User implements OnInit {
         await this.selectall.allsupply();
         message = await this.telephone.addtableModel(this.selectall.select, this.paginatortelephones, this.sorttelephones, this.tabletelephones, this.templateTelephone);
         this.loadMessage.push(message);
+        message = await this.roleAndUser.addtableModel(this.selectall.select, this.paginatorRoles, this.sortroleAndUser, this.tableModelRule);
+        this.loadMessage.push(message);
         this.dataSource.data = this.selectall.select.UsersIsActualsStats;
         this.isload = false;
     }
+
 
 }
 

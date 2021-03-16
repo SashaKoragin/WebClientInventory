@@ -147,6 +147,6 @@ export class ComplimentTableEquipment implements OnInit {
         await this.selectAll.allModelSeverEquipment();
         await this.selectAll.allManufacturerSeverEquipment();
         await this.selectAll.allTypeServer();
-    }
 
+    }
 }

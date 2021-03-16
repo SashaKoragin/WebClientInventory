@@ -1,5 +1,6 @@
 import { FormGroup, FormControl, Validators,AbstractControl,ValidationErrors} from '@angular/forms';
-import { Otdel, Position, FullProizvoditel, FullModel, NameSysBlock, NameMonitor, ProizvoditelBlockPower, ModelBlockPower, ModelSwithes, ModelSeverEquipment, ManufacturerSeverEquipment, TypeServer } from '../../ModelInventory/InventoryModel';
+import { Otdel, Position, FullProizvoditel, FullModel, NameSysBlock, NameMonitor, ProizvoditelBlockPower, ModelBlockPower, ModelSwithes, ModelSeverEquipment, ManufacturerSeverEquipment, TypeServer, Users, SysBlock } from '../../ModelInventory/InventoryModel';
+import { User } from '../../User/View/User';
 
 
 
@@ -10,6 +11,17 @@ export class ModelValidation  {
         var nameNameOtdel = control.value as Otdel;
         return  (nameNameOtdel == undefined || nameNameOtdel.NameOtdel) == undefined   ? { 'error': true  } : null
     };
+
+    //Валидация пользователя
+    public validationUsers(control: AbstractControl): ValidationErrors  {
+        var nameUsers = control.value as Users;
+        return  (nameUsers == undefined || nameUsers.Name) == undefined   ? { 'error': true  } : null
+    }
+    //Валидация Системного блока
+    // public validationSysBlock(control: AbstractControl): ValidationErrors  {
+    //     var nameSysBlock = control.value as SysBlock;
+    //     return  (nameSysBlock == undefined || nameSysBlock.NameComputer) == undefined   ? { 'error': true  } : null
+    // }
 
     //Валидация наименование должности
     public validationNamePosition(control: AbstractControl): ValidationErrors  {
@@ -130,6 +142,11 @@ export class ModelValidation  {
         }),
         new FormGroup({
             'TypeServer':new FormControl({value:new TypeServer()},[Validators.required,this.validationTypeServer])
+        }),
+        new FormGroup({
+            // 'SysBlock':new FormControl({value: new SysBlock()},[Validators.required,this.validationSysBlock]),
+            'ProizvoditelName':new FormControl(null, Validators.required),
+            'SerNum':new FormControl(null, Validators.required)
         })
         ];
  }

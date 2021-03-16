@@ -1,26 +1,26 @@
 <div class="center">
     <div class="registration">
         <div class="head">
-            <h2>Вход в систему</h2>
+            <h2>Вход в личный кабинет</h2>
         </div>
         <div class="body">
             <div class="input">
                 <mat-form-field class="width">
                     <input matInput placeholder="Введите логин:" type="text"
-                        [(ngModel)]="authService.autorization.loginField" />
+                        [(ngModel)]="authService.autorizationLk.loginField" />
                 </mat-form-field>
                 <mat-form-field class="width">
                     <input matInput placeholder="Введите пароль:" type="password"
-                        [(ngModel)]="authService.autorization.passwordField" />
+                        [(ngModel)]="authService.autorizationLk.passwordField" />
                 </mat-form-field>
             </div>
         </div>
         <div class="stone">
-            <button mat-button (click)="login()" *ngIf="!authService.isLoggedIn">Войти</button>
-            <button mat-button (click)="logout()" *ngIf="authService.isLoggedIn">Выйти</button>
+            <button mat-button (click)="loginLk()" *ngIf="!authService.isLoggedInLk">Войти</button>
+            <button mat-button (click)="logoutLk()" *ngIf="authService.isLoggedInLk">Выйти</button>
         </div>
     </div>
     <div class="errorsModel">
-        <h3 id="errors">{{authService.autorization.errorAutorizationField}}</h3>
+        <h3 id="errors">{{authService.autorizationLk.errorAutorizationField}}</h3>
     </div>
 </div>

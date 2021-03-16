@@ -4,7 +4,9 @@ import { FormsModule } from '@angular/forms';
 
 import { AuthRoutingModule } from './NgAuth';
 import { AngularMaterialModule } from '../../MaterialLibary/MaterialLibary';
-import { LoginInventarization } from '../../../Secyrity/Security/Security';
+import { LoginInventarization } from '../../../Secyrity/Inventarka/Security/Security';
+import { LoginLk } from '../../../Secyrity/LKInventarka/Security/SecurityLk';
+import { ErrorRules } from '../../../Secyrity/ErrorRule/ViewError/ErrorRule';
 
 
 @NgModule({
@@ -15,7 +17,7 @@ import { LoginInventarization } from '../../../Secyrity/Security/Security';
         AngularMaterialModule
     ],
     declarations: [
-         LoginInventarization
+         LoginInventarization,LoginLk,ErrorRules
     ]
 })
 export class AuthModule { }

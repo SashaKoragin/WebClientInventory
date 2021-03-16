@@ -1,8 +1,7 @@
-export const ServerHost: string = 'I7751-W40204180'  //localhost
+export const ServerHost: string = 'I7751-W40204180';  //localhost
 //export const ServerHost: string = 'localhost'
-export const ServerPort: string = '8182'
+export const ServerPort: string = '8182';
 //К примеру новая структура
-
 export class AdressInventarka {
     public autificationInventar = `http://${ServerHost}:${ServerPort}/Inventarka/Authorization`;
     public alluser = `http://${ServerHost}:${ServerPort}/Inventarka/AllUsers`;
@@ -18,6 +17,7 @@ export class AdressInventarka {
     public addandedittelephon = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditTelephone?userIdEdit=`;
     public addandeditblockpower = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditBlockPower?userIdEdit=`;
     public addandeditswitch = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditSwith?userIdEdit=`;
+    public addandeditToken = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditToken?userIdEdit=`
     public addandeditmodelswith = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditModelSwith`;
 
     public allmodelswithes = `http://${ServerHost}:${ServerPort}/Inventarka/AllModelSwithes`;
@@ -44,6 +44,7 @@ export class AdressInventarka {
     public allclasification = `http://${ServerHost}:${ServerPort}/Inventarka/AllClasification`;
     public allmailidentifies = `http://${ServerHost}:${ServerPort}/Inventarka/AllMailIdentifies`;
     public allmailgroups = `http://${ServerHost}:${ServerPort}/Inventarka/AllMailGroups`;
+    public alltoken = `http://${ServerHost}:${ServerPort}/Inventarka/AllToken`;
 
     public selectparametr = `http://${ServerHost}:${ServerPort}/Inventarka/GenerateSqlSelect`;
     public selectxml = `http://${ServerHost}:${ServerPort}/Inventarka/SelectXml`;
@@ -75,8 +76,10 @@ export class AdressInventarka {
 
     public addAndEditMailIdentifies = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditMailIdentifies`;
     public addAndEditMailGroups = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditMailGroups`;
+
     ///Получение файла по get запросу параметр int для выбора View
     public getFileXlsx = `http://${ServerHost}:${ServerPort}/Inventarka/GenerateFileXlsxSqlView?idView=`;
+
     ///Удаление записей
     public deleteUser = `http://${ServerHost}:${ServerPort}/Inventarka/DeleteUser?userIdEdit=`;
     public deleteSysBlock = `http://${ServerHost}:${ServerPort}/Inventarka/DeleteSysBlock?userIdEdit=`;
@@ -87,7 +90,7 @@ export class AdressInventarka {
     public deleteBlockPower = `http://${ServerHost}:${ServerPort}/Inventarka/DeleteBlockPower?userIdEdit=`;
     public deleteSwitch = `http://${ServerHost}:${ServerPort}/Inventarka/DeleteSwitch?userIdEdit=`;
     public deleteTelephone = `http://${ServerHost}:${ServerPort}/Inventarka/DeleteTelephone?userIdEdit=`;
-
+    public deleteToken = `http://${ServerHost}:${ServerPort}/Inventarka/DeleteToken?userIdEdit=`;
 
     ///Серверное оборудование 
     public allServerEquipment = `http://${ServerHost}:${ServerPort}/Inventarka/AllServerEquipment`;
@@ -114,6 +117,16 @@ export class AdressInventarka {
 
     ///Снять статусы со списанной техники
     public isCheckStatusNull = `http://${ServerHost}:${ServerPort}/Inventarka/IsCheckStatusNull`;
-    ///Генерация Qr code для техники
-    public generateQrCode = `http://${ServerHost}:${ServerPort}/Inventarka/GenerateQrCode?serialNumber=`;
+    ///Генерация Qr кодов для техники
+    public generateQrCode = `http://${ServerHost}:${ServerPort}/Inventarka/GenerateQrCodeTechnical?serialNumber={serialNumber}&isAll={isAll}`;
+    ///Генерация QR кодов по кабинетам
+    public generateQrCodeOffice = `http://${ServerHost}:${ServerPort}/Inventarka/GenerateQrCodeOffice?numberOffice={numberOffice}&isAll={isAll}`;
+    ///Личный кабинет для техники
+    public allTechnicsLk = `http://${ServerHost}:${ServerPort}/Inventarka/AllTechnicsLk?idUser={idUser}`;
+    ///Выгрузка ролей пользователя
+    public allRuleUser = `http://${ServerHost}:${ServerPort}/Inventarka/RuleAndUsers?idUser={idUser}`;
+    ///Добавление или удаление ролей пользователя
+    public allAddandDeleteRuleUser = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndDeleteRuleUser`;
+    ///Проверка по УН запущена ли процесс или нет 
+    public isBeginTask = `http://${ServerHost}:${ServerPort}/Inventarka/IsBeginTask?userIdEdit={idTask}`;
 }

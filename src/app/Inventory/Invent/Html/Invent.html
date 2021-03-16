@@ -238,8 +238,8 @@
         <selectsql [(logica)]="logicaotdel1" [(selecting)]="selectingotdel1" [(columns)]="columnsotdel1"
             [(select)]="select" [toolpanel]='TOOLPANEL'></selectsql>
     </mat-tab>
-    <mat-tab label="Списанная техника в БД" >
-        <selectsql #SqlDelo  [(logica)]="logicaotdel2" [(selecting)]="selectingotdel2" [(columns)]="columnsotdel2"
+    <mat-tab label="Списанная техника в БД">
+        <selectsql #SqlDelo [(logica)]="logicaotdel2" [(selecting)]="selectingotdel2" [(columns)]="columnsotdel2"
             [(select)]="select" [logicstooltable]='LOGICSTOOLTABLE'></selectsql>
     </mat-tab>
 </mat-tab-group>
@@ -247,10 +247,12 @@
 
 <ng-template class="panel" #TOOLPANEL>
     <button class="panelbutton" mat-button (click)="getAllTechnics()">Выгрузка с сервера всей техники в БД</button>
+    <button class="panelbutton" mat-button (click)="editandadd.createQRCode(null, true)">Формирование QR Code на всю
+        технику</button>
 </ng-template>
 
 <ng-template #LOGICSTOOLTABLE let-row='row'>
-        <button mat-icon-button color="primary" matTooltip="Снять статус списание" (click)="checkStatus(row)">
-            <i class="material-icons">check</i>
-        </button>
+    <button mat-icon-button color="primary" matTooltip="Снять статус списание" (click)="checkStatus(row)">
+        <i class="material-icons">check</i>
+    </button>
 </ng-template>

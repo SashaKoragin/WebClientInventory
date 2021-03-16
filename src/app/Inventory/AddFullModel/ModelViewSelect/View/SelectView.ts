@@ -57,7 +57,7 @@ export class Select {
     }
   }
 
-  updateProcedure(){
+  updateProcedure() {
     this.columns.Colums = [];    //Обнулить колонки
     this.select.selectusersql(this.selecting.generatecommandxml(this.columns)).subscribe((model: string) => {
       this.logica.errornull = true;

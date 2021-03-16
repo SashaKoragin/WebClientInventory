@@ -1,9 +1,10 @@
-import { Component, OnInit, ViewChild, Pipe, PipeTransform, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { PostInventar, EditAndAdd, AuthIdentificationSignalR, AuthIdentification } from '../../../Post RequestService/PostRequest';
-import { PrinterTableModel, ScanerAndCamerTableModel, MfuTableModel, SysBlockTableModel, MonitorsTableModel, BlockPowerTableModel, SwitchTableModel, ServerEquipmentTableModel } from '../../AddFullModel/ModelTable/TableModel';
+import { PrinterTableModel, ScanerAndCamerTableModel, MfuTableModel, SysBlockTableModel, MonitorsTableModel, BlockPowerTableModel, SwitchTableModel, ServerEquipmentTableModel, TokenTableModel } from '../../AddFullModel/ModelTable/TableModel';
 import { MatPaginator, MatSort, MatDialog } from '@angular/material';
 import { ImportToExcel } from '../../AddFullModel/ModelTable/PublicFunction';
 import { DatePipe } from '@angular/common';
+
 
 
 
@@ -45,6 +46,7 @@ export class Equipment implements OnInit {
   @ViewChild('TEMPLATESWITHES', { static: true }) templateSwithes: ElementRef;
   @ViewChild('TEMPLATESERVEREQUIPMENT', { static: true }) templateServerEquipment: ElementRef;
 
+
   isload: boolean = true;
   loadMessage: string[] = []
   @ViewChild('printers', { static: true }) paginatorptinter: MatPaginator;
@@ -66,6 +68,7 @@ export class Equipment implements OnInit {
 
 
 
+
   @ViewChild('TABLEPRINTERS', { static: false }) tableprinters: ElementRef;
   @ViewChild('TABLESCANERS', { static: false }) tablescaners: ElementRef;
   @ViewChild('TABLEMFUS', { static: false }) tablemfus: ElementRef;
@@ -74,6 +77,8 @@ export class Equipment implements OnInit {
   @ViewChild('TABLEBLOCKPOWERS', { static: false }) tableblockpowers: ElementRef;
   @ViewChild('TABLESWITHES', { static: false }) tableswithes: ElementRef;
   @ViewChild('TABLESERVEREQUIPMENT', { static: false }) tableServerEquipment: ElementRef;
+  
+
   excel: ImportToExcel = new ImportToExcel();
 
   public printer: PrinterTableModel = new PrinterTableModel(this.editandadd, this.SignalR);
@@ -84,6 +89,9 @@ export class Equipment implements OnInit {
   public blockpower: BlockPowerTableModel = new BlockPowerTableModel(this.editandadd, this.SignalR);
   public switch: SwitchTableModel = new SwitchTableModel(this.editandadd, this.SignalR)
   public serverEquipment: ServerEquipmentTableModel = new ServerEquipmentTableModel(this.editandadd, this.SignalR)
+  
+
+
 
 
   public async ngOnInit(): Promise<void> {
@@ -91,9 +99,9 @@ export class Equipment implements OnInit {
   }
 
   ///Создание QR Code Model SerialNumber
-  createQRCode(serialNumber: string) {
+  createQRCode(serialNumber: string, isAll: boolean = false) {
     if (serialNumber) {
-      this.editandadd.createQRCode(serialNumber);
+      this.editandadd.createQRCode(serialNumber, isAll);
     }
     else {
       alert(`У оборудования отсутствует серийный номер - ${serialNumber}!`)

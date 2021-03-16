@@ -1,11 +1,10 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { SelectAllParametrs } from '../../../../Post RequestService/PostRequest';
 import { GenerateParametrs, LogicaDataBase } from '../../../AllSelectModel/GenerateParametrFront';
 import { ModelSelect } from '../../../AllSelectModel/ParametrModel';
 import { DesirilizeXml, Document, Documents, ModelReturn } from '../../../ModelInventory/InventoryModel';
 import { MatTableDataSource, MatPaginator } from '@angular/material';
 import { deserialize } from 'class-transformer';
-import { AddFile } from '../../../AddFullModel/ModelTable/FileModel';
 
 @Component(({
     selector: 'equepment',
@@ -16,9 +15,6 @@ import { AddFile } from '../../../AddFullModel/ModelTable/FileModel';
 export class DocumentSelect implements OnInit {
 
     constructor(public select: SelectAllParametrs) { }
-
-    //  @ViewChild('myInput',{static: false}) ref: ElementRef;
-
 
     selecting: GenerateParametrs
     logica: LogicaDataBase = new LogicaDataBase();

@@ -1,13 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { SelectAllParametrs, PostInventar } from '../../../Post RequestService/PostRequest';
+import { SelectAllParametrs, PostInventar, EditAndAdd } from '../../../Post RequestService/PostRequest';
 import { ModelSelect } from '../../AllSelectModel/ParametrModel';
 import { GenerateParametrs, LogicaDataBase } from '../../AllSelectModel/GenerateParametrFront';
-import { FlatTreeControl } from '@angular/cdk/tree';
+
 import { Recursion, ModelUserAndEquipment } from '../../AllSelectModel/RecursionMethod/RecursionClass';
 import { AuthIdentification } from '../../../Post RequestService/PostRequest';
 import { DocumentReport } from '../../AllSelectModel/Report/ReportModel';
-import { TehnicalSql } from '../../ModelInventory/InventoryModel';
+import { TehnicalSqlAndTreeAis3 } from '../../ModelInventory/InventoryModel';
 import { deserialize } from 'class-transformer';
+import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { DynamicTableColumnModel, Table } from '../../AddFullModel/ModelTable/DynamicTableModel';
 import { NgxPermissionsService } from 'ngx-permissions';
@@ -24,11 +25,16 @@ interface FlatNodeModel {
   selector: 'equepment',
   templateUrl: '../Html/Invent.html',
   styleUrls: ['../Html/Invent.css'],
-  providers: [SelectAllParametrs]
+  providers: [EditAndAdd, SelectAllParametrs]
 }) as any)
 
 export class Invent implements OnInit {
-  constructor(public select: SelectAllParametrs, public permissionsService: NgxPermissionsService, public authService: AuthIdentification, public selectall: PostInventar) { }
+  constructor(
+    public editandadd: EditAndAdd,
+    public select: SelectAllParametrs,
+    public permissionsService: NgxPermissionsService,
+    public authService: AuthIdentification,
+    public selectall: PostInventar) { }
 
 
   dinamicmodel: DynamicTableColumnModel = new DynamicTableColumnModel();
@@ -150,7 +156,7 @@ export class Invent implements OnInit {
         this.logica.logicaselect(); //Закрываем логику выбора
         this.logica.logicaprogress();  //Открываем логику загрузки
         this.select.selectusersql(this.selecting.generatecommand()).subscribe((model) => {
-          var server = deserialize<TehnicalSql>(TehnicalSql, model.toString());
+          var server = deserialize<TehnicalSqlAndTreeAis3>(TehnicalSqlAndTreeAis3, model.toString());
           this.modelUserAndEquipment.methodEquipmentUserRecursion(server.Users);
           this.dataSourceUser.data = this.modelUserAndEquipment.userEcvipment
           this.logica.logicaprogress();
@@ -171,7 +177,7 @@ export class Invent implements OnInit {
         this.logica1.logicaselect(); //Закрываем логику выбора
         this.logica1.logicaprogress();  //Открываем логику загрузки
         this.select.selectusersql(this.selecting1.generatecommand()).subscribe((model) => {
-          var server = deserialize<TehnicalSql>(TehnicalSql, model.toString())
+          var server = deserialize<TehnicalSqlAndTreeAis3>(TehnicalSqlAndTreeAis3, model.toString())
           this.modelUserAndEquipment.methodEquipmentOtdelAndUserRecursion(server.Otdel);
           this.dataSourceOtdel.data = this.modelUserAndEquipment.otdelandUserEcvipment
           this.logica1.logicaprogress();

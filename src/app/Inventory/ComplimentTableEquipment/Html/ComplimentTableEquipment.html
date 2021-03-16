@@ -592,9 +592,22 @@
             <input matInput (keyup)="nameKabinet.filterstable($event.target.value)" placeholder="Поиск данных">
           </mat-form-field>
         </form>
+        <button class="forms" color="primary" matTooltip="Сформировать все QR коды по кабинетам"
+          (click)="editandadd.createQRCodeOffice(null, true)">Все QR коды.</button>
         <label class="lable">Кабинеты</label>
         <div class="content" #TABLEKABINET>
           <table class="table" mat-table [dataSource]="nameKabinet.dataSource">
+
+            <ng-container matColumnDef="Logic">
+              <th mat-header-cell *matHeaderCellDef>QR</th>
+              <td mat-cell *matCellDef="let row">
+                <button mat-icon-button color="primary" matTooltip="Сформировать QR код"
+                  (click)="editandadd.createQRCodeOffice(row.NumberKabinet, false)">
+                  <i class="material-icons">print</i>
+                </button>
+              </td>
+            </ng-container>
+
             <ng-container matColumnDef="IdNumberKabinet">
               <th mat-header-cell *matHeaderCellDef>Id</th>
               <td mat-cell *matCellDef="let row">{{row?.IdNumberKabinet}}</td>
@@ -914,7 +927,7 @@
         <label class="lable">Типы серверов</label>
         <div class="content" #TABLESERVERTYPE>
           <table class="table" mat-table [dataSource]="nameServerType.dataSource">
-           
+
             <ng-container matColumnDef="IdTypeServer">
               <th mat-header-cell *matHeaderCellDef>Id</th>
               <td mat-cell *matCellDef="let row">{{row?.IdTypeServer}}</td>

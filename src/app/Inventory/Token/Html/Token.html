@@ -1,0 +1,289 @@
+<h1>Токены и прочее</h1>
+<mat-tab-group [style.display]="isload ? 'none' : 'grid'">
+  <mat-tab label="Токены">
+    <div>
+      <form class="search">
+        <mat-form-field class="search_blok">
+          <span matPrefix><i class="material-icons">youtube_searched_for</i></span>
+          <input matInput (keyup)="token.filterstable($event.target.value)" placeholder="Поиск данных">
+        </mat-form-field>
+        <button class="actual" mat-button (click)="excel.ExportTOExcel(tableToken)">Выгрузить Токены</button>
+      </form>
+      <div class="tables" #TABLETOKEN>
+        <table mat-table [dataSource]="token.dataSource" matSort>
+
+          <ng-container matColumnDef="Logic">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Функции</th>
+            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="IdToken">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
+            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row?.IdToken">
+              {{row?.IdToken}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="User.Name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Пользователь</th>
+            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row.User?.Name">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.User?.Name}}</Label>
+              <div [ngClass]=row.IdToken.toString() id="{{row.IdToken}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Supply.DatePostavki">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Фактическая дата поставки</th>
+            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row"
+              [matTooltip]="datetemplate(row.Supply?.DatePostavki)">
+              <Label
+                [style.display]="row.ModelIsEdit ? 'none':'inline'">{{datetemplate(row.Supply?.DatePostavki)}}</Label>
+              <div [ngClass]=row.IdToken.toString() id="{{row.IdToken}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="ProizvoditelName">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Производитель</th>
+            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row"
+              [matTooltip]="row.ProizvoditelName">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.ProizvoditelName}}</Label>
+              <div [ngClass]=row.IdToken.toString() id="{{row.IdToken}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="SerNum">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Серийный номер</th>
+            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row.SerNum">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.SerNum}}</Label>
+              <div [ngClass]=row.IdToken.toString() id="{{row.IdToken}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="SysBlock.NameComputer">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Имя компьютера</th>
+            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row"
+              [matTooltip]="row.SysBlock?.NameComputer">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.SysBlock?.NameComputer}}</Label>
+              <div [ngClass]=row.IdToken.toString() id="{{row.IdToken}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="SysBlock.ServiceNum">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Сервисный номер</th>
+            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row"
+              [matTooltip]="row.SysBlock?.ServiceNum">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.SysBlock?.NameComputer}}</Label>
+              <div [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                <label>{{token.model?.SysBlock?.ServiceNum}}</label>
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="SysBlock.SerNum">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Серийный номер</th>
+            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row"
+              [matTooltip]="row.SysBlock?.SerNum">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.SysBlock?.SerNum}}</Label>
+              <div [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                <label>{{token.model?.SysBlock?.SerNum}}</label>
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="SysBlock.InventarNumSysBlok">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Инвентарный номер</th>
+            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row"
+              [matTooltip]="row.SysBlock?.InventarNumSysBlok">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.SysBlock?.InventarNumSysBlok}}</Label>
+              <div [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                <label>{{token.model?.SysBlock?.InventarNumSysBlok}}</label>
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="SysBlock.IpAdress">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>IP Адрес</th>
+            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row"
+              [matTooltip]="row.SysBlock?.IpAdress">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.SysBlock?.IpAdress}}</Label>
+              <div [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                <label>{{token.model?.SysBlock?.IpAdress}}</label>
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="SysBlock.Kabinet.NumberKabinet">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Кабинет</th>
+            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row"
+              [matTooltip]="row.SysBlock?.Kabinet?.NumberKabinet">
+              <Label
+                [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.SysBlock?.Kabinet?.NumberKabinet}}</Label>
+              <div [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                <label>{{token.model?.SysBlock?.Kabinet?.NumberKabinet}}</label>
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Coment">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Коментарий</th>
+            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row.Coment">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Coment}}</Label>
+              <div [ngClass]=row.IdToken.toString() id="{{row.IdToken}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Statusing.Name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Статус</th>
+            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row"
+              [matTooltip]="row.Statusing?.Name">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Statusing?.Name}}</Label>
+              <div [ngClass]=row.IdToken.toString() id="{{row.IdToken}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="ActionsColumn">
+            <th mat-header-cell *matHeaderCellDef>
+              <ng-template [ngxPermissionsExcept]="['Оператор','Просмотр']">
+                <button mat-icon-button color="primary" [disabled]="token.isAdd" focusable="false"
+                  (click)="token.add()">
+                  <i class="material-icons">person_add</i>
+                </button>
+              </ng-template>
+            </th>
+
+            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
+              <ng-template [ngxPermissionsExcept]="['Просмотр']">
+                <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="token.isEdit" color="accent"
+                  (click)="token.edit(row);">
+                  <i class="material-icons">edit</i>
+                </button>
+              </ng-template>
+              <ng-template [ngxPermissionsExcept]="['Просмотр','Оператор','Редактор']">
+                <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="token.isEdit" (click)="token.delete(row)">
+                  <i class="material-icons">delete</i>
+                </button>
+              </ng-template>
+              <div *ngIf="row.ModelIsEdit">
+                <button mat-icon-button type="submit" color="primary" focusable="false"
+                  [disabled]="token.modelvalid.getRowValidatorModel[11].invalid" (click)="token.save()">
+                  <i class="material-icons">check</i>
+                </button>
+                <button mat-icon-button color="primary" focusable="false" (click)="token.cancel(row)">
+                  <i class="material-icons">cancel</i>
+                </button>
+              </div>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="token.displayedColumns; sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; columns: token.displayedColumns;"></tr>
+        </table>
+        <mat-paginator class="paginator" #tokens [pageSizeOptions]="[5, 10, 25, paginatorToken.length]"
+          showFirstLastButtons="true"></mat-paginator>
+      </div>
+      <div [style.display]="'none'" #TEMPLATETOKEN>
+
+        <!--Пользователь-->
+        <mat-form-field id="template" class="validation">
+          <mat-select (click)="token.calbackfiltersAll()" (selectionChange)="filterSysBlokToken($event.value)"
+            [placeholder]="token.model.User?.Name" [(ngModel)]="token.model.User" name="user">
+            <mat-select-filter class="filter" [placeholder]="token.model.User?.Name" [displayMember]="'Name'"
+              [array]="token.user" (filteredReturn)="token.filteredUser =$event">
+            </mat-select-filter>
+            <mat-option [value]='null'>None</mat-option>
+            <mat-option *ngFor="let user of token.filteredUser" [value]="user">
+              {{user.Name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+
+        <!-- Поставка -->
+        <mat-form-field id="template" class="validation">
+          <mat-select (click)="token.calbackfiltersAll()" [placeholder]="token.model.Supply?.DatePostavki"
+            [(ngModel)]="token.model.Supply" name="supply">
+            <mat-select-filter class="filter" [placeholder]="token.model.Supply?.DatePostavki"
+              [displayMember]="'DatePostavki'" [array]="token.supples" (filteredReturn)="token.filteredSupples =$event">
+            </mat-select-filter>
+            <mat-option [value]='null'>None</mat-option>
+            <mat-option *ngFor="let supply of token.filteredSupples" [value]="supply">
+              {{supply.NameSupply}} - {{datetemplate(supply.DatePostavki)}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+
+        <!-- Производитель -->
+        <mat-form-field id="template" class="validation">
+          <input matInput placeholder="Производитель"
+            [formControl]="token.modelvalid?.getRowValidatorModel[11].get('ProizvoditelName')"
+            [ngModel]="token.model?.ProizvoditelName" (ngModelChange)="token.model.ProizvoditelName = $event" />
+        </mat-form-field>
+
+        <!-- Серийный номер -->
+        <mat-form-field id="template" class="validation">
+          <input matInput placeholder="Серийный номер"
+            [formControl]="token.modelvalid?.getRowValidatorModel[11].get('SerNum')" [ngModel]="token.model?.SerNum"
+            (ngModelChange)="token.model.SerNum = $event" />
+        </mat-form-field>
+
+        <!--Системный блок-->
+        <mat-form-field id="template" class="validation">
+          <mat-select (click)="token.calbackfiltersAll()" [placeholder]="token.model.SysBlock?.NameComputer"
+            [(ngModel)]="token.model.SysBlock" name="sysblock">
+            <mat-select-filter class="filter" [placeholder]="token.model.SysBlock?.NameComputer"
+              [displayMember]="'NameComputer'" [array]="token.sysblock" (filteredReturn)="token.filteredSysBlock =$event">
+            </mat-select-filter>
+            <mat-option [value]='null'>None</mat-option>
+            <mat-option *ngFor="let sysblock of token.filteredSysBlock" [value]="sysblock">
+              {{sysblock.NameComputer}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!--Комментарий-->
+        <mat-form-field id="template" class="validation">
+          <input matInput placeholder="Комментарий" [ngModel]="token.model?.Coment"
+            (ngModelChange)="token.model.Coment = $event" />
+        </mat-form-field>
+
+        <!--Статус-->
+        <mat-form-field id="template" class="validation">
+          <mat-select (click)="token.calbackfiltersAll()" [placeholder]="token.model.Statusing?.Name"
+            [(ngModel)]="token.model.Statusing" name="status">
+            <mat-select-filter class="filter" [placeholder]="token.model.Statusing?.Name" [displayMember]="'Name'"
+              [array]="token.statusing" (filteredReturn)="token.filteredStatusing =$event">
+            </mat-select-filter>
+            <mat-option [value]='null'>None</mat-option>
+            <mat-option *ngFor="let status of token.filteredStatusing" [value]="status">
+              {{status.Name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+      </div>
+    </div>
+  </mat-tab>
+</mat-tab-group>
+
+
+<div [style.display]="isload ? 'inline':'none'">
+  <p>Идет загрузка данных подождите пожалуйста!!!</p>
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  <div class="messages" *ngFor="let message of loadMessage">
+    <p>{{message}}</p>
+  </div>
+</div>

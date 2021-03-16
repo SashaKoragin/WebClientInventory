@@ -4,7 +4,7 @@
     display: grid;
 }
 .registration{
-    background: red;
+    background: rgb(23, 147, 248);
     display: grid;
     padding: 5px;
     margin: 0 auto;
@@ -14,7 +14,7 @@
 text-align: center;    
 }
 .width {
-    width: 300px;
+    width: 100%;
 }
 .errors{
     padding-left: 15px
@@ -23,6 +23,7 @@ text-align: center;
     display: flex;
 }
 .input{
+    width: 100%;
     display: grid;
 }
 .stone{

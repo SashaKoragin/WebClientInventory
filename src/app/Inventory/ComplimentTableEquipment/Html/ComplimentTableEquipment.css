@@ -62,6 +62,11 @@
     margin: auto;
  }
 
+ .forms{
+    display: block;
+    margin: 3px;
+ }
+
 .content{
     width: fit-content;
 }
