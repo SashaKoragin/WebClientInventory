@@ -1,0 +1,143 @@
+<mat-tab-group (selectedTabChange)="selectViewSql($event)" [style.display]="isBeginTask ? 'inline':'none'">
+    <div class="model">
+        <mat-tab label="Анализ ролевой политики">
+            <b class="text">Выбор выборки ошибок:</b>
+            <mat-form-field class="selectin_sql">
+                <mat-select placeholder="Выборки" [(ngModel)]="dinamicmodel.mainselectTemplateAndRule" name="sel"
+                    (selectionChange)="errorserver($event)">
+                    <mat-option *ngFor="let sel of dinamicmodel.mainTemplateAndRule" [value]="sel">
+                        {{sel.text}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <selectsql [(logica)]="logica" [(selecting)]="selecting" [(columns)]="columns" [(select)]="select"
+                [toolpanel]='TOOLPANEL'>
+            </selectsql>
+        </mat-tab>
+        <mat-tab label="Справочники и матрица доступов">
+            <div class="head" [style.display]="logicaTemplate?.select ? 'grid' : 'none'">
+                <div class="button"><button mat-button (click)="updateTemplateAis3()">Обновить</button></div>
+                <div class="grid-container2" *ngFor="let selectvalue of selectingTemplate?.parametrs">
+                    <div class="grid-item2">
+                        <label>{{selectvalue.name}}</label>
+                    </div>
+                    <div class="grid-item2">
+                        <mat-checkbox [(ngModel)]="selectvalue.isvisible"></mat-checkbox>
+                    </div>
+                    <div class="grid-item2" [style.display]="selectvalue.template===2 ? 'grid' : 'none'">
+                        <mat-form-field>
+                            <mat-select placeholder="Отбор данных!" [(ngModel)]="selectvalue.select" name="sel">
+                                <mat-option *ngFor="let sel of selectingTemplate.selectparamString" [value]="sel">
+                                    {{sel.viewValue}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="grid-item2" [style.display]="selectvalue.template !== 2 ? 'grid' : 'none'">
+                        <mat-form-field>
+                            <mat-select placeholder="Отбор данных!" [(ngModel)]="selectvalue.select" name="sel">
+                                <mat-option *ngFor="let sel of selectingTemplate.selectparamNumber" [value]="sel">
+                                    {{sel.viewValue}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="grid-item2" [style.display]="selectvalue.template === 1 ? 'grid' : 'none'">
+                        <mat-form-field class="select">
+                            <input matInput type="textT" #tooltip1="matTooltip" matTooltip={{selectvalue.paramvalue}}
+                                matTooltipPosition="right" [(ngModel)]="selectvalue.paramvalue"
+                                [formControl]="selectvalue.formTemplate">
+                            <label class="lableerror" *ngIf="selectvalue.formTemplate.invalid" [ngClass]="'error'">Не
+                                соответствует формату дате</label>
+                        </mat-form-field>
+                    </div>
+                    <div class="grid-item2" [style.display]="selectvalue.template === 2 ? 'grid' : 'none'">
+                        <mat-form-field class="select">
+                            <input matInput type="textT" #tooltip2="matTooltip" matTooltip={{selectvalue.paramvalue}}
+                                matTooltipPosition="right" [(ngModel)]="selectvalue.paramvalue"
+                                [formControl]="selectvalue.formTemplate">
+                            <label class="lableerror" *ngIf="selectvalue.formTemplate.invalid" [ngClass]="'error'">Не
+                                соответствует формату строке</label>
+                        </mat-form-field>
+                    </div>
+                    <div class="grid-item2" [style.display]="selectvalue.template === 3 ? 'grid' : 'none'">
+                        <mat-form-field class="select">
+                            <input matInput type="textT" #tooltip3="matTooltip" matTooltip={{selectvalue.paramvalue}}
+                                matTooltipPosition="right" [(ngModel)]="selectvalue.paramvalue"
+                                [formControl]="selectvalue.formTemplate">
+                            <label class="lableerror" *ngIf="selectvalue.formTemplate.invalid" [ngClass]="'error'">Не
+                                соответствует формату цифр</label>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mat-app-background basic-container" [style.display]="logicaTemplate?.date ? 'none' : 'grid'">
+                <div class="button">
+                    <button mat-button (click)="back()">Назад</button>
+
+                </div>
+                <form class="search">
+                    <mat-form-field class="search_blok">
+                        <span matPrefix><i class="material-icons">youtube_searched_for</i></span>
+                        <input matInput (keyup)="filterstablePath($event.target.value)" placeholder="Поиск данных">
+                    </mat-form-field>
+                </form>
+                <div class="button">
+                    <button mat-button (click)="matrixSecurity()">Матрица доступов Excel</button>
+                </div>
+                <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="tablePath">
+
+                    <ng-container matColumnDef="Name">
+                        <th class="mainHeader" mat-header-cell *matHeaderCellDef>Актуальные шаблоны в АИС НАЛОГ 3
+                        </th>
+                        <td class="mainCell" mat-cell *matCellDef="let row" matTooltip={{row.Category}}>
+                            УН Шаблона: {{row.IdTemplateIfns}}; Колличество ролей в шаблоне:
+                            {{row?.TemplateIfnsAndRuleIfns?.length}}; Шаблон:
+                            {{row.Name}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="expandedDetail">
+                        <td mat-cell *matCellDef="let element">
+                            <div class="element-detail"
+                                [@detailExpand]="IsOpenToClose(element) ? 'expanded' : 'collapsed'">
+                                <div class="container-fluid " *ngFor="let item of element.TemplateIfnsAndRuleIfns">
+                                    <div class="row justify-content-start align-items-end border border-warning">
+                                        <div class="col-2 w-50 border border-primary textT">
+                                            <p class="textT">{{item.IdRuleIfns}}</p>
+                                        </div>
+                                        <div class="col text-left border border-primary text-primary textT">
+                                            <p class="textT">{{item.Rules}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+                    <tr mat-row *matRowDef="let element; columns: columnsToDisplay;" class="element-row"
+                        (click)="expandElement(element)">
+                    </tr>
+                    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
+                </table>
+                <mat-paginator #pathRuleTemplate class="paginator" [pageSizeOptions]="[5, 10, 15, countMaxPaginator]"
+                    showFirstLastButtons="true"></mat-paginator>
+
+            </div>
+
+            <div [style.display]="logicaTemplate?.progress ? 'none':'inline'">
+                <p>Идет загрузка данных подождите пожалуйста!!!</p>
+                <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+            </div>
+        </mat-tab>
+    </div>
+</mat-tab-group>
+
+
+<div [style.display]="isBeginTask ? 'none':'inline'">
+    <p>Идет процесс загрузки шаблонов повторите запрос позже!!!</p>
+</div>
+<ng-template class="panel" #TOOLPANEL>
+    <button class="panelbutton" mat-button (click)="postDownLoadXlsxSql()">Выгрузка отчетa с сервера</button>
+</ng-template>

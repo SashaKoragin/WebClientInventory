@@ -96,6 +96,13 @@
               {{row.NumberKabinet}}
             </td>
           </ng-container>
+
+          <ng-container matColumnDef="NameStatus">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Статус</th>
+            <td [style.background]="row.Color" mat-cell *matCellDef="let row" [matTooltip]="row.NameStatus">
+              {{row.NameStatus}}
+            </td>
+          </ng-container>
           <tr mat-header-row *matHeaderRowDef="alltechnic.displayedColumns; sticky: true"></tr>
           <tr mat-row *matRowDef="let row; columns: alltechnic.displayedColumns;"></tr>
         </table>

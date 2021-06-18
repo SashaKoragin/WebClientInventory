@@ -3,6 +3,7 @@ import { DialogDiscription } from '../../Inventory/AddFullModel/ModelDialogDiscr
 import { AngularMaterialModule } from '../MaterialLibary/MaterialLibary';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { ModelDialogSelectYear } from '../../Inventory/AddFullModel/DialogSelectYear/DialogYearTs/dialogSelectYear';
 
 
 
@@ -12,9 +13,9 @@ import { CommonModule } from '@angular/common';
         FormsModule,
         CommonModule,
     ],
-    entryComponents:[DialogDiscription],
+    entryComponents: [DialogDiscription, ModelDialogSelectYear],
     declarations: [
-        DialogDiscription
+        DialogDiscription, ModelDialogSelectYear
     ],
 })
 export class DialogModule { }

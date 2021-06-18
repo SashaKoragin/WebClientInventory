@@ -6,7 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './RoutingMain';
 
-import { Root, FilterParametrs } from '../Main/ModelMain/Main';
+import { Root} from '../Main/ModelMain/Main';
 
 import { AuthModule } from './RouteLogin/RoutingAuth';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -16,9 +16,6 @@ import { SignalRConfiguration, SignalRModule } from 'ng2-signalr';
 import { AuthIdentificationSignalR } from '../../Post RequestService/PostRequest';
 import { ServerHost } from '../../AdressGetPost/AdressInventory';
 import { NgxPermissionsModule } from 'ngx-permissions';
-import { AppRoutingModuleLkModule } from '../LkUser/NavigationLk';
-import { DialogDiscription } from '../../Inventory/AddFullModel/ModelDialogDiscription/View/DialogDiscription';
-import { PipeModule } from '../PipeModule/PipeInventory';
 
 
 export function createConfig(): SignalRConfiguration {

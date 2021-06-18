@@ -1,6 +1,6 @@
 {
     "name": "inventory",
-    "version": "2.2.8",
+    "version": "2.3.5",
     "description": "Инвенторизация Web Client",
     "author": "Alexander Koragin",
     "scripts": {

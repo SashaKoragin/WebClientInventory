@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { PostInventar, EditAndAdd, AuthIdentificationSignalR, AuthIdentification } from '../../../Post RequestService/PostRequest';
+import { PostInventar, EditAndAdd, AuthIdentificationSignalR, AuthIdentification, SelectAllParametrs } from '../../../Post RequestService/PostRequest';
 import { MatTableDataSource, MatPaginator, MatSort, MatDialog } from '@angular/material';
 import { UserTableModel, TelephonsTableModel, OtdelTableModel, AddAndDeleteRuleUser } from '../../AddFullModel/ModelTable/TableModel';
 import { UsersIsActualsStats } from '../../ModelInventory/InventoryModel';
@@ -11,7 +11,7 @@ import { ModelSelect } from '../../AllSelectModel/ParametrModel';
     selector: 'equepment',
     templateUrl: '../Html/User.html',
     styleUrls: ['../Html/User.css'],
-    providers: [EditAndAdd]
+    providers: [EditAndAdd, SelectAllParametrs]
 }) as any)
 
 export class User implements OnInit {
@@ -20,7 +20,8 @@ export class User implements OnInit {
         public editandadd: EditAndAdd,
         public SignalR: AuthIdentificationSignalR,
         public authService: AuthIdentification,
-        public dialog: MatDialog) { }
+        public dialog: MatDialog,
+        public select: SelectAllParametrs,) { }
 
     @ViewChild('TEMPLATEUSERS', { static: true }) templateUsers: ElementRef;
     @ViewChild('TEMPLATEOTDELS', { static: true }) templateOtdels: ElementRef;
@@ -46,7 +47,7 @@ export class User implements OnInit {
     @ViewChild('TABLEMODELRULES', { static: false }) tableModelRule: ElementRef;
     @ViewChild(MatSort, { static: true }) sortroleAndUser: MatSort;
 
-    @ViewChild('userRoles', { static: true })  paginatorRoles: MatPaginator;
+    @ViewChild('userRoles', { static: true }) paginatorRoles: MatPaginator;
 
 
 
@@ -83,7 +84,7 @@ export class User implements OnInit {
     public dataSource: MatTableDataSource<UsersIsActualsStats> = new MatTableDataSource<UsersIsActualsStats>(this.selectall.select.UsersIsActualsStats);
 
     ngOnInit(): void {
-      
+
         this.loadsModel();
     }
 
@@ -93,17 +94,9 @@ export class User implements OnInit {
     }
 
     public async getTelephoneFull() {
-        await this.selectall.downLoadXlsxSql(23).subscribe(async model => {
-            var blob = new Blob([model], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-            var url = window.URL.createObjectURL(blob);
-            var a = document.createElement('a');
-            a.href = url;
-            a.download = "Все телефоны по пользователям";
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);
-        });
+        await this.select.addselectallparametrs(new ModelSelect(23)).subscribe((model: ModelSelect) => {
+            this.selectall.downLoadXlsxSql(model.logicaSelectField)
+        })
     }
 
     public async actualUsers() {

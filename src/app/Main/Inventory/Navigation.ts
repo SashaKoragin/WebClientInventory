@@ -16,7 +16,10 @@ import { NgxPermissionsGuard } from 'ngx-permissions';
 import { MailPop3 } from '../../Inventory/MailPop3/Mail/View/MailPop3';
 import { UserMail } from '../../Inventory/MailPop3/UserMail/View/UserMail';
 import { SupportToken } from '../../Inventory/Token/View/SupportToken';
-import { PathAis3 } from '../../Inventory/PathAis3/View/PathAis3';
+import { TemplatendRuleAis3 } from '../../Inventory/Ais3/TemplatendRuleAis3/View/TemplatendRuleAis3';
+import { PathAis3 } from '../../Inventory/Ais3/PathAis3/View/PathAis3';
+import { SettingInventory } from '../../Inventory/SettingInventory/View/SettingInventory';
+import { JournalAis3 } from '../../Inventory/Ais3/JournalAis3/View/JournalAis3';
 
 const appRoutes: Routes = [
     {
@@ -25,16 +28,37 @@ const appRoutes: Routes = [
         canActivate: [AuthInventar, NgxPermissionsGuard],
         data: {
             permissions: {
-                only: ['Администратор', 'Редактор', 'Оператор', 'Просмотр'],
-                redirectTo:{
-                    navigationCommands:['Error'],
-                    navigationExtras:{
-                        skipLocationChange:true
+                only: ['Администратор', 'Редактор', 'Оператор', 'Просмотр', 'Безопасность'],
+                redirectTo: {
+                    navigationCommands: ['Error'],
+                    navigationExtras: {
+                        skipLocationChange: true
                     }
                 }
             }
         },
         children: [
+            {
+                path: 'setting',
+                component: SettingInventory,
+                canActivate: [NgxPermissionsGuard],
+                data: {
+                    permissions: {
+                        only: ['Администратор'],
+                    }
+                }
+
+            },
+            {
+                path: 'journalAis3',
+                component: JournalAis3,
+                canActivate: [NgxPermissionsGuard],
+                data: {
+                    permissions: {
+                        only: ['Администратор'],
+                    }
+                }
+            },
             {
                 path: 'techical',
                 component: Equipment
@@ -44,8 +68,8 @@ const appRoutes: Routes = [
                 component: ComplimentTableEquipment
             },
             {
-               path: 'supportToken',
-               component:SupportToken
+                path: 'supportToken',
+                component: SupportToken
             },
             {
                 path: 'inventar',
@@ -57,7 +81,23 @@ const appRoutes: Routes = [
             },
             {
                 path: 'pathAis3',
-                component:PathAis3
+                component: PathAis3,
+                canActivate: [NgxPermissionsGuard],
+                data: {
+                    permissions: {
+                        only: ['Администратор', 'Безопасность'],
+                    }
+                }
+            },
+            {
+                path: 'templatendRuleAis3',
+                component: TemplatendRuleAis3,
+                canActivate: [NgxPermissionsGuard],
+                data: {
+                    permissions: {
+                        only: ['Администратор', 'Безопасность'],
+                    }
+                }
             },
             {
                 path: 'documents',
@@ -122,10 +162,22 @@ const appRoutes: Routes = [
             {
                 path: 'mail',
                 component: MailPop3,
+                canActivate: [NgxPermissionsGuard],
+                data: {
+                    permissions: {
+                        only: ['Администратор'],
+                    }
+                }
             },
             {
                 path: 'userandgroup',
-                component: UserMail
+                component: UserMail,
+                canActivate: [NgxPermissionsGuard],
+                data: {
+                    permissions: {
+                        only: ['Администратор'],
+                    }
+                }
             }
         ]
     }

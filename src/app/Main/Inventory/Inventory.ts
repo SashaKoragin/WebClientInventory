@@ -24,7 +24,11 @@ import { UserMail } from '../../Inventory/MailPop3/UserMail/View/UserMail';
 import { PipeModule } from '../PipeModule/PipeInventory';
 import { DialogModule } from '../PipeModule/DialogModule';
 import { SupportToken } from '../../Inventory/Token/View/SupportToken';
-import { PathAis3 } from '../../Inventory/PathAis3/View/PathAis3';
+import { TemplatendRuleAis3 } from '../../Inventory/Ais3/TemplatendRuleAis3/View/TemplatendRuleAis3';
+import { PathAis3 } from '../../Inventory/Ais3/PathAis3/View/PathAis3';
+import { SettingInventory } from '../../Inventory/SettingInventory/View/SettingInventory';
+import { JournalAis3 } from '../../Inventory/Ais3/JournalAis3/View/JournalAis3';
+import { ModelDialogSelectYear } from '../../Inventory/AddFullModel/DialogSelectYear/DialogYearTs/dialogSelectYear';
 
 
 @NgModule(({
@@ -48,7 +52,7 @@ import { PathAis3 } from '../../Inventory/PathAis3/View/PathAis3';
         User, DocumentSelect, ErrorInventory,
         Select, UploadsFile,
         ComplimentTableEquipment, Analitics,
-        BookAccounting, Synchronization, Log, PathAis3
+        BookAccounting, Synchronization, Log, PathAis3, TemplatendRuleAis3, SettingInventory, JournalAis3
     ]
 
 }) as any)

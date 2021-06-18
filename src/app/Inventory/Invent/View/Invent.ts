@@ -67,17 +67,7 @@ export class Invent implements OnInit {
 
 
   public async getAllTechnics() {
-    await this.selectall.downLoadXlsxSql(30).subscribe(async model => {
-      var blob = new Blob([model], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      var url = window.URL.createObjectURL(blob);
-      var a = document.createElement('a');
-      a.href = url;
-      a.download = "Вся техника в БД";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
-    });
+    await this.selectall.downLoadXlsxSql(this.selectingotdel1.generatecommand())
   }
 
   selectViewSql(type: any) {

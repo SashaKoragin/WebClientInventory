@@ -15,7 +15,7 @@
           <ng-container matColumnDef="Logic">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Заявки</th>
             <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
-              <ng-template [ngxPermissionsExcept]="['Просмотр']">
+              <ng-template [ngxPermissionsExcept]="['Просмотр','Безопасность']">
                 <button mat-icon-button [matMenuTriggerFor]="menu" color="primary" matTooltip="Меню">
                   <mat-icon>more_vert</mat-icon>
                   <mat-menu #menu="matMenu">
@@ -166,7 +166,7 @@
 
           <ng-container matColumnDef="ActionsColumn">
             <th mat-header-cell *matHeaderCellDef>
-              <ng-template [ngxPermissionsExcept]="['Оператор','Просмотр']">
+              <ng-template [ngxPermissionsExcept]="['Оператор','Просмотр','Безопасность']">
                 <button mat-icon-button color="primary" [disabled]="printer.isAdd" focusable="false"
                   (click)="printer.add()">
                   <i class="material-icons">person_add</i>
@@ -174,13 +174,13 @@
               </ng-template>
             </th>
             <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
-              <ng-template [ngxPermissionsExcept]="['Просмотр']">
+              <ng-template [ngxPermissionsExcept]="['Просмотр','Безопасность']">
                 <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="printer.isEdit" color="accent"
                   (click)="printer.edit(row)">
                   <i class="material-icons">edit</i>
                 </button>
               </ng-template>
-              <ng-template [ngxPermissionsExcept]="['Просмотр','Оператор','Редактор']">
+              <ng-template [ngxPermissionsExcept]="['Просмотр','Оператор','Редактор','Безопасность']">
                 <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="printer.isEdit"
                   (click)="printer.delete(row)">
                   <i class="material-icons">delete</i>
@@ -325,7 +325,7 @@
           <ng-container matColumnDef="Logic">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Заявки</th>
             <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
-              <ng-template [ngxPermissionsExcept]="['Просмотр']">
+              <ng-template [ngxPermissionsExcept]="['Просмотр','Безопасность']">
                 <button mat-icon-button [matMenuTriggerFor]="menu" color="primary" matTooltip="Меню">
                   <mat-icon>more_vert</mat-icon>
                   <mat-menu #menu="matMenu">
@@ -477,7 +477,7 @@
 
           <ng-container matColumnDef="ActionsColumn">
             <th mat-header-cell *matHeaderCellDef>
-              <ng-template [ngxPermissionsExcept]="['Оператор','Просмотр']">
+              <ng-template [ngxPermissionsExcept]="['Оператор','Просмотр','Безопасность']">
                 <button mat-icon-button color="primary" [disabled]="scaner.isAdd" focusable="false"
                   (click)="scaner.add()">
                   <i class="material-icons">person_add</i>
@@ -485,13 +485,13 @@
               </ng-template>
             </th>
             <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
-              <ng-template [ngxPermissionsExcept]="['Просмотр']">
+              <ng-template [ngxPermissionsExcept]="['Просмотр','Безопасность']">
                 <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="scaner.isEdit" color="accent"
                   (click)="scaner.edit(row)">
                   <i class="material-icons">edit</i>
                 </button>
               </ng-template>
-              <ng-template [ngxPermissionsExcept]="['Просмотр','Оператор','Редактор']">
+              <ng-template [ngxPermissionsExcept]="['Просмотр','Оператор','Редактор','Безопасность']">
                 <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="scaner.isEdit"
                   (click)="scaner.delete(row)">
                   <i class="material-icons">delete</i>
@@ -635,7 +635,7 @@
           <ng-container matColumnDef="Logic">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Заявки</th>
             <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
-              <ng-template [ngxPermissionsExcept]="['Просмотр']">
+              <ng-template [ngxPermissionsExcept]="['Просмотр','Безопасность']">
                 <button mat-icon-button [matMenuTriggerFor]="menu" color="primary" matTooltip="Меню">
                   <mat-icon>more_vert</mat-icon>
                   <mat-menu #menu="matMenu">
@@ -797,20 +797,20 @@
 
           <ng-container matColumnDef="ActionsColumn">
             <th mat-header-cell *matHeaderCellDef>
-              <ng-template [ngxPermissionsExcept]="['Оператор','Просмотр']">
+              <ng-template [ngxPermissionsExcept]="['Оператор','Просмотр','Безопасность']">
                 <button mat-icon-button color="primary" [disabled]="mfu.isAdd" focusable="false" (click)="mfu.add()">
                   <i class="material-icons">person_add</i>
                 </button>
               </ng-template>
             </th>
             <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
-              <ng-template [ngxPermissionsExcept]="['Просмотр']">
+              <ng-template [ngxPermissionsExcept]="['Просмотр','Безопасность']">
                 <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="mfu.isEdit" color="accent"
                   (click)="mfu.edit(row)">
                   <i class="material-icons">edit</i>
                 </button>
               </ng-template>
-              <ng-template [ngxPermissionsExcept]="['Просмотр','Оператор','Редактор']">
+              <ng-template [ngxPermissionsExcept]="['Просмотр','Оператор','Редактор','Безопасность']">
                 <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="mfu.isEdit" (click)="mfu.delete(row)">
                   <i class="material-icons">delete</i>
                 </button>
@@ -965,7 +965,7 @@
           <ng-container matColumnDef="Logic">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Заявки</th>
             <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
-              <ng-template [ngxPermissionsExcept]="['Просмотр']">
+              <ng-template [ngxPermissionsExcept]="['Просмотр','Безопасность']">
                 <button mat-icon-button [matMenuTriggerFor]="menu" color="primary" matTooltip="Меню">
                   <mat-icon>more_vert</mat-icon>
                   <mat-menu #menu="matMenu">
@@ -982,6 +982,9 @@
               <button mat-icon-button color="primary" matTooltip="Сформировать QR код"
                 (click)="createQRCode(row.SerNum)">
                 <i class="material-icons">print</i>
+              </button>
+              <button mat-icon-button color="primary" matTooltip="Акт списания" (click)="sysblok.createAct(row)">
+                <i class="material-icons">build</i>
               </button>
             </td>
           </ng-container>
@@ -1112,7 +1115,7 @@
 
           <ng-container matColumnDef="ActionsColumn">
             <th mat-header-cell *matHeaderCellDef>
-              <ng-template [ngxPermissionsExcept]="['Оператор','Просмотр']">
+              <ng-template [ngxPermissionsExcept]="['Оператор','Просмотр','Безопасность']">
                 <button mat-icon-button color="primary" [disabled]="sysblok.isAdd" focusable="false"
                   (click)="sysblok.add()">
                   <i class="material-icons">person_add</i>
@@ -1120,13 +1123,13 @@
               </ng-template>
             </th>
             <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
-              <ng-template [ngxPermissionsExcept]="['Просмотр']">
+              <ng-template [ngxPermissionsExcept]="['Просмотр','Безопасность']">
                 <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="sysblok.isEdit" color="accent"
                   (click)="sysblok.edit(row)">
                   <i class="material-icons">edit</i>
                 </button>
               </ng-template>
-              <ng-template [ngxPermissionsExcept]="['Просмотр','Оператор','Редактор']">
+              <ng-template [ngxPermissionsExcept]="['Просмотр','Оператор','Редактор','Безопасность']">
                 <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="sysblok.isEdit"
                   (click)="sysblok.delete(row)">
                   <i class="material-icons">delete</i>
@@ -1260,7 +1263,7 @@
           <ng-container matColumnDef="Logic">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Заявки</th>
             <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
-              <ng-template [ngxPermissionsExcept]="['Просмотр']">
+              <ng-template [ngxPermissionsExcept]="['Просмотр','Безопасность']">
                 <button mat-icon-button [matMenuTriggerFor]="menu" color="primary" matTooltip="Меню">
                   <mat-icon>more_vert</mat-icon>
                   <mat-menu #menu="matMenu">
@@ -1386,7 +1389,7 @@
 
           <ng-container matColumnDef="ActionsColumn">
             <th mat-header-cell *matHeaderCellDef>
-              <ng-template [ngxPermissionsExcept]="['Оператор','Просмотр']">
+              <ng-template [ngxPermissionsExcept]="['Оператор','Просмотр','Безопасность']">
                 <button mat-icon-button color="primary" [disabled]="monitor.isAdd" focusable="false"
                   (click)="monitor.add()">
                   <i class="material-icons">person_add</i>
@@ -1394,13 +1397,13 @@
               </ng-template>
             </th>
             <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
-              <ng-template [ngxPermissionsExcept]="['Просмотр']">
+              <ng-template [ngxPermissionsExcept]="['Просмотр','Безопасность']">
                 <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="monitor.isEdit" color="accent"
                   (click)="monitor.edit(row)">
                   <i class="material-icons">edit</i>
                 </button>
               </ng-template>
-              <ng-template [ngxPermissionsExcept]="['Просмотр','Оператор','Редактор']">
+              <ng-template [ngxPermissionsExcept]="['Просмотр','Оператор','Редактор','Безопасность']">
                 <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="monitor.isEdit"
                   (click)="monitor.delete(row)">
                   <i class="material-icons">delete</i>
@@ -1656,7 +1659,7 @@
 
           <ng-container matColumnDef="ActionsColumn">
             <th mat-header-cell *matHeaderCellDef>
-              <ng-template [ngxPermissionsExcept]="['Оператор','Просмотр']">
+              <ng-template [ngxPermissionsExcept]="['Оператор','Просмотр','Безопасность']">
                 <button mat-icon-button color="primary" [disabled]="blockpower.isAdd" focusable="false"
                   (click)="blockpower.add()">
                   <i class="material-icons">person_add</i>
@@ -1664,13 +1667,13 @@
               </ng-template>
             </th>
             <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
-              <ng-template [ngxPermissionsExcept]="['Просмотр']">
+              <ng-template [ngxPermissionsExcept]="['Просмотр','Безопасность']">
                 <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="blockpower.isEdit" color="accent"
                   (click)="blockpower.edit(row)">
                   <i class="material-icons">edit</i>
                 </button>
               </ng-template>
-              <ng-template [ngxPermissionsExcept]="['Просмотр','Оператор','Редактор']">
+              <ng-template [ngxPermissionsExcept]="['Просмотр','Оператор','Редактор','Безопасность']">
                 <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="blockpower.isEdit"
                   (click)="blockpower.delete(row)">
                   <i class="material-icons">delete</i>
@@ -1932,7 +1935,7 @@
 
           <ng-container matColumnDef="ActionsColumn">
             <th mat-header-cell *matHeaderCellDef>
-              <ng-template [ngxPermissionsExcept]="['Оператор','Просмотр']">
+              <ng-template [ngxPermissionsExcept]="['Оператор','Просмотр','Безопасность']">
                 <button mat-icon-button color="primary" [disabled]="switch.isAdd" focusable="false"
                   (click)="switch.add()">
                   <i class="material-icons">person_add</i>
@@ -1940,13 +1943,13 @@
               </ng-template>
             </th>
             <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
-              <ng-template [ngxPermissionsExcept]="['Просмотр']">
+              <ng-template [ngxPermissionsExcept]="['Просмотр','Безопасность']">
                 <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="switch.isEdit" color="accent"
                   (click)="switch.edit(row)">
                   <i class="material-icons">edit</i>
                 </button>
               </ng-template>
-              <ng-template [ngxPermissionsExcept]="['Просмотр','Оператор','Редактор']">
+              <ng-template [ngxPermissionsExcept]="['Просмотр','Оператор','Редактор','Безопасность']">
                 <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="switch.isEdit"
                   (click)="switch.delete(row)">
                   <i class="material-icons">delete</i>
@@ -2201,7 +2204,7 @@
 
           <ng-container matColumnDef="ActionsColumn">
             <th mat-header-cell *matHeaderCellDef>
-              <ng-template [ngxPermissionsExcept]="['Оператор','Просмотр']">
+              <ng-template [ngxPermissionsExcept]="['Оператор','Просмотр','Безопасность']">
                 <button mat-icon-button color="primary" [disabled]="serverEquipment.isAdd" focusable="false"
                   (click)="serverEquipment.add()">
                   <i class="material-icons">person_add</i>
@@ -2210,13 +2213,13 @@
             </th>
 
             <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
-              <ng-template [ngxPermissionsExcept]="['Просмотр']">
+              <ng-template [ngxPermissionsExcept]="['Просмотр','Безопасность']">
                 <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="serverEquipment.isEdit" color="accent"
                   (click)="serverEquipment.edit(row)">
                   <i class="material-icons">edit</i>
                 </button>
               </ng-template>
-              <ng-template [ngxPermissionsExcept]="['Просмотр','Оператор','Редактор']">
+              <ng-template [ngxPermissionsExcept]="['Просмотр','Оператор','Редактор','Безопасность']">
                 <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="serverEquipment.isEdit"
                   (click)="serverEquipment.delete(row)">
                   <i class="material-icons">delete</i>

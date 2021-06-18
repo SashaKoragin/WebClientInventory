@@ -1,14 +1,15 @@
 //Представления для БД Инвенторизация 
 
-export class Book{
-    public BookModels?:BookModels[] = null;
+export class Book {
+    public BookModels?: BookModels[] = null;
 }
 
-export class BookModels{
-    RowNum:number;
-    Keys:number;
-    Name:string;
-    Id:number;
-    Model:string;
-    IdBook:number;
+export class BookModels {
+    rowNumField: number;
+    keysField: number;
+    nameField: string;
+    idField: number;
+    modelField: string;
+    idBookField: number;
+    logicsButtonField: string;
 }

@@ -37,12 +37,12 @@ import {
     MatToolbarModule,
     MatTooltipModule,
     MatTreeModule,
-    MAT_HAMMER_OPTIONS
+    MAT_HAMMER_OPTIONS,
 } from '@angular/material';
 import { CdkTableModule } from '@angular/cdk/table';
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { MatSelectFilterModule} from 'mat-select-filter';
-
+import { MatDialog } from '@angular/material';
 
 
 @NgModule(({
@@ -86,7 +86,7 @@ import { MatSelectFilterModule} from 'mat-select-filter';
         MatToolbarModule,
         MatTooltipModule,
         MatTreeModule,
-        MatDialogModule
+        MatDialogModule,
     ],
     providers: [
         {

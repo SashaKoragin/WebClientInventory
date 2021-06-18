@@ -2,7 +2,7 @@ import {
   Users, FullSelectedModel, Otdel, Position, Printer, Mfu, ScanerAndCamer, SysBlock, CopySave,
   Monitor, NameSysBlock, Supply, Classification, Swithe,
   Kabinet, FullModel, Statusing, FullProizvoditel, ModelReturn, NameMonitor, Telephon, BlockPower, ModelBlockPower, ProizvoditelBlockPower, ModelSwithes, ModeleReturn, MailIdentifier, MailGroup, ServerEquipment, Token,
-  FullTemplateSupport, ModelParametrSupport, ModelSeverEquipment, ManufacturerSeverEquipment, TypeServer, AllTechnics, RuleUsers
+  FullTemplateSupport, ModelParametrSupport, ModelSeverEquipment, ManufacturerSeverEquipment, TypeServer, AllTechnics, RuleUsers, JournalAis3
 } from '../../ModelInventory/InventoryModel';
 import { MatTableDataSource, MatPaginator, MatSort, MatDialog } from '@angular/material';
 import { ModelValidation } from '../ValidationModel/UserValidation';
@@ -16,7 +16,8 @@ import { deserialize } from 'class-transformer';
 import { FormControl } from '@angular/forms';
 import { ModelDialog, DialogDiscription } from '../ModelDialogDiscription/View/DialogDiscription';
 import { SelectionModel } from '@angular/cdk/collections';
-import { INewLogicaTable } from '../../ModelInventory/InventoryModel';
+import { INewLogicaTable, SettingDepartmentCaseGetServer, SettingDepartmentCaseToServer, Rb_Holiday, RegulationsDepartment, RegulationsDepartmentToServer, ResourceIt, TaskAis3 } from '../../ModelInventory/InventoryModel';
+import { ModelSelect, ParametrsAct } from '../../AllSelectModel/ParametrModel';
 const moment = _rollupMoment || _moment;
 
 ///Добавление ролей в БД на пользователя 
@@ -1171,10 +1172,10 @@ export class TokenTableModel implements INewLogicaTable<Token>{
   public statusing: Statusing[];
   public supples: Supply[];
   public user: Users[];
-  
+
   public SysBlockAllModel: SysBlock[];
   public sysblock: SysBlock[];
-  
+
   public displayedColumns = ['Logic', 'IdToken', 'User.Name', 'Supply.DatePostavki', 'ProizvoditelName', 'SerNum', 'SysBlock.NameComputer', 'SysBlock.ServiceNum', 'SysBlock.SerNum', 'SysBlock.InventarNumSysBlok', 'SysBlock.IpAdress', 'SysBlock.Kabinet.NumberKabinet', 'Coment', 'Statusing.Name', 'ActionsColumn']
   dataSource: MatTableDataSource<Token> = new MatTableDataSource<Token>();
   isAdd: boolean;
@@ -2456,7 +2457,14 @@ export class SysBlockTableModel implements INewLogicaTable<SysBlock>  {
       }
     });
   }
-
+  ///Создание акта
+  public createAct(model: SysBlock){
+    var modelSelect = new ModelSelect(0);
+    modelSelect.parametrsActField = new ParametrsAct();
+    modelSelect.parametrsActField.idClasificationActField = 1;
+    modelSelect.parametrsActField.idModelTemplateField = model.IdSysBlock;
+    this.editandadd.createAct(modelSelect,model.SerNum);
+  }
 
   public displayedColumns = ['Logic', 'IdModel', 'User.Name', 'Supply.DatePostavki', 'NameSysBlock.NameComputer', 'ServiceNum', 'SerNum', 'InventarNumSysBlok', 'NameComputer', 'IpAdress', 'Kabinet.NumberKabinet', 'Coment', 'Statusing.Name', 'ActionsColumn'];
   public dataSource: MatTableDataSource<SysBlock> = new MatTableDataSource<SysBlock>();
@@ -3631,7 +3639,7 @@ export class NameSysBlockTableModel implements INewLogicaTable<NameSysBlock> {
     throw new Error("Method not implemented.");
   }
 
-  public displayedColumns = ['IdModelSysBlock', 'NameComputer', 'ActionsColumn'];
+  public displayedColumns = ['IdModelSysBlock', 'NameComputer','NameManufacturer','NameProizvoditel', 'ActionsColumn'];
   public dataSource: MatTableDataSource<NameSysBlock> = new MatTableDataSource<NameSysBlock>();
 
   isAdd: boolean;
@@ -5397,7 +5405,7 @@ export class NameSupplyTableModel implements INewLogicaTable<Supply> {
 
   public save(): void {
     this.modifimethod();
-    this.editandadd.addAndEditNameSupply(this.modelToServer).toPromise().then((model: ModelReturn<Supply>) => {
+    this.editandadd.addAndEditNameSupplys(this.modelToServer).toPromise().then((model: ModelReturn<Supply>) => {
       if (model.Model === null) {
         alert(model.Message)
         this.cancel(this.modelCancelError);
@@ -6882,7 +6890,7 @@ export class AllTechnicsLkModel implements INewLogicaTable<AllTechnics>{
     });
   }
 
-  public displayedColumns: any[] = ['Logic', 'Item', 'Users', 'NameManufacturer', 'NameModel', 'SerNum', 'ServiceNum', 'NameServer', 'IpAdress', 'NumberKabinet'];
+  public displayedColumns: any[] = ['Logic', 'Item', 'Users', 'NameManufacturer', 'NameModel', 'SerNum', 'ServiceNum', 'NameServer', 'IpAdress', 'NumberKabinet','NameStatus'];
   public dataSource: MatTableDataSource<AllTechnics> = new MatTableDataSource<AllTechnics>();
 
   isAdd: boolean;
@@ -6951,6 +6959,1214 @@ export class AllTechnicsLkModel implements INewLogicaTable<AllTechnics>{
   }
   isEditAndAddFalse(): void {
     throw new Error("Method not implemented.");
+  }
+
+}
+
+export class SettingDepartmentCaseTableModel implements INewLogicaTable<SettingDepartmentCaseGetServer>  {
+
+  constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
+    this.subscribeservers();
+  }
+
+  createSTO(model: SettingDepartmentCaseGetServer, template: FullTemplateSupport, authService: AuthIdentification, dialog: MatDialog): void {
+    throw new Error('Method not implemented.');
+  }
+
+  public displayedColumns = ['IdOtdel', 'NameOtdel', 'InameOtdel', 'RnameOtdel', 'DnameOtdel', 'VnameOtdel', 'PnameOtdel', 'TnameOtdel', 'ActionsColumn'];;
+  public dataSource: MatTableDataSource<SettingDepartmentCaseGetServer> = new MatTableDataSource<SettingDepartmentCaseGetServer>();
+
+  isAdd: boolean;
+  isEdit: boolean;
+  modelCancelError: SettingDepartmentCaseGetServer = new SettingDepartmentCaseGetServer();
+  model: SettingDepartmentCaseGetServer = new SettingDepartmentCaseGetServer();
+  index: number;
+  modeltable: SettingDepartmentCaseGetServer[];
+
+  //Подписка
+  public subscribeAddAndUpdate: any = null;
+
+  //Шаблоны для манипулирования DOM
+  temlateList: any;
+  rowList: any;
+  fulltemplate: ElementRef<any>;
+  table: ElementRef<any>;
+
+  public subscribeservers() {
+    this.subscribeAddAndUpdate = new BroadcastEventListener<SettingDepartmentCaseGetServer>('SubscribeDepartmentCase');
+    this.SignalR.conect.listen(this.subscribeAddAndUpdate);
+    this.subscribeAddAndUpdate.subscribe((model: SettingDepartmentCaseGetServer) => {
+      this.index = 0;
+      if (this.isEdit) {
+        this.isEditAndAddFalse();
+        this.removetemplate();
+        this.model = model;
+      }
+      var index = this.dataSource.data.find(x => x.IdOtdel === model.IdOtdel);
+      var indexzero = this.dataSource.data.find(x => x.IdOtdel === 0);
+      try {
+        if (indexzero) {
+          ///Для изменявшего
+          this.dataSource.data.find(x => x.IdOtdel === 0).IdOtdel = model.IdOtdel;
+        }
+        else {
+          if (index) {
+            ///Для остальных пользователей изменение
+            this.dataSource.data[this.dataSource.data.indexOf(index)] = model;
+            this.modeltable[this.modeltable.indexOf(index)] = model;
+          }
+          else {
+            ///Для остальных пользователей добавление
+            this.dataSource.data.push(model);
+            this.modeltable.push(model);
+          }
+        }
+        this.dataSource._updateChangeSubscription();
+      }
+      catch (e) {
+        console.log(e);
+      }
+    });
+  }
+
+  calbackfiltersAll(): void {
+    throw new Error("Method not implemented.");
+  }
+
+  filterstable(filterValue: string): void {
+    filterValue = filterValue.trim(); // Remove whitespace
+    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
+    this.dataSource.filter = filterValue;
+  }
+
+  public async add(): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
+
+  edit(model: SettingDepartmentCaseGetServer): void {
+    model.ModelIsEdit = true;
+    this.modelCancelError = JSON.parse(JSON.stringify(model));
+    this.model = JSON.parse(JSON.stringify(model));
+    this.addtemplate(model.IdOtdel)
+    this.isEditAndAddTrue();
+  }
+
+  public save(): void {
+    this.modifimethod();
+    var modelServer = new SettingDepartmentCaseToServer(this.model)
+    this.editandadd.addandeditsettingdepartmentcase(modelServer, this.SignalR.iduser).toPromise().then((model: ModelReturn<SettingDepartmentCaseGetServer>) => {
+      if (model.Model === null) {
+        alert(model.Message)
+        this.cancel(this.modelCancelError);
+      }
+    });
+    //Запрос на сохранение и обновление данных
+  }
+
+  ///Удаление
+  delete(): void {
+    throw new Error("Method not implemented.");
+  }
+
+  ///Отмена
+  cancel(model: SettingDepartmentCaseGetServer): void {
+    model.ModelIsEdit = false;
+    this.isEditAndAddFalse();
+    if (this.index > 0) {
+      this.dataSource.data.pop();
+      this.index = 0;
+    }
+    else {
+      var userdefault = this.modeltable.find(x => x.IdOtdel === this.model.IdOtdel);
+      this.dataSource.data[this.modeltable.indexOf(userdefault)] = model;
+      this.index = 0;
+    }
+    this.dataSource._updateChangeSubscription();
+    this.removetemplate();
+  }
+
+  newmodel(): SettingDepartmentCaseGetServer {
+    throw new Error('Method not implemented.');
+  }
+
+  //Костыль дожидаемся обновление DOM
+  async delay(ms: number): Promise<void> {
+    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+  }
+
+  ///Добавить шаблон в строку это просто жесть
+  async addtemplate(index: number): Promise<void> {
+    var i = 0;
+    await this.delay(10);
+    this.temlateList = this.fulltemplate.nativeElement.querySelectorAll("mat-form-field[id=template]");
+    this.rowList = this.table.nativeElement.querySelectorAll("div[class='" + index + "']");
+    for (var row of this.rowList) {
+      row.append(this.temlateList[i])
+      i++;
+    }
+  }
+
+  ///Удалить шаблон из строки и востановить текущий шаблон
+  removetemplate(): void {
+    var i = 0;
+    for (var row of this.rowList) {
+      row.removeChild(this.temlateList[i]);
+      this.fulltemplate.nativeElement.append(this.temlateList[i])
+      i++;
+    }
+  }
+
+  modifimethod(): void {
+    this.isEdit = true;
+    this.model.ModelIsEdit = false;
+  }
+
+  public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef<any>, template: ElementRef<any>): Promise<string> {
+    this.table = table;  //Таблица
+    this.fulltemplate = template; //Заложенный шаблон
+    this.modeltable = JSON.parse(JSON.stringify(model.SettingDepartmentCaseGetServer));
+    this.dataSource.paginator = paginator;
+    this.dataSource.sort = sort;
+    this.dataSource.data = model.SettingDepartmentCaseGetServer;
+    return "Таблица с падежами отделов загружена";
+  }
+
+
+  isEditAndAddTrue(): void {
+    this.isEdit = true;
+    this.isAdd = true;
+  }
+
+  isEditAndAddFalse(): void {
+    this.isAdd = false;
+    this.isEdit = false;
+  }
+}
+
+export class SettingDepartmentRegulations implements INewLogicaTable<RegulationsDepartment>  {
+
+  constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
+    this.subscribeservers();
+  }
+
+  createSTO(model: RegulationsDepartment, template: FullTemplateSupport, authService: AuthIdentification, dialog: MatDialog): void {
+    throw new Error('Method not implemented.');
+  }
+
+  public displayedColumns = ['IdOtdel', 'NameOtdel', 'Regulations', 'ActionsColumn'];
+  public dataSource: MatTableDataSource<RegulationsDepartment> = new MatTableDataSource<RegulationsDepartment>();
+  isAdd: boolean;
+  isEdit: boolean;
+  modelCancelError: RegulationsDepartment = new RegulationsDepartment();
+  model: RegulationsDepartment = new RegulationsDepartment();
+  index: number;
+  modeltable: RegulationsDepartment[];
+
+  //Подписка
+  public subscribeAddAndUpdate: any = null;
+
+  //Шаблоны для манипулирования DOM
+  temlateList: any;
+  rowList: any;
+  fulltemplate: ElementRef<any>;
+  table: ElementRef<any>;
+
+  public subscribeservers() {
+    this.subscribeAddAndUpdate = new BroadcastEventListener<RegulationsDepartment>('SubscribeDepartmentRegulations');
+    this.SignalR.conect.listen(this.subscribeAddAndUpdate);
+    this.subscribeAddAndUpdate.subscribe((model: RegulationsDepartment) => {
+      this.index = 0;
+      if (this.isEdit) {
+        this.isEditAndAddFalse();
+        this.removetemplate();
+        this.model = model;
+      }
+      var index = this.dataSource.data.find(x => x.IdOtdel === model.IdOtdel);
+      var indexzero = this.dataSource.data.find(x => x.IdOtdel === 0);
+      try {
+        if (indexzero) {
+          ///Для изменявшего
+          this.dataSource.data.find(x => x.IdOtdel === 0).IdOtdel = model.IdOtdel;
+        }
+        else {
+          if (index) {
+            ///Для остальных пользователей изменение
+            this.dataSource.data[this.dataSource.data.indexOf(index)] = model;
+            this.modeltable[this.modeltable.indexOf(index)] = model;
+          }
+          else {
+            ///Для остальных пользователей добавление
+            this.dataSource.data.push(model);
+            this.modeltable.push(model);
+          }
+        }
+        this.dataSource._updateChangeSubscription();
+      }
+      catch (e) {
+        console.log(e);
+      }
+    });
+  }
+
+  calbackfiltersAll(): void {
+    throw new Error("Method not implemented.");
+  }
+
+  filterstable(filterValue: string): void {
+    filterValue = filterValue.trim(); // Remove whitespace
+    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
+    this.dataSource.filter = filterValue;
+  }
+
+  public async add(): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
+
+  edit(model: RegulationsDepartment): void {
+    model.ModelIsEdit = true;
+    this.modelCancelError = JSON.parse(JSON.stringify(model));
+    this.model = JSON.parse(JSON.stringify(model));
+    this.addtemplate(model.IdOtdel)
+    this.isEditAndAddTrue();
+  }
+
+  public save(): void {
+    this.modifimethod();
+    var modelServer = new RegulationsDepartmentToServer(this.model)
+    this.editandadd.addandeditRegulationsDepartment(modelServer, this.SignalR.iduser).toPromise().then((model: ModelReturn<RegulationsDepartment>) => {
+      if (model.Model === null) {
+        alert(model.Message)
+        this.cancel(this.modelCancelError);
+      }
+    });
+    //Запрос на сохранение и обновление данных
+  }
+
+  ///Удаление
+  delete(): void {
+    throw new Error("Method not implemented.");
+  }
+
+  ///Отмена
+  cancel(model: RegulationsDepartment): void {
+    model.ModelIsEdit = false;
+    this.isEditAndAddFalse();
+    if (this.index > 0) {
+      this.dataSource.data.pop();
+      this.index = 0;
+    }
+    else {
+      var userdefault = this.modeltable.find(x => x.IdOtdel === this.model.IdOtdel);
+      this.dataSource.data[this.modeltable.indexOf(userdefault)] = model;
+      this.index = 0;
+    }
+    this.dataSource._updateChangeSubscription();
+    this.removetemplate();
+  }
+
+  newmodel(): RegulationsDepartment {
+    throw new Error('Method not implemented.');
+  }
+
+  //Костыль дожидаемся обновление DOM
+  async delay(ms: number): Promise<void> {
+    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+  }
+
+  ///Добавить шаблон в строку это просто жесть
+  async addtemplate(index: number): Promise<void> {
+    var i = 0;
+    await this.delay(10);
+    this.temlateList = this.fulltemplate.nativeElement.querySelectorAll("mat-form-field[id=template]");
+    this.rowList = this.table.nativeElement.querySelectorAll("div[class='" + index + "']");
+    for (var row of this.rowList) {
+      row.append(this.temlateList[i])
+      i++;
+    }
+  }
+
+  ///Удалить шаблон из строки и востановить текущий шаблон
+  removetemplate(): void {
+    var i = 0;
+    for (var row of this.rowList) {
+      row.removeChild(this.temlateList[i]);
+      this.fulltemplate.nativeElement.append(this.temlateList[i])
+      i++;
+    }
+  }
+
+  modifimethod(): void {
+    this.isEdit = true;
+    this.model.ModelIsEdit = false;
+  }
+
+  public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef<any>, template: ElementRef<any>): Promise<string> {
+    this.table = table;  //Таблица
+    this.fulltemplate = template; //Заложенный шаблон
+    this.modeltable = JSON.parse(JSON.stringify(model.RegulationsDepartment));
+    this.dataSource.paginator = paginator;
+    this.dataSource.sort = sort;
+    this.dataSource.data = model.RegulationsDepartment;
+    return "Таблица с регламентами отделов загружена";
+  }
+
+  isEditAndAddTrue(): void {
+    this.isEdit = true;
+    this.isAdd = true;
+  }
+
+  isEditAndAddFalse(): void {
+    this.isAdd = false;
+    this.isEdit = false;
+  }
+}
+
+export class HolidayTableModel implements INewLogicaTable<Rb_Holiday>  {
+
+  constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
+    this.subscribeservers();
+  }
+
+  createSTO(model: SettingDepartmentCaseGetServer, template: FullTemplateSupport, authService: AuthIdentification, dialog: MatDialog): void {
+    throw new Error('Method not implemented.');
+  }
+
+
+  public displayedColumns = ['Id', 'DateTime_Holiday', 'IS_HOLIDAY', 'ActionsColumn'];
+  public dataSource: MatTableDataSource<Rb_Holiday> = new MatTableDataSource<Rb_Holiday>();
+
+  isAdd: boolean;
+  isEdit: boolean;
+  modelCancelError: Rb_Holiday = new Rb_Holiday();
+  model: Rb_Holiday = new Rb_Holiday();
+  index: number;
+  modeltable: Rb_Holiday[];
+
+  public modelIsHoliday: any[] = [{ HolidayText: "Праздничный день", HolidayBoolean: true, },
+  { HolidayText: "Рабочий праздничный день", HolidayBoolean: false, }];
+
+  public filteredHoliday: any;
+  models: any = this.modelIsHoliday[1];
+
+  date = new FormControl(new Date());
+
+
+  public subscribeAddAndUpdate: any = null;
+  public subscribeDelete: any = null;
+  //Шаблоны для манипулирования DOM
+  temlateList: any;
+  rowList: any;
+  fulltemplate: ElementRef<any>;
+  table: ElementRef<any>;
+
+  public subscribeservers() {
+    this.subscribeAddAndUpdate = new BroadcastEventListener<Rb_Holiday>('SubscribeRbHoliday');
+    this.SignalR.conect.listen(this.subscribeAddAndUpdate);
+    this.subscribeDelete = new BroadcastEventListener<ModeleReturn<Rb_Holiday>>('SubscribeDeleteHoliday');
+    this.SignalR.conect.listen(this.subscribeDelete);
+
+    this.subscribeDelete.subscribe((model: ModeleReturn<Rb_Holiday>) => {
+      if (model.Index === 0) {
+        console.log(model);
+        let index: number = this.dataSource.data.findIndex(item => item.Id === model.Model.Id);
+        this.dataSource.data.splice(index, 1);
+        this.dataSource._updateChangeSubscription();
+      }
+    })
+
+    this.subscribeAddAndUpdate.subscribe((model: string) => {
+      this.index = 0;
+      var submodel = deserialize<Rb_Holiday>(Rb_Holiday, model);
+      if (this.isEdit) {
+        this.isEditAndAddFalse();
+        this.removetemplate();
+        this.model = submodel
+      }
+      var index = this.dataSource.data.find(x => x.Id === submodel.Id);
+      var indexzero = this.dataSource.data.find(x => x.Id === 0);
+      try {
+        if (indexzero) {
+          ///Для изменявшего
+          this.dataSource.data.find(x => x.Id === 0).DateTime_Holiday = submodel.DateTime_Holiday;
+          this.dataSource.data.find(x => x.Id === 0).Id = submodel.Id;
+        }
+        else {
+          if (index) {
+            ///Для остальных пользователей изменение
+            this.dataSource.data[this.dataSource.data.indexOf(index)] = submodel;
+            this.modeltable[this.modeltable.indexOf(index)] = submodel;
+          }
+          else {
+            ///Для остальных пользователей добавление
+            this.dataSource.data.push(submodel);
+            this.modeltable.push(submodel);
+          }
+        }
+        this.dataSource._updateChangeSubscription();
+      }
+      catch (e) {
+        console.log(e);
+      }
+    });
+  }
+
+  calbackfiltersAll(): void {
+    this.filteredHoliday = this.modelIsHoliday.slice();
+  }
+
+  filterstable(filterValue: string): void {
+    filterValue = filterValue.trim(); // Remove whitespace
+    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
+    this.dataSource.filter = filterValue;
+  }
+
+  public async add(): Promise<void> {
+    this.isEditAndAddTrue();
+    var newmodel = this.newmodel();
+    this.dataSource.data.push(newmodel);
+    this.modeltable.push(newmodel);
+    this.index = this.dataSource.data.length;
+    this.model = newmodel;
+    await this.dataSource._updateChangeSubscription();
+    await this.dataSource.paginator.lastPage();
+    this.addtemplate(newmodel.Id)
+
+  }
+
+  edit(model: Rb_Holiday): void {
+    model.ModelIsEdit = true;
+    this.modelCancelError = JSON.parse(JSON.stringify(model));
+    this.model = JSON.parse(JSON.stringify(model));
+    model.DateTime_Holiday.match(/T/g) !== null ? this.date = new FormControl(new Date(model.DateTime_Holiday.split("T")[0])) : this.date = new FormControl(new Date(model.DateTime_Holiday.split("-").reverse().join("-")));
+    this.models = this.modelIsHoliday.find(x => x.HolidayBoolean === this.model.IS_HOLIDAY);
+    this.addtemplate(model.Id);
+    this.isEditAndAddTrue();
+  }
+
+  public save(): void {
+    this.modifimethod();
+    this.editandadd.addandeditHolyday(this.model, this.SignalR.iduser).toPromise().then((model: ModelReturn<Rb_Holiday>) => {
+      if (model.Model === null) {
+        alert(model.Message);
+        this.cancel(this.modelCancelError);
+      }
+    });
+    //Запрос на сохранение и обновление данных
+  }
+
+  ///Удаление
+  delete(model: Rb_Holiday): void {
+    var converter = new ConvertDate();
+    this.editandadd.deleteErrorHoliday(converter.convertDateToServer<Rb_Holiday>(JSON.parse(JSON.stringify(model))), this.SignalR.iduser).toPromise().then((model: ModeleReturn<Rb_Holiday>) => {
+      alert(model.Message);
+    });
+  }
+
+  ///Отмена
+  cancel(model: Rb_Holiday): void {
+    model.ModelIsEdit = false;
+    this.isEditAndAddFalse();
+    if (this.index > 0) {
+      this.dataSource.data.pop();
+      this.index = 0;
+    }
+    else {
+      var userdefault = this.modeltable.find(x => x.Id === this.model.Id);
+      this.dataSource.data[this.modeltable.indexOf(userdefault)] = model;
+      this.index = 0;
+    }
+    this.dataSource._updateChangeSubscription();
+    this.removetemplate();
+  }
+
+  newmodel(): Rb_Holiday {
+    var newmodel: Rb_Holiday = new Rb_Holiday()
+    newmodel.IS_HOLIDAY = true;
+    newmodel.DateTime_Holiday = new Date();
+    newmodel.ModelIsEdit = true;
+    newmodel.Id = 0;
+    return newmodel;
+  }
+
+  //Костыль дожидаемся обновление DOM
+  async delay(ms: number): Promise<void> {
+    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+  }
+
+  ///Добавить шаблон в строку это просто жесть
+  async addtemplate(index: number): Promise<void> {
+    var i = 0;
+    await this.delay(10);
+    this.temlateList = this.fulltemplate.nativeElement.querySelectorAll("mat-form-field[id=template]");
+    this.rowList = this.table.nativeElement.querySelectorAll("div[class='" + index + "']");
+    for (var row of this.rowList) {
+      row.append(this.temlateList[i])
+      i++;
+    }
+  }
+
+  ///Удалить шаблон из строки и востановить текущий шаблон
+  removetemplate(): void {
+    var i = 0;
+    for (var row of this.rowList) {
+      row.removeChild(this.temlateList[i]);
+      this.fulltemplate.nativeElement.append(this.temlateList[i])
+      i++;
+    }
+  }
+
+  modifimethod(): void {
+    this.isEdit = true;
+    this.model.IS_HOLIDAY = this.models.HolidayBoolean;
+    this.model.DateTime_Holiday = `/Date(${moment(this.date.value, 'DD-MM-YYYY').local().valueOf()})/`
+    this.model.ModelIsEdit = false;
+  }
+
+  public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef<any>, template: ElementRef<any>): Promise<string> {
+    this.table = table;  //Таблица
+    this.fulltemplate = template; //Заложенный шаблон
+    this.modeltable = JSON.parse(JSON.stringify(model.Rb_Holiday));
+    this.dataSource.paginator = paginator;
+    this.dataSource.sort = sort;
+    this.dataSource.data = model.Rb_Holiday;
+    this.filteredHoliday = this.modelIsHoliday.slice();
+    return "Таблица с праздничными днями загружена!";
+  }
+
+
+  isEditAndAddTrue(): void {
+    this.isEdit = true;
+    this.isAdd = true;
+  }
+
+  isEditAndAddFalse(): void {
+    this.isAdd = false;
+    this.isEdit = false;
+  }
+}
+
+export class ResourceItTableModel implements INewLogicaTable<ResourceIt> {
+
+  constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
+    this.subscribeservers();
+  }
+
+  createSTO(model: ResourceIt, template: FullTemplateSupport, authService: AuthIdentification, dialog: MatDialog): void {
+    throw new Error("Method not implemented.");
+  }
+
+  public displayedColumns = ['IdResource', 'NameResource', 'ActionsColumn'];
+  public dataSource: MatTableDataSource<ResourceIt> = new MatTableDataSource<ResourceIt>();
+
+  isAdd: boolean;
+  isEdit: boolean;
+  modelCancelError: ResourceIt = new ResourceIt();
+  model: ResourceIt = new ResourceIt();
+
+  index: number;
+  modeltable: ResourceIt[];
+
+  //Подписка
+  public subscribeAddAndUpdate: any = null;
+
+  //Шаблоны для манипулирования DOM
+  temlateList: any;
+  rowList: any;
+  fulltemplate: ElementRef<any>;
+  table: ElementRef<any>;
+
+  public subscribeservers() {
+    this.subscribeAddAndUpdate = new BroadcastEventListener<ResourceIt>('SubscribeResourceIt');
+    this.SignalR.conect.listen(this.subscribeAddAndUpdate);
+    this.subscribeAddAndUpdate.subscribe((substring: string) => {
+      var submodel = deserialize<ResourceIt>(ResourceIt, substring);
+      this.index = 0;
+      if (this.isEdit) {
+        this.isEditAndAddFalse();
+        this.removetemplate();
+        this.model = submodel
+      }
+      var index = this.dataSource.data.find(x => x.IdResource === submodel.IdResource);
+      var indexzero = this.dataSource.data.find(x => x.IdResource === 0);
+      try {
+        if (indexzero) {
+          ///Для изменявшего
+          this.dataSource.data.find(x => x.IdResource === 0).IdResource = submodel.IdResource;
+        }
+        else {
+          if (index) {
+            ///Для остальных пользователей изменение
+            this.dataSource.data[this.dataSource.data.indexOf(index)] = submodel;
+            this.modeltable[this.modeltable.indexOf(index)] = submodel;
+          }
+          else {
+            ///Для остальных пользователей добавление
+            this.dataSource.data.push(submodel);
+            this.modeltable.push(submodel);
+          }
+        }
+        this.dataSource._updateChangeSubscription();
+      }
+      catch (e) {
+        console.log(e);
+      }
+    });
+  }
+
+  calbackfiltersAll(): void {
+    throw new Error("Method not implemented.");
+  }
+
+  filterstable(filterValue: string): void {
+    filterValue = filterValue.trim(); // Remove whitespace
+    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
+    this.dataSource.filter = filterValue;
+  }
+
+  public async add(): Promise<void> {
+    this.isEditAndAddTrue();
+    var newmodel = this.newmodel();
+    this.dataSource.data.push(newmodel);
+    this.modeltable.push(newmodel);
+    this.index = this.dataSource.data.length;
+    this.model = newmodel;
+    await this.dataSource._updateChangeSubscription();
+    await this.dataSource.paginator.lastPage();
+    this.addtemplate(newmodel.IdResource);
+  }
+
+  public edit(model: ResourceIt): void {
+    model.ModelIsEdit = true;
+    this.modelCancelError = JSON.parse(JSON.stringify(model));
+    this.model = JSON.parse(JSON.stringify(model));
+    this.addtemplate(model.IdResource);
+    this.isEditAndAddTrue();
+  }
+
+  public save(): void {
+    this.modifimethod();
+    this.editandadd.addAndEditResourceIt(this.model).toPromise().then((model: ModelReturn<ResourceIt>) => {
+      if (model.Model === null) {
+        alert(model.Message)
+        this.cancel(this.modelCancelError);
+      }
+    });
+    //Запрос на сохранение и обновление данных
+  }
+
+  ///Удаление
+  delete(): void {
+    throw new Error("Method not implemented.");
+  }
+
+  ///Отмена
+  public cancel(model: ResourceIt): void {
+    model.ModelIsEdit = false;
+    this.isEditAndAddFalse();
+    if (this.index > 0) {
+      this.dataSource.data.pop();
+      this.index = 0;
+    }
+    else {
+      var userdefault = this.modeltable.find(x => x.IdResource === this.model.IdResource);
+      this.dataSource.data[this.modeltable.indexOf(userdefault)] = model;
+      this.index = 0;
+    }
+    this.dataSource._updateChangeSubscription();
+    this.removetemplate();
+  }
+
+  newmodel(): ResourceIt {
+    var newuser: ResourceIt = new ResourceIt()
+    newuser.ModelIsEdit = true;
+    newuser.IdResource = 0;
+    return newuser;
+  }
+
+  async delay(ms: number): Promise<void> {
+    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+  }
+
+  async addtemplate(index: number): Promise<void> {
+    var i = 0;
+    await this.delay(10);
+    this.temlateList = this.fulltemplate.nativeElement.querySelectorAll("mat-form-field[id=template]");
+    this.rowList = this.table.nativeElement.querySelectorAll("div[class='" + index + "']");
+    for (var row of this.rowList) {
+      row.append(this.temlateList[i])
+      i++;
+    }
+  }
+
+  removetemplate(): void {
+    var i = 0;
+    for (var row of this.rowList) {
+      row.removeChild(this.temlateList[i]);
+      this.fulltemplate.nativeElement.append(this.temlateList[i])
+      i++;
+    }
+  }
+
+  modifimethod(): void {
+    this.isEdit = true;
+    this.model.ModelIsEdit = false;
+  }
+
+  public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef, template: ElementRef): Promise<string> {
+    this.table = table;  //Таблица
+    this.fulltemplate = template; //Заложенный шаблон
+    this.modeltable = JSON.parse(JSON.stringify(model.ResourceIt));
+    this.dataSource.data = model.ResourceIt;
+    this.dataSource.paginator = paginator;
+    this.dataSource.sort = sort;
+    return "Модель ресурсов для заявки заполнена";
+  }
+
+  isEditAndAddTrue(): void {
+    this.isEdit = true;
+    this.isAdd = true;
+  }
+
+  isEditAndAddFalse(): void {
+    this.isAdd = false;
+    this.isEdit = false;
+  }
+
+}
+
+export class TaskAis3TableModel implements INewLogicaTable<TaskAis3> {
+
+  constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
+    this.subscribeservers();
+  }
+
+  createSTO(model: TaskAis3, template: FullTemplateSupport, authService: AuthIdentification, dialog: MatDialog): void {
+    throw new Error("Method not implemented.");
+  }
+
+  public displayedColumns = ['IdTask', 'NameTask', 'ActionsColumn'];
+  public dataSource: MatTableDataSource<TaskAis3> = new MatTableDataSource<TaskAis3>();
+
+  isAdd: boolean;
+  isEdit: boolean;
+  modelCancelError: TaskAis3 = new TaskAis3();
+  model: TaskAis3 = new TaskAis3();
+
+  index: number;
+  modeltable: TaskAis3[];
+
+  //Подписка
+  public subscribeAddAndUpdate: any = null;
+
+  //Шаблоны для манипулирования DOM
+  temlateList: any;
+  rowList: any;
+  fulltemplate: ElementRef<any>;
+  table: ElementRef<any>;
+
+  public subscribeservers() {
+    this.subscribeAddAndUpdate = new BroadcastEventListener<TaskAis3>('SubscribeTaskAis3');
+    this.SignalR.conect.listen(this.subscribeAddAndUpdate);
+    this.subscribeAddAndUpdate.subscribe((substring: string) => {
+      var submodel = deserialize<TaskAis3>(TaskAis3, substring);
+      this.index = 0;
+      if (this.isEdit) {
+        this.isEditAndAddFalse();
+        this.removetemplate();
+        this.model = submodel
+      }
+      var index = this.dataSource.data.find(x => x.IdTask === submodel.IdTask);
+      var indexzero = this.dataSource.data.find(x => x.IdTask === 0);
+      try {
+        if (indexzero) {
+          ///Для изменявшего
+          this.dataSource.data.find(x => x.IdTask === 0).IdTask = submodel.IdTask;
+        }
+        else {
+          if (index) {
+            ///Для остальных пользователей изменение
+            this.dataSource.data[this.dataSource.data.indexOf(index)] = submodel;
+            this.modeltable[this.modeltable.indexOf(index)] = submodel;
+          }
+          else {
+            ///Для остальных пользователей добавление
+            this.dataSource.data.push(submodel);
+            this.modeltable.push(submodel);
+          }
+        }
+        this.dataSource._updateChangeSubscription();
+      }
+      catch (e) {
+        console.log(e);
+      }
+    });
+  }
+
+  calbackfiltersAll(): void {
+    throw new Error("Method not implemented.");
+  }
+
+  filterstable(filterValue: string): void {
+    filterValue = filterValue.trim(); // Remove whitespace
+    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
+    this.dataSource.filter = filterValue;
+  }
+
+  public async add(): Promise<void> {
+    this.isEditAndAddTrue();
+    var newmodel = this.newmodel();
+    this.dataSource.data.push(newmodel);
+    this.modeltable.push(newmodel);
+    this.index = this.dataSource.data.length;
+    this.model = newmodel;
+    await this.dataSource._updateChangeSubscription();
+    await this.dataSource.paginator.lastPage();
+    this.addtemplate(newmodel.IdTask);
+  }
+
+  public edit(model: TaskAis3): void {
+    model.ModelIsEdit = true;
+    this.modelCancelError = JSON.parse(JSON.stringify(model));
+    this.model = JSON.parse(JSON.stringify(model));
+    this.addtemplate(model.IdTask);
+    this.isEditAndAddTrue();
+  }
+
+  public save(): void {
+    this.modifimethod();
+    this.editandadd.addAndEditTaskAis3(this.model).toPromise().then((model: ModelReturn<ResourceIt>) => {
+      if (model.Model === null) {
+        alert(model.Message)
+        this.cancel(this.modelCancelError);
+      }
+    });
+    //Запрос на сохранение и обновление данных
+  }
+
+  ///Удаление
+  delete(): void {
+    throw new Error("Method not implemented.");
+  }
+
+  ///Отмена
+  public cancel(model: TaskAis3): void {
+    model.ModelIsEdit = false;
+    this.isEditAndAddFalse();
+    if (this.index > 0) {
+      this.dataSource.data.pop();
+      this.index = 0;
+    }
+    else {
+      var userdefault = this.modeltable.find(x => x.IdTask === this.model.IdTask);
+      this.dataSource.data[this.modeltable.indexOf(userdefault)] = model;
+      this.index = 0;
+    }
+    this.dataSource._updateChangeSubscription();
+    this.removetemplate();
+  }
+
+  newmodel(): TaskAis3 {
+    var newuser: TaskAis3 = new TaskAis3()
+    newuser.ModelIsEdit = true;
+    newuser.IdTask = 0;
+    return newuser;
+  }
+
+  async delay(ms: number): Promise<void> {
+    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+  }
+
+  async addtemplate(index: number): Promise<void> {
+    var i = 0;
+    await this.delay(10);
+    this.temlateList = this.fulltemplate.nativeElement.querySelectorAll("mat-form-field[id=template]");
+    this.rowList = this.table.nativeElement.querySelectorAll("div[class='" + index + "']");
+    for (var row of this.rowList) {
+      row.append(this.temlateList[i])
+      i++;
+    }
+  }
+
+  removetemplate(): void {
+    var i = 0;
+    for (var row of this.rowList) {
+      row.removeChild(this.temlateList[i]);
+      this.fulltemplate.nativeElement.append(this.temlateList[i])
+      i++;
+    }
+  }
+
+  modifimethod(): void {
+    this.isEdit = true;
+    this.model.ModelIsEdit = false;
+  }
+
+  public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef, template: ElementRef): Promise<string> {
+    this.table = table;  //Таблица
+    this.fulltemplate = template; //Заложенный шаблон
+    this.modeltable = JSON.parse(JSON.stringify(model.TaskAis3));
+    this.dataSource.data = model.TaskAis3;
+    this.dataSource.paginator = paginator;
+    this.dataSource.sort = sort;
+    return "Модель ИБП заполнена";
+  }
+
+  isEditAndAddTrue(): void {
+    this.isEdit = true;
+    this.isAdd = true;
+  }
+
+  isEditAndAddFalse(): void {
+    this.isAdd = false;
+    this.isEdit = false;
+  }
+
+}
+
+export class JournalAis3TableModel implements INewLogicaTable<JournalAis3>  {
+
+  constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
+    this.subscribeservers();
+  }
+
+  createSTO(model: JournalAis3, template: FullTemplateSupport, authService: AuthIdentification, dialog: MatDialog): void {
+    throw new Error("Method not implemented.");
+  }
+
+  public displayedColumns = ['IdJournal', 'TaskAis3.NameTask', 'ResourceIt.NameResource', 'User.Otdel.NameOtdel', 'User.Name', 'NameTarget', 'TaskUser', 'DateTask', 'ActionsColumn'];
+  public dataSource: MatTableDataSource<JournalAis3> = new MatTableDataSource<JournalAis3>();
+
+  public modelvalid: ModelValidation = new ModelValidation()
+
+  public modelCancelError: JournalAis3 = new JournalAis3();
+  public model: JournalAis3 = new JournalAis3();
+
+  public modeltable: JournalAis3[];
+  public users: Users[];
+  public taskAis3: TaskAis3[];
+  public resourceIt: ResourceIt[];
+
+  public isEdit: boolean = false;
+  public isAdd: boolean = false;
+  public index: number = 0;
+
+  //Фильтры
+  public filteredUsers: any;
+  public filteredTaskAis3: any;
+  public filteredResourceIt: any;
+
+  public subscribeAddAndUpdate: any = null;
+
+  //Шаблоны для манипулирования DOM
+  temlateList: any;
+  rowList: any;
+  fulltemplate: ElementRef<any>;
+  table: ElementRef<any>;
+
+  public subscribeservers() {
+    this.subscribeAddAndUpdate = new BroadcastEventListener<JournalAis3>('SubscribeJournalAis3');
+    this.SignalR.conect.listen(this.subscribeAddAndUpdate);
+    this.subscribeAddAndUpdate.subscribe((substring: string) => {
+      var submodel = deserialize<JournalAis3>(JournalAis3, substring);
+      this.index = 0;
+      if (this.isEdit) {
+        this.isEditAndAddFalse();
+        this.removetemplate();
+        this.model = submodel
+      }
+      var index = this.dataSource.data.find(x => x.IdJournal === submodel.IdJournal);
+      var indexzero = this.dataSource.data.find(x => x.IdJournal === 0);
+      try {
+        if (indexzero) {
+          ///Для изменявшего
+          this.dataSource.data.find(x => x.IdJournal === 0).DateTask = submodel.DateTask;
+          this.dataSource.data.find(x => x.IdJournal === 0).IdJournal = submodel.IdJournal;
+        }
+        else {
+          if (index) {
+            ///Для остальных пользователей изменение
+            this.dataSource.data[this.dataSource.data.indexOf(index)] = submodel;
+            this.modeltable[this.modeltable.indexOf(index)] = submodel;
+          }
+          else {
+            ///Для остальных пользователей добавление
+            this.dataSource.data.push(submodel);
+            this.modeltable.push(submodel);
+          }
+        }
+        this.dataSource._updateChangeSubscription();
+      }
+      catch (e) {
+        console.log(e);
+      }
+    });
+  }
+
+  castomefiltermodel() {
+    this.dataSource.filterPredicate = (data, filter) => {
+      var tot = false;
+      for (let column of this.displayedColumns) {
+        if (typeof data[column] !== 'undefined') {
+          if ((column in data) && (new Date(data[column].toString()).toString() == "Invalid Date")) {
+            tot = (tot || data[column].toString().trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+          } else {
+            var date = new Date(data[column].toString());
+            var m = date.toDateString().slice(4, 7) + " " + date.getDate() + " " + date.getFullYear();
+            tot = (tot || m.toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+          }
+        }
+        else {
+          if (data[column.split('.')[0]] !== null) {
+            if (typeof (data[column.split('.')[0]]) === 'object') {
+              if (data[column.split('.')[0]][column.split('.')[1]]) {
+                tot = (tot || data[column.split('.')[0]][column.split('.')[1]].trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+              }
+            }
+          }
+        }
+      }
+      return tot;
+    }
+  }
+
+  //Метод для выноса всех костылей на модель
+  public modifimethod(): void {
+    this.model.TaskAis3 ? this.model.IdTask = this.model.TaskAis3.IdTask : this.model.IdTask = null;
+    this.model.ResourceIt ? this.model.IdResource = this.model.ResourceIt.IdResource : this.model.IdResource = null;
+    this.model.User ? this.model.IdUser = this.model.User.IdUser : this.model.IdUser = null;
+    this.model.DateTask = `/Date(${moment(this.modelvalid.getRowValidatorModel[12].get('DateTask').value, 'DD-MM-YYYY').local().valueOf()})/`
+    this.isEdit = true;
+    this.model.ModelIsEdit = false;
+  }
+
+  public filterstable(filterValue: string): void {
+    filterValue = filterValue.trim(); // Remove whitespace
+    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
+    this.dataSource.filter = filterValue;
+  }
+
+  public calbackfiltersAll(): void {
+    this.filteredUsers = this.users.slice();
+    this.filteredTaskAis3 = this.taskAis3.slice();
+    this.filteredResourceIt = this.resourceIt.slice();
+  }
+
+  newmodel(): JournalAis3 {
+    var newuser: JournalAis3 = new JournalAis3()
+    newuser.ModelIsEdit = true;
+    newuser.DateTask = new Date();
+    newuser.IdJournal = 0;
+    return newuser;
+  }
+
+  //Костыль дожидаемся обновление DOM
+  async delay(ms: number): Promise<void> {
+    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+  }
+
+  ///Добавить шаблон в строку это просто жесть
+  async addtemplate(index: number): Promise<void> {
+    var i = 0;
+    await this.delay(10);
+    this.temlateList = this.fulltemplate.nativeElement.querySelectorAll("mat-form-field[id=template]");
+    this.rowList = this.table.nativeElement.querySelectorAll("div[class='" + index + "']");
+    for (var row of this.rowList) {
+      if (this.temlateList[i])
+        row.append(this.temlateList[i])
+      i++;
+    }
+  }
+
+  ///Удалить шаблон из строки и востановить текущий шаблон
+  removetemplate(): void {
+    var i = 0;
+    for (var row of this.rowList) {
+      if (this.temlateList[i])
+        row.removeChild(this.temlateList[i]);
+      this.fulltemplate.nativeElement.append(this.temlateList[i])
+      i++;
+    }
+  }
+
+  ///Редактирование 
+  public edit(model: JournalAis3): void {
+    model.ModelIsEdit = true;
+    this.modelCancelError = JSON.parse(JSON.stringify(model));
+    this.model = JSON.parse(JSON.stringify(model));
+    this.isEditAndAddTrue();
+    this.addtemplate(model.IdJournal)
+  }
+
+  public save(): void {
+    this.modifimethod();
+    this.editandadd.addAndEditJournalAis3(this.model).toPromise().then((model: ModelReturn<JournalAis3>) => {
+      if (model.Model === null) {
+        alert(model.Message)
+        this.cancel(this.modelCancelError);
+      }
+    });
+    //Запрос на сохранение и обновление данных
+  }
+
+  ///Удаление
+  delete(): void {
+    throw new Error("Method not implemented.");
+  }
+
+  ///Отмена
+  public cancel(model: JournalAis3): void {
+    model.ModelIsEdit = false;
+    this.isEditAndAddFalse();
+    if (this.index > 0) {
+      this.dataSource.data.pop();
+      this.index = 0;
+    }
+    else {
+      var userdefault = this.modeltable.find(x => x.IdJournal === this.model.IdJournal);
+      this.dataSource.data[this.modeltable.indexOf(userdefault)] = model;
+      this.index = 0;
+    }
+    this.dataSource._updateChangeSubscription();
+    this.removetemplate();
+  }
+
+  public async add(): Promise<void> {
+    this.isEditAndAddTrue();
+    var newmodel = this.newmodel();
+    this.dataSource.data.push(newmodel);
+    this.modeltable.push(newmodel);
+    this.index = this.dataSource.data.length;
+    this.model = newmodel;
+    await this.dataSource._updateChangeSubscription();
+    await this.dataSource.paginator.lastPage();
+    this.addtemplate(newmodel.IdJournal);
+  }
+
+  public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef, template: ElementRef): Promise<string> {
+    this.modeltable = JSON.parse(JSON.stringify(model.JournalAis3));
+    this.table = table;  //Таблица
+    this.fulltemplate = template; //Заложенный шаблон
+    this.dataSource.paginator = paginator;
+    this.dataSource.sort = sort
+    this.castomefiltermodel();
+    this.dataSource.data = model.JournalAis3;
+    this.resourceIt = model.ResourceIt;
+    this.users = model.Users;
+    this.taskAis3 = model.TaskAis3;
+    this.filteredUsers = this.users.slice();
+    this.filteredTaskAis3 = this.taskAis3.slice();
+    this.filteredResourceIt = this.resourceIt.slice();
+    return "Модель заявок заполнена";
+  }
+
+  isEditAndAddTrue(): void {
+    this.isEdit = true;
+    this.isAdd = true;
+  }
+
+  isEditAndAddFalse(): void {
+    this.isAdd = false;
+    this.isEdit = false;
   }
 
 }

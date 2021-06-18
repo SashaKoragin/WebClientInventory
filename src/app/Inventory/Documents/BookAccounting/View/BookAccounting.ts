@@ -1,11 +1,13 @@
-import { Component, OnInit, ViewChild,ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { GenerateParametrs, LogicaDataBase } from '../../../AllSelectModel/GenerateParametrFront';
-import { Book,BookModels } from '../../../ModelInventory/ViewInventory';
-import { MatTableDataSource,MatPaginator} from '@angular/material';
+import { Book, BookModels } from '../../../ModelInventory/ViewInventory';
+import { MatTableDataSource, MatPaginator } from '@angular/material';
 import { deserialize } from 'class-transformer';
 import { DesirilizeXml } from '../../../ModelInventory/InventoryModel';
 import { SelectAllParametrs } from '../../../../Post RequestService/PostRequest';
 import { ModelSelect } from '../../../AllSelectModel/ParametrModel';
+import { DynamicTableColumnModel, Table } from '../../../AddFullModel/ModelTable/DynamicTableModel';
+import { Select } from '../../../AddFullModel/ModelViewSelect/View/SelectView';
 
 @Component(({
     selector: 'books',
@@ -16,82 +18,73 @@ import { ModelSelect } from '../../../AllSelectModel/ParametrModel';
 
 export class BookAccounting implements OnInit {
 
-    constructor(public select:SelectAllParametrs) { }
+    constructor(public select: SelectAllParametrs) { }
 
-    selecting:GenerateParametrs
-    logica:LogicaDataBase = new LogicaDataBase();
-    selectsql:DesirilizeXml = new DesirilizeXml();
-    displaydataSource: string[] = ['RowNum', 'Keys','Name','Id', 'Model', 'IdBook', 'Shape'];
-    dataSource: MatTableDataSource<BookModels>;
-    @ViewChild('books',{static: false}) paginatorbooks: MatPaginator;
+
+    @ViewChild('BookAccounting', { static: false }) selectionChild: Select;
+    dinamicmodel: DynamicTableColumnModel = new DynamicTableColumnModel();
+    logica: LogicaDataBase = new LogicaDataBase();
+    selecting: GenerateParametrs = null;
+    columns: Table = this.dinamicmodel.columnsdocumentModel[1];
 
     ngOnInit(): void {
-        this.select.addselectallparametrs(new ModelSelect(11)).subscribe((model:ModelSelect)=>{
+        this.select.addselectallparametrs(new ModelSelect(this.dinamicmodel.documentModel[1].indexsevr)).subscribe((model: ModelSelect) => {
             this.selecting = new GenerateParametrs(model);
-        })    
+            this.columns = this.dinamicmodel.columnsdocumentModel[this.dinamicmodel.documentModel[1].indexcolumnmodel]
+        })
+
     }
 
-    update(){
-        try {
-            if(this.selecting.errorModel()){
-             this.logica.logicaselect(); //Закрываем логику выбора
-             this.logica.logicaprogress();  //Открываем логику загрузки
-             this.select.selectusersql(this.selecting.generatecommand()).subscribe((model)=>{
-                this.selectsql.Book = deserialize<Book>(Book,model.toString()); //Динамический язык
-                this.logica.logicaprogress();
-                this.logica.logicadatabase();
-                if(this.selectsql.Documents!=null){
-                    this.dataSource = new MatTableDataSource<BookModels>(this.selectsql.Book.BookModels)
-                    this.dataSource.paginator = this.paginatorbooks;
-                    this.logica.errornull = true;
-                }else{
-                    this.logica.errornull = false;
-                }
-             })
-             }
-            else{
-                alert('Существуют ошибки в выборке!!!');
-             }
-         } catch (e) {
-         alert(e.toString());
-         }
+
+
+    shape(bookmodels: any) {
+        var serverModel: BookModels = new BookModels();
+        serverModel.idBookField = bookmodels.IdBook
+        serverModel.idField = bookmodels.Id
+        serverModel.keysField = bookmodels.Keys
+        serverModel.modelField = bookmodels.Model
+        serverModel.nameField = bookmodels.Name
+        serverModel.rowNumField = bookmodels.RowNum
+        serverModel.logicsButtonField = bookmodels.LogicsButton
+        console.log(serverModel);
+        this.select.generatebook(serverModel).subscribe((model) => {
+            var blob = new Blob([model], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+            var url = window.URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = "Книга " + serverModel.modelField;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            this.selectionChild.updateProcedure();
+        })
     }
 
-    back() {
-        this.logica.logicadatabase();; //Закрываем логику Данных
-        this.logica.logicaselect(); //Открываем логику загрузки
-    }    
-
-    shape(bookmodels:BookModels){
-      this.select.generatebook(bookmodels).subscribe((model)=>{
-        var blob = new Blob([model], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
-        var url = window.URL.createObjectURL(blob);
-        var a = document.createElement('a');
-        a.href = url;
-        a.download = "Книга "+bookmodels.Model;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url); 
-      })
-    }
-
-    donload(element:BookModels){
-        if(element.IdBook!==0){
-           this.select.selectbook(element.IdBook).subscribe(data=>{
-               var blob = new Blob([data], { type: 'image/tiff' });
-               var url = window.URL.createObjectURL(blob);
-               var a = document.createElement('a');
-               a.href = url;
-               a.download = "Книга "+element.Model;
-               document.body.appendChild(a);
-               a.click();
-               document.body.removeChild(a);
-               window.URL.revokeObjectURL(url);
-           })
-        }else{
-           alert("Отсутствует документ загрузите его по BareCode");
+    donload(element: any) {
+        var serverModel: BookModels = new BookModels();
+        serverModel.idBookField = element.IdBook
+        serverModel.idField = element.Id
+        serverModel.keysField = element.Keys
+        serverModel.modelField = element.Model
+        serverModel.nameField = element.Name
+        serverModel.rowNumField = element.RowNum
+        serverModel.logicsButtonField = element.LogicsButton
+        if (serverModel.idBookField !== 0) {
+            this.select.selectbook(serverModel.idBookField).subscribe(data => {
+                var blob = new Blob([data], { type: 'image/tiff' });
+                var url = window.URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = "Книга " + serverModel.modelField;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            })
+        } else {
+            alert("Отсутствует документ загрузите его по BareCode");
         }
-   }
+    }
 
 }

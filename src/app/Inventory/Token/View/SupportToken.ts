@@ -71,7 +71,7 @@ export class SupportToken implements OnInit {
     async sendserver() {
         await this.selectAll.allstatysing();
         await this.selectAll.allsupply();
-        await this.selectAll.alluser();
+        await this.selectAll.alluser(true);
         await this.selectAll.allsysblok();
     }
 
