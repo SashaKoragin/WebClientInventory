@@ -2,6 +2,7 @@ export const ServerHost: string = 'I7751-W40204180';  //localhost
 //export const ServerHost: string = 'localhost'
 export const ServerPort: string = '8182';
 //К примеру новая структура
+//http://I7751-W40204180:8182/Inventarka/AllRules
 export class AdressInventarka {
     public autificationInventar = `http://${ServerHost}:${ServerPort}/Inventarka/Authorization`;
     public alluser = `http://${ServerHost}:${ServerPort}/Inventarka/AllUsers`;
@@ -77,8 +78,8 @@ export class AdressInventarka {
     public addAndEditMailIdentifies = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditMailIdentifies`;
     public addAndEditMailGroups = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditMailGroups`;
 
-    ///Получение файла по get запросу параметр int для выбора View
-    public getFileXlsx = `http://${ServerHost}:${ServerPort}/Inventarka/GenerateFileXlsxSqlView?idView=`;
+    ///Получение файла по POST запросу параметр int для выбора View
+    public getFileXlsx = `http://${ServerHost}:${ServerPort}/Inventarka/GenerateFileXlsxSqlView`;
 
     ///Удаление записей
     public deleteUser = `http://${ServerHost}:${ServerPort}/Inventarka/DeleteUser?userIdEdit=`;
@@ -123,10 +124,47 @@ export class AdressInventarka {
     public generateQrCodeOffice = `http://${ServerHost}:${ServerPort}/Inventarka/GenerateQrCodeOffice?numberOffice={numberOffice}&isAll={isAll}`;
     ///Личный кабинет для техники
     public allTechnicsLk = `http://${ServerHost}:${ServerPort}/Inventarka/AllTechnicsLk?idUser={idUser}`;
+    ///Выгрузка всех пользователей отдела
+    public allUsersDepartmentLk = `http://${ServerHost}:${ServerPort}/Inventarka/AllUsersDepartmentLk?idUser={idUser}`;
     ///Выгрузка ролей пользователя
     public allRuleUser = `http://${ServerHost}:${ServerPort}/Inventarka/RuleAndUsers?idUser={idUser}`;
     ///Добавление или удаление ролей пользователя
     public allAddandDeleteRuleUser = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndDeleteRuleUser`;
     ///Проверка по УН запущена ли процесс или нет 
     public isBeginTask = `http://${ServerHost}:${ServerPort}/Inventarka/IsBeginTask?userIdEdit={idTask}`;
+
+    //Настройки организации
+    public settingOrganization = `http://${ServerHost}:${ServerPort}/Inventarka/SettingOrganization`;
+    public addAndEditOrganization = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditOrganization?userIdEdit=`;
+
+    //Настройка падежей для отделов отчетность
+    //http://localhost:8182/Inventarka/SettingDepartmentCase
+    public settingDepartmentCase = `http://${ServerHost}:${ServerPort}/Inventarka/SettingDepartmentCase`
+    public addAndEditSettingDepartmentCase = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditSettingDepartmentCase?userIdEdit=`;
+    //Настройки праздничных дней в инвенторизации
+    public getholiday = `http://${ServerHost}:${ServerPort}/Inventarka/GetHoliday`
+    public addAndEditHoliday = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditRbHoliday?userIdEdit=`;
+    public deleteHoliday = `http://${ServerHost}:${ServerPort}/Inventarka/DeleteRbHoliday?userIdEdit=`;
+    //Настройки регламентов отдела
+    public getDepartmentRegulations = `http://${ServerHost}:${ServerPort}/Inventarka/SettingDepartmentRegulations`;
+    public addAndEditSettingDepartmentRegulations = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditSettingDepartmentRegulations?userIdEdit=`;
+
+    //Api для заявки на доступ
+    //Ресурсы
+    public getResourceIt = `http://${ServerHost}:${ServerPort}/Inventarka/GetResourceIt`;
+    public addAndEditResourceIt = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditResourceIt`;
+    public getTaskAis3 = `http://${ServerHost}:${ServerPort}/Inventarka/GetTaskAis3`;
+    public addAndEditTaskAis3 = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditTaskAis3`;
+    //Журналы заявок
+    public getJournalAis3 = `http://${ServerHost}:${ServerPort}/Inventarka/GetJournalAis3`;
+    public addAndEditJournalAis3 = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditJournalAis3`;
+    //Формирование актов списания
+    public act = `http://${ServerHost}:${ServerPort}/Inventarka/CreateAct`
+    //Формирование журнала АИС 3 для доступов
+    public createJournalAis3 = `http://${ServerHost}:${ServerPort}/Inventarka/CreateJournalAis3?year={year}`
+    //Создание табелей
+    public createReportCard = `http://${ServerHost}:${ServerPort}/Inventarka/CreateReportCard`
+    //Создание служебных записок
+    public createMemoReport = `http://${ServerHost}:${ServerPort}/Inventarka/CreateMemoReport`
+
 }

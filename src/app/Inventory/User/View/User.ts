@@ -1,17 +1,20 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { PostInventar, EditAndAdd, AuthIdentificationSignalR, AuthIdentification } from '../../../Post RequestService/PostRequest';
+import { PostInventar, EditAndAdd, AuthIdentificationSignalR, AuthIdentification, SelectAllParametrs } from '../../../Post RequestService/PostRequest';
 import { MatTableDataSource, MatPaginator, MatSort, MatDialog } from '@angular/material';
 import { UserTableModel, TelephonsTableModel, OtdelTableModel, AddAndDeleteRuleUser } from '../../AddFullModel/ModelTable/TableModel';
 import { UsersIsActualsStats } from '../../ModelInventory/InventoryModel';
 import { ImportToExcel } from '../../AddFullModel/ModelTable/PublicFunction';
 import { ModelSelect } from '../../AllSelectModel/ParametrModel';
+import { ReportCardModel } from '../../AddFullModel/DialogReportCard/ReportCardModel/ReportCardModel';
+import { ReportCard } from '../../AddFullModel/DialogReportCard/DialogReportCardTs/DialogReportCard';
+import { DatePipe } from '@angular/common';
 
 
 @Component(({
     selector: 'equepment',
     templateUrl: '../Html/User.html',
     styleUrls: ['../Html/User.css'],
-    providers: [EditAndAdd]
+    providers: [EditAndAdd, SelectAllParametrs, DatePipe]
 }) as any)
 
 export class User implements OnInit {
@@ -19,9 +22,12 @@ export class User implements OnInit {
     constructor(public selectall: PostInventar,
         public editandadd: EditAndAdd,
         public SignalR: AuthIdentificationSignalR,
+        private dp: DatePipe,
         public authService: AuthIdentification,
-        public dialog: MatDialog) { }
+        public dialog: MatDialog,
+        public select: SelectAllParametrs,) { }
 
+    public settingModel: ReportCardModel = new ReportCardModel()
     @ViewChild('TEMPLATEUSERS', { static: true }) templateUsers: ElementRef;
     @ViewChild('TEMPLATEOTDELS', { static: true }) templateOtdels: ElementRef;
     @ViewChild('TEMPLATETELEPHONE', { static: true }) templateTelephone: ElementRef;
@@ -46,7 +52,7 @@ export class User implements OnInit {
     @ViewChild('TABLEMODELRULES', { static: false }) tableModelRule: ElementRef;
     @ViewChild(MatSort, { static: true }) sortroleAndUser: MatSort;
 
-    @ViewChild('userRoles', { static: true })  paginatorRoles: MatPaginator;
+    @ViewChild('userRoles', { static: true }) paginatorRoles: MatPaginator;
 
 
 
@@ -71,19 +77,19 @@ export class User implements OnInit {
         }
     }
 
-    dateconverters(date: any) {
+    datetemplate(date: any) {
         if (date) {
-            var dateOut = new Date(date);
-            return dateOut;
+            if (date.length > 10) {
+                return this.dp.transform(date, 'dd-MM-yyyy')
+            }
         }
-        return null;
+        return date;
     }
 
     public displayedColumns = ['Id', 'ChangeType', 'IdUser', 'NameUsers', 'SmallNameUsers', 'IdOtdel', 'IdPosition', 'TabelNumber', 'StatusActual'];
     public dataSource: MatTableDataSource<UsersIsActualsStats> = new MatTableDataSource<UsersIsActualsStats>(this.selectall.select.UsersIsActualsStats);
 
     ngOnInit(): void {
-      
         this.loadsModel();
     }
 
@@ -93,17 +99,9 @@ export class User implements OnInit {
     }
 
     public async getTelephoneFull() {
-        await this.selectall.downLoadXlsxSql(23).subscribe(async model => {
-            var blob = new Blob([model], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-            var url = window.URL.createObjectURL(blob);
-            var a = document.createElement('a');
-            a.href = url;
-            a.download = "Все телефоны по пользователям";
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);
-        });
+        await this.select.addselectallparametrs(new ModelSelect(23)).subscribe((model: ModelSelect) => {
+            this.selectall.downLoadXlsxSql(model.logicaSelectField)
+        })
     }
 
     public async actualUsers() {
@@ -140,6 +138,16 @@ export class User implements OnInit {
     }
 
 
+    createReportCard() {
+        this.settingModel.settingParametersField.tabelNumberField = this.authService.autorization.tabelNumberField;
+        const dialogRef = this.dialog.open(ReportCard, {
+            width: "800px",
+            height: "500px",
+            data: this.settingModel
+        })
+        dialogRef.afterClosed().subscribe(() => {
+            console.log("Вышли из диалога!");
+        });
+    }
+
 }
-
-

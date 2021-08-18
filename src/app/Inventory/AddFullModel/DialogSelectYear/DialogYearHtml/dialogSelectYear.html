@@ -1,0 +1,18 @@
+<div>
+    <b class="h2 text-primary ">Формирование журнала доступов АИС 3</b>
+</div>
+<div class="he d-flex align-items-center">
+    <b class="h3 text-primary ">Год журнала:</b>
+    <mat-form-field class="selectin_sql text-primary">
+        <mat-label class="text-primary">Год</mat-label>
+        <mat-select class="text-primary" placeholder="Год" [(ngModel)]="data.selectedYears" name="year">
+            <mat-option class="text-primary" *ngFor="let year of data.yearsModel" [value]="year">
+                {{year}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+</div>
+<div>
+    <button class="mt-2 btn btn-lg btn-primary" matTooltip="Выгрузить отчет!" type="submit"
+        (click)="sendReport()">Выгрузить!</button>
+</div>

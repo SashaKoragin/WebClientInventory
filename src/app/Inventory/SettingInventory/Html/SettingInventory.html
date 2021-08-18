@@ -1,0 +1,461 @@
+<mat-tab-group [style.display]="isload ? 'none' : 'grid'">
+    <mat-tab label="Общие настройки">
+        <div class="allSetting">
+            <div class="settingModelOne">
+                <div class="text">
+                    <label>Наименование организации:</label>
+                </div>
+                <div class="grid-itemOne">
+                    <mat-form-field class="inputOne">
+                        <input matInput placeholder="Наименование организации" [disabled]="setting.isEdit"
+                            [ngModel]="setting.dataSource?.NameOrganization"
+                            (ngModelChange)="setting.dataSource.NameOrganization = $event" />
+                    </mat-form-field>
+                </div>
+                <div class="text">
+                    <label>Полное наименование организации:</label>
+                </div>
+                <div class="grid-itemOne">
+                    <mat-form-field class="inputOne">
+                        <input matInput placeholder="Полное наименование организации" [disabled]="setting.isEdit"
+                            [ngModel]="setting.dataSource?.NameFullOrganization"
+                            (ngModelChange)="setting.dataSource.NameFullOrganization = $event" />
+                    </mat-form-field>
+                </div>
+                <div class="text">
+                    <label>Руководитель организации:</label>
+                </div>
+                <div class="grid-itemOne">
+                    <mat-form-field class="inputOne">
+                        <input matInput placeholder="Руководитель организации" [disabled]="setting.isEdit"
+                            [ngModel]="setting.dataSource?.NameFaceLeader"
+                            (ngModelChange)="setting.dataSource.NameFaceLeader = $event" />
+                    </mat-form-field>
+                </div>
+                <div class="text">
+                    <label>Мат. ответственное лицо:</label>
+                </div>
+                <div class="grid-itemOne">
+                    <mat-form-field class="inputOne">
+                        <input matInput placeholder="Мат. ответственное лицо" [ngModel]="setting.dataSource?.NameFace"
+                            [disabled]="setting.isEdit" (ngModelChange)="setting.dataSource.NameFace = $event" />
+                    </mat-form-field>
+                </div>
+                <div class="text">
+                    <label>Ответственный департамент:</label>
+                </div>
+                <div class="grid-itemOne">
+                    <mat-form-field class="inputOne">
+                        <input matInput placeholder="Ответственный департамент"
+                            [ngModel]="setting.dataSource?.NameDepartament" [disabled]="setting.isEdit"
+                            (ngModelChange)="setting.dataSource.NameDepartament = $event" />
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="text model">
+                Склонения по падежам для документа оборота:
+            </div>
+            <div class="settingModelTwo">
+                <div class="text">
+                    Именительный падеж:
+                </div>
+                <div class="grid-itemOne">
+                    <mat-form-field class="inputTwo">
+                        <input matInput placeholder="Именительный падеж"
+                            [ngModel]="setting.dataSource?.InameOrganization" [disabled]="setting.isEdit"
+                            (ngModelChange)="setting.dataSource.InameOrganization = $event" />
+                    </mat-form-field>
+                </div>
+                <div class="text">
+                    Родительный падеж:
+                </div>
+                <div class="grid-itemOne">
+                    <mat-form-field class="inputTwo">
+                        <input matInput placeholder="Родительный падеж"
+                            [ngModel]="setting.dataSource?.RnameOrganization" [disabled]="setting.isEdit"
+                            (ngModelChange)="setting.dataSource.RnameOrganization = $event" />
+                    </mat-form-field>
+                </div>
+                <div class="text">
+                    Дательный падеж:
+                </div>
+                <div class="grid-itemOne">
+                    <mat-form-field class="inputTwo">
+                        <input matInput placeholder="Дательный падеж" [ngModel]="setting.dataSource?.DnameOrganization"
+                            [disabled]="setting.isEdit"
+                            (ngModelChange)="setting.dataSource.DnameOrganization = $event" />
+                    </mat-form-field>
+                </div>
+                <div aligh="right" class="text">
+                    Винительный падеж:
+                </div>
+                <div class="grid-itemOne">
+                    <mat-form-field class="inputTwo">
+                        <input matInput placeholder="Винительный падеж"
+                            [ngModel]="setting.dataSource?.VnameOrganization" [disabled]="setting.isEdit"
+                            (ngModelChange)="setting.dataSource.VnameOrganization = $event" />
+                    </mat-form-field>
+                </div>
+                <div aligh="right" class="text">
+                    Творительный падеж:
+                </div>
+                <div class="grid-itemOne">
+                    <mat-form-field class="inputTwo">
+                        <input matInput placeholder="Творительный падеж"
+                            [ngModel]="setting.dataSource?.TnameOrganization" [disabled]="setting.isEdit"
+                            (ngModelChange)="setting.dataSource.TnameOrganization = $event" />
+                    </mat-form-field>
+                </div>
+                <div aligh="right" class="text">
+                    Предложный падеж:
+                </div>
+                <div class="grid-itemOne">
+                    <mat-form-field class="inputTwo">
+                        <input matInput placeholder="Предложный падеж" [ngModel]="setting.dataSource?.PnameOrganization"
+                            [disabled]="setting.isEdit"
+                            (ngModelChange)="setting.dataSource.PnameOrganization = $event" />
+                    </mat-form-field>
+                </div>
+            </div>
+            <button class="textButton text" type="submit" color="primary" *ngIf="setting.isEdit"
+                (click)="setting.edit()">
+                <i class="material-icons">edit</i>
+                Редактировать
+            </button>
+            <div *ngIf="!setting.isEdit">
+                <button class="textButton text" type="submit" color="primary" (click)="setting.save()">
+                    <i class="material-icons">check</i>
+                    Сохранить
+                </button>
+                <button class="textButton text" type="submit" color="primary" (click)="setting.cancel()">
+                    <i class="material-icons">cancel</i>
+                    Отмена
+                </button>
+            </div>
+        </div>
+    </mat-tab>
+    <mat-tab label="Справочник праздничных дней">
+        <div class="modelH">
+            <form class="search">
+                <mat-form-field class="search_blok">
+                    <span matPrefix><i class="material-icons">youtube_searched_for</i></span>
+                    <input matInput (keyup)="holiday.filterstable($event.target.value)" placeholder="Поиск данных">
+                </mat-form-field>
+            </form>
+            <div class="tables" #TABLEHOLIDAY>
+                <table class="table" mat-table [dataSource]="holiday.dataSource">
+                    <ng-container matColumnDef="Id">
+                        <th mat-header-cell *matHeaderCellDef>Id</th>
+                        <td mat-cell *matCellDef="let row">{{row?.Id}}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="DateTime_Holiday">
+                        <th mat-header-cell *matHeaderCellDef>Праздничная дата</th>
+                        <td mat-cell *matCellDef="let row">
+                            <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.DateTime_Holiday}}</Label>
+                            <div [ngClass]=row.Id.toString() id="{{row.Id}}"
+                                [style.display]="!row.ModelIsEdit ? 'none':'block'"></div>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="IS_HOLIDAY">
+                        <th mat-header-cell *matHeaderCellDef>Рабочий или выходной день</th>
+                        <td mat-cell *matCellDef="let row">
+                            <Label
+                                [style.display]="row.ModelIsEdit ? 'none':'block'">{{returnTextHoliday(row.IS_HOLIDAY)}}</Label>
+                            <div [ngClass]=row.Id.toString() id="{{row.Id}}"
+                                [style.display]="!row.ModelIsEdit ? 'none':'block'"></div>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="ActionsColumn">
+                        <th mat-header-cell *matHeaderCellDef>
+                            <button mat-icon-button color="primary" [disabled]="holiday.isAdd" focusable="false"
+                                (click)="holiday.add()">
+                                <i class="material-icons">person_add</i>
+                            </button>
+                        </th>
+                        <td mat-cell *matCellDef="let row">
+                            <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="holiday.isEdit" color="accent"
+                                (click)="holiday.edit(row)">
+                                <i class="material-icons">edit</i>
+                            </button>
+                            <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="holiday.isEdit"
+                                (click)="holiday.delete(row)">
+                                <i class="material-icons">delete</i>
+                            </button>
+                            <div *ngIf="row.ModelIsEdit">
+                                <button mat-icon-button type="submit" color="primary" focusable="false"
+                                    (click)="holiday.save()">
+                                    <i class="material-icons">check</i>
+                                </button>
+                                <button mat-icon-button color="primary" focusable="false" (click)="holiday.cancel(row)">
+                                    <i class="material-icons">cancel</i>
+                                </button>
+                            </div>
+                        </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="holiday.displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: holiday.displayedColumns;"></tr>
+                </table>
+            </div>
+            <mat-paginator class="paginator" #holidays [pageSizeOptions]="[5, 10, 25, holiday.length]"
+                showFirstLastButtons="true">
+            </mat-paginator>
+        </div>
+        <div [style.display]="'none'" #TEMPLATEHOLIDAY>
+            <mat-form-field id="template" class="validation">
+                <input matInput [matDatepicker]="picker1" placeholder="Выбор праздничной даты!!!"
+                    [formControl]="holiday.date" [(ngModel)]="holiday.date.value">
+                <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                <mat-datepicker #picker1></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field id="template" class="validation">
+                <mat-select (click)="holiday.calbackfiltersAll()" [placeholder]="holiday.models.HolidayText"
+                    [(ngModel)]="holiday.models" name="HolidayText">
+                    <mat-select-filter class="filter" [placeholder]="holiday.models.HolidayText"
+                        [displayMember]="'HolidayText'" [array]="holiday.modelIsHoliday"
+                        (filteredReturn)="holiday.filteredHoliday = $event">
+                    </mat-select-filter>
+                    <mat-option *ngFor="let holidayModel of holiday.filteredHoliday" [value]="holidayModel">
+                        {{holidayModel.HolidayText}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </mat-tab>
+    <mat-tab label="Настройка падежей отделов">
+        <div class="modelS">
+            <form class="search">
+                <mat-form-field class="search_blok">
+                    <span matPrefix><i class="material-icons">youtube_searched_for</i></span>
+                    <input matInput (keyup)="settingDepartment.filterstable($event.target.value)"
+                        placeholder="Поиск данных">
+                </mat-form-field>
+                <button class="actual" mat-button (click)="excel.ExportTOExcel(tablemfus)">Выгрузить</button>
+            </form>
+            <div class="tables" #TABLESETTINGDEPARTMENT>
+                <table mat-table [dataSource]="settingDepartment.dataSource" matSort>
+
+                    <ng-container matColumnDef="IdOtdel">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
+                        <td mat-cell *matCellDef="let row" [matTooltip]="row.IdOtdel">
+                            {{row.IdOtdel}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="NameOtdel">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Наименование отдела</th>
+                        <td mat-cell *matCellDef="let row" [matTooltip]="row.NameOtdel">
+                            <Label>{{row.NameOtdel}}</Label>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="InameOtdel">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>И. Падеж</th>
+                        <td mat-cell *matCellDef="let row" [matTooltip]="row.InameOtdel">
+                            <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.InameOtdel}}</Label>
+                            <div [ngClass]=row.IdOtdel.toString() id="{{row.IdOtdel}}"
+                                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            </div>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="RnameOtdel">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Р. Падеж</th>
+                        <td mat-cell *matCellDef="let row" [matTooltip]="row.RnameOtdel">
+                            <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.RnameOtdel}}</Label>
+                            <div [ngClass]=row.IdOtdel.toString() id="{{row.IdOtdel}}"
+                                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            </div>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="DnameOtdel">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Д. Падеж</th>
+                        <td mat-cell *matCellDef="let row" [matTooltip]="row.DnameOtdel">
+                            <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.DnameOtdel}}</Label>
+                            <div [ngClass]=row.IdOtdel.toString() id="{{row.IdOtdel}}"
+                                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            </div>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="VnameOtdel">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>В. Падеж</th>
+                        <td mat-cell *matCellDef="let row" [matTooltip]="row.VnameOtdel">
+                            <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.VnameOtdel}}</Label>
+                            <div [ngClass]=row.IdOtdel.toString() id="{{row.IdOtdel}}"
+                                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            </div>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="PnameOtdel">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>П. Падеж</th>
+                        <td mat-cell *matCellDef="let row" [matTooltip]="row.PnameOtdel">
+                            <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.PnameOtdel}}</Label>
+                            <div [ngClass]=row.IdOtdel.toString() id="{{row.IdOtdel}}"
+                                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            </div>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="TnameOtdel">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Т. Падеж</th>
+                        <td mat-cell *matCellDef="let row" [matTooltip]="row.TnameOtdel">
+                            <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.TnameOtdel}}</Label>
+                            <div [ngClass]=row.IdOtdel.toString() id="{{row.IdOtdel}}"
+                                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            </div>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="ActionsColumn">
+                        <th mat-header-cell *matHeaderCellDef>Логика</th>
+                        <td mat-cell *matCellDef="let row">
+                            <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="settingDepartment.isEdit"
+                                color="accent" (click)="settingDepartment.edit(row)">
+                                <i class="material-icons">edit</i>
+                            </button>
+                            <div *ngIf="row.ModelIsEdit">
+                                <button mat-icon-button type="submit" color="primary" focusable="false"
+                                    (click)="settingDepartment.save()">
+                                    <i class="material-icons">check</i>
+                                </button>
+                                <button mat-icon-button color="primary" focusable="false"
+                                    (click)="settingDepartment.cancel(row)">
+                                    <i class="material-icons">cancel</i>
+                                </button>
+                            </div>
+                        </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="settingDepartment.displayedColumns; sticky: true"></tr>
+                    <tr mat-row *matRowDef="let row; columns: settingDepartment.displayedColumns;"></tr>
+                </table>
+            </div>
+            <mat-paginator class="paginator" #settingDepartament
+                [pageSizeOptions]="[5, 10, 25, paginatorsettingDepartment.length]" showFirstLastButtons="true">
+            </mat-paginator>
+        </div>
+        <div [style.display]="'none'" #TEMPLATESETTINGDEPARTMENT>
+
+            <mat-form-field id="template" class="validation">
+                <input matInput placeholder="Именительный" [ngModel]="settingDepartment.model.InameOtdel"
+                    (ngModelChange)="settingDepartment.model.InameOtdel = $event" />
+            </mat-form-field>
+
+            <mat-form-field id="template" class="validation">
+                <input matInput placeholder="Родительный" [ngModel]="settingDepartment.model.RnameOtdel"
+                    (ngModelChange)="settingDepartment.model.RnameOtdel = $event" />
+            </mat-form-field>
+
+            <mat-form-field id="template" class="validation">
+                <input matInput placeholder="Дательный" [ngModel]="settingDepartment.model.DnameOtdel"
+                    (ngModelChange)="settingDepartment.model.DnameOtdel = $event" />
+            </mat-form-field>
+
+            <mat-form-field id="template" class="validation">
+                <input matInput placeholder="Винительный" [ngModel]="settingDepartment.model.VnameOtdel"
+                    (ngModelChange)="settingDepartment.model.VnameOtdel = $event" />
+            </mat-form-field>
+
+            <mat-form-field id="template" class="validation">
+                <input matInput placeholder="Предложный" [ngModel]="settingDepartment.model.PnameOtdel"
+                    (ngModelChange)="settingDepartment.model.PnameOtdel = $event" />
+            </mat-form-field>
+
+            <mat-form-field id="template" class="validation">
+                <input matInput placeholder="Творительный" [ngModel]="settingDepartment.model.TnameOtdel"
+                    (ngModelChange)="settingDepartment.model.TnameOtdel = $event" />
+            </mat-form-field>
+        </div>
+    </mat-tab>
+    <mat-tab label="Настройка регламентов отделов">
+        <div class="modelS">
+            <form class="search">
+                <mat-form-field class="search_blok">
+                    <span matPrefix><i class="material-icons">youtube_searched_for</i></span>
+                    <input matInput (keyup)="settingDepartmentRegulations.filterstable($event.target.value)"
+                        placeholder="Поиск данных">
+                </mat-form-field>
+                <button class="actual" mat-button (click)="excel.ExportTOExcel(tablemfus)">Выгрузить</button>
+            </form>
+            <div class="tables" #TABLEREGULATIONSDEPARTMENT>
+                <table mat-table [dataSource]="settingDepartmentRegulations.dataSource" matSort>
+
+                    <ng-container matColumnDef="IdOtdel">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
+                        <td mat-cell *matCellDef="let row" [matTooltip]="row.IdOtdel">
+                            {{row.IdOtdel}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="NameOtdel">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Наименование отдела</th>
+                        <td mat-cell *matCellDef="let row" [matTooltip]="row.NameOtdel">
+                            <Label>{{row.NameOtdel}}</Label>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="Regulations">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Регламент (описание)</th>
+                        <td mat-cell *matCellDef="let row" [matTooltip]="row.Regulations">
+                            <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Regulations}}</Label>
+                            <div [ngClass]=row.IdOtdel.toString() id="{{row.IdOtdel}}"
+                                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            </div>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="ActionsColumn">
+                        <th mat-header-cell *matHeaderCellDef>Логика</th>
+                        <td mat-cell *matCellDef="let row">
+                            <button mat-icon-button *ngIf="!row.ModelIsEdit"
+                                [disabled]="settingDepartmentRegulations.isEdit" color="accent"
+                                (click)="settingDepartmentRegulations.edit(row)">
+                                <i class="material-icons">edit</i>
+                            </button>
+                            <div *ngIf="row.ModelIsEdit">
+                                <button mat-icon-button type="submit" color="primary" focusable="false"
+                                    (click)="settingDepartmentRegulations.save()">
+                                    <i class="material-icons">check</i>
+                                </button>
+                                <button mat-icon-button color="primary" focusable="false"
+                                    (click)="settingDepartmentRegulations.cancel(row)">
+                                    <i class="material-icons">cancel</i>
+                                </button>
+                            </div>
+                        </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="settingDepartmentRegulations.displayedColumns; sticky: true">
+                    </tr>
+                    <tr mat-row *matRowDef="let row; columns: settingDepartmentRegulations.displayedColumns;"></tr>
+                </table>
+            </div>
+            <mat-paginator class="paginator" #regulationsDepartment
+                [pageSizeOptions]="[5, 10, 25, paginatorregulationsDepartment.length]" showFirstLastButtons="true">
+            </mat-paginator>
+        </div>
+        <div [style.display]="'none'" #TEMPLATEREGULATIONSDEPARTMENT>
+
+            <!-- <mat-form-field id="template" class="validation">
+                <input matInput placeholder="Регламент" [ngModel]="settingDepartmentRegulations.model.Regulations"
+                    (ngModelChange)="settingDepartmentRegulations.model.Regulations = $event" />
+            </mat-form-field> -->
+
+            <mat-form-field id="template" class="validation">
+                <textarea class="RegulationText" matInput placeholder="Регламент"
+                    [ngModel]="settingDepartmentRegulations.model.Regulations"
+                    (ngModelChange)="settingDepartmentRegulations.model.Regulations = $event"></textarea>
+            </mat-form-field>
+
+
+        </div>
+    </mat-tab>
+</mat-tab-group>
+
+<div [style.display]="isload ? 'inline':'none'">
+    <p>Идет загрузка данных подождите пожалуйста!!!</p>
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    <div class="messages" *ngFor="let message of loadMessage">
+        <p>{{message}}</p>
+    </div>
+</div>

@@ -1,9 +1,9 @@
-import { EditAndAdd, SelectAllParametrs } from '../../../Post RequestService/PostRequest';
+import { EditAndAdd, SelectAllParametrs } from '../../../../Post RequestService/PostRequest';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { LogicaDataBase, GenerateParametrs } from '../../AllSelectModel/GenerateParametrFront';
-import { ModelSelect } from '../../AllSelectModel/ParametrModel';
+import { LogicaDataBase, GenerateParametrs } from '../../../AllSelectModel/GenerateParametrFront';
+import { ModelSelect } from '../../../AllSelectModel/ParametrModel';
 import { deserialize } from 'class-transformer';
-import { TehnicalSqlAndTreeAis3, TableTemplate, AllTemplateAndTree } from '../../ModelInventory/InventoryModel';
+import { TehnicalSqlAndTreeAis3, TableTemplate, AllTemplateAndTree } from '../../../ModelInventory/InventoryModel';
 import { MatTableDataSource } from '@angular/material';
 import { MatPaginator } from '@angular/material/paginator';
 import { animate, state, style, transition, trigger } from '@angular/animations';
@@ -42,7 +42,7 @@ export class PathAis3 implements OnInit {
         this.select.isBeginTask(2).toPromise().then((isCheck: boolean) => {
             this.isBeginTask = isCheck
             if (this.isBeginTask) {
-                this.select.addselectallparametrs(new ModelSelect(38)).subscribe((model: ModelSelect) => {
+                this.select.addselectallparametrs(new ModelSelect(37)).subscribe((model: ModelSelect) => {
                     this.selecting = new GenerateParametrs(model);
                 })
             }

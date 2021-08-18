@@ -1,7 +1,5 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { userInfo } from 'os';
-
 
 export class ModelDialog {
     idTemplate: number;
@@ -12,7 +10,6 @@ export class ModelDialog {
     isUserCreater: boolean;
     isItDepartmen: boolean = true;
 }
-
 
 @Component(({
     selector: 'discription',

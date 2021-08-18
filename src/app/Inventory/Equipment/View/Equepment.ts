@@ -4,6 +4,7 @@ import { PrinterTableModel, ScanerAndCamerTableModel, MfuTableModel, SysBlockTab
 import { MatPaginator, MatSort, MatDialog } from '@angular/material';
 import { ImportToExcel } from '../../AddFullModel/ModelTable/PublicFunction';
 import { DatePipe } from '@angular/common';
+import { AllUsersFilters } from '../../ModelInventory/InventoryModel';
 
 
 
@@ -77,7 +78,7 @@ export class Equipment implements OnInit {
   @ViewChild('TABLEBLOCKPOWERS', { static: false }) tableblockpowers: ElementRef;
   @ViewChild('TABLESWITHES', { static: false }) tableswithes: ElementRef;
   @ViewChild('TABLESERVEREQUIPMENT', { static: false }) tableServerEquipment: ElementRef;
-  
+
 
   excel: ImportToExcel = new ImportToExcel();
 
@@ -89,7 +90,7 @@ export class Equipment implements OnInit {
   public blockpower: BlockPowerTableModel = new BlockPowerTableModel(this.editandadd, this.SignalR);
   public switch: SwitchTableModel = new SwitchTableModel(this.editandadd, this.SignalR)
   public serverEquipment: ServerEquipmentTableModel = new ServerEquipmentTableModel(this.editandadd, this.SignalR)
-  
+
 
 
 
@@ -139,8 +140,10 @@ export class Equipment implements OnInit {
   }
 
   async sendserver() {
+    var allUsersFilters = new AllUsersFilters()
+    allUsersFilters.filterActualField.isFilterField = true;
     await this.selectAll.allTemplate();
-    await this.selectAll.alluser();
+    await this.selectAll.alluser(allUsersFilters);
     await this.selectAll.allnamemonitor();
     await this.selectAll.allcopysave();
     await this.selectAll.allmodel();

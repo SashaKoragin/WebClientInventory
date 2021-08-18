@@ -53,7 +53,6 @@ export class MailPop3 implements OnInit {
     var modelServer = new WebMailModel();
     modelServer.idMailField = row.IdMail;
     modelServer.nameGroupModelField = this.columns.Type;
-    console.log(modelServer);
     this.select.visibilityBodyMail(modelServer).subscribe((data: string) => {
       console.log(data);
       alert(data);
@@ -66,7 +65,6 @@ export class MailPop3 implements OnInit {
       var modelServer = new WebMailModel();
       modelServer.idMailField = row.IdMail;
       modelServer.nameGroupModelField = this.columns.Type;
-      console.log(modelServer);
       var blob = await this.select.outputMail(modelServer);
       if (blob) {
         var nameFile = `Вложение ${row.Id}`;
@@ -91,7 +89,7 @@ export class MailPop3 implements OnInit {
   ///Удалить письмо и клендарь
   deleteRow(row: any) {
     var modelServer = new WebMailModel();
-    if (this.columns.Type === "CalendarVksStp") {
+    if (this.columns.Type === "CalendarVksStpView") {
       modelServer.nameGroupModelField = "MailIn";
     }
     else {

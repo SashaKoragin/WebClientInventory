@@ -5,6 +5,8 @@ import { ModelSelect } from '../../../AllSelectModel/ParametrModel';
 import { DesirilizeXml, Document, Documents, ModelReturn } from '../../../ModelInventory/InventoryModel';
 import { MatTableDataSource, MatPaginator } from '@angular/material';
 import { deserialize } from 'class-transformer';
+import { DynamicTableColumnModel, Table } from '../../../AddFullModel/ModelTable/DynamicTableModel';
+import { Select } from '../../../AddFullModel/ModelViewSelect/View/SelectView';
 
 @Component(({
     selector: 'equepment',
@@ -16,43 +18,18 @@ export class DocumentSelect implements OnInit {
 
     constructor(public select: SelectAllParametrs) { }
 
-    selecting: GenerateParametrs
+
+    @ViewChild('DocumentModel', { static: false }) selectionChild: Select;
+    dinamicmodel: DynamicTableColumnModel = new DynamicTableColumnModel();
     logica: LogicaDataBase = new LogicaDataBase();
-    selectsql: DesirilizeXml = new DesirilizeXml();
-    displaydataSource: string[] = ['Id', 'IdNamedocument', 'IdUser', 'NameDocument', 'InfoUserFile', 'IsFileExists', 'Namefile', 'TypeFile', 'IsActual', 'Download'];
-    dataSource: MatTableDataSource<Document>;
-    @ViewChild(MatPaginator, { static: false }) paginatordataSource: MatPaginator;
+    selecting: GenerateParametrs = null;
+    columns: Table = this.dinamicmodel.columnsdocumentModel[0];
 
     ngOnInit(): void {
-        this.select.addselectallparametrs(new ModelSelect(4)).subscribe((model: ModelSelect) => {
+        this.select.addselectallparametrs(new ModelSelect(this.dinamicmodel.documentModel[0].indexsevr)).subscribe((model: ModelSelect) => {
             this.selecting = new GenerateParametrs(model);
+            this.columns = this.dinamicmodel.columnsdocumentModel[this.dinamicmodel.documentModel[0].indexcolumnmodel]
         })
-    }
-
-    update() {
-        try {
-            if (this.selecting.errorModel()) {
-                this.logica.logicaselect(); //Закрываем логику выбора
-                this.logica.logicaprogress();  //Открываем логику загрузки
-                this.select.selectusersql(this.selecting.generatecommand()).subscribe((model) => {
-                    this.selectsql.Documents = deserialize<Documents>(Documents, model.toString()); //Динамический язык
-                    this.logica.logicaprogress();
-                    this.logica.logicadatabase();
-                    if (this.selectsql.Documents != null) {
-                        this.dataSource = new MatTableDataSource<Document>(this.selectsql.Documents.Document)
-                        this.dataSource.paginator = this.paginatordataSource;
-                        this.logica.errornull = true;
-                    } else {
-                        this.logica.errornull = false;
-                    }
-                })
-            }
-            else {
-                alert('Существуют ошибки в выборке!!!');
-            }
-        } catch (e) {
-            alert(e.toString());
-        }
     }
 
     donload(element: Document) {
@@ -76,26 +53,11 @@ export class DocumentSelect implements OnInit {
     delete(element: Document) {
         this.select.deletedocument(element.Id).subscribe((model: string) => {
             if (model) {
-                console.log(model);
-                this.select.selectusersql(this.selecting.generatecommand()).subscribe((model) => {
-                    this.selectsql.Documents = deserialize<Documents>(Documents, model.toString()); //Динамический язык
-                    if(this.selectsql.Documents != null){
-                        this.dataSource = new MatTableDataSource<Document>(this.selectsql.Documents.Document)
-                        this.dataSource.paginator = this.paginatordataSource;
-                    }
-                    else{
-                        this.dataSource = new MatTableDataSource<Document>()
-                        this.dataSource.paginator = this.paginatordataSource;
-                    }
-                });
+                this.selectionChild.updateProcedure();
+                console.log("Документ за номером " + element.Id + " удален!");
             } else {
                 console.log("Отсутствует документ на сервере за номером " + element.Id);
             }
         });
-    }
-
-    back() {
-        this.logica.logicadatabase();; //Закрываем логику Данных
-        this.logica.logicaselect(); //Открываем логику загрузки
     }
 }

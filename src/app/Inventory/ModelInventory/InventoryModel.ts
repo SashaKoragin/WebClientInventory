@@ -79,6 +79,7 @@ export class TehnicalSqlAndTreeAis3 {
     Users: Users[] = null;
     Otdel: Otdel[] = null;
     AllTemplateAndTree: AllTemplateAndTree[] = null;
+    TemplateAllIfns: TemplateAllIfns[] = null;
 }
 
 export class Documents {
@@ -87,6 +88,10 @@ export class Documents {
 
 ///Очень важный класс для приемка DTO ответов
 export class FullSelectedModel {
+    Organization: Organization;
+    SettingDepartmentCaseGetServer: SettingDepartmentCaseGetServer[];
+    RegulationsDepartment: RegulationsDepartment[];
+    Rb_Holiday: Rb_Holiday[];
     Otdels: Otdel[];
     Users: Users[];
     Position: Position[];
@@ -122,6 +127,9 @@ export class FullSelectedModel {
     MailGroup: MailGroup[];
     FullTemplateSupport: FullTemplateSupport[]; //Модель шаблонов для СТО
     AllTechnics: AllTechnics[]; //Модель для ЛК
+    JournalAis3: JournalAis3[]; //Журнал для АИС 3
+    ResourceIt: ResourceIt[]; //Ресурс для заявки
+    TaskAis3: TaskAis3[];  //Задача заявки
 }
 
 ///Модель отвертов с сервера
@@ -143,16 +151,33 @@ export class Autorization {
     public passwordField: string = null;
 }
 
+export class Organization {
+    public Id?: number;
+    public NameOrganization?: string;
+    public NameFullOrganization?: string;
+    public NameFaceLeader?: string;
+    public InameOrganization?: string;
+    public RnameOrganization?: string;
+    public DnameOrganization?: string;
+    public VnameOrganization?: string;
+    public TnameOrganization?: string;
+    public PnameOrganization?: string;
+    public NameFace?: string;
+    public NameDepartament?: string;
+    public DataCreate?: any;
+
+}
+
+
 export class Users {
     public IdUser?: number;
     public Name?: string;
     public SmallName?: string;
+    public DateInWork?: any;
     public IdOtdel?: number;
     public IdPosition?: number;
     public TabelNumber?: string;
     public IdTelephon?: number;
-    public NameUser?: string;
-    public Passwords?: string;
     public StatusActual: number;
     public IdHistory?: string;
     public Mfu?: Mfu[];
@@ -171,6 +196,33 @@ export class Users {
     public Otdel?: Otdel;
     public ModelIsEdit?: boolean = false;
 }
+
+export class JournalAis3 {
+    public IdJournal: number;
+    public IdTask: number;
+    public IdResource: number;
+    public IdUser?: number;
+    public NameTarget: string;
+    public TaskUser: string;
+    public DateTask: any;
+    public ResourceIt?: ResourceIt;
+    public TaskAis3?: TaskAis3
+    public User?: Users
+    public ModelIsEdit?: boolean = false;
+}
+
+export class ResourceIt {
+    public IdResource: number;
+    public NameResource: string;
+    public ModelIsEdit?: boolean = false;
+}
+
+export class TaskAis3 {
+    public IdTask: number;
+    public NameTask: string;
+    public ModelIsEdit?: boolean = false;
+}
+
 
 export class SysBlock {
     public IdSysBlock: number;
@@ -296,16 +348,70 @@ export class Position {
 export class Otdel {
     public IdOtdel?: number;
     public IdUser?: number;
+    public CodeOtdel?: string;
     public NameOtdel?: string;
     public Users: Users[];
     public User: Users;
     public ModelIsEdit?: boolean = false;
 }
+//Модель DTO для настроек падежей
+export class SettingDepartmentCaseGetServer {
+    public IdOtdel?: number;
+    public NameOtdel?: string;
+    public InameOtdel?: string;
+    public RnameOtdel?: string;
+    public DnameOtdel?: string;
+    public VnameOtdel?: string;
+    public PnameOtdel?: string;
+    public TnameOtdel?: string;
+    public ModelIsEdit?: boolean = false;
+}
 
+export class RegulationsDepartment {
+    public IdOtdel?: number;
+    public NameOtdel?: string;
+    public Regulations?: string;
+    public ModelIsEdit?: boolean = false;
+}
+
+export class RegulationsDepartmentToServer {
+    constructor(SettingRegulationsDepartment: RegulationsDepartment) {
+        SettingRegulationsDepartment.IdOtdel ? this.idOtdelField = SettingRegulationsDepartment.IdOtdel : this.idOtdelField = null;
+        SettingRegulationsDepartment.NameOtdel ? this.nameOtdelField = SettingRegulationsDepartment.NameOtdel : this.nameOtdelField = null;
+        SettingRegulationsDepartment.Regulations ? this.regulationsField = SettingRegulationsDepartment.Regulations : this.regulationsField = null;
+    }
+    public idOtdelField?: number;
+    public nameOtdelField?: string;
+    public regulationsField?: string;
+}
+
+
+export class SettingDepartmentCaseToServer {
+    constructor(SettingDepartmentCaseGetServer: SettingDepartmentCaseGetServer) {
+        SettingDepartmentCaseGetServer.IdOtdel ? this.idOtdelField = SettingDepartmentCaseGetServer.IdOtdel : this.idOtdelField = null;
+        SettingDepartmentCaseGetServer.NameOtdel ? this.nameOtdelField = SettingDepartmentCaseGetServer.NameOtdel : this.nameOtdelField = null;
+        SettingDepartmentCaseGetServer.InameOtdel ? this.inameOtdelField = SettingDepartmentCaseGetServer.InameOtdel : this.inameOtdelField = null;
+        SettingDepartmentCaseGetServer.RnameOtdel ? this.rnameOtdelField = SettingDepartmentCaseGetServer.RnameOtdel : this.rnameOtdelField = null;
+        SettingDepartmentCaseGetServer.DnameOtdel ? this.dnameOtdelField = SettingDepartmentCaseGetServer.DnameOtdel : this.dnameOtdelField = null;
+        SettingDepartmentCaseGetServer.VnameOtdel ? this.vnameOtdelField = SettingDepartmentCaseGetServer.VnameOtdel : this.vnameOtdelField = null;
+        SettingDepartmentCaseGetServer.PnameOtdel ? this.pnameOtdelField = SettingDepartmentCaseGetServer.PnameOtdel : this.pnameOtdelField = null;
+        SettingDepartmentCaseGetServer.TnameOtdel ? this.tnameOtdelField = SettingDepartmentCaseGetServer.TnameOtdel : this.tnameOtdelField = null;
+    }
+    public idOtdelField?: number;
+    public nameOtdelField?: string;
+    public inameOtdelField?: string;
+    public rnameOtdelField?: string;
+    public dnameOtdelField?: string;
+    public vnameOtdelField?: string;
+    public pnameOtdelField?: string;
+    public tnameOtdelField?: string;
+}
 
 export class NameSysBlock {
     public IdModelSysBlock: number;
     public NameComputer: string;
+    public NameManufacturer: string;
+    public NameProizvoditel: string;
     public ModelIsEdit?: boolean = false;
 }
 
@@ -748,4 +854,34 @@ export class TableTemplate {
 export class TableTasks {
     public Path: string;
     public Type: string;
+}
+
+
+export class TemplateAllIfns {
+    public IdTemplateIfns: number;
+    public Name: string;
+    public Category: string;
+    public TemplateIfnsAndRuleIfns: TemplateIfnsAndRuleIfns[]
+}
+
+export class TemplateIfnsAndRuleIfns {
+    public IdRuleIfns: number;
+    public Rules: string;
+}
+
+export class Rb_Holiday {
+    public Id: number;
+    public DateTime_Holiday: any;
+    public IS_HOLIDAY: boolean;
+    public ModelIsEdit?: boolean = false;
+}
+///Фильтр коллекций
+export class AllUsersFilters {
+
+    public filterActualField: FilterActual = new FilterActual();
+}
+
+export class FilterActual {
+    
+    public isFilterField: boolean = false
 }

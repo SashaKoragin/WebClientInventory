@@ -16,6 +16,21 @@ export class Inventar {
     dataChange = new BehaviorSubject<ModelInventar[]>([{
         otdelfunc: 'Инвентаризация',
         children: [{
+            otdelfunc: 'Настройки',
+            children: [{
+                otdelfunc: null,
+                children: null, types: 'Настройки приложения', pages: './setting', fullpath: 'Настройки\\Настройки приложения', model: 'Настройки', isrule: ['Редактор', 'Оператор', 'Просмотр']
+            }], types: null, pages: null, fullpath: null, model: null, isrule: null
+        },
+        {
+            otdelfunc: 'Справочники',
+            children: [{
+                otdelfunc: null,
+                children: null, types: 'Справочники для редактирования', pages: './techicalComplement', fullpath: 'Справочники\\Справочники', model: 'Справочники', isrule: ['Просмотр']
+            }], types: null, pages: null, fullpath: null, model: null, isrule: null
+
+        },
+        {
             otdelfunc: 'Пользователи',
             children: [{
                 otdelfunc: null,
@@ -24,6 +39,14 @@ export class Inventar {
             {
                 otdelfunc: null,
                 children: null, types: 'Ветки в АИС 3', pages: './pathAis3', fullpath: 'Пользователи\\Ветки в АИС 3', model: 'Ветки в АИС 3', isrule: null
+            },
+            {
+                otdelfunc: null,
+                children: null, types: 'Анализ Ролей и Шаблонов', pages: './templatendRuleAis3', fullpath: 'Пользователи\\Анализ Ролей и Шаблонов', model: 'Шаблоны и Роли', isrule: null
+            },
+            {
+                otdelfunc: null,
+                children: null, types: 'Журнал для заявок', pages: './journalAis3', fullpath: 'Пользователи\\Журнал для заявок', model: 'Журнал для заявок', isrule: null
             }
             ], types: null, pages: null, fullpath: null, model: null, isrule: null
         },
@@ -38,10 +61,6 @@ export class Inventar {
                 otdelfunc: null,
                 children: null, types: 'Токены и прочее', pages: './supportToken', fullpath: 'Техника\\Токены и прочее', model: 'Токены и прочее', isrule: null
             },
-            {
-                otdelfunc: null,
-                children: null, types: 'Дополнительная к технике', pages: './techicalComplement', fullpath: 'Техника\\Дополнительная к технике', model: 'Дополнительная к технике', isrule: ['Просмотр']
-            }
             ], types: null, pages: null, fullpath: null, model: null, isrule: null
         },
         {

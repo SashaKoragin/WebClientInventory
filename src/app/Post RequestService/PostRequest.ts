@@ -7,7 +7,7 @@ import {
     BlockPower, UsersIsActualsStats, Classification, Rules,
     FullSelectedModel, NameMonitor, FullProizvoditel, Statusing,
     FullModel, CopySave, NameSysBlock, Otdel, Position,
-    Telephon, Supply, ModelBlockPower, ProizvoditelBlockPower, Swithe, ModelSwithes, MailIdentifier, MailGroup, AllTechnics
+    Telephon, Supply, ModelBlockPower, ProizvoditelBlockPower, Swithe, ModelSwithes, MailIdentifier, MailGroup, AllTechnics, SettingDepartmentCaseToServer, RegulationsDepartment
 } from '../Inventory/ModelInventory/InventoryModel';
 import { AdressInventarka, ServerHost } from '../AdressGetPost/AdressInventory';
 import { deserializeArray } from 'class-transformer';
@@ -16,8 +16,10 @@ import { DocumentReport } from '../Inventory/AllSelectModel/Report/ReportModel';
 import { UploadFile } from '../Inventory/AddFullModel/ModelTable/FileModel';
 import { BookModels } from '../Inventory/ModelInventory/ViewInventory';
 import { NgxPermissionsService } from 'ngx-permissions';
-import { WebMailModel, FullTemplateSupport, ModelParametrSupport, ServerEquipment, ModelSeverEquipment, ManufacturerSeverEquipment, TypeServer, RuleUsers, Token } from '../Inventory/ModelInventory/InventoryModel';
+import { WebMailModel, FullTemplateSupport, ModelParametrSupport, ServerEquipment, ModelSeverEquipment, ManufacturerSeverEquipment, TypeServer, RuleUsers, Token, Organization, SettingDepartmentCaseGetServer, Rb_Holiday, RegulationsDepartmentToServer, ResourceIt, TaskAis3, JournalAis3, TehnicalSqlAndTreeAis3, AllUsersFilters } from '../Inventory/ModelInventory/InventoryModel';
 import { Router, NavigationExtras } from '@angular/router';
+import { ReportCardModel } from '../Inventory/AddFullModel/DialogReportCard/ReportCardModel/ReportCardModel';
+import { ModelMemoReport } from '../LKUser/Main/Model/ReportMemo';
 
 
 const url: AdressInventarka = new AdressInventarka();
@@ -191,15 +193,62 @@ export class PostInventar {
             });
     }
 
-    public downLoadXlsxSql(idView: number) {
-        return this.http.get(url.getFileXlsx.concat(idView.toString()), {
-            responseType: 'arraybuffer', headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    public downLoadXlsxSql(logicaSelect: LogicaSelect) {
+        this.http.post(url.getFileXlsx, logicaSelect,
+            { responseType: 'arraybuffer', headers: new HttpHeaders({ 'Content-Type': 'application/json' }) }).subscribe(async model => {
+                var blob = new Blob([model], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                var url = window.URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = logicaSelect.nameReportFileField;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            });
+    }
+
+    ///Настройки организации для документо-оборота
+    async settingOrganization() {
+        this.select.Organization = await this.http.get(url.settingOrganization, httpOptionsJson).toPromise().then((model: Organization) => {
+            if (model) {
+                return model;
+            }
+        })
+    }
+    ///Настройка падежей отделов
+    async settingDepartamentCase() {
+        this.select.SettingDepartmentCaseGetServer = await this.http.get(url.settingDepartmentCase, httpOptionsJson).toPromise().then((model: SettingDepartmentCaseGetServer[]) => {
+            if (model) {
+                var settingDepartmentCaseGetServer = deserializeArray<SettingDepartmentCaseGetServer>(SettingDepartmentCaseGetServer, model.toString());
+                return settingDepartmentCaseGetServer;
+            }
+        });
+    }
+    ///Настройки регламентов отдела
+    async settingDepartmentRegulations() {
+        this.select.RegulationsDepartment = await this.http.get(url.getDepartmentRegulations, httpOptionsJson).toPromise().then((model: RegulationsDepartment[]) => {
+            if (model) {
+                var regulationsDepartment = deserializeArray<RegulationsDepartment>(RegulationsDepartment, model.toString());
+                return regulationsDepartment;
+            }
+        })
+    }
+    ///Загрузка справочника праздничных дней
+    async holidayDays() {
+        this.select.Rb_Holiday = await this.http.get(url.getholiday, httpOptionsJson).toPromise().then((model: Rb_Holiday[]) => {
+            if (model) {
+                var holiday = deserializeArray<Rb_Holiday>(Rb_Holiday, model.toString());
+                console.log(holiday);
+                return holiday;
+            }
         })
     }
 
+
     ///Выборка всего из БД в всех пользователей
-    async alluser() {
-        this.select.Users = await this.http.get(url.alluser, httpOptionsJson).toPromise().then((model) => {
+    async alluser(filterActual: AllUsersFilters = new AllUsersFilters()) {
+        this.select.Users = await this.http.post(url.alluser, filterActual, httpOptionsJson).toPromise().then((model) => {
             if (model) {
                 var users = deserializeArray<Users>(Users, model.toString());
                 users.forEach(x => x.Otdel.User = null);
@@ -348,6 +397,31 @@ export class PostInventar {
             }
         });
     }
+    ///Получение ресурсов для заявки
+    async allResourceIt() {
+        this.select.ResourceIt = await this.http.get(url.getResourceIt, httpOptionsJson).toPromise().then(model => {
+            if (model) {
+                return deserializeArray<ResourceIt>(ResourceIt, model.toString())
+            }
+        });
+    }
+    ///Получение задач для заявки
+    async allTaskAis3() {
+        this.select.TaskAis3 = await this.http.get(url.getTaskAis3, httpOptionsJson).toPromise().then(model => {
+            if (model) {
+                return deserializeArray<TaskAis3>(TaskAis3, model.toString())
+            }
+        });
+    }
+    ///Получение журнала заявок реестр
+    async allJournalAis3() {
+        this.select.JournalAis3 = await this.http.get(url.getJournalAis3, httpOptionsJson).toPromise().then(model => {
+            if (model) {
+                return deserializeArray<JournalAis3>(JournalAis3, model.toString());
+            }
+        })
+    }
+
     //Запрос на все модели мониторов
     async allnamemonitor() {
         this.select.NameMonitors = await this.http.get(url.allnamemonitor, httpOptionsJson).toPromise().then(model => {
@@ -468,7 +542,7 @@ export class PostInventar {
     }
 
     ///Вся техника на ЛК по людям и отделам
-    async allTechnics(idUser: number) {
+    public async allTechnics(idUser: number) {
         this.select.AllTechnics = await this.http.get(url.allTechnicsLk.replace("{idUser}", idUser.toString()), httpOptionsJson).toPromise().then(model => {
             if (model) {
                 return deserializeArray<AllTechnics>(AllTechnics, model.toString());
@@ -476,6 +550,16 @@ export class PostInventar {
         });
     }
 
+    public async allUsersDepartmentLk(idUser: number) {
+        this.select.Users = await this.http.get(url.allUsersDepartmentLk.replace("{idUser}", idUser.toString()), httpOptionsJson).toPromise().then((model) => {
+            if (model) {
+                var users = deserializeArray<Users>(Users, model.toString());
+                users.forEach(x => x.Otdel.User = null);
+                console.log(users);
+                return users
+            }
+        });
+    }
 
     ///Все запросы для заполнение данных по технике после актулизации пользователей
     public async fullusers() {
@@ -493,6 +577,23 @@ export class PostInventar {
 @Injectable()
 export class EditAndAdd {
     constructor(private http: HttpClient) { }
+
+    ///Редактирование глобальных настроек приложения для документо-оборота
+    addandeditorganization(organization: Organization, userIdEdit: string) {
+        return this.http.post(url.addAndEditOrganization.concat(userIdEdit), organization, httpOptionsJson);
+    }
+    ///Редактирование глобальных настроек падежи отделов
+    addandeditsettingdepartmentcase(settingDepartmentCase: SettingDepartmentCaseToServer, userIdEdit: string) {
+        return this.http.post(url.addAndEditSettingDepartmentCase.concat(userIdEdit), settingDepartmentCase, httpOptionsJson);
+    }
+    ///Редактирование или добавление регламента отдела
+    addandeditRegulationsDepartment(regulationsDepartmentToServer: RegulationsDepartmentToServer, userIdEdit: string) {
+        return this.http.post(url.addAndEditSettingDepartmentRegulations.concat(userIdEdit), regulationsDepartmentToServer, httpOptionsJson);
+    }
+    ///Добавление или редактирование Праздничных дней
+    addandeditHolyday(holiday: Rb_Holiday, userIdEdit: string) {
+        return this.http.post(url.addAndEditHoliday.concat(userIdEdit), holiday, httpOptionsJson);
+    }
     ///Обновление или добавление Users
     addandedituser(user: Users, userIdEdit: string) {
         return this.http.post(url.addandedituser.concat(userIdEdit), user, httpOptionsJson);
@@ -553,12 +654,24 @@ export class EditAndAdd {
     addAndEditNameModelBlokPower(nameModelBlokPower: ModelBlockPower) {
         return this.http.post(url.addAndEditNameModelBlokPower, nameModelBlokPower, httpOptionsJson);
     }
+    ///Добавление ресурса для заявок
+    addAndEditResourceIt(resourceIt: ResourceIt) {
+        return this.http.post(url.addAndEditResourceIt, resourceIt, httpOptionsJson);
+    }
+    ///Добавление ресурса для заявок
+    addAndEditTaskAis3(taskAis3: TaskAis3) {
+        return this.http.post(url.addAndEditTaskAis3, taskAis3, httpOptionsJson);
+    }
+    ///Добавление записи о доступе для реестра
+    addAndEditJournalAis3(journal: JournalAis3) {
+        return this.http.post(url.addAndEditJournalAis3, journal, httpOptionsJson);
+    }
     ///Редактирование или добавление Наименование производителя ИБП
     addAndEditNameProizvoditelBlockPower(nameProizvoditelBlockPower: ProizvoditelBlockPower) {
         return this.http.post(url.addAndEditNameProizvoditelBlockPower, nameProizvoditelBlockPower, httpOptionsJson);
     }
     ///Редактирование или добавление Наименование партии
-    addAndEditNameSupply(nameSupply: Supply) {
+    addAndEditNameSupplys(nameSupply: Supply) {
         return this.http.post(url.addAndEditNameSupply, nameSupply, httpOptionsJson);
     }
     ///Редактирование или добавление Наименование статуса
@@ -594,6 +707,8 @@ export class EditAndAdd {
     addAndEditModelSeverEquipment(nameModelSeverEquipment: ModelSeverEquipment) {
         return this.http.post(url.addAndEditModelSeverEquipment, nameModelSeverEquipment, httpOptionsJson);
     }
+
+
     ///Редактирование или добавление типа серверного оборудования
     addAndEditTypeServer(nameTypeServer: TypeServer) {
         return this.http.post(url.addAndEditTypeServer, nameTypeServer, httpOptionsJson);
@@ -609,6 +724,10 @@ export class EditAndAdd {
     //Добавление редактирование Группы
     editModelMailGroup(nameMailGroup: MailGroup) {
         return this.http.post(url.addAndEditMailGroups, nameMailGroup, httpOptionsJson);
+    }
+    ///Удаление ошибочных праздничных дней
+    deleteErrorHoliday(model: Rb_Holiday, userIdEdit: string) {
+        return this.http.post(url.deleteHoliday.concat(userIdEdit), model, httpOptionsJson);
     }
     ///Удаление Пользователя
     deleteUser(model: Users, userIdEdit: string) {
@@ -702,7 +821,65 @@ export class EditAndAdd {
                 window.URL.revokeObjectURL(url);
             });
     }
+    ///Формирования актов списания
+    createAct(modelSelect: ModelSelect, numberInv: string) {
+        this.http.post(url.act, modelSelect, { responseType: 'arraybuffer', headers: new HttpHeaders({ 'Content-Type': 'application/json' }) }).subscribe(async model => {
+            var blob = new Blob([model], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+            var url = window.URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = `Акт списания - ${numberInv}`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        });
+    }
+    ///Формирование журнала для АИС 3
+    createJournal(year: string) {
+        this.http.get(url.createJournalAis3.replace("{year}", year), { responseType: 'arraybuffer', headers: new HttpHeaders({ 'Content-Type': 'application/json' }) }).subscribe(async model => {
+            var blob = new Blob([model], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+            var url = window.URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = `Журнал АИС 3 за - ${year} год`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        });
+    }
+    ///Генерация табелей
+    createReportCard(model: ReportCardModel) {
+        this.http.post(url.createReportCard, model, { responseType: 'arraybuffer', headers: new HttpHeaders({ 'Content-Type': 'application/json' }) }).subscribe(async model => {
+            var blob = new Blob([model], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            var url = window.URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = `Табель`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        });
+    }
+
+    ///Создание служебных записок на отдел
+    createMemoReport(nameUser: string, modelMemo: ModelMemoReport) {
+        this.http.post(url.createMemoReport, modelMemo, { responseType: 'arraybuffer', headers: new HttpHeaders({ 'Content-Type': 'application/json' }) }).subscribe(async model => {
+            var blob = new Blob([model], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+            var url = window.URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = `${modelMemo.selectParameterDocumentField.nameDocumentField} на ${nameUser}`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        });
+    }
 }
+
 @Injectable()
 export class SelectAllParametrs {
     constructor(private http: HttpClient) { }
@@ -766,7 +943,7 @@ export class SelectAllParametrs {
 
     ///Проверка по УН запущен ли процесс или нет
     public isBeginTask(idTask: number) {
-       return this.http.get(url.isBeginTask.replace("{idTask}", idTask.toString()), httpOptionsJson)
+        return this.http.get(url.isBeginTask.replace("{idTask}", idTask.toString()), httpOptionsJson)
     }
 
 }

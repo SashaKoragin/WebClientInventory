@@ -4,6 +4,7 @@ import { PrinterTableModel, ScanerAndCamerTableModel, MfuTableModel, SysBlockTab
 import { MatPaginator, MatSort, MatDialog } from '@angular/material';
 import { ImportToExcel } from '../../AddFullModel/ModelTable/PublicFunction';
 import { DatePipe } from '@angular/common';
+import { AllUsersFilters } from '../../ModelInventory/InventoryModel';
 
 
 
@@ -69,10 +70,11 @@ export class SupportToken implements OnInit {
     }
 
     async sendserver() {
+        var allUsersFilters = new AllUsersFilters()
+        allUsersFilters.filterActualField.isFilterField = true;
         await this.selectAll.allstatysing();
         await this.selectAll.allsupply();
-        await this.selectAll.alluser();
+        await this.selectAll.alluser(allUsersFilters);
         await this.selectAll.allsysblok();
     }
-
 }

@@ -5,13 +5,17 @@ import {
     NameFullModelTableModel, NameFullProizvoditelTableModel, NameClassificationTableModel, NameCopySaveTableModel,
     NameSupplyTableModel, NameKabinetTableModel, NameStatusingTableModel, ModelSeverEquipmenTableModel, ManufacturerSeverEquipmentTableModel
 } from '../../AddFullModel/ModelTable/TableModel';
-import { MatPaginator } from '@angular/material';
-import { TypeServerTableModel } from '../../AddFullModel/ModelTable/TableModel';
+import { MatPaginator, DateAdapter, MAT_DATE_FORMATS } from '@angular/material';
+import { TypeServerTableModel, ResourceItTableModel, TaskAis3TableModel } from '../../AddFullModel/ModelTable/TableModel';
+import { AppDateAdapter, APP_DATE_FORMATS } from '../../AddFunctionConvertDate/ConvertDateModel';
 @Component(({
     selector: 'complimentTableEquipment',
     templateUrl: '../Html/ComplimentTableEquipment.html',
     styleUrls: ['../Html/ComplimentTableEquipment.css'],
-    providers: [EditAndAdd]
+    providers: [
+        EditAndAdd,
+        { provide: DateAdapter, useClass: AppDateAdapter },
+        { provide: MAT_DATE_FORMATS, useValue: APP_DATE_FORMATS },]
 }) as any)
 
 export class ComplimentTableEquipment implements OnInit {
@@ -36,6 +40,8 @@ export class ComplimentTableEquipment implements OnInit {
     @ViewChild('TEMPLATEMODELSERVEREQUIPMENT', { static: false }) templateModelSeverEquipment: ElementRef;
     @ViewChild('TEMPLATEMANUFACTURERSERVEREQUIPMENT', { static: false }) templateManufacturerSeverEquipment: ElementRef;
 
+    @ViewChild('TEMPLATERESOURCEIT', { static: false }) templateResourceIt: ElementRef;
+    @ViewChild('TEMPLATETASKAIS3', { static: false }) templateTaskAis3: ElementRef;
     //Таблицы
     @ViewChild('TABLEMODELSYSBLOCK', { static: false }) tableModelSysBlock: ElementRef;
     @ViewChild('TABLEMODELMONITOR', { static: false }) tableModelMonitor: ElementRef;
@@ -53,6 +59,9 @@ export class ComplimentTableEquipment implements OnInit {
     @ViewChild('TABLESERVERTYPE', { static: false }) tableServerType: ElementRef;
     @ViewChild('TABLEMODELSERVEREQUIPMENT', { static: false }) tableModelSeverEquipment: ElementRef;
     @ViewChild('TABLEMANUFACTURERSERVEREQUIPMENT', { static: false }) tableManufacturerSeverEquipment: ElementRef;
+
+    @ViewChild('TABLERESOURCEIT', { static: false }) tableResourceIt: ElementRef;
+    @ViewChild('TABLETASKAIS3', { static: false }) tableTaskAis3: ElementRef;
 
     isload: boolean = true;
     loadMessage: string[] = []
@@ -73,6 +82,9 @@ export class ComplimentTableEquipment implements OnInit {
     @ViewChild('nameModelSeverEquipments', { static: false }) paginatornameModelSeverEquipment: MatPaginator;
     @ViewChild('nameManufacturerSeverEquipments', { static: false }) paginatornameManufacturerSeverEquipment: MatPaginator;
 
+    @ViewChild('nameResourceIts', { static: false }) paginatornameResourceIt: MatPaginator;
+    @ViewChild('nameTaskAis3s', { static: false }) paginatornameTaskAis3: MatPaginator;
+
     public nameSysBlock: NameSysBlockTableModel = new NameSysBlockTableModel(this.editandadd, this.SignalR);
     public nameMonitor: NameMonitorTableModel = new NameMonitorTableModel(this.editandadd, this.SignalR);
     public nameModelBlokPower: NameModelBlokPowerTableModel = new NameModelBlokPowerTableModel(this.editandadd, this.SignalR)
@@ -89,6 +101,10 @@ export class ComplimentTableEquipment implements OnInit {
     public nameServerType: TypeServerTableModel = new TypeServerTableModel(this.editandadd, this.SignalR);
     public nameModelSeverEquipment: ModelSeverEquipmenTableModel = new ModelSeverEquipmenTableModel(this.editandadd, this.SignalR)
     public nameManufacturerSeverEquipment: ManufacturerSeverEquipmentTableModel = new ManufacturerSeverEquipmentTableModel(this.editandadd, this.SignalR)
+
+    ///Задания для заявок
+    public nameResourceIt: ResourceItTableModel  = new ResourceItTableModel(this.editandadd, this.SignalR);
+    public nameTaskAis3: TaskAis3TableModel  = new TaskAis3TableModel(this.editandadd, this.SignalR);
 
     ngOnInit(): void {
         this.start()
@@ -127,6 +143,10 @@ export class ComplimentTableEquipment implements OnInit {
         this.loadMessage.push(message);
         message = await this.nameManufacturerSeverEquipment.addtableModel(this.selectAll.select, this.paginatornameManufacturerSeverEquipment, null, this.tableManufacturerSeverEquipment, this.templateManufacturerSeverEquipment);
         this.loadMessage.push(message);
+        message = await this.nameResourceIt.addtableModel(this.selectAll.select, this.paginatornameResourceIt,null,this.tableResourceIt, this.templateResourceIt);
+        this.loadMessage.push(message);
+        message = await this.nameTaskAis3.addtableModel(this.selectAll.select, this.paginatornameTaskAis3, null, this.tableTaskAis3, this.templateTaskAis3);
+        this.loadMessage.push(message);
         this.isload = false;
     }
 
@@ -147,6 +167,7 @@ export class ComplimentTableEquipment implements OnInit {
         await this.selectAll.allModelSeverEquipment();
         await this.selectAll.allManufacturerSeverEquipment();
         await this.selectAll.allTypeServer();
-
+        await this.selectAll.allResourceIt();
+        await this.selectAll.allTaskAis3();
     }
 }

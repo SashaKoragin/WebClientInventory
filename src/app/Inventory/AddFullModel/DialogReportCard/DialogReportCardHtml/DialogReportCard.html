@@ -1,0 +1,77 @@
+<div>
+    <b class="h2 text-primary">Формирование табельных журналов</b>
+</div>
+<div class="container">
+    <div class="row w-50">
+        <div class="col d-flex align-items-center">
+            <b class="h3 text-primary ">Год:</b>
+        </div>
+        <div class="col">
+            <mat-form-field class="selectin_sql text-primary">
+                <mat-label class="text-primary">Год</mat-label>
+                <mat-select class="text-primary" placeholder="Год"
+                    [formControl]="modelvalid?.getRowValidatorModel[13].get('Year')"
+                    [(ngModel)]="generateModel.selectedYears" name="year">
+                    <mat-option class="text-primary" *ngFor="let year of generateModel.yearsModel" [value]="year">
+                        {{year}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="row w-50">
+        <div class="col d-flex align-items-center">
+            <b class="h3 text-primary ">Месяц:</b>
+        </div>
+        <div class="col">
+            <mat-form-field class="selectin_sql text-primary">
+                <mat-label class="text-primary">Месяц</mat-label>
+                <mat-select class="text-primary" placeholder="Месяц"
+                    [formControl]="modelvalid?.getRowValidatorModel[13].get('Mouth')"
+                    [(ngModel)]="generateModel.selectedMouth" name="mouth">
+                    <mat-option class="text-primary" *ngFor="let mouth of generateModel.mouthModel" [value]="mouth">
+                        {{mouth.nameMouthField}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="row w-50">
+        <div class="col d-flex align-items-center">
+            <b class="h3 text-primary ">Вид:</b>
+        </div>
+        <div class="col">
+            <mat-form-field class="selectin_sql text-primary">
+                <mat-label class="text-primary">Вид</mat-label>
+                <mat-select class="text-primary" placeholder="Вид"
+                    [formControl]="modelvalid?.getRowValidatorModel[13].get('View')"
+                    [(ngModel)]="generateModel.selectedView" name="view">
+                    <mat-option class="text-primary" *ngFor="let view of generateModel.viewModel" [value]="view">
+                        {{view.nameViewField}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="row w-50">
+        <div class="col d-flex align-items-center">
+            <b class="h3 text-primary ">Тип:</b>
+        </div>
+        <div class="col">
+            <mat-form-field class="selectin_sql text-primary">
+                <mat-label class="text-primary">Тип</mat-label>
+                <mat-select class="text-primary" placeholder="Тип"
+                    [formControl]="modelvalid?.getRowValidatorModel[13].get('Type')"
+                    [(ngModel)]="generateModel.selectedType" name="type">
+                    <mat-option class="text-primary" *ngFor="let type of generateModel.typeModel" [value]="type">
+                        {{type.nameTypeField}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </div>
+</div>
+<div>
+    <button class="mt-2 btn btn-rn btn-primary" [disabled]="modelvalid?.getRowValidatorModel[13].invalid"
+        matTooltip="Сформировать табель" type="submit" (click)="sendReport()">Сформировать табель</button>
+</div>

@@ -210,7 +210,7 @@
                                 {{node.model.Children[0].Children.length===0 ? node.model.Children[0].Types.length : node.model.Children.length }}
                             </button>
                             <span>{{node.model.Name}}</span>
-                            <ng-template [ngxPermissionsExcept]="['Просмотр']">
+                            <ng-template [ngxPermissionsExcept]="['Просмотр','Безопасность']">
                                 <div [style.display]="node.model.InputServer ?'inline':'none'" class="button">
                                     <button mat-button (click)="uploadModel(node.model)">Выгрузить модель</button>
                                 </div>
