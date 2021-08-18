@@ -74,11 +74,11 @@
   }
   
   .search_blok{
-    width: 50%;
+    width: 35%;
   }
   
   .search{
-    width: 50%;
+    width: 75%;
   }
   ::ng-deep.mat-menu-panel{
     max-width: none !important;
@@ -89,9 +89,12 @@
   
   .contentLk{
     width: 100%;
-    min-height: 500px;
     display: block;
     background-image: url(/public/images/wood-pane.jpg);
       box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
       border: 1px solid rgba(0, 0, 0, 0.5);
+}
+.mat-elevation-z8{
+  margin-left: 10;
+  margin-right: 10;
 }

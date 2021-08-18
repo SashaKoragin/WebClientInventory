@@ -9,7 +9,6 @@
         </mat-form-field>
         <button class="actual" mat-button (click)="excel.ExportTOExcel(tablealltechnic)">Выгрузить технику в
           XSLX</button>
-        <button class="actual" mat-button (click)="telephoneHelp()">Телефонный справочник</button>
       </form>
       <div class="tables" #TABLEALLTECHNICS>
         <table mat-table [dataSource]="alltechnic.dataSource" matSort>
@@ -111,6 +110,142 @@
         showFirstLastButtons="true"></mat-paginator>
     </div>
     <div [style.display]="'none'" #TEMPLATEALLTECHNIC>
+
+    </div>
+  </mat-tab>
+  <mat-tab label="Сотрудники отдела">
+    <div class="mat-elevation-z8">
+      <form class="search">
+        <mat-form-field class="search_blok">
+          <span matPrefix><i class="material-icons">youtube_searched_for</i></span>
+          <input matInput (keyup)="user.filterstable($event.target.value)" placeholder="Поиск данных">
+        </mat-form-field>
+        <button class="actual" mat-button (click)="telephoneHelp()">Телефонный справочник</button>
+        <button class="actual" mat-button (click)="createReportCard()">Сформировать табель</button>
+      </form>
+      <div class="tables" #TABLEUSERSDEPT>
+        <table mat-table [dataSource]="user.dataSource" matSort>
+          <ng-container matColumnDef="Logic">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Служебные записки</th>
+            <td [style.background]="row.StatusUser?.ColorStatus" mat-cell *matCellDef="let row">
+              <button mat-icon-button [matMenuTriggerFor]="menu" color="primary" matTooltip="Меню">
+                <mat-icon>more_vert</mat-icon>
+                <mat-menu #menu="matMenu">
+                  <div class="MenuButton" *ngFor="let template of templateServer.modelMemo">
+                    <button mat-menu-item (click)="createMemoReport(row.IdUser, row.Name, template)"
+                      [matTooltip]="template.nameMemo">
+                      <mat-icon>input</mat-icon>
+                      {{template.nameMemo}}
+                    </button>
+                  </div>
+                </mat-menu>
+              </button>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="IdUser">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
+            <td [style.background]="row.StatusUser?.ColorStatus" mat-cell *matCellDef="let row"
+              [matTooltip]="row.IdUser">{{row.IdUser}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="Name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Имя пользователя</th>
+            <td [style.background]="row.StatusUser?.ColorStatus" mat-cell *matCellDef="let row" [matTooltip]="row.Name">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Name}}</Label>
+              <div [ngClass]=row.IdUser.toString() id="{{row.IdUser}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="TabelNumber">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Табельный номер</th>
+            <td [style.background]="row.StatusUser?.ColorStatus" mat-cell *matCellDef="let row"
+              [matTooltip]="row.TabelNumber">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.TabelNumber}}</Label>
+              <div [ngClass]=row.IdUser.toString() id="{{row.IdUser}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="Telephon.SerNumber">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Серийный номер телефона</th>
+            <td [style.background]="row.StatusUser?.ColorStatus" mat-cell *matCellDef="let row"
+              [matTooltip]="row.Telephon?.SerNumber">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Telephon?.SerNumber}}</Label>
+              <div [ngClass]=row.IdUser.toString() id="{{row.IdUser}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Telephon.Telephon_">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Внутренний номер</th>
+            <td [style.background]="row.StatusUser?.ColorStatus" mat-cell *matCellDef="let row"
+              [matTooltip]="row.Telephon?.Telephon_">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Telephon?.Telephon_}}</Label>
+              <div [ngClass]=row.IdUser.toString() id="{{row.IdUser}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Telephon.TelephonUndeground">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Городской номер</th>
+            <td [style.background]="row.StatusUser?.ColorStatus" mat-cell *matCellDef="let row"
+              [matTooltip]="row.Telephon?.TelephonUndeground">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Telephon?.TelephonUndeground}}</Label>
+              <div [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                <label>{{user.model?.Telephon?.TelephonUndeground}}</label>
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Position.NamePosition">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Должность</th>
+            <td [style.background]="row.StatusUser?.ColorStatus" mat-cell *matCellDef="let row"
+              [matTooltip]="row.Position?.NamePosition">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Position?.NamePosition}}</Label>
+              <div [ngClass]=row.IdUser.toString() id="{{row.IdUser}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Otdel.NameOtdel">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Отдел</th>
+            <td [style.background]="row.StatusUser?.ColorStatus" mat-cell *matCellDef="let row"
+              [matTooltip]="row.Otdel?.NameOtdel">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Otdel?.NameOtdel}}</Label>
+              <div [ngClass]=row.IdUser.toString() id="{{row.IdUser}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="StatusActual">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Актуальность</th>
+            <td [style.background]="row.StatusUser?.ColorStatus" mat-cell *matCellDef="let row">
+              {{row.StatusUser?.StatusText}}
+            </td>
+          </ng-container>
+          <ng-container [style.display]="'none'" matColumnDef="ActionsColumn">
+            <th [style.display]="'none'" mat-header-cell *matHeaderCellDef>
+            </th>
+            <td [style.display]="'none'" mat-cell *matCellDef="let row">
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="user.displayedColumns; sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; columns: user.displayedColumns;"></tr>
+        </table>
+      </div>
+      <mat-paginator #usersdept [pageSizeOptions]="[10, 20, 50, paginator.length]" showFirstLastButtons="true">
+      </mat-paginator>
+    </div>
+    <div [style.display]="'none'" #TEMPLATEUSERSDEPT>
 
     </div>
   </mat-tab>

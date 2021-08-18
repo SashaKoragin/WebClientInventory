@@ -16,8 +16,10 @@ import { DocumentReport } from '../Inventory/AllSelectModel/Report/ReportModel';
 import { UploadFile } from '../Inventory/AddFullModel/ModelTable/FileModel';
 import { BookModels } from '../Inventory/ModelInventory/ViewInventory';
 import { NgxPermissionsService } from 'ngx-permissions';
-import { WebMailModel, FullTemplateSupport, ModelParametrSupport, ServerEquipment, ModelSeverEquipment, ManufacturerSeverEquipment, TypeServer, RuleUsers, Token, Organization, SettingDepartmentCaseGetServer, Rb_Holiday, RegulationsDepartmentToServer, ResourceIt, TaskAis3, JournalAis3, TehnicalSqlAndTreeAis3 } from '../Inventory/ModelInventory/InventoryModel';
+import { WebMailModel, FullTemplateSupport, ModelParametrSupport, ServerEquipment, ModelSeverEquipment, ManufacturerSeverEquipment, TypeServer, RuleUsers, Token, Organization, SettingDepartmentCaseGetServer, Rb_Holiday, RegulationsDepartmentToServer, ResourceIt, TaskAis3, JournalAis3, TehnicalSqlAndTreeAis3, AllUsersFilters } from '../Inventory/ModelInventory/InventoryModel';
 import { Router, NavigationExtras } from '@angular/router';
+import { ReportCardModel } from '../Inventory/AddFullModel/DialogReportCard/ReportCardModel/ReportCardModel';
+import { ModelMemoReport } from '../LKUser/Main/Model/ReportMemo';
 
 
 const url: AdressInventarka = new AdressInventarka();
@@ -245,8 +247,8 @@ export class PostInventar {
 
 
     ///Выборка всего из БД в всех пользователей
-    async alluser(filterActual: boolean = false) {
-        this.select.Users = await this.http.get(url.alluser.concat(filterActual.toString()), httpOptionsJson).toPromise().then((model) => {
+    async alluser(filterActual: AllUsersFilters = new AllUsersFilters()) {
+        this.select.Users = await this.http.post(url.alluser, filterActual, httpOptionsJson).toPromise().then((model) => {
             if (model) {
                 var users = deserializeArray<Users>(Users, model.toString());
                 users.forEach(x => x.Otdel.User = null);
@@ -540,7 +542,7 @@ export class PostInventar {
     }
 
     ///Вся техника на ЛК по людям и отделам
-    async allTechnics(idUser: number) {
+    public async allTechnics(idUser: number) {
         this.select.AllTechnics = await this.http.get(url.allTechnicsLk.replace("{idUser}", idUser.toString()), httpOptionsJson).toPromise().then(model => {
             if (model) {
                 return deserializeArray<AllTechnics>(AllTechnics, model.toString());
@@ -548,6 +550,16 @@ export class PostInventar {
         });
     }
 
+    public async allUsersDepartmentLk(idUser: number) {
+        this.select.Users = await this.http.get(url.allUsersDepartmentLk.replace("{idUser}", idUser.toString()), httpOptionsJson).toPromise().then((model) => {
+            if (model) {
+                var users = deserializeArray<Users>(Users, model.toString());
+                users.forEach(x => x.Otdel.User = null);
+                console.log(users);
+                return users
+            }
+        });
+    }
 
     ///Все запросы для заполнение данных по технике после актулизации пользователей
     public async fullusers() {
@@ -831,6 +843,35 @@ export class EditAndAdd {
             var a = document.createElement('a');
             a.href = url;
             a.download = `Журнал АИС 3 за - ${year} год`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        });
+    }
+    ///Генерация табелей
+    createReportCard(model: ReportCardModel) {
+        this.http.post(url.createReportCard, model, { responseType: 'arraybuffer', headers: new HttpHeaders({ 'Content-Type': 'application/json' }) }).subscribe(async model => {
+            var blob = new Blob([model], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            var url = window.URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = `Табель`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        });
+    }
+
+    ///Создание служебных записок на отдел
+    createMemoReport(nameUser: string, modelMemo: ModelMemoReport) {
+        this.http.post(url.createMemoReport, modelMemo, { responseType: 'arraybuffer', headers: new HttpHeaders({ 'Content-Type': 'application/json' }) }).subscribe(async model => {
+            var blob = new Blob([model], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+            var url = window.URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = `${modelMemo.selectParameterDocumentField.nameDocumentField} на ${nameUser}`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);

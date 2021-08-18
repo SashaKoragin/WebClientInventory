@@ -154,13 +154,15 @@ export class Autorization {
 export class Organization {
     public Id?: number;
     public NameOrganization?: string;
-    public NameFace?: string;
+    public NameFullOrganization?: string;
+    public NameFaceLeader?: string;
     public InameOrganization?: string;
     public RnameOrganization?: string;
     public DnameOrganization?: string;
     public VnameOrganization?: string;
     public TnameOrganization?: string;
     public PnameOrganization?: string;
+    public NameFace?: string;
     public NameDepartament?: string;
     public DataCreate?: any;
 
@@ -171,12 +173,11 @@ export class Users {
     public IdUser?: number;
     public Name?: string;
     public SmallName?: string;
+    public DateInWork?: any;
     public IdOtdel?: number;
     public IdPosition?: number;
     public TabelNumber?: string;
     public IdTelephon?: number;
-    public NameUser?: string;
-    public Passwords?: string;
     public StatusActual: number;
     public IdHistory?: string;
     public Mfu?: Mfu[];
@@ -347,6 +348,7 @@ export class Position {
 export class Otdel {
     public IdOtdel?: number;
     public IdUser?: number;
+    public CodeOtdel?: string;
     public NameOtdel?: string;
     public Users: Users[];
     public User: Users;
@@ -409,7 +411,7 @@ export class NameSysBlock {
     public IdModelSysBlock: number;
     public NameComputer: string;
     public NameManufacturer: string;
-    public NameProizvoditel:string;
+    public NameProizvoditel: string;
     public ModelIsEdit?: boolean = false;
 }
 
@@ -873,4 +875,13 @@ export class Rb_Holiday {
     public IS_HOLIDAY: boolean;
     public ModelIsEdit?: boolean = false;
 }
+///Фильтр коллекций
+export class AllUsersFilters {
 
+    public filterActualField: FilterActual = new FilterActual();
+}
+
+export class FilterActual {
+    
+    public isFilterField: boolean = false
+}

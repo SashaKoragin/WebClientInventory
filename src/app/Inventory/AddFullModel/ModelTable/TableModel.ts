@@ -103,7 +103,7 @@ export class OtdelTableModel implements INewLogicaTable<Otdel>{
     throw new Error("Method not implemented.");
   }
 
-  public displayedColumns = ['IdOtdel', 'NameOtdel', 'NameRuk', 'ActionsColumn'];
+  public displayedColumns = ['IdOtdel', 'CodeOtdel', 'NameOtdel', 'NameRuk', 'ActionsColumn'];
   public dataSource: MatTableDataSource<Otdel> = new MatTableDataSource<Otdel>();
 
   public isEdit: boolean = false;
@@ -195,6 +195,8 @@ export class OtdelTableModel implements INewLogicaTable<Otdel>{
 
   public save(): void {
     this.modifimethod();
+    var converter = new ConvertDate();
+    this.model = converter.convertDateToServer<Otdel>(JSON.parse(JSON.stringify(this.model)));
     this.editandadd.addandeditotdel(this.model).toPromise().then((model: ModelReturn<Otdel>) => {
       if (model.Model === null) {
         alert(model.Message)
@@ -233,7 +235,7 @@ export class OtdelTableModel implements INewLogicaTable<Otdel>{
 
   //Костыль дожидаемся обновление DOM
   async delay(ms: number): Promise<void> {
-    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+    await new Promise(resolve => setTimeout(() => resolve(null), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
   }
 
   ///Добавить шаблон в строку это просто жесть
@@ -290,7 +292,9 @@ export class OtdelTableModel implements INewLogicaTable<Otdel>{
 export class UserTableModel implements INewLogicaTable<Users>  {
 
   constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
-    this.subscribeservers();
+    if(SignalR!==null){
+      this.subscribeservers();
+    }
   }
 
   createSTO(model: Users, template: FullTemplateSupport, authService: AuthIdentification, dialog: MatDialog): void {
@@ -389,8 +393,10 @@ export class UserTableModel implements INewLogicaTable<Users>  {
     this.SignalR.conect.listen(this.subscribeDelete);
     this.subscribeDelete.subscribe((model: ModeleReturn<Users>) => {
       if (model.Index === 0) {
-        let index: number = this.dataSource.data.findIndex(item => item.IdUser === model.Model.IdUser);
-        this.dataSource.data.splice(index, 1);
+
+        var indexData = this.dataSource.data.find(x => x.IdUser === model.Model.IdUser);
+        this.dataSource.data[this.dataSource.data.indexOf(indexData)] = model.Model;
+        this.modeltable[this.modeltable.indexOf(indexData)] = model.Model;
         this.dataSource._updateChangeSubscription();
       }
     })
@@ -488,7 +494,7 @@ export class UserTableModel implements INewLogicaTable<Users>  {
   }
   //Костыль дожидаемся обновление DOM
   async delay(ms: number): Promise<void> {
-    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+    await new Promise(resolve => setTimeout(() => resolve(null), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
   }
 
   ///Добавить шаблон в строку это просто жесть
@@ -526,7 +532,8 @@ export class UserTableModel implements INewLogicaTable<Users>  {
 
   public save(): void {
     this.modifimethod();
-    this.editandadd.addandedituser(this.model, this.SignalR.iduser).subscribe((model: ModelReturn<Users>) => {
+    var converter = new ConvertDate();
+    this.editandadd.addandedituser(converter.convertDateToServer<Users>(this.model), this.SignalR.iduser).subscribe((model: ModelReturn<Users>) => {
       if (model.Model === null) {
         alert(model.Message)
         this.cancel(this.modelCancelError);
@@ -537,7 +544,7 @@ export class UserTableModel implements INewLogicaTable<Users>  {
   //Удаление
   public delete(model: Users): void {
     var converter = new ConvertDate();
-    this.editandadd.deleteUser(converter.convertDateToServer<Users>(JSON.parse(JSON.stringify(model))), this.SignalR.iduser).toPromise().then((model: ModeleReturn<Users>) => {
+    this.editandadd.deleteUser(converter.convertDateToServer<Users>(JSON.parse(JSON.stringify(model))), this.SignalR.iduser).subscribe((model: ModeleReturn<Users>) => {
       alert(model.Message);
     });
   }
@@ -580,13 +587,11 @@ export class UserTableModel implements INewLogicaTable<Users>  {
     this.castomefiltermodel();
     this.dataSource.data = model.Users;
     this.otdels = model.Otdels;
-    this.telephone = model.Telephon;
+    this.telephone = model.Telephon.filter(x => x.Telephon_ !== undefined);
     this.position = model.Position;
-    // this.rule = model.Rule;
     this.filteredOtdel = this.otdels.slice();
     this.filteredPosition = this.position.slice();
     this.filteredTelephone = this.telephone.slice();
-    // this.filteredRule = this.rule.slice();
     return "Модель пользователей заполнена";
   }
 
@@ -757,7 +762,10 @@ export class SwitchTableModel implements INewLogicaTable<Swithe>{
     this.modelToServer = JSON.parse(JSON.stringify(this.model));
     if (this.modelToServer.Supply) {
       this.modelToServer.Supply.DatePostavki = `/Date(${new Date(this.modelToServer.Supply.DatePostavki).getTime()})/`;
+
     }
+    var converter = new ConvertDate();
+    this.modelToServer = converter.convertDateToServer<Swithe>(JSON.parse(JSON.stringify(this.modelToServer)));
     this.editandadd.addandeditswitch(this.modelToServer, this.SignalR.iduser).toPromise().then((model: ModelReturn<Swithe>) => {
       if (model.Model === null) {
         alert(model.Message)
@@ -800,7 +808,7 @@ export class SwitchTableModel implements INewLogicaTable<Swithe>{
 
   //Костыль дожидаемся обновление DOM
   async delay(ms: number): Promise<void> {
-    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+    await new Promise(resolve => setTimeout(() => resolve(null), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
   }
 
   async addtemplate(index: number): Promise<void> {
@@ -1081,7 +1089,7 @@ export class ServerEquipmentTableModel implements INewLogicaTable<ServerEquipmen
 
   //Костыль дожидаемся обновление DOM
   async delay(ms: number): Promise<void> {
-    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+    await new Promise(resolve => setTimeout(() => resolve(null), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
   }
 
   async addtemplate(index: number): Promise<void> {
@@ -1320,6 +1328,7 @@ export class TokenTableModel implements INewLogicaTable<Token>{
     this.model = JSON.parse(JSON.stringify(model));
     this.addtemplate(model.IdToken);
     this.isEditAndAddTrue();
+    console.log(this.model);
   }
 
   ///Конвертация даты поставки во вложенной моделе подготовка оправки на сервер
@@ -1341,6 +1350,8 @@ export class TokenTableModel implements INewLogicaTable<Token>{
     this.modifimethod();
     this.modelToServer = JSON.parse(JSON.stringify(this.model));
     this.sveDateTimeConvertModel(this.modelToServer);
+    var converter = new ConvertDate();
+    this.modelToServer = converter.convertDateToServer<Token>(JSON.parse(JSON.stringify(this.modelToServer)));
     this.editandadd.addAndEditToken(this.modelToServer, this.SignalR.iduser).toPromise().then((model: ModelReturn<Token>) => {
       if (model.Model === null) {
         alert(model.Message)
@@ -1385,7 +1396,7 @@ export class TokenTableModel implements INewLogicaTable<Token>{
   }
   //Костыль дожидаемся обновление DOM
   async delay(ms: number): Promise<void> {
-    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+    await new Promise(resolve => setTimeout(() => resolve(null), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
   }
 
   async addtemplate(index: number): Promise<void> {
@@ -1417,6 +1428,11 @@ export class TokenTableModel implements INewLogicaTable<Token>{
       this.model.Supply.DataCreate = null;
       if (this.model.Supply.DatePostavki.length <= 10) {
         this.model.Supply.DatePostavki = this.model.Supply.DatePostavki.split("-").reverse().join("-") + "T00:00:00.000Z"
+      }
+    }
+    if (this.model.SysBlock) {
+      if (this.model.SysBlock.Supply) {
+        this.model.SysBlock.Supply.DatePostavki = null;
       }
     }
     else {
@@ -1657,6 +1673,8 @@ export class PrinterTableModel implements INewLogicaTable<Printer> {
     if (this.modelToServer.Supply) {
       this.modelToServer.Supply.DatePostavki = `/Date(${new Date(this.modelToServer.Supply.DatePostavki).getTime()})/`;
     }
+    var converter = new ConvertDate();
+    this.modelToServer = converter.convertDateToServer<Printer>(JSON.parse(JSON.stringify(this.modelToServer)));
     this.editandadd.addandeditprinter(this.modelToServer, this.SignalR.iduser).toPromise().then((model: ModelReturn<Printer>) => {
       if (model.Model === null) {
         alert(model.Message)
@@ -1700,7 +1718,7 @@ export class PrinterTableModel implements INewLogicaTable<Printer> {
 
   //Костыль дожидаемся обновление DOM
   async delay(ms: number): Promise<void> {
-    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+    await new Promise(resolve => setTimeout(() => resolve(null), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
   }
 
   ///Добавить шаблон в строку это просто жесть
@@ -1973,6 +1991,8 @@ export class ScanerAndCamerTableModel implements INewLogicaTable<ScanerAndCamer>
     if (this.modelToServer.Supply) {
       this.modelToServer.Supply.DatePostavki = `/Date(${new Date(this.modelToServer.Supply.DatePostavki).getTime()})/`;
     }
+    var converter = new ConvertDate();
+    this.modelToServer = converter.convertDateToServer<ScanerAndCamer>(JSON.parse(JSON.stringify(this.modelToServer)));
     this.editandadd.addandeditscaner(this.modelToServer, this.SignalR.iduser).toPromise().then((model: ModelReturn<ScanerAndCamer>) => {
       if (model.Model === null) {
         alert(model.Message)
@@ -2014,7 +2034,7 @@ export class ScanerAndCamerTableModel implements INewLogicaTable<ScanerAndCamer>
   }
   //Костыль дожидаемся обновление DOM
   async delay(ms: number): Promise<void> {
-    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+    await new Promise(resolve => setTimeout(() => resolve(null), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
   }
 
   ///Добавить шаблон в строку это просто жесть
@@ -2067,7 +2087,7 @@ export class ScanerAndCamerTableModel implements INewLogicaTable<ScanerAndCamer>
     this.dataSource.data = model.Scaner;
     this.castomefiltermodel();
     this.kabinet = model.Kabinet;
-    this.models = model.Model.filter(x => [2, 4].includes(x.IdClasification));;
+    this.models = model.Model.filter(x => [2, 4, 5].includes(x.IdClasification));;
     this.statusing = model.Statusing;
     this.proizvoditel = model.Proizvoditel;
     this.user = model.Users.filter(x => x.StatusActual !== 2);
@@ -2289,7 +2309,10 @@ export class MfuTableModel implements INewLogicaTable<Mfu>  {
     this.modelToServer = JSON.parse(JSON.stringify(this.model));
     if (this.modelToServer.Supply) {
       this.modelToServer.Supply.DatePostavki = `/Date(${new Date(this.modelToServer.Supply.DatePostavki).getTime()})/`;
+
     }
+    var converter = new ConvertDate();
+    this.modelToServer = converter.convertDateToServer<Mfu>(JSON.parse(JSON.stringify(this.modelToServer)));
     this.editandadd.addandeditmfu(this.modelToServer, this.SignalR.iduser).toPromise().then((model: ModelReturn<Mfu>) => {
       if (model.Model === null) {
         alert(model.Message)
@@ -2331,7 +2354,7 @@ export class MfuTableModel implements INewLogicaTable<Mfu>  {
   }
   //Костыль дожидаемся обновление DOM
   async delay(ms: number): Promise<void> {
-    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+    await new Promise(resolve => setTimeout(() => resolve(null), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
   }
 
   ///Добавить шаблон в строку это просто жесть
@@ -2458,12 +2481,12 @@ export class SysBlockTableModel implements INewLogicaTable<SysBlock>  {
     });
   }
   ///Создание акта
-  public createAct(model: SysBlock){
+  public createAct(model: SysBlock) {
     var modelSelect = new ModelSelect(0);
     modelSelect.parametrsActField = new ParametrsAct();
     modelSelect.parametrsActField.idClasificationActField = 1;
     modelSelect.parametrsActField.idModelTemplateField = model.IdSysBlock;
-    this.editandadd.createAct(modelSelect,model.SerNum);
+    this.editandadd.createAct(modelSelect, model.SerNum);
   }
 
   public displayedColumns = ['Logic', 'IdModel', 'User.Name', 'Supply.DatePostavki', 'NameSysBlock.NameComputer', 'ServiceNum', 'SerNum', 'InventarNumSysBlok', 'NameComputer', 'IpAdress', 'Kabinet.NumberKabinet', 'Coment', 'Statusing.Name', 'ActionsColumn'];
@@ -2619,6 +2642,8 @@ export class SysBlockTableModel implements INewLogicaTable<SysBlock>  {
     if (this.modelToServer.Supply) {
       this.modelToServer.Supply.DatePostavki = `/Date(${new Date(this.modelToServer.Supply.DatePostavki).getTime()})/`;
     }
+    var converter = new ConvertDate();
+    this.modelToServer = converter.convertDateToServer<SysBlock>(JSON.parse(JSON.stringify(this.modelToServer)));
     this.editandadd.addandeditsysblok(this.modelToServer, this.SignalR.iduser).subscribe((model: ModelReturn<SysBlock>) => {
       if (model.Model === null) {
         alert(model.Message)
@@ -2661,7 +2686,7 @@ export class SysBlockTableModel implements INewLogicaTable<SysBlock>  {
 
   //Костыль дожидаемся обновление DOM
   async delay(ms: number): Promise<void> {
-    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+    await new Promise(resolve => setTimeout(() => resolve(null), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
   }
 
   ///Добавить шаблон в строку это просто жесть
@@ -2932,6 +2957,8 @@ export class MonitorsTableModel implements INewLogicaTable<Monitor>  {
     if (this.modelToServer.Supply) {
       this.modelToServer.Supply.DatePostavki = `/Date(${new Date(this.modelToServer.Supply.DatePostavki).getTime()})/`;
     }
+    var converter = new ConvertDate();
+    this.modelToServer = converter.convertDateToServer<Monitor>(JSON.parse(JSON.stringify(this.modelToServer)));
     this.editandadd.addandeditmonitor(this.modelToServer, this.SignalR.iduser).toPromise().then((model: ModelReturn<Monitor>) => {
       if (model.Model === null) {
         alert(model.Message)
@@ -2974,7 +3001,7 @@ export class MonitorsTableModel implements INewLogicaTable<Monitor>  {
 
   //Костыль дожидаемся обновление DOM
   async delay(ms: number): Promise<void> {
-    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+    await new Promise(resolve => setTimeout(() => resolve(null), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
   }
 
   ///Добавить шаблон в строку это просто жесть
@@ -3209,7 +3236,7 @@ export class TelephonsTableModel implements INewLogicaTable<Telephon> {
 
   // //Костыль дожидаемся обновление DOM
   async delay(ms: number): Promise<void> {
-    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+    await new Promise(resolve => setTimeout(() => resolve(null), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
   }
 
   ///Добавить шаблон в строку это просто жесть
@@ -3510,6 +3537,8 @@ export class BlockPowerTableModel implements INewLogicaTable<BlockPower> {
     if (this.modelToServer.Supply) {
       this.modelToServer.Supply.DatePostavki = `/Date(${new Date(this.modelToServer.Supply.DatePostavki).getTime()})/`;
     }
+    var converter = new ConvertDate();
+    this.modelToServer = converter.convertDateToServer<BlockPower>(JSON.parse(JSON.stringify(this.modelToServer)));
     this.editandadd.addandeditblockpower(this.modelToServer, this.SignalR.iduser).toPromise().then((model: ModelReturn<BlockPower>) => {
       if (model.Model === null) {
         alert(model.Message)
@@ -3552,7 +3581,7 @@ export class BlockPowerTableModel implements INewLogicaTable<BlockPower> {
 
   //Костыль дожидаемся обновление DOM
   async delay(ms: number): Promise<void> {
-    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+    await new Promise(resolve => setTimeout(() => resolve(null), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
   }
 
   ///Добавить шаблон в строку это просто жесть
@@ -3639,7 +3668,7 @@ export class NameSysBlockTableModel implements INewLogicaTable<NameSysBlock> {
     throw new Error("Method not implemented.");
   }
 
-  public displayedColumns = ['IdModelSysBlock', 'NameComputer','NameManufacturer','NameProizvoditel', 'ActionsColumn'];
+  public displayedColumns = ['IdModelSysBlock', 'NameComputer', 'NameManufacturer', 'NameProizvoditel', 'ActionsColumn'];
   public dataSource: MatTableDataSource<NameSysBlock> = new MatTableDataSource<NameSysBlock>();
 
   isAdd: boolean;
@@ -3764,7 +3793,7 @@ export class NameSysBlockTableModel implements INewLogicaTable<NameSysBlock> {
   }
 
   async delay(ms: number): Promise<void> {
-    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+    await new Promise(resolve => setTimeout(() => resolve(null), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
   }
 
   async addtemplate(index: number): Promise<void> {
@@ -3946,7 +3975,7 @@ export class NameMonitorTableModel implements INewLogicaTable<NameMonitor> {
   }
 
   async delay(ms: number): Promise<void> {
-    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+    await new Promise(resolve => setTimeout(() => resolve(null), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
   }
 
   async addtemplate(index: number): Promise<void> {
@@ -4129,7 +4158,7 @@ export class NameModelBlokPowerTableModel implements INewLogicaTable<ModelBlockP
   }
 
   async delay(ms: number): Promise<void> {
-    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+    await new Promise(resolve => setTimeout(() => resolve(null), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
   }
 
   async addtemplate(index: number): Promise<void> {
@@ -4311,7 +4340,7 @@ export class NameProizvoditelBlockPowerTableModel implements INewLogicaTable<Pro
   }
 
   async delay(ms: number): Promise<void> {
-    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+    await new Promise(resolve => setTimeout(() => resolve(null), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
   }
 
   async addtemplate(index: number): Promise<void> {
@@ -4501,7 +4530,7 @@ export class NameFullModelTableModel implements INewLogicaTable<FullModel> {
 
   //Костыль дожидаемся обновление DOM
   async delay(ms: number): Promise<void> {
-    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+    await new Promise(resolve => setTimeout(() => resolve(null), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
   }
 
   ///Добавить шаблон в строку это просто жесть
@@ -4689,7 +4718,7 @@ export class NameFullProizvoditelTableModel implements INewLogicaTable<FullProiz
 
   //Костыль дожидаемся обновление DOM
   async delay(ms: number): Promise<void> {
-    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+    await new Promise(resolve => setTimeout(() => resolve(null), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
   }
 
   ///Добавить шаблон в строку это просто жесть
@@ -4874,7 +4903,7 @@ export class NameClassificationTableModel implements INewLogicaTable<Classificat
 
   //Костыль дожидаемся обновление DOM
   async delay(ms: number): Promise<void> {
-    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+    await new Promise(resolve => setTimeout(() => resolve(null), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
   }
 
   ///Добавить шаблон в строку это просто жесть
@@ -5060,7 +5089,7 @@ export class NameCopySaveTableModel implements INewLogicaTable<CopySave> {
 
   //Костыль дожидаемся обновление DOM
   async delay(ms: number): Promise<void> {
-    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+    await new Promise(resolve => setTimeout(() => resolve(null), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
   }
 
   ///Добавить шаблон в строку это просто жесть
@@ -5245,7 +5274,7 @@ export class NameKabinetTableModel implements INewLogicaTable<Kabinet> {
 
   //Костыль дожидаемся обновление DOM
   async delay(ms: number): Promise<void> {
-    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+    await new Promise(resolve => setTimeout(() => resolve(null), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
   }
 
   ///Добавить шаблон в строку это просто жесть
@@ -5443,7 +5472,7 @@ export class NameSupplyTableModel implements INewLogicaTable<Supply> {
 
   //Костыль дожидаемся обновление DOM
   async delay(ms: number): Promise<void> {
-    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+    await new Promise(resolve => setTimeout(() => resolve(null), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
   }
 
   ///Добавить шаблон в строку это просто жесть
@@ -5632,7 +5661,7 @@ export class NameStatusingTableModel implements INewLogicaTable<Statusing> {
 
   //Костыль дожидаемся обновление DOM
   async delay(ms: number): Promise<void> {
-    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+    await new Promise(resolve => setTimeout(() => resolve(null), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
   }
 
   ///Добавить шаблон в строку это просто жесть
@@ -5817,7 +5846,7 @@ export class NameModelSwitheTableModel implements INewLogicaTable<ModelSwithes> 
 
   //Костыль дожидаемся обновление DOM
   async delay(ms: number): Promise<void> {
-    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+    await new Promise(resolve => setTimeout(() => resolve(null), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
   }
 
   ///Добавить шаблон в строку это просто жесть
@@ -6002,7 +6031,7 @@ export class ModelSeverEquipmenTableModel implements INewLogicaTable<ModelSeverE
   }
   //Костыль дожидаемся обновление DOM
   async delay(ms: number): Promise<void> {
-    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+    await new Promise(resolve => setTimeout(() => resolve(null), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
   }
   ///Добавить шаблон в строку это просто жесть
   async addtemplate(index: number): Promise<void> {
@@ -6186,7 +6215,7 @@ export class ManufacturerSeverEquipmentTableModel implements INewLogicaTable<Man
 
   //Костыль дожидаемся обновление DOM
   async delay(ms: number): Promise<void> {
-    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+    await new Promise(resolve => setTimeout(() => resolve(null), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
   }
   ///Добавить шаблон в строку это просто жесть
   async addtemplate(index: number): Promise<void> {
@@ -6372,7 +6401,7 @@ export class TypeServerTableModel implements INewLogicaTable<TypeServer>{
 
   //Костыль дожидаемся обновление DOM
   async delay(ms: number): Promise<void> {
-    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+    await new Promise(resolve => setTimeout(() => resolve(null), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
   }
   ///Добавить шаблон в строку это просто жесть
   async addtemplate(index: number): Promise<void> {
@@ -6590,7 +6619,7 @@ export class MailIdentifiersTableModel implements INewLogicaTable<MailIdentifier
 
   //Костыль дожидаемся обновление DOM
   async delay(ms: number): Promise<void> {
-    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+    await new Promise(resolve => setTimeout(() => resolve(null), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
   }
 
   ///Добавить шаблон в строку это просто жесть
@@ -6792,7 +6821,7 @@ export class MailGroupTableModel implements INewLogicaTable<MailGroup>{
 
   //Костыль дожидаемся обновление DOM
   async delay(ms: number): Promise<void> {
-    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+    await new Promise(resolve => setTimeout(() => resolve(null), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
   }
 
   ///Добавить шаблон в строку это просто жесть
@@ -6890,7 +6919,7 @@ export class AllTechnicsLkModel implements INewLogicaTable<AllTechnics>{
     });
   }
 
-  public displayedColumns: any[] = ['Logic', 'Item', 'Users', 'NameManufacturer', 'NameModel', 'SerNum', 'ServiceNum', 'NameServer', 'IpAdress', 'NumberKabinet','NameStatus'];
+  public displayedColumns: any[] = ['Logic', 'Item', 'Users', 'NameManufacturer', 'NameModel', 'SerNum', 'ServiceNum', 'NameServer', 'IpAdress', 'NumberKabinet', 'NameStatus'];
   public dataSource: MatTableDataSource<AllTechnics> = new MatTableDataSource<AllTechnics>();
 
   isAdd: boolean;
@@ -7091,7 +7120,7 @@ export class SettingDepartmentCaseTableModel implements INewLogicaTable<SettingD
 
   //Костыль дожидаемся обновление DOM
   async delay(ms: number): Promise<void> {
-    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+    await new Promise(resolve => setTimeout(() => resolve(null), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
   }
 
   ///Добавить шаблон в строку это просто жесть
@@ -7270,7 +7299,7 @@ export class SettingDepartmentRegulations implements INewLogicaTable<Regulations
 
   //Костыль дожидаемся обновление DOM
   async delay(ms: number): Promise<void> {
-    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+    await new Promise(resolve => setTimeout(() => resolve(null), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
   }
 
   ///Добавить шаблон в строку это просто жесть
@@ -7490,7 +7519,7 @@ export class HolidayTableModel implements INewLogicaTable<Rb_Holiday>  {
 
   //Костыль дожидаемся обновление DOM
   async delay(ms: number): Promise<void> {
-    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+    await new Promise(resolve => setTimeout(() => resolve(null), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
   }
 
   ///Добавить шаблон в строку это просто жесть
@@ -7684,7 +7713,7 @@ export class ResourceItTableModel implements INewLogicaTable<ResourceIt> {
   }
 
   async delay(ms: number): Promise<void> {
-    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+    await new Promise(resolve => setTimeout(() => resolve(null), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
   }
 
   async addtemplate(index: number): Promise<void> {
@@ -7873,7 +7902,7 @@ export class TaskAis3TableModel implements INewLogicaTable<TaskAis3> {
   }
 
   async delay(ms: number): Promise<void> {
-    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+    await new Promise(resolve => setTimeout(() => resolve(null), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
   }
 
   async addtemplate(index: number): Promise<void> {
@@ -8061,7 +8090,7 @@ export class JournalAis3TableModel implements INewLogicaTable<JournalAis3>  {
 
   //Костыль дожидаемся обновление DOM
   async delay(ms: number): Promise<void> {
-    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+    await new Promise(resolve => setTimeout(() => resolve(null), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
   }
 
   ///Добавить шаблон в строку это просто жесть
@@ -8099,6 +8128,8 @@ export class JournalAis3TableModel implements INewLogicaTable<JournalAis3>  {
 
   public save(): void {
     this.modifimethod();
+    var converter = new ConvertDate();
+    this.model = converter.convertDateToServer<JournalAis3>(JSON.parse(JSON.stringify(this.model)));
     this.editandadd.addAndEditJournalAis3(this.model).toPromise().then((model: ModelReturn<JournalAis3>) => {
       if (model.Model === null) {
         alert(model.Message)

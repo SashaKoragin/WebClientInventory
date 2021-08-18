@@ -5,13 +5,16 @@ import { UserTableModel, TelephonsTableModel, OtdelTableModel, AddAndDeleteRuleU
 import { UsersIsActualsStats } from '../../ModelInventory/InventoryModel';
 import { ImportToExcel } from '../../AddFullModel/ModelTable/PublicFunction';
 import { ModelSelect } from '../../AllSelectModel/ParametrModel';
+import { ReportCardModel } from '../../AddFullModel/DialogReportCard/ReportCardModel/ReportCardModel';
+import { ReportCard } from '../../AddFullModel/DialogReportCard/DialogReportCardTs/DialogReportCard';
+import { DatePipe } from '@angular/common';
 
 
 @Component(({
     selector: 'equepment',
     templateUrl: '../Html/User.html',
     styleUrls: ['../Html/User.css'],
-    providers: [EditAndAdd, SelectAllParametrs]
+    providers: [EditAndAdd, SelectAllParametrs, DatePipe]
 }) as any)
 
 export class User implements OnInit {
@@ -19,10 +22,12 @@ export class User implements OnInit {
     constructor(public selectall: PostInventar,
         public editandadd: EditAndAdd,
         public SignalR: AuthIdentificationSignalR,
+        private dp: DatePipe,
         public authService: AuthIdentification,
         public dialog: MatDialog,
         public select: SelectAllParametrs,) { }
 
+    public settingModel: ReportCardModel = new ReportCardModel()
     @ViewChild('TEMPLATEUSERS', { static: true }) templateUsers: ElementRef;
     @ViewChild('TEMPLATEOTDELS', { static: true }) templateOtdels: ElementRef;
     @ViewChild('TEMPLATETELEPHONE', { static: true }) templateTelephone: ElementRef;
@@ -72,19 +77,19 @@ export class User implements OnInit {
         }
     }
 
-    dateconverters(date: any) {
+    datetemplate(date: any) {
         if (date) {
-            var dateOut = new Date(date);
-            return dateOut;
+            if (date.length > 10) {
+                return this.dp.transform(date, 'dd-MM-yyyy')
+            }
         }
-        return null;
+        return date;
     }
 
     public displayedColumns = ['Id', 'ChangeType', 'IdUser', 'NameUsers', 'SmallNameUsers', 'IdOtdel', 'IdPosition', 'TabelNumber', 'StatusActual'];
     public dataSource: MatTableDataSource<UsersIsActualsStats> = new MatTableDataSource<UsersIsActualsStats>(this.selectall.select.UsersIsActualsStats);
 
     ngOnInit(): void {
-
         this.loadsModel();
     }
 
@@ -133,6 +138,16 @@ export class User implements OnInit {
     }
 
 
+    createReportCard() {
+        this.settingModel.settingParametersField.tabelNumberField = this.authService.autorization.tabelNumberField;
+        const dialogRef = this.dialog.open(ReportCard, {
+            width: "800px",
+            height: "500px",
+            data: this.settingModel
+        })
+        dialogRef.afterClosed().subscribe(() => {
+            console.log("Вышли из диалога!");
+        });
+    }
+
 }
-
-

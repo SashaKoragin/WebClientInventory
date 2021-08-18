@@ -2,9 +2,10 @@ export const ServerHost: string = 'I7751-W40204180';  //localhost
 //export const ServerHost: string = 'localhost'
 export const ServerPort: string = '8182';
 //К примеру новая структура
+//http://I7751-W40204180:8182/Inventarka/AllRules
 export class AdressInventarka {
     public autificationInventar = `http://${ServerHost}:${ServerPort}/Inventarka/Authorization`;
-    public alluser = `http://${ServerHost}:${ServerPort}/Inventarka/AllUsers?filterActual=`;
+    public alluser = `http://${ServerHost}:${ServerPort}/Inventarka/AllUsers`;
     public allrule = `http://${ServerHost}:${ServerPort}/Inventarka/AllRules`;
     public allotdelget = `http://${ServerHost}:${ServerPort}/Inventarka/AllOtdels`;
     public addandedituser = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditUser?userIdEdit=`;
@@ -123,6 +124,8 @@ export class AdressInventarka {
     public generateQrCodeOffice = `http://${ServerHost}:${ServerPort}/Inventarka/GenerateQrCodeOffice?numberOffice={numberOffice}&isAll={isAll}`;
     ///Личный кабинет для техники
     public allTechnicsLk = `http://${ServerHost}:${ServerPort}/Inventarka/AllTechnicsLk?idUser={idUser}`;
+    ///Выгрузка всех пользователей отдела
+    public allUsersDepartmentLk = `http://${ServerHost}:${ServerPort}/Inventarka/AllUsersDepartmentLk?idUser={idUser}`;
     ///Выгрузка ролей пользователя
     public allRuleUser = `http://${ServerHost}:${ServerPort}/Inventarka/RuleAndUsers?idUser={idUser}`;
     ///Добавление или удаление ролей пользователя
@@ -159,4 +162,9 @@ export class AdressInventarka {
     public act = `http://${ServerHost}:${ServerPort}/Inventarka/CreateAct`
     //Формирование журнала АИС 3 для доступов
     public createJournalAis3 = `http://${ServerHost}:${ServerPort}/Inventarka/CreateJournalAis3?year={year}`
+    //Создание табелей
+    public createReportCard = `http://${ServerHost}:${ServerPort}/Inventarka/CreateReportCard`
+    //Создание служебных записок
+    public createMemoReport = `http://${ServerHost}:${ServerPort}/Inventarka/CreateMemoReport`
+
 }

@@ -13,6 +13,26 @@
                     </mat-form-field>
                 </div>
                 <div class="text">
+                    <label>Полное наименование организации:</label>
+                </div>
+                <div class="grid-itemOne">
+                    <mat-form-field class="inputOne">
+                        <input matInput placeholder="Полное наименование организации" [disabled]="setting.isEdit"
+                            [ngModel]="setting.dataSource?.NameFullOrganization"
+                            (ngModelChange)="setting.dataSource.NameFullOrganization = $event" />
+                    </mat-form-field>
+                </div>
+                <div class="text">
+                    <label>Руководитель организации:</label>
+                </div>
+                <div class="grid-itemOne">
+                    <mat-form-field class="inputOne">
+                        <input matInput placeholder="Руководитель организации" [disabled]="setting.isEdit"
+                            [ngModel]="setting.dataSource?.NameFaceLeader"
+                            (ngModelChange)="setting.dataSource.NameFaceLeader = $event" />
+                    </mat-form-field>
+                </div>
+                <div class="text">
                     <label>Мат. ответственное лицо:</label>
                 </div>
                 <div class="grid-itemOne">
@@ -176,7 +196,8 @@
                     <tr mat-row *matRowDef="let row; columns: holiday.displayedColumns;"></tr>
                 </table>
             </div>
-            <mat-paginator class="paginator" #holidays [pageSizeOptions]="[5, 10, 25, holiday.length]" showFirstLastButtons="true">
+            <mat-paginator class="paginator" #holidays [pageSizeOptions]="[5, 10, 25, holiday.length]"
+                showFirstLastButtons="true">
             </mat-paginator>
         </div>
         <div [style.display]="'none'" #TEMPLATEHOLIDAY>
@@ -421,8 +442,9 @@
             </mat-form-field> -->
 
             <mat-form-field id="template" class="validation">
-                <textarea class="RegulationText" matInput placeholder="Регламент" [ngModel]="settingDepartmentRegulations.model.Regulations"
-                    (ngModelChange)="settingDepartmentRegulations.model.Regulations = $event" ></textarea>
+                <textarea class="RegulationText" matInput placeholder="Регламент"
+                    [ngModel]="settingDepartmentRegulations.model.Regulations"
+                    (ngModelChange)="settingDepartmentRegulations.model.Regulations = $event"></textarea>
             </mat-form-field>
 
 
