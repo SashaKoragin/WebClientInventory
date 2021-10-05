@@ -159,12 +159,23 @@ export class AdressInventarka {
     public getJournalAis3 = `http://${ServerHost}:${ServerPort}/Inventarka/GetJournalAis3`;
     public addAndEditJournalAis3 = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditJournalAis3`;
     //Формирование актов списания
-    public act = `http://${ServerHost}:${ServerPort}/Inventarka/CreateAct`
+    public act = `http://${ServerHost}:${ServerPort}/Inventarka/CreateAct`;
     //Формирование журнала АИС 3 для доступов
-    public createJournalAis3 = `http://${ServerHost}:${ServerPort}/Inventarka/CreateJournalAis3?year={year}`
+    public createJournalAis3 = `http://${ServerHost}:${ServerPort}/Inventarka/CreateJournalAis3?year={year}`;
     //Создание табелей
-    public createReportCard = `http://${ServerHost}:${ServerPort}/Inventarka/CreateReportCard`
+    public createReportCard = `http://${ServerHost}:${ServerPort}/Inventarka/CreateReportCard`;
     //Создание служебных записок
-    public createMemoReport = `http://${ServerHost}:${ServerPort}/Inventarka/CreateMemoReport`
+    public createMemoReport = `http://${ServerHost}:${ServerPort}/Inventarka/CreateMemoReport`;
 
+    //Разное 
+    public allOtherAll = `http://${ServerHost}:${ServerPort}/Inventarka/AllOtherAll`;
+    public allModelOther = `http://${ServerHost}:${ServerPort}/Inventarka/AllModelOther`;
+    public allTypeOther = `http://${ServerHost}:${ServerPort}/Inventarka/AllTypeOther`;
+    public allProizvoditelOther = `http://${ServerHost}:${ServerPort}/Inventarka/AllProizvoditelOther`;
+
+    public addAndEditOtherAll = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditOtherAll?userIdEdit=`;
+    public addAndEditModelOther = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditModelOther`;
+    public addAndEditTypeOther = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditTypeOther`;
+    public addAndEditProizvoditelOther = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditProizvoditelOther`;
+    public deleteOtherAll = `http://${ServerHost}:${ServerPort}/Inventarka/DeleteOtherAll?userIdEdit=`;
 }

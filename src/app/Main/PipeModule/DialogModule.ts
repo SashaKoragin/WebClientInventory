@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ModelDialogSelectYear } from '../../Inventory/AddFullModel/DialogSelectYear/DialogYearTs/dialogSelectYear';
 import { ReportCard } from '../../Inventory/AddFullModel/DialogReportCard/DialogReportCardTs/DialogReportCard';
+import { NgxPermissionsModule } from 'ngx-permissions';
 
 @NgModule({
     imports: [
@@ -12,6 +13,7 @@ import { ReportCard } from '../../Inventory/AddFullModel/DialogReportCard/Dialog
         FormsModule,
         CommonModule,
         ReactiveFormsModule,
+        NgxPermissionsModule
     ],
     entryComponents: [DialogDiscription, ModelDialogSelectYear, ReportCard],
     declarations: [

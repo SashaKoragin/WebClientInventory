@@ -16,10 +16,11 @@ import { DocumentReport } from '../Inventory/AllSelectModel/Report/ReportModel';
 import { UploadFile } from '../Inventory/AddFullModel/ModelTable/FileModel';
 import { BookModels } from '../Inventory/ModelInventory/ViewInventory';
 import { NgxPermissionsService } from 'ngx-permissions';
-import { WebMailModel, FullTemplateSupport, ModelParametrSupport, ServerEquipment, ModelSeverEquipment, ManufacturerSeverEquipment, TypeServer, RuleUsers, Token, Organization, SettingDepartmentCaseGetServer, Rb_Holiday, RegulationsDepartmentToServer, ResourceIt, TaskAis3, JournalAis3, TehnicalSqlAndTreeAis3, AllUsersFilters } from '../Inventory/ModelInventory/InventoryModel';
+import { WebMailModel, FullTemplateSupport, ModelParametrSupport, ServerEquipment, ModelSeverEquipment, ManufacturerSeverEquipment, TypeServer, RuleUsers, Token, Organization, SettingDepartmentCaseGetServer, Rb_Holiday, RegulationsDepartmentToServer, ResourceIt, TaskAis3, JournalAis3, TehnicalSqlAndTreeAis3, AllUsersFilters, OtherAll, ModelOther, TypeOther, ProizvoditelOther } from '../Inventory/ModelInventory/InventoryModel';
 import { Router, NavigationExtras } from '@angular/router';
 import { ReportCardModel } from '../Inventory/AddFullModel/DialogReportCard/ReportCardModel/ReportCardModel';
 import { ModelMemoReport } from '../LKUser/Main/Model/ReportMemo';
+import { moment } from '../Inventory/AllSelectModel/GenerateParametrFront';
 
 
 const url: AdressInventarka = new AdressInventarka();
@@ -87,7 +88,9 @@ export class AuthIdentificationSignalR {
     private statusSubscriSignalR() {
         this.conect.status.subscribe((state: ConnectionStatus) => {
             this.status = state;
+            console.log(state.name);
             if (state.name === "disconnected") {
+                console.log(this.conect.errors);
                 this.stopserverSignalR();
                 this.autorization.logoutDisconnect();
                 alert("Потеря соединения с сайтом Обновите страницу!!!");
@@ -323,7 +326,38 @@ export class PostInventar {
             }
         });
     }
-
+    //Запрос на получение разного
+    async allOtherAll() {
+        this.select.OtherAll = await this.http.get(url.allOtherAll, httpOptionsJson).toPromise().then(model => {
+            if (model) {
+                return deserializeArray<OtherAll>(OtherAll, model.toString())
+            }
+        });
+    }
+    //Запрос на получение моделей разного
+    async allModelOther() {
+        this.select.ModelOther = await this.http.get(url.allModelOther, httpOptionsJson).toPromise().then(model => {
+            if (model) {
+                return deserializeArray<ModelOther>(ModelOther, model.toString())
+            }
+        });
+    }
+    //Запрос на получение моделей разного
+    async allTypeOther() {
+        this.select.TypeOther = await this.http.get(url.allTypeOther, httpOptionsJson).toPromise().then(model => {
+            if (model) {
+                return deserializeArray<TypeOther>(TypeOther, model.toString())
+            }
+        });
+    }
+    //Запрос на получение моделей разного
+    async allProizvoditelOther() {
+        this.select.ProizvoditelOther = await this.http.get(url.allProizvoditelOther, httpOptionsJson).toPromise().then(model => {
+            if (model) {
+                return deserializeArray<ProizvoditelOther>(ProizvoditelOther, model.toString())
+            }
+        });
+    }
     //Запрос на все системные блоки
     async allsysblok() {
         this.select.SysBlok = await this.http.get(url.allsysblock, httpOptionsJson).toPromise().then(model => {
@@ -555,7 +589,6 @@ export class PostInventar {
             if (model) {
                 var users = deserializeArray<Users>(Users, model.toString());
                 users.forEach(x => x.Otdel.User = null);
-                console.log(users);
                 return users
             }
         });
@@ -778,7 +811,27 @@ export class EditAndAdd {
         return this.http.post(url.allAddandDeleteRuleUser, model, httpOptionsJson);
     }
 
+    ///Добавление или редактирование Разное
+    addAndEditOtherAll(model: OtherAll, userIdEdit: string) {
+        return this.http.post(url.addAndEditOtherAll.concat(userIdEdit), model, httpOptionsJson);
+    }
+    ///Удаление модели Разного
+    deleteOtherAll(model: OtherAll, userIdEdit: string) {
+        return this.http.post(url.deleteOtherAll.concat(userIdEdit), model, httpOptionsJson);
+    }
 
+    ///Добавление или редактирование моделей разного
+    addAndEditModelOther(model: ModelOther) {
+        return this.http.post(url.addAndEditModelOther, model, httpOptionsJson);
+    }
+    ///Добавление или редактирование типов разного
+    addAndEditTypeOther(model: TypeOther) {
+        return this.http.post(url.addAndEditTypeOther, model, httpOptionsJson);
+    }
+    ///Добавление или редактирование типов разного
+    addAndEditProizvoditelOther(model: ProizvoditelOther) {
+        return this.http.post(url.addAndEditProizvoditelOther, model, httpOptionsJson);
+    }
 
     ///Создание заявки на СТО
     createSupport(modelParametrSupport: ModelParametrSupport) {

@@ -1,6 +1,6 @@
 <h1>Дополнение к технике модели, производители и справочники для заявок АИС 3</h1>
 <mat-tab-group [style.display]="isload ? 'none' : 'grid'">
-  <mat-tab class="tab" label="Системные блоки и Мониторы">
+  <mat-tab class="tab" label="СБ и Мониторы">
     <div class="modeltable">
       <div class="modeltableuse">
         <form class="search">
@@ -1279,6 +1279,207 @@
           <mat-form-field id="template" class="validation">
             <input matInput placeholder="Наименование задачи" [ngModel]="nameTaskAis3.model?.NameTask"
               (ngModelChange)="nameTaskAis3.model.NameTask = $event" />
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </mat-tab>
+  <mat-tab class="tab" label="Разное">
+    <div class="modeltable">
+      <div class="modeltableuse">
+        <form class="search">
+          <mat-form-field class="search_blok">
+            <span matPrefix><i class="material-icons">youtube_searched_for</i></span>
+            <input matInput (keyup)="nameTypeOther.filterstable($event.target.value)" placeholder="Поиск данных">
+          </mat-form-field>
+        </form>
+        <label class="lable">Тип</label>
+        <div class="content" #TABLETYPEOTHER>
+          <table class="table" mat-table [dataSource]="nameTypeOther.dataSource">
+
+            <ng-container matColumnDef="IdTypeOther">
+              <th mat-header-cell *matHeaderCellDef>Id</th>
+              <td mat-cell *matCellDef="let row">{{row?.IdTypeOther}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="Name">
+              <th mat-header-cell *matHeaderCellDef>Тип</th>
+              <td mat-cell *matCellDef="let row">
+                <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.Name}}</Label>
+                <div [ngClass]=row.IdTypeOther.toString() id="{{row.IdTypeOther}}"
+                  [style.display]="!row.ModelIsEdit ? 'none':'block'"></div>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="ActionsColumn">
+              <th mat-header-cell *matHeaderCellDef>
+                <ng-template [ngxPermissionsExcept]="['Оператор','Просмотр','Безопасность']">
+                  <button mat-icon-button color="primary" [disabled]="nameTypeOther.isAdd" focusable="false"
+                    (click)="nameTypeOther.add()">
+                    <i class="material-icons">person_add</i>
+                  </button>
+                </ng-template>
+              </th>
+              <td mat-cell *matCellDef="let row">
+                <ng-template [ngxPermissionsExcept]="['Просмотр','Безопасность']">
+                  <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="nameTypeOther.isEdit" color="accent"
+                    (click)="nameTypeOther.edit(row)">
+                    <i class="material-icons">edit</i>
+                  </button>
+                </ng-template>
+                <div *ngIf="row.ModelIsEdit">
+                  <button mat-icon-button type="submit" color="primary" focusable="false"
+                    (click)="nameTypeOther.save()">
+                    <i class="material-icons">check</i>
+                  </button>
+                  <button mat-icon-button color="primary" focusable="false" (click)="nameTypeOther.cancel(row)">
+                    <i class="material-icons">cancel</i>
+                  </button>
+                </div>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="nameTypeOther.displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: nameTypeOther.displayedColumns;"></tr>
+          </table>
+          <mat-paginator class="paginator" #nameTypeOthers [pageSizeOptions]="[10, 50, 100]"
+            showFirstLastButtons="true">
+          </mat-paginator>
+        </div>
+        <div [style.display]="'none'" #TEMPLATETYPEOTHER>
+          <mat-form-field id="template" class="validation">
+            <input matInput placeholder="Тип" [ngModel]="nameTypeOther.model?.Name"
+              (ngModelChange)="nameTypeOther.model.Name = $event" />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="modeltableuse">
+        <form class="search">
+          <mat-form-field class="search_blok">
+            <span matPrefix><i class="material-icons">youtube_searched_for</i></span>
+            <input matInput (keyup)="nameProizvoditelOther.filterstable($event.target.value)"
+              placeholder="Поиск данных">
+          </mat-form-field>
+        </form>
+        <label class="lable">Производитель</label>
+        <div class="content" #TABLEPROIZVODITELOTHER>
+          <table class="table" mat-table [dataSource]="nameProizvoditelOther.dataSource">
+            <ng-container matColumnDef="IdProizvoditelOther">
+              <th mat-header-cell *matHeaderCellDef>Id</th>
+              <td mat-cell *matCellDef="let row">{{row?.IdProizvoditelOther}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="Name">
+              <th mat-header-cell *matHeaderCellDef>Производитель</th>
+              <td mat-cell *matCellDef="let row">
+                <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.Name}}</Label>
+                <div [ngClass]=row.IdProizvoditelOther.toString() id="{{row.IdProizvoditelOther}}"
+                  [style.display]="!row.ModelIsEdit ? 'none':'block'"></div>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="ActionsColumn">
+              <th mat-header-cell *matHeaderCellDef>
+                <ng-template [ngxPermissionsExcept]="['Оператор','Просмотр','Безопасность']">
+                  <button mat-icon-button color="primary" [disabled]="nameProizvoditelOther.isAdd" focusable="false"
+                    (click)="nameProizvoditelOther.add()">
+                    <i class="material-icons">person_add</i>
+                  </button>
+                </ng-template>
+              </th>
+              <td mat-cell *matCellDef="let row">
+                <ng-template [ngxPermissionsExcept]="['Просмотр','Безопасность']">
+                  <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="nameProizvoditelOther.isEdit"
+                    color="accent" (click)="nameProizvoditelOther.edit(row)">
+                    <i class="material-icons">edit</i>
+                  </button>
+                </ng-template>
+                <div *ngIf="row.ModelIsEdit">
+                  <button mat-icon-button type="submit" color="primary" focusable="false"
+                    (click)="nameProizvoditelOther.save()">
+                    <i class="material-icons">check</i>
+                  </button>
+                  <button mat-icon-button color="primary" focusable="false" (click)="nameProizvoditelOther.cancel(row)">
+                    <i class="material-icons">cancel</i>
+                  </button>
+                </div>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="nameProizvoditelOther.displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: nameProizvoditelOther.displayedColumns;"></tr>
+          </table>
+          <mat-paginator class="paginator" #nameProizvoditelOthers [pageSizeOptions]="[10, 50, 100]"
+            showFirstLastButtons="true">
+          </mat-paginator>
+        </div>
+        <div [style.display]="'none'" #TEMPLATEPROIZVODITELOTHER>
+          <mat-form-field id="template" class="validation">
+            <input matInput placeholder="Производитель" [ngModel]="nameProizvoditelOther.model?.Name"
+              (ngModelChange)="nameProizvoditelOther.model.Name = $event" />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="modeltableuse">
+        <form class="search">
+          <mat-form-field class="search_blok">
+            <span matPrefix><i class="material-icons">youtube_searched_for</i></span>
+            <input matInput (keyup)="nameModelOther.filterstable($event.target.value)" placeholder="Поиск данных">
+          </mat-form-field>
+        </form>
+        <label class="lable">Модель</label>
+        <div class="content" #TABLEMODELOTHER>
+          <table class="table" mat-table [dataSource]="nameModelOther.dataSource">
+            <ng-container matColumnDef="IdModelOther">
+              <th mat-header-cell *matHeaderCellDef>Id</th>
+              <td mat-cell *matCellDef="let row">{{row?.IdModelOther}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="Name">
+              <th mat-header-cell *matHeaderCellDef>Модель</th>
+              <td mat-cell *matCellDef="let row">
+                <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.Name}}</Label>
+                <div [ngClass]=row.IdModelOther.toString() id="{{row.IdModelOther}}"
+                  [style.display]="!row.ModelIsEdit ? 'none':'block'"></div>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="ActionsColumn">
+              <th mat-header-cell *matHeaderCellDef>
+                <ng-template [ngxPermissionsExcept]="['Оператор','Просмотр','Безопасность']">
+                  <button mat-icon-button color="primary" [disabled]="nameModelOther.isAdd" focusable="false"
+                    (click)="nameModelOther.add()">
+                    <i class="material-icons">person_add</i>
+                  </button>
+                </ng-template>
+              </th>
+              <td mat-cell *matCellDef="let row">
+                <ng-template [ngxPermissionsExcept]="['Просмотр','Безопасность']">
+                  <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="nameModelOther.isEdit" color="accent"
+                    (click)="nameModelOther.edit(row)">
+                    <i class="material-icons">edit</i>
+                  </button>
+                </ng-template>
+                <div *ngIf="row.ModelIsEdit">
+                  <button mat-icon-button type="submit" color="primary" focusable="false"
+                    (click)="nameModelOther.save()">
+                    <i class="material-icons">check</i>
+                  </button>
+                  <button mat-icon-button color="primary" focusable="false" (click)="nameModelOther.cancel(row)">
+                    <i class="material-icons">cancel</i>
+                  </button>
+                </div>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="nameModelOther.displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: nameModelOther.displayedColumns;"></tr>
+          </table>
+          <mat-paginator class="paginator" #nameModelOthers [pageSizeOptions]="[10, 50, 100]"
+            showFirstLastButtons="true">
+          </mat-paginator>
+        </div>
+        <div [style.display]="'none'" #TEMPLATEMODELOTHER>
+          <mat-form-field id="template" class="validation">
+            <input matInput placeholder="Модель" [ngModel]="nameModelOther.model?.Name"
+              (ngModelChange)="nameModelOther.model.Name = $event" />
           </mat-form-field>
         </div>
       </div>

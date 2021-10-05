@@ -27,7 +27,7 @@ export class User implements OnInit {
         public dialog: MatDialog,
         public select: SelectAllParametrs,) { }
 
-    public settingModel: ReportCardModel = new ReportCardModel()
+    public settingModel: ReportCardModel = null;
     @ViewChild('TEMPLATEUSERS', { static: true }) templateUsers: ElementRef;
     @ViewChild('TEMPLATEOTDELS', { static: true }) templateOtdels: ElementRef;
     @ViewChild('TEMPLATETELEPHONE', { static: true }) templateTelephone: ElementRef;
@@ -134,6 +134,7 @@ export class User implements OnInit {
         message = await this.roleAndUser.addtableModel(this.selectall.select, this.paginatorRoles, this.sortroleAndUser, this.tableModelRule);
         this.loadMessage.push(message);
         this.dataSource.data = this.selectall.select.UsersIsActualsStats;
+        this.settingModel = new ReportCardModel(this.selectall.select.Otdels);
         this.isload = false;
     }
 

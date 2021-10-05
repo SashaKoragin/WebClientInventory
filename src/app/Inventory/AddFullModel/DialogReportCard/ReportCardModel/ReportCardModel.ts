@@ -1,10 +1,13 @@
+import { Otdel } from '../../../ModelInventory/InventoryModel';
 export class GenerateModelReportCard {
 
-    constructor() {
+    constructor(department: Otdel[]) {
         this.AddYears();
+        this.otdels = department;
     }
 
     public yearsModel: number[] = [];
+
     public mouthModel: Mouth[] = [{ numberMouthField: 1, numberMouthStringField: "01", nameMouthField: "Январь" },
     { numberMouthField: 2, numberMouthStringField: "02", nameMouthField: "Февраль" },
     { numberMouthField: 3, numberMouthStringField: "03", nameMouthField: "Март" },
@@ -24,12 +27,13 @@ export class GenerateModelReportCard {
     public typeModel: Type[] = [{ idTypeField: 0, nameTypeField: "Аванс" },
     { idTypeField: 1, nameTypeField: "Полный" }
     ];
-
+    public otdels: Otdel[];
 
     public selectedYears: number;
     public selectedMouth: Mouth;
     public selectedView: View;
     public selectedType: Type;
+    public selectedDepartmentIndex: Otdel;
 
     public AddYears() {
         var todayYear = new Date().getFullYear();
@@ -43,6 +47,13 @@ export class GenerateModelReportCard {
 
 
 export class ReportCardModel {
+
+    constructor(department: Otdel[]) {
+        this.department = department;
+        console.log(department);
+    }
+
+    public department: Otdel[] = null
     public settingParametersField: SettingParameters = new SettingParameters();
 }
 
@@ -57,6 +68,7 @@ export class SettingParameters {
     public holidaysField: Holidays[] = null;
     public usersReportCardField: UsersReportCard[] = null
     public tabelNumberField: string;
+    public idDepartmentField: number = 0;
 }
 
 export class Mouth {

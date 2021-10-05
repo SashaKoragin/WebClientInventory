@@ -130,6 +130,10 @@ export class FullSelectedModel {
     JournalAis3: JournalAis3[]; //Журнал для АИС 3
     ResourceIt: ResourceIt[]; //Ресурс для заявки
     TaskAis3: TaskAis3[];  //Задача заявки
+    OtherAll: OtherAll[]; //Разное
+    TypeOther: TypeOther[]; //Тип разного
+    ProizvoditelOther: ProizvoditelOther[]; //Производитель разного
+    ModelOther: ModelOther[]; //Модель разного
 }
 
 ///Модель отвертов с сервера
@@ -660,7 +664,48 @@ export class ServerEquipment {
     public Statusing?: Statusing;
     public Supply: Supply;
     public Kabinet?: Kabinet;
+    public ModelIsEdit?: boolean = false;
+}
 
+export class OtherAll {
+    public IdOtherAll: number;
+    public IdUser?: number;
+    public IdSupply?: number;
+    public IdTypeOther?: number;
+    public IdModelOther?: number;
+    public IdProizvoditelOther?: number;
+    public IdNumberKabinet?: number;
+    public ServiceNumber: string;
+    public SerNum: string;
+    public InventarNum: string;
+    public Coment: string;
+    public IdStatus: number;
+    public IdHistory?: string;
+    public Kabinet?: Kabinet;
+    public ModelOther?: ModelOther;
+    public ProizvoditelOther?: ProizvoditelOther;
+    public Statusing?: Statusing;
+    public Supply?: Supply;
+    public TypeOther?: TypeOther
+    public User?: Users;
+    public ModelIsEdit?: boolean = false;
+}
+
+export class TypeOther {
+    public IdTypeOther: number;
+    public Name: string;
+    public ModelIsEdit?: boolean = false;
+}
+
+export class ProizvoditelOther {
+    public IdProizvoditelOther: number;
+    public Name: string;
+    public ModelIsEdit?: boolean = false;
+}
+
+export class ModelOther {
+    public IdModelOther: number;
+    public Name: string;
     public ModelIsEdit?: boolean = false;
 }
 
@@ -882,6 +927,6 @@ export class AllUsersFilters {
 }
 
 export class FilterActual {
-    
+
     public isFilterField: boolean = false
 }

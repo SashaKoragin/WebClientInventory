@@ -2371,6 +2371,317 @@
     </div>
 
   </mat-tab>
+  <mat-tab label="Разное">
+    <div>
+      <form class="search">
+        <mat-form-field class="search_blok">
+          <span matPrefix><i class="material-icons">youtube_searched_for</i></span>
+          <input matInput (keyup)="otherall.filterstable($event.target.value)" placeholder="Поиск данных">
+        </mat-form-field>
+        <button class="actual" mat-button (click)="excel.ExportTOExcel(tableOtherAll)">Выгрузить разное
+          оборудование</button>
+      </form>
+      <div class="tables" #TABLESEOTHERALL>
+        <table mat-table [dataSource]="otherall.dataSource" matSort>
+
+          <ng-container matColumnDef="Logic">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Заявки</th>
+            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
+              <button mat-icon-button color="primary" matTooltip="Сформировать QR код"
+                (click)="createQRCode(row.SerNum)">
+                <i class="material-icons">print</i>
+              </button>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="IdOtherAll">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
+            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row?.IdOtherAll">
+              {{row?.IdOtherAll}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="User.Name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Пользователь</th>
+            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'"
+                [matTooltip]="row.User?.Name">{{row.User?.Name}}</Label>
+              <div [ngClass]=row.IdOtherAll.toString() id="{{row.IdOtherAll}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Supply.DatePostavki">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Фактическая дата поставки</th>
+            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row"
+              [matTooltip]="datetemplate(row.Supply?.DatePostavki)">
+              <Label
+                [style.display]="row.ModelIsEdit ? 'none':'inline'">{{datetemplate(row.Supply?.DatePostavki)}}</Label>
+              <div [ngClass]=row.IdOtherAll.toString() id="{{row.IdOtherAll}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="TypeOther.Name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Тип оборудования</th>
+            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row"
+              [matTooltip]="row.TypeOther?.Name">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.TypeOther?.Name}}</Label>
+              <div [ngClass]=row.IdOtherAll.toString() id="{{row.IdOtherAll}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="ModelOther.Name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Модель</th>
+            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row"
+              [matTooltip]="row.ModelOther?.Name">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.ModelOther?.Name}}</Label>
+              <div [ngClass]=row.IdOtherAll.toString() id="{{row.IdOtherAll}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="ProizvoditelOther.Name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Производитель</th>
+            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row"
+              [matTooltip]="row.ProizvoditelOther?.Name">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.ProizvoditelOther?.Name}}</Label>
+              <div [ngClass]=row.IdOtherAll.toString() id="{{row.IdOtherAll}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="ServiceNumber">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Сервисный номер</th>
+            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row"
+              [matTooltip]="row.ServiceNumber">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.ServiceNumber}}</Label>
+              <div [ngClass]=row.IdOtherAll.toString() id="{{row.IdOtherAll}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="SerNum">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Серийный номер</th>
+            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row.SerNum">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.SerNum}}</Label>
+              <div [ngClass]=row.IdOtherAll.toString() id="{{row.IdOtherAll}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="InventarNum">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Инвентарный номер</th>
+            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row.InventarNum">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.InventarNum}}</Label>
+              <div [ngClass]=row.IdOtherAll.toString() id="{{row.IdOtherAll}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Coment">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Коментарий</th>
+            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row.Coment">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Coment}}</Label>
+              <div [ngClass]=row.IdOtherAll.toString() id="{{row.IdOtherAll}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Kabinet.NumberKabinet">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Кабинет</th>
+            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row"
+              [matTooltip]="row.Kabinet?.NumberKabinet">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Kabinet?.NumberKabinet}}</Label>
+              <div [ngClass]=row.IdOtherAll.toString() id="{{row.IdOtherAll}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Statusing.Name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Статус</th>
+            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row"
+              [matTooltip]="row.Statusing?.Name">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Statusing?.Name}}</Label>
+              <div [ngClass]=row.IdOtherAll.toString() id="{{row.IdOtherAll}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="ActionsColumn">
+            <th mat-header-cell *matHeaderCellDef>
+              <ng-template [ngxPermissionsExcept]="['Оператор','Просмотр','Безопасность']">
+                <button mat-icon-button color="primary" [disabled]="otherall.isAdd" focusable="false"
+                  (click)="otherall.add()">
+                  <i class="material-icons">person_add</i>
+                </button>
+              </ng-template>
+            </th>
+
+            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
+              <ng-template [ngxPermissionsExcept]="['Просмотр','Безопасность']">
+                <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="otherall.isEdit" color="accent"
+                  (click)="otherall.edit(row)">
+                  <i class="material-icons">edit</i>
+                </button>
+              </ng-template>
+              <ng-template [ngxPermissionsExcept]="['Просмотр','Оператор','Редактор','Безопасность']">
+                <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="otherall.isEdit"
+                  (click)="otherall.delete(row)">
+                  <i class="material-icons">delete</i>
+                </button>
+              </ng-template>
+              <div *ngIf="row.ModelIsEdit">
+                <button mat-icon-button type="submit" color="primary" focusable="false"
+                  [disabled]="otherall.modelvalid.getRowValidatorModel[14].invalid" (click)="otherall.save()">
+                  <i class="material-icons">check</i>
+                </button>
+                <button mat-icon-button color="primary" focusable="false" (click)="otherall.cancel(row)">
+                  <i class="material-icons">cancel</i>
+                </button>
+              </div>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="otherall.displayedColumns; sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; columns: otherall.displayedColumns;"></tr>
+        </table>
+      </div>
+      <mat-paginator class="paginator" #otherAlls [pageSizeOptions]="[5, 10, 25, paginatorOtherAll.length]"
+        showFirstLastButtons="true"></mat-paginator>
+    </div>
+    <div [style.display]="'none'" #TEMPLATEOTHERALL>
+
+      <mat-form-field id="template" class="validation">
+        <mat-select (click)="otherall.calbackfiltersAll()" [placeholder]="otherall.model.User?.Name"
+          [(ngModel)]="otherall.model.User" name="user">
+          <mat-select-filter class="filter" [placeholder]="otherall.model.User?.Name" [displayMember]="'Name'"
+            [array]="otherall.user" (filteredReturn)="otherall.filteredUsers =$event">
+          </mat-select-filter>
+          <mat-option [value]='null'>None</mat-option>
+          <mat-option *ngFor="let user of otherall.filteredUsers" [value]="user">
+            {{user.Name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field id="template" class="validation">
+        <mat-select (click)="otherall.calbackfiltersAll()" [placeholder]="otherall.model.Supply?.DatePostavki"
+          [(ngModel)]="otherall.model.Supply" name="supply">
+          <mat-select-filter class="filter" [placeholder]="otherall.model.Supply?.DatePostavki"
+            [displayMember]="'DatePostavki'" [array]="otherall.supples"
+            (filteredReturn)="otherall.filteredSupply =$event">
+          </mat-select-filter>
+          <mat-option [value]='null'>None</mat-option>
+          <mat-option *ngFor="let supply of otherall.filteredSupply" [value]="supply">
+            {{supply.NameSupply}} - {{datetemplate(supply.DatePostavki)}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field id="template" class="validation">
+        <mat-select (click)="otherall.calbackfiltersAll()"
+          [formControl]="otherall.modelvalid?.getRowValidatorModel[14].get('TypeOther')"
+          [placeholder]="otherall.model.TypeOther?.Name" [(ngModel)]="otherall.model.TypeOther" name="models">
+          <mat-select-filter class="filter" [placeholder]="otherall.model.TypeOther?.Name" [displayMember]="'Name'"
+            [array]="otherall.typeOther" (filteredReturn)="otherall.filteredTypeOther =$event">
+          </mat-select-filter>
+          <mat-option *ngFor="let models of otherall.filteredTypeOther" [value]="models">
+            {{models.Name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field id="template" class="validation">
+        <mat-select (click)="otherall.calbackfiltersAll()"
+          [formControl]="otherall.modelvalid?.getRowValidatorModel[14].get('ModelOther')"
+          [placeholder]="otherall.model.ModelOther?.Name" [(ngModel)]="otherall.model.ModelOther" name="models">
+          <mat-select-filter class="filter" [placeholder]="otherall.model.ModelOther?.Name" [displayMember]="'Name'"
+            [array]="otherall.modelOther" (filteredReturn)="otherall.filteredModelOther =$event">
+          </mat-select-filter>
+          <mat-option *ngFor="let models of otherall.filteredModelOther" [value]="models">
+            {{models.Name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field id="template" class="validation">
+        <mat-select (click)="otherall.calbackfiltersAll()"
+          [formControl]="otherall.modelvalid?.getRowValidatorModel[14].get('ProizvoditelOther')"
+          [placeholder]="otherall.model.ProizvoditelOther?.Name" [(ngModel)]="otherall.model.ProizvoditelOther"
+          name="models">
+          <mat-select-filter class="filter" [placeholder]="otherall.model.ProizvoditelOther?.Name"
+            [displayMember]="'Name'" [array]="otherall.proizvoditelOther"
+            (filteredReturn)="otherall.filteredProizvoditelOther =$event">
+          </mat-select-filter>
+          <mat-option *ngFor="let models of otherall.filteredProizvoditelOther" [value]="models">
+            {{models.Name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field id="template" class="validation">
+        <input matInput placeholder="Сервисный номер" [ngModel]="otherall.model?.ServiceNumber"
+          (ngModelChange)="otherall.model.ServiceNumber = $event" />
+      </mat-form-field>
+
+      <mat-form-field id="template" class="validation">
+        <input matInput [formControl]="otherall.modelvalid?.getRowValidatorModel[14].get('SerNum')"
+          placeholder="Серийный номер" [ngModel]="otherall.model?.SerNum"
+          (ngModelChange)="otherall.model.SerNum = $event" />
+      </mat-form-field>
+
+      <mat-form-field id="template" class="validation">
+        <input matInput [formControl]="otherall.modelvalid?.getRowValidatorModel[14].get('InventarNum')"
+          placeholder="Инвентарный номер" [ngModel]="otherall.model?.InventarNum"
+          (ngModelChange)="otherall.model.InventarNum = $event" />
+      </mat-form-field>
+
+      <mat-form-field id="template" class="validation">
+        <input matInput placeholder="Коментарий" [ngModel]="otherall.model?.Coment"
+          (ngModelChange)="otherall.model.Coment = $event" />
+      </mat-form-field>
+
+      <mat-form-field id="template" class="validation">
+        <mat-select (click)="otherall.calbackfiltersAll()" [placeholder]="otherall.model.Kabinet?.NumberKabinet"
+          [(ngModel)]="otherall.model.Kabinet" name="kabinet">
+          <mat-select-filter class="filter" [placeholder]="otherall.model.Kabinet?.NumberKabinet"
+            [displayMember]="'NumberKabinet'" [array]="otherall.kabinet"
+            (filteredReturn)="otherall.filteredKabinet =$event">
+          </mat-select-filter>
+          <mat-option [value]='null'>None</mat-option>
+          <mat-option *ngFor="let kabinet of otherall.filteredKabinet" [value]="kabinet">
+            {{kabinet.NumberKabinet}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field id="template" class="validation">
+        <mat-select (click)="otherall.calbackfiltersAll()" [placeholder]="otherall.model.Statusing?.Name"
+          [(ngModel)]="otherall.model.Statusing" name="status">
+          <mat-select-filter class="filter" [placeholder]="otherall.model.Statusing?.Name" [displayMember]="'Name'"
+            [array]="otherall.statusing" (filteredReturn)="otherall.filteredStatusing =$event">
+          </mat-select-filter>
+          <mat-option [value]='null'>None</mat-option>
+          <mat-option *ngFor="let status of otherall.filteredStatusing" [value]="status">
+            {{status.Name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+    </div>
+  </mat-tab>
 </mat-tab-group>
 <div [style.display]="isload ? 'inline':'none'">
   <p>Идет загрузка данных подождите пожалуйста!!!</p>

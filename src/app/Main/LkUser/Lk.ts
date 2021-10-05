@@ -6,6 +6,7 @@ import { LkUser } from '../../LKUser/Main/Model/MainLk';
 import { AppRoutingModuleLkModule } from './NavigationLk';
 import { PipeModule } from '../PipeModule/PipeInventory';
 import { DialogModule } from '../PipeModule/DialogModule';
+import { NgxPermissionsModule } from 'ngx-permissions';
 
 
 
@@ -18,7 +19,8 @@ import { DialogModule } from '../PipeModule/DialogModule';
         DialogModule,
         AngularMaterialModule,
         ReactiveFormsModule,
-        AppRoutingModuleLkModule
+        AppRoutingModuleLkModule,
+        NgxPermissionsModule
     ],
     declarations: [
         LkUser

@@ -21,7 +21,7 @@ export class LkUser implements OnInit {
         public authService: AuthIdentification,
         public dialog: MatDialog) { }
 
-    public settingModel: ReportCardModel = new ReportCardModel()
+    public settingModel: ReportCardModel = null;
     public templateServer: Template = new Template();
     isload: boolean = true;
     loadMessage: string[] = []
@@ -64,6 +64,7 @@ export class LkUser implements OnInit {
         this.loadMessage.push(message);
         message = await this.user.addtableModel(this.selectAll.select, this.paginator, this.sort, this.tableusers, this.templateUsers);
         this.loadMessage.push(message);
+        this.settingModel = new ReportCardModel(this.selectAll.select.Otdels.filter(x => x.User !== undefined));
         this.isload = false;
     }
 
@@ -72,6 +73,7 @@ export class LkUser implements OnInit {
         await this.selectAll.telephonehelp(new ModelSelect(10))
     }
 
+    ///Создание табелей
     createReportCard() {
         this.settingModel.settingParametersField.tabelNumberField = this.authService.autorizationLk.tabelNumberField;
         const dialogRef = this.dialog.open(ReportCard, {
