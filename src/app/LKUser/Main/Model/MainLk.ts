@@ -12,7 +12,7 @@ import { Template, ModelMemo } from './ReportMemo';
 @Component(({
     templateUrl: '../Html/MainLk.html',
     styleUrls: ['../Html/MainLk.css'],
-    providers: [EditAndAdd]
+    providers: [EditAndAdd] 
 }) as any)
 export class LkUser implements OnInit {
 
