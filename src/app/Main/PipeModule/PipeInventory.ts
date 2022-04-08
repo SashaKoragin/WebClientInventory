@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { FilterParametrs } from '../Main/ModelMain/Main';
-import { DialogDiscription } from '../../Inventory/AddFullModel/ModelDialogDiscription/View/DialogDiscription';
 
 
 

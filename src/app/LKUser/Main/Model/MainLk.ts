@@ -7,6 +7,7 @@ import { ModelSelect } from '../../../Inventory/AllSelectModel/ParametrModel';
 import { ReportCardModel } from '../../../Inventory/AddFullModel/DialogReportCard/ReportCardModel/ReportCardModel';
 import { ReportCard } from '../../../Inventory/AddFullModel/DialogReportCard/DialogReportCardTs/DialogReportCard';
 import { Template, ModelMemo } from './ReportMemo';
+import { FullTemplateSupport } from '../../../Inventory/ModelInventory/InventoryModel';
 
 
 @Component(({
@@ -40,7 +41,7 @@ export class LkUser implements OnInit {
 
     public alltechnic: AllTechnicsLkModel = new AllTechnicsLkModel(this.editandadd)
     public user: UserTableModel = new UserTableModel(this.editandadd, null);
-
+    public support: FullTemplateSupport[] = null;
 
 
 
@@ -94,5 +95,6 @@ export class LkUser implements OnInit {
     //Загрузка шаблонов 
     async sendserver() {
         await this.selectAll.allTemplate();
+        this.support = this.selectAll.select.FullTemplateSupport.filter(support=>support.IsVisibleUserLk == true)
     }
 }

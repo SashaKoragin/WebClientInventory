@@ -16,11 +16,10 @@ import { DocumentReport } from '../Inventory/AllSelectModel/Report/ReportModel';
 import { UploadFile } from '../Inventory/AddFullModel/ModelTable/FileModel';
 import { BookModels } from '../Inventory/ModelInventory/ViewInventory';
 import { NgxPermissionsService } from 'ngx-permissions';
-import { WebMailModel, FullTemplateSupport, ModelParametrSupport, ServerEquipment, ModelSeverEquipment, ManufacturerSeverEquipment, TypeServer, RuleUsers, Token, Organization, SettingDepartmentCaseGetServer, Rb_Holiday, RegulationsDepartmentToServer, ResourceIt, TaskAis3, JournalAis3, TehnicalSqlAndTreeAis3, AllUsersFilters, OtherAll, ModelOther, TypeOther, ProizvoditelOther } from '../Inventory/ModelInventory/InventoryModel';
+import { WebMailModel, FullTemplateSupport, ModelParametrSupport, ServerEquipment, ModelSeverEquipment, ManufacturerSeverEquipment, TypeServer, RuleUsers, Token, Organization, SettingDepartmentCaseGetServer, Rb_Holiday, RegulationsDepartmentToServer, ResourceIt, TaskAis3, JournalAis3, AllUsersFilters, OtherAll, ModelOther, TypeOther, ProizvoditelOther, AnalysisEpoAndInventarka, EventProcess, CategoryPhoneHeader } from '../Inventory/ModelInventory/InventoryModel';
 import { Router, NavigationExtras } from '@angular/router';
 import { ReportCardModel } from '../Inventory/AddFullModel/DialogReportCard/ReportCardModel/ReportCardModel';
 import { ModelMemoReport } from '../LKUser/Main/Model/ReportMemo';
-import { moment } from '../Inventory/AllSelectModel/GenerateParametrFront';
 
 
 const url: AdressInventarka = new AdressInventarka();
@@ -180,6 +179,11 @@ export class PostInventar {
     actualIpComputers() {
         return this.http.post(url.actualIpAdresComputers, null, httpOptionsJson);
     }
+    //Актуализация с PrintServer
+    actualPrintServer() {
+        return this.http.post(url.actualPrintServer, null, httpOptionsJson);
+    }
+
     //Генерация справочника инспекции
     telephonehelp(model: ModelSelect) {
         return this.http.post(url.telephoneHelper, model,
@@ -210,6 +214,23 @@ export class PostInventar {
                 window.URL.revokeObjectURL(url);
             });
     }
+    ///Статистика доступности серверов онлайн
+    public async statisticServerIsWork() {
+        var startProcess = await this.http.post(url.statusServerDataBase, null,
+            { responseType: 'arraybuffer', headers: new HttpHeaders({ 'Content-Type': 'application/json' }) }).toPromise().then((model) => {
+                var blob = new Blob([model], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                var url = window.URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = "Статистика доступности";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+                return "Выполнено!";
+            });
+        return startProcess;
+    }
 
     ///Настройки организации для документо-оборота
     async settingOrganization() {
@@ -228,6 +249,16 @@ export class PostInventar {
             }
         });
     }
+    ///Получение справочника категорий телефонов
+    async settingCategoryPhoneHeader() {
+        this.select.CategoryPhoneHeader = await this.http.get(url.allCategoryPhoneHeader, httpOptionsJson).toPromise().then((model: CategoryPhoneHeader[]) => {
+            if (model) {
+                var categoryPhoneHeader = deserializeArray<CategoryPhoneHeader>(CategoryPhoneHeader, model.toString());
+                return categoryPhoneHeader;
+            }
+        });
+    }
+
     ///Настройки регламентов отдела
     async settingDepartmentRegulations() {
         this.select.RegulationsDepartment = await this.http.get(url.getDepartmentRegulations, httpOptionsJson).toPromise().then((model: RegulationsDepartment[]) => {
@@ -574,6 +605,14 @@ export class PostInventar {
             }
         })
     }
+    ///Все параметры для процесса
+    async allEventProcess() {
+        this.select.EventProcess = await this.http.get(url.allEventProcess, httpOptionsJson).toPromise().then(model => {
+            if (model) {
+                return deserializeArray<EventProcess>(EventProcess, model.toString());
+            }
+        });
+    }
 
     ///Вся техника на ЛК по людям и отделам
     public async allTechnics(idUser: number) {
@@ -750,6 +789,10 @@ export class EditAndAdd {
     addAndEditManufacturerSeverEquipment(nameManufacturerSeverEquipment: ManufacturerSeverEquipment) {
         return this.http.post(url.addAndEditManufacturerSeverEquipment, nameManufacturerSeverEquipment, httpOptionsJson);
     }
+    ///Добавление или редактирования категории телефона
+    addAndEditCategoryPhoneHeader(nameCategoryPhoneHeader: CategoryPhoneHeader) {
+        return this.http.post(url.addAndEditCategoryPhoneHeader, nameCategoryPhoneHeader, httpOptionsJson);
+    }
     ///Только редактирование идентификатора и группы
     editModelMailIdentifier(nameMailIdentifier: MailIdentifier) {
         return this.http.post(url.addAndEditMailIdentifies, nameMailIdentifier, httpOptionsJson);
@@ -833,6 +876,10 @@ export class EditAndAdd {
         return this.http.post(url.addAndEditProizvoditelOther, model, httpOptionsJson);
     }
 
+    ///Добавление или сохранение модели параметров
+    addAndEditEventProcess(model: EventProcess) {
+        return this.http.post(url.addAndEditEventProcess, model, httpOptionsJson)
+    }
     ///Создание заявки на СТО
     createSupport(modelParametrSupport: ModelParametrSupport) {
         return this.http.post(url.serviceSupport, modelParametrSupport, httpOptionsJson);
@@ -889,8 +936,8 @@ export class EditAndAdd {
         });
     }
     ///Формирование журнала для АИС 3
-    createJournal(year: string) {
-        this.http.get(url.createJournalAis3.replace("{year}", year), { responseType: 'arraybuffer', headers: new HttpHeaders({ 'Content-Type': 'application/json' }) }).subscribe(async model => {
+    createJournal(year: string, idOtdel: number, isAllJournal: boolean = false) {
+        this.http.get(url.createJournalAis3.replace("{year}", year).replace("{idOtdel}", idOtdel.toString()).replace("{isAllJournal}", isAllJournal.toString()), { responseType: 'arraybuffer', headers: new HttpHeaders({ 'Content-Type': 'application/json' }) }).subscribe(async model => {
             var blob = new Blob([model], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
             var url = window.URL.createObjectURL(blob);
             var a = document.createElement('a');
@@ -999,4 +1046,31 @@ export class SelectAllParametrs {
         return this.http.get(url.isBeginTask.replace("{idTask}", idTask.toString()), httpOptionsJson)
     }
 
+    ///Обновить данные с сайта ЭПО
+    public startProcessUpdateSto() {
+        this.http.post(url.updateEpo, null, httpOptionsJson).toPromise().then();
+    }
+    ///Получение отчетов по ЭПО всех
+    public async selectAllReportEpo() {
+        return await this.http.get(url.getModelReportAnalysisEpo, httpOptionsJson).toPromise().then(model => {
+            if (model) {
+                return deserializeArray<AnalysisEpoAndInventarka>(AnalysisEpoAndInventarka, model.toString())
+            }
+        });
+    }
+
+    //Все отчеты по ЭПО с Инвенторизацией
+    public allReportEpoAndInventory(idArrayReport: number[]) {
+        this.http.post(url.allReportEpoAndInventory, idArrayReport, { responseType: 'arraybuffer', headers: new HttpHeaders({ 'Content-Type': 'application/json' }) }).subscribe(async model => {
+            var blob = new Blob([model], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            var url = window.URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = `Отчеты ЭПО`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        });
+    }
 }

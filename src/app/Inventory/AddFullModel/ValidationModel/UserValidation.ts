@@ -52,7 +52,7 @@ export class ModelValidation {
     //Валидация производителя мониторов
     public validationFullNameMonitor(control: AbstractControl): ValidationErrors {
         var nameProizvoditel = control.value as NameMonitor;
-        return (nameProizvoditel == undefined || nameProizvoditel.Name) == undefined ? { 'error': true } : null
+        return (nameProizvoditel == undefined || nameProizvoditel.NameManufacturer) == undefined ? { 'error': true } : null
     };
 
     //Валидация Модели
@@ -203,6 +203,11 @@ export class ModelValidation {
             'SerNum': new FormControl(null, Validators.required),
             'InventarNum': new FormControl(null, Validators.required)
         }),
+        new FormGroup({
+            'DayX': new FormControl(null, [Validators.min(1), Validators.max(31)]),
+            'HoursX': new FormControl(null, [Validators.min(0), Validators.max(23)]),
+            'MinutesX': new FormControl(null, [Validators.min(0), Validators.max(60)]),
+        })
 
     ];
 }

@@ -48,13 +48,21 @@ export class SupportToken implements OnInit {
 
     public token: TokenTableModel = new TokenTableModel(this.editandadd, this.SignalR)
 
-    public filterSysBlokToken(value: any) {
+    public async filterSysBlokToken(value: any) {
         if (value != null) {
-            this.token.sysblock = this.selectAll.select.SysBlok.filter(x => x.IdUser === value.IdUser && new Array(undefined, null, 16).some(y => y === x.IdStatus))
+            this.token.sysblock = this.selectAll.select.SysBlok.filter(x => x.IdUser === value.IdUser && new Array(undefined, null, 16).some(y => y !== x.IdStatus))
+        }
+        else {
+            if (this.token.sysblock.length === 0) {
+                this.token.sysblock = this.selectAll.select.SysBlok.filter(x => x.IdUser === this.token.modelCancelError.IdUser && new Array(undefined, null, 16).some(y => y !== x.IdStatus))
+            }
         }
     }
 
-
+    //Костыль дожидаемся обновление DOM
+    delay(ms: number): void {
+        new Promise(resolve => setTimeout(() => resolve(null), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+    }
 
     public async ngOnInit(): Promise<void> {
         await this.start()

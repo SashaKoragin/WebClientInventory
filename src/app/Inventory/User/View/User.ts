@@ -2,12 +2,13 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { PostInventar, EditAndAdd, AuthIdentificationSignalR, AuthIdentification, SelectAllParametrs } from '../../../Post RequestService/PostRequest';
 import { MatTableDataSource, MatPaginator, MatSort, MatDialog } from '@angular/material';
 import { UserTableModel, TelephonsTableModel, OtdelTableModel, AddAndDeleteRuleUser } from '../../AddFullModel/ModelTable/TableModel';
-import { UsersIsActualsStats } from '../../ModelInventory/InventoryModel';
+import { UsersIsActualsStats, AllUsersFilters } from '../../ModelInventory/InventoryModel';
 import { ImportToExcel } from '../../AddFullModel/ModelTable/PublicFunction';
 import { ModelSelect } from '../../AllSelectModel/ParametrModel';
 import { ReportCardModel } from '../../AddFullModel/DialogReportCard/ReportCardModel/ReportCardModel';
 import { ReportCard } from '../../AddFullModel/DialogReportCard/DialogReportCardTs/DialogReportCard';
 import { DatePipe } from '@angular/common';
+import { Template, ModelMemo } from '../../../LKUser/Main/Model/ReportMemo';
 
 
 @Component(({
@@ -27,6 +28,8 @@ export class User implements OnInit {
         public dialog: MatDialog,
         public select: SelectAllParametrs,) { }
 
+
+    public templateServer: Template = new Template();
     public settingModel: ReportCardModel = null;
     @ViewChild('TEMPLATEUSERS', { static: true }) templateUsers: ElementRef;
     @ViewChild('TEMPLATEOTDELS', { static: true }) templateOtdels: ElementRef;
@@ -56,7 +59,7 @@ export class User implements OnInit {
 
 
 
-
+    filterActual: AllUsersFilters = new AllUsersFilters();
     user: UserTableModel = new UserTableModel(this.editandadd, this.SignalR);
     otdel: OtdelTableModel = new OtdelTableModel(this.editandadd, this.SignalR);
     //Роли пользователя
@@ -105,7 +108,7 @@ export class User implements OnInit {
     }
 
     public async actualUsers() {
-        this.serveranswer = 'Идет актулизация (подождите)!'
+        this.serveranswer = 'Идет актуализация (подождите)!'
         await this.selectall.actualusersmodel().subscribe(async model => {
             await this.selectall.fullusers();
             await this.loadsModel();
@@ -114,13 +117,15 @@ export class User implements OnInit {
     }
 
     async loadsModel() {
+        this.filterActual.filterActualField.isFilterField = true;
         var message = null;
         await this.selectall.allTemplate();
         await this.selectall.allrule();
-        await this.selectall.alluser();
+        await this.selectall.alluser(this.filterActual);
         await this.selectall.allposition();
         await this.selectall.alltelephone();
         await this.selectall.allotdel();
+        await this.selectall.settingCategoryPhoneHeader();
         message = await this.user.addtableModel(this.selectall.select, this.paginator, this.sort, this.tableusers, this.templateUsers);
         this.loadMessage.push(message);
         await this.selectall.allstatisticsusers();
@@ -134,7 +139,7 @@ export class User implements OnInit {
         message = await this.roleAndUser.addtableModel(this.selectall.select, this.paginatorRoles, this.sortroleAndUser, this.tableModelRule);
         this.loadMessage.push(message);
         this.dataSource.data = this.selectall.select.UsersIsActualsStats;
-        this.settingModel = new ReportCardModel(this.selectall.select.Otdels);
+        this.settingModel = new ReportCardModel(this.selectall.select.Otdels.filter(x => x.User !== undefined));
         this.isload = false;
     }
 
@@ -149,6 +154,17 @@ export class User implements OnInit {
         dialogRef.afterClosed().subscribe(() => {
             console.log("Вышли из диалога!");
         });
+    }
+
+    ///Создание служебных записок для отдела информатизации
+    createMemoReport(idUser: number, nameUser: string, modelMemo: ModelMemo, status: string, tabelNumber: string) {
+        if (modelMemo.idNumberMemo == 3) {
+            if (status !== "Работает") {
+                alert(`Невозможно создать заявку типа ${modelMemo.nameMemo} на сотрудника со статусом ${status}`)
+                return;
+            }
+        }
+        this.editandadd.createMemoReport(nameUser, this.templateServer.createModelSend(idUser, tabelNumber, modelMemo))
     }
 
 }

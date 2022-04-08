@@ -1,16 +1,38 @@
 <div>
     <b class="h2 text-primary ">Формирование журнала доступов АИС 3</b>
 </div>
-<div class="he d-flex align-items-center">
-    <b class="h3 text-primary ">Год журнала:</b>
-    <mat-form-field class="selectin_sql text-primary">
-        <mat-label class="text-primary">Год</mat-label>
-        <mat-select class="text-primary" placeholder="Год" [(ngModel)]="data.selectedYears" name="year">
-            <mat-option class="text-primary" *ngFor="let year of data.yearsModel" [value]="year">
-                {{year}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
+<div class="container">
+    <div class="row w-150">
+        <div class="col d-flex align-items-center">
+            <b class="h3 text-primary ">Год журнала:</b>
+        </div>
+        <div class="col">
+            <mat-form-field class="selectin_sql text-primary">
+                <mat-label class="text-primary">Год</mat-label>
+                <mat-select class="text-primary" placeholder="Год" [(ngModel)]="data.selectedYears" name="year">
+                    <mat-option class="text-primary" *ngFor="let year of data.yearsModel" [value]="year">
+                        {{year}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="row w-150">
+        <div class="col d-flex align-items-center">
+            <b class="h3 text-primary ">Отдел журнала:</b>
+        </div>
+        <div class="col">
+            <mat-form-field class="selectin_sql text-primary">
+                <mat-label class="text-primary">Отдел</mat-label>
+                <mat-select (click)="data.calbackfiltersAll()" placeholder="Отдел журнала"
+                    [(ngModel)]="data.selectedOtdel" name="otdels">
+                    <mat-option *ngFor="let otdels of data.otdel" [value]="otdels">
+                        {{otdels.NameOtdel}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </div>
 </div>
 <div>
     <button class="mt-2 btn btn-lg btn-primary" matTooltip="Выгрузить отчет!" type="submit"

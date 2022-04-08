@@ -92,7 +92,7 @@
                         <th class="mainHeader" mat-header-cell *matHeaderCellDef>Актуальные шаблоны в АИС НАЛОГ 3
                         </th>
                         <td class="mainCell" mat-cell *matCellDef="let row" matTooltip={{row.Category}}>
-                            УН Шаблона: {{row.IdTemplateIfns}}; Колличество ролей в шаблоне:
+                            УН Шаблона: {{row.IdTemplateIfns}}; Количество ролей в шаблоне:
                             {{row?.TemplateIfnsAndRuleIfns?.length}}; Шаблон:
                             {{row.Name}}
                         </td>
@@ -139,5 +139,5 @@
     <p>Идет процесс загрузки шаблонов повторите запрос позже!!!</p>
 </div>
 <ng-template class="panel" #TOOLPANEL>
-    <button class="panelbutton" mat-button (click)="postDownLoadXlsxSql()">Выгрузка отчетa с сервера</button>
+    <button class="panelbutton" mat-button (click)="postDownLoadXlsxSql()">Выгрузка отчёта с сервера</button>
 </ng-template>

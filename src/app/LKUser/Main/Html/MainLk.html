@@ -21,7 +21,7 @@
                 <mat-icon>more_vert</mat-icon>
                 <mat-menu #menu="matMenu">
                   <div class="MenuButton"
-                    *ngFor="let template of selectAll.select.FullTemplateSupport | filters:[row.IdCategoriaSupport]">
+                    *ngFor="let template of support | filters:[row.IdCategoriaSupport]">
                     <button mat-menu-item (click)="alltechnic.createSTO(row,template,authService,dialog)"
                       [matTooltip]="template.InfoTemplate">
                       <mat-icon>input</mat-icon>

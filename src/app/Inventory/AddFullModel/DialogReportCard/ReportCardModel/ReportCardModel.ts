@@ -50,7 +50,6 @@ export class ReportCardModel {
 
     constructor(department: Otdel[]) {
         this.department = department;
-        console.log(department);
     }
 
     public department: Otdel[] = null
@@ -118,4 +117,7 @@ export class UsersReportCard {
     public status_linkField: string;
     public date_inField: any;
     public date_outField: any;
+    public linkField: number;
+    public link_GrField: number;
+    public nameGrField: string;
 }

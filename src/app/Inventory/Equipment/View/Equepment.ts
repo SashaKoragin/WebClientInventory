@@ -168,4 +168,19 @@ export class Equipment implements OnInit {
     await this.selectAll.allModelOther();
   }
 
+  isloadStatistic: boolean = false;
+  statusStatistic: string = null;
+  //Запрос для статистики серверов
+  public async statisticServer() {
+    this.isloadStatistic = true;
+    this.statusStatistic = "Запущенa проверка доступности серверов!!!"
+    await this.selectAll.statisticServerIsWork();
+    this.isloadStatistic = false;
+    this.statusStatistic = "Завершена проверка доступности серверов!!!"
+  }
+
+  public replaceString(nameMiodel: string): string {
+    return nameMiodel.replace('undefined', '').replace('undefined', '');
+
+  }
 }

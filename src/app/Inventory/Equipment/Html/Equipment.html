@@ -37,8 +37,9 @@
           </ng-container>
 
           <ng-container matColumnDef="IdModel">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
-            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row.IdPrinter">
+            <th class="id" *matHeaderCellDef mat-sort-header>Id</th>
+            <td [style.background]="row.Statusing?.Color" class="cell" *matCellDef="let row"
+              [matTooltip]="row.IdPrinter">
               {{row.IdPrinter}}
             </td>
           </ng-container>
@@ -89,6 +90,15 @@
             </td>
           </ng-container>
 
+          <ng-container matColumnDef="Name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Имя принтера</th>
+            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row.Name">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.Name}}</Label>
+              <div [ngClass]=row.IdPrinter.toString() id="{{row.IdPrinter}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
 
           <ng-container matColumnDef="ZavNumber">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Зав.Номер</th>
@@ -133,7 +143,7 @@
           </ng-container>
 
           <ng-container matColumnDef="Coment">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Коментарий</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Комментарий</th>
             <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row.Coment">
               <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Coment}}</Label>
               <div [ngClass]=row.IdPrinter.toString() id="{{row.IdPrinter}}"
@@ -164,8 +174,20 @@
             </td>
           </ng-container>
 
+          <ng-container matColumnDef="WriteOffSign">
+            <th class="id2" *matHeaderCellDef mat-sort-header>Списано</th>
+            <td [style.background]="row.Statusing?.Color" class="cell" *matCellDef="let row"
+              [matTooltip]="row.WriteOffSign ? 'В работе' : 'Списано Утилизировано'">
+              <mat-checkbox [style.display]="row.ModelIsEdit ? 'none':'inline'" [disabled]="true"
+                [(ngModel)]="row.WriteOffSign"></mat-checkbox>
+              <div [ngClass]=row.IdPrinter.toString() id="{{row.IdPrinter}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
+
           <ng-container matColumnDef="ActionsColumn">
-            <th mat-header-cell *matHeaderCellDef>
+            <th class="formEdit" mat-header-cell *matHeaderCellDef>
               <ng-template [ngxPermissionsExcept]="['Оператор','Просмотр','Безопасность']">
                 <button mat-icon-button color="primary" [disabled]="printer.isAdd" focusable="false"
                   (click)="printer.add()">
@@ -260,6 +282,10 @@
         </mat-select>
       </mat-form-field>
       <mat-form-field id="template" class="validation">
+        <input matInput placeholder="Имя принтера" [ngModel]="printer.model?.Name"
+          (ngModelChange)="printer.model.Name = $event" />
+      </mat-form-field>
+      <mat-form-field id="template" class="validation">
         <input matInput [formControl]="printer.modelvalid?.getRowValidatorModel[1].get('ZavNum')"
           placeholder="Заводской номер" [ngModel]="printer.model?.ZavNumber"
           (ngModelChange)="printer.model.ZavNumber = $event" />
@@ -278,7 +304,7 @@
           (ngModelChange)="printer.model.IpAdress = $event" />
       </mat-form-field>
       <mat-form-field id="template" class="validation">
-        <input matInput placeholder="Коментарий" [ngModel]="printer.model?.Coment"
+        <input matInput placeholder="Комментарий" [ngModel]="printer.model?.Coment"
           (ngModelChange)="printer.model.Coment = $event" />
       </mat-form-field>
       <mat-form-field id="template" class="validation">
@@ -306,6 +332,11 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
+      <mat-form-field id="template" class="validation check">
+        <input matInput [hidden]="true" />
+        <mat-checkbox [(ngModel)]="printer.model.WriteOffSign" [checked]="printer.model.WriteOffSign"> </mat-checkbox>
+      </mat-form-field>
+
     </div>
 
   </mat-tab>
@@ -347,8 +378,9 @@
           </ng-container>
 
           <ng-container matColumnDef="IdModel">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
-            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row.IdScaner">
+            <th class="id" *matHeaderCellDef mat-sort-header>Id</th>
+            <td [style.background]="row.Statusing?.Color" class="cell" *matCellDef="let row"
+              [matTooltip]="row.IdScaner">
               {{row.IdScaner}}
             </td>
           </ng-container>
@@ -444,7 +476,7 @@
           </ng-container>
 
           <ng-container matColumnDef="Coment">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Коментарий</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Комментарий</th>
             <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row.Coment">
               <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Coment}}</Label>
               <div [ngClass]=row.IdScaner.toString() id="{{row.IdScaner}}"
@@ -475,8 +507,20 @@
             </td>
           </ng-container>
 
+          <ng-container matColumnDef="WriteOffSign">
+            <th class="id2" *matHeaderCellDef mat-sort-header>Списано</th>
+            <td [style.background]="row.Statusing?.Color" class="cell" *matCellDef="let row"
+              [matTooltip]="row.WriteOffSign ? 'В работе' : 'Списано Утилизировано'">
+              <mat-checkbox [style.display]="row.ModelIsEdit ? 'none':'inline'" [disabled]="true"
+                [(ngModel)]="row.WriteOffSign"></mat-checkbox>
+              <div [ngClass]=row.IdScaner.toString() id="{{row.IdScaner}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
+
           <ng-container matColumnDef="ActionsColumn">
-            <th mat-header-cell *matHeaderCellDef>
+            <th class="formEdit" mat-header-cell *matHeaderCellDef>
               <ng-template [ngxPermissionsExcept]="['Оператор','Просмотр','Безопасность']">
                 <button mat-icon-button color="primary" [disabled]="scaner.isAdd" focusable="false"
                   (click)="scaner.add()">
@@ -588,7 +632,7 @@
           (ngModelChange)="scaner.model.IpAdress = $event" />
       </mat-form-field>
       <mat-form-field id="template" class="validation">
-        <input matInput placeholder="Коментарий" [ngModel]="scaner.model?.Coment"
+        <input matInput placeholder="Комментарий" [ngModel]="scaner.model?.Coment"
           (ngModelChange)="scaner.model.Coment = $event" />
       </mat-form-field>
       <mat-form-field id="template" class="validation">
@@ -615,6 +659,10 @@
             {{status.Name}}
           </mat-option>
         </mat-select>
+      </mat-form-field>
+      <mat-form-field id="template" class="validation check">
+        <input matInput [hidden]="true" />
+        <mat-checkbox [(ngModel)]="scaner.model.WriteOffSign" [checked]="scaner.model.WriteOffSign"> </mat-checkbox>
       </mat-form-field>
     </div>
 
@@ -658,8 +706,8 @@
 
 
           <ng-container matColumnDef="IdModel">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
-            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row.IdMfu">
+            <th class="id" *matHeaderCellDef mat-sort-header>Id</th>
+            <td [style.background]="row.Statusing?.Color" class="cell" *matCellDef="let row" [matTooltip]="row.IdMfu">
               {{row.IdMfu}}
             </td>
           </ng-container>
@@ -709,6 +757,15 @@
             </td>
           </ng-container>
 
+          <ng-container matColumnDef="Name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Имя МФУ</th>
+            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row.Name">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.Name}}</Label>
+              <div [ngClass]=row.IdMfu.toString() id="{{row.IdMfu}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
 
           <ng-container matColumnDef="ZavNumber">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Зав.Номер</th>
@@ -764,7 +821,7 @@
           </ng-container>
 
           <ng-container matColumnDef="Coment">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Коментарий</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Комментарий</th>
             <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row.Coment">
               <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Coment}}</Label>
               <div [ngClass]=row.IdMfu.toString() id="{{row.IdMfu}}"
@@ -795,8 +852,20 @@
             </td>
           </ng-container>
 
+          <ng-container matColumnDef="WriteOffSign">
+            <th class="id2" *matHeaderCellDef mat-sort-header>Списано</th>
+            <td [style.background]="row.Statusing?.Color" class="cell" *matCellDef="let row"
+              [matTooltip]="row.WriteOffSign ? 'В работе' : 'Списано Утилизировано'">
+              <mat-checkbox [style.display]="row.ModelIsEdit ? 'none':'inline'" [disabled]="true"
+                [(ngModel)]="row.WriteOffSign"></mat-checkbox>
+              <div [ngClass]=row.IdMfu.toString() id="{{row.IdMfu}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
+
           <ng-container matColumnDef="ActionsColumn">
-            <th mat-header-cell *matHeaderCellDef>
+            <th class="formEdit" mat-header-cell *matHeaderCellDef>
               <ng-template [ngxPermissionsExcept]="['Оператор','Просмотр','Безопасность']">
                 <button mat-icon-button color="primary" [disabled]="mfu.isAdd" focusable="false" (click)="mfu.add()">
                   <i class="material-icons">person_add</i>
@@ -888,6 +957,9 @@
         </mat-select>
       </mat-form-field>
       <mat-form-field id="template" class="validation">
+        <input matInput placeholder="Имя МФУ" [ngModel]="mfu.model?.Name" (ngModelChange)="mfu.model.Name = $event" />
+      </mat-form-field>
+      <mat-form-field id="template" class="validation">
         <input matInput [formControl]="mfu.modelvalid?.getRowValidatorModel[1].get('ZavNum')"
           placeholder="Заводской номер" [ngModel]="mfu.model?.ZavNumber"
           (ngModelChange)="mfu.model.ZavNumber = $event" />
@@ -918,7 +990,7 @@
         </mat-select>
       </mat-form-field>
       <mat-form-field id="template" class="validation">
-        <input matInput placeholder="Коментарий" [ngModel]="mfu.model?.Coment"
+        <input matInput placeholder="Комментарий" [ngModel]="mfu.model?.Coment"
           (ngModelChange)="mfu.model.Coment = $event" />
       </mat-form-field>
       <mat-form-field id="template" class="validation">
@@ -944,6 +1016,10 @@
             {{status.Name}}
           </mat-option>
         </mat-select>
+      </mat-form-field>
+      <mat-form-field id="template" class="validation check">
+        <input matInput [hidden]="true" />
+        <mat-checkbox [(ngModel)]="mfu.model.WriteOffSign" [checked]="mfu.model.WriteOffSign"> </mat-checkbox>
       </mat-form-field>
     </div>
 
@@ -990,8 +1066,9 @@
           </ng-container>
 
           <ng-container matColumnDef="IdModel">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
-            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row.IdSysBlock">
+            <th class="id" *matHeaderCellDef mat-sort-header>Id</th>
+            <td [style.background]="row.Statusing?.Color" class="cell" *matCellDef="let row"
+              [matTooltip]="row.IdSysBlock">
               {{row.IdSysBlock}}
             </td>
           </ng-container>
@@ -1040,7 +1117,7 @@
           </ng-container>
 
           <ng-container matColumnDef="SerNum">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Сирийный номер</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Серийный номер</th>
             <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row.SerNum">
               <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.SerNum}}</Label>
               <div [ngClass]=row.IdSysBlock.toString() id="{{row.IdSysBlock}}"
@@ -1093,7 +1170,7 @@
           </ng-container>
 
           <ng-container matColumnDef="Coment">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Коментарий</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Комментарий</th>
             <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row.Coment">
               <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Coment}}</Label>
               <div [ngClass]=row.IdSysBlock.toString() id="{{row.IdSysBlock}}"
@@ -1113,8 +1190,20 @@
             </td>
           </ng-container>
 
+          <ng-container matColumnDef="WriteOffSign">
+            <th class="id2" *matHeaderCellDef mat-sort-header>Списано</th>
+            <td [style.background]="row.Statusing?.Color" class="cell" *matCellDef="let row"
+              [matTooltip]="row.WriteOffSign ? 'В работе' : 'Списано Утилизировано'">
+              <mat-checkbox [style.display]="row.ModelIsEdit ? 'none':'inline'" [disabled]="true"
+                [(ngModel)]="row.WriteOffSign"></mat-checkbox>
+              <div [ngClass]=row.IdSysBlock.toString() id="{{row.IdSysBlock}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
+
           <ng-container matColumnDef="ActionsColumn">
-            <th mat-header-cell *matHeaderCellDef>
+            <th class="formEdit" mat-header-cell *matHeaderCellDef>
               <ng-template [ngxPermissionsExcept]="['Оператор','Просмотр','Безопасность']">
                 <button mat-icon-button color="primary" [disabled]="sysblok.isAdd" focusable="false"
                   (click)="sysblok.add()">
@@ -1200,7 +1289,7 @@
       </mat-form-field>
       <mat-form-field id="template" class="validation">
         <input matInput [formControl]="sysblok.modelvalid?.getRowValidatorModel[2].get('SerNum')"
-          placeholder="Сирийный номер" [ngModel]="sysblok.model?.SerNum"
+          placeholder="Серийный номер" [ngModel]="sysblok.model?.SerNum"
           (ngModelChange)="sysblok.model.SerNum = $event" />
       </mat-form-field>
       <mat-form-field id="template" class="validation">
@@ -1231,7 +1320,7 @@
         </mat-select>
       </mat-form-field>
       <mat-form-field id="template" class="validation">
-        <input matInput placeholder="Коментарий" [ngModel]="sysblok.model?.Coment"
+        <input matInput placeholder="Комментарий" [ngModel]="sysblok.model?.Coment"
           (ngModelChange)="sysblok.model.Coment = $event" />
       </mat-form-field>
       <mat-form-field id="template" class="validation">
@@ -1245,6 +1334,10 @@
             {{status.Name}}
           </mat-option>
         </mat-select>
+      </mat-form-field>
+      <mat-form-field id="template" class="validation check">
+        <input matInput [hidden]="true" />
+        <mat-checkbox [(ngModel)]="sysblok.model.WriteOffSign" [checked]="sysblok.model.WriteOffSign"> </mat-checkbox>
       </mat-form-field>
     </div>
   </mat-tab>
@@ -1285,8 +1378,9 @@
           </ng-container>
 
           <ng-container matColumnDef="IdModel">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
-            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row.IdMonitor">
+            <th class="id" *matHeaderCellDef mat-sort-header>Id</th>
+            <td [style.background]="row.Statusing?.Color" class="cell" *matCellDef="let row"
+              [matTooltip]="row.IdMonitor">
               {{row.IdMonitor}}
             </td>
           </ng-container>
@@ -1313,14 +1407,24 @@
             </td>
           </ng-container>
 
-          <ng-container matColumnDef="NameMonitor.Name">
+          <ng-container matColumnDef="NameMonitor.NameManufacturer">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Модель</th>
             <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row"
-              [matTooltip]="row.NameMonitor?.Name">
-              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.NameMonitor?.Name}}</Label>
+              [matTooltip]="replaceString(row.NameMonitor?.NameManufacturer+' '+row.NameMonitor?.NameModel+' '+row.NameMonitor?.Info)">
+              <Label
+                [style.display]="row.ModelIsEdit ? 'none':'inline'">{{replaceString(row.NameMonitor?.NameManufacturer+'
+                '+row.NameMonitor?.NameModel+' '+row.NameMonitor?.Info)}}</Label>
               <div [ngClass]=row.IdMonitor.toString() id="{{row.IdMonitor}}"
                 [style.display]="!row.ModelIsEdit ? 'none':'block'">
               </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="NameMonitor.NameModel">
+            <th [style.display]="'none'" *matHeaderCellDef mat-sort-header>Модель 2</th>
+            <td [style.display]="'none'" [style.background]="row.Statusing?.Color" class="cell" *matCellDef="let row"
+              [matTooltip]="row.NameMonitor.NameModel">
+              {{row.NameMonitor.NameModel}}
             </td>
           </ng-container>
 
@@ -1335,7 +1439,7 @@
           </ng-container>
 
           <ng-container matColumnDef="SerNum">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Сирийный номер</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Серийный номер</th>
             <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row.SerNum">
               <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.SerNum}}</Label>
               <div [ngClass]=row.IdMonitor.toString() id="{{row.IdMonitor}}"
@@ -1367,7 +1471,7 @@
           </ng-container>
 
           <ng-container matColumnDef="Coment">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Коментарий</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Комментарий</th>
             <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row.Coment">
               <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Coment}}</Label>
               <div [ngClass]=row.IdMonitor.toString() id="{{row.IdMonitor}}"
@@ -1387,8 +1491,20 @@
             </td>
           </ng-container>
 
+          <ng-container matColumnDef="WriteOffSign">
+            <th class="id2" *matHeaderCellDef mat-sort-header>Списано</th>
+            <td [style.background]="row.Statusing?.Color" class="cell" *matCellDef="let row"
+              [matTooltip]="row.WriteOffSign ? 'В работе' : 'Списано Утилизировано'">
+              <mat-checkbox [style.display]="row.ModelIsEdit ? 'none':'inline'" [disabled]="true"
+                [(ngModel)]="row.WriteOffSign"></mat-checkbox>
+              <div [ngClass]=row.IdMonitor.toString() id="{{row.IdMonitor}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
+
           <ng-container matColumnDef="ActionsColumn">
-            <th mat-header-cell *matHeaderCellDef>
+            <th class="formEdit" mat-header-cell *matHeaderCellDef>
               <ng-template [ngxPermissionsExcept]="['Оператор','Просмотр','Безопасность']">
                 <button mat-icon-button color="primary" [disabled]="monitor.isAdd" focusable="false"
                   (click)="monitor.add()">
@@ -1457,13 +1573,15 @@
       <mat-form-field id="template" class="validation">
         <mat-select (click)="monitor.calbackfiltersAll()"
           [formControl]="monitor.modelvalid?.getRowValidatorModel[3].get('Model')"
-          [placeholder]="monitor.model.NameMonitor?.Name" [(ngModel)]="monitor.model.NameMonitor" name="model">
-          <mat-select-filter class="filter" [placeholder]="monitor.model.NameMonitor?.Name" [displayMember]="'Name'"
-            [array]="monitor.models" (filteredReturn)="monitor.filteredModels =$event">
+          [placeholder]="replaceString(monitor.model.NameMonitor?.NameManufacturer+' '+monitor.model.NameMonitor?.NameModel+' '+monitor.model.NameMonitor?.Info)"
+          [(ngModel)]="monitor.model.NameMonitor" name="model">
+          <mat-select-filter class="filter"
+            [placeholder]="replaceString(monitor.model.NameMonitor?.NameManufacturer+' '+monitor.model.NameMonitor?.NameModel+' '+monitor.model.NameMonitor?.Info)"
+            [displayMember]="'NameModel'" [array]="monitor.models" (filteredReturn)="monitor.filteredModels =$event">
           </mat-select-filter>
           <mat-option [value]='null'>None</mat-option>
           <mat-option *ngFor="let model of monitor.filteredModels" [value]="model">
-            {{model.Name}}
+            {{replaceString(model?.NameManufacturer+' '+model?.NameModel+' '+model?.Info)}}
           </mat-option>
         </mat-select>
       </mat-form-field>
@@ -1475,7 +1593,7 @@
 
       <mat-form-field id="template" class="validation">
         <input matInput [formControl]="monitor.modelvalid?.getRowValidatorModel[3].get('SerNum')"
-          placeholder="Сирийный номер" [ngModel]="monitor.model?.SerNum"
+          placeholder="Серийный номер" [ngModel]="monitor.model?.SerNum"
           (ngModelChange)="monitor.model.SerNum = $event" />
       </mat-form-field>
 
@@ -1500,7 +1618,7 @@
       </mat-form-field>
 
       <mat-form-field id="template" class="validation">
-        <input matInput placeholder="Коментарий" [ngModel]="monitor.model?.Coment"
+        <input matInput placeholder="Комментарий" [ngModel]="monitor.model?.Coment"
           (ngModelChange)="monitor.model.Coment = $event" />
       </mat-form-field>
 
@@ -1515,6 +1633,10 @@
             {{status.Name}}
           </mat-option>
         </mat-select>
+      </mat-form-field>
+      <mat-form-field id="template" class="validation check">
+        <input matInput [hidden]="true" />
+        <mat-checkbox [(ngModel)]="monitor.model.WriteOffSign" [checked]="monitor.model.WriteOffSign"> </mat-checkbox>
       </mat-form-field>
     </div>
 
@@ -1544,8 +1666,8 @@
           </ng-container>
 
           <ng-container matColumnDef="IdBlockPowers">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
-            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row"
+            <th class="id" *matHeaderCellDef mat-sort-header>Id</th>
+            <td [style.background]="row.Statusing?.Color" class="cell" *matCellDef="let row"
               [matTooltip]="row?.IdBlockPowers">{{row?.IdBlockPowers}}</td>
           </ng-container>
 
@@ -1626,7 +1748,7 @@
           </ng-container>
 
           <ng-container matColumnDef="Coment">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Коментарий</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Комментарий</th>
             <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row.Coment">
               <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Coment}}</Label>
               <div [ngClass]=row.IdBlockPowers.toString() id="{{row.IdBlockPowers}}"
@@ -1657,8 +1779,20 @@
             </td>
           </ng-container>
 
+          <ng-container matColumnDef="WriteOffSign">
+            <th class="id2" *matHeaderCellDef mat-sort-header>Списано</th>
+            <td [style.background]="row.Statusing?.Color" class="cell" *matCellDef="let row"
+              [matTooltip]="row.WriteOffSign ? 'В работе' : 'Списано Утилизировано'">
+              <mat-checkbox [style.display]="row.ModelIsEdit ? 'none':'inline'" [disabled]="true"
+                [(ngModel)]="row.WriteOffSign"></mat-checkbox>
+              <div [ngClass]=row.IdBlockPowers.toString() id="{{row.IdBlockPowers}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
+
           <ng-container matColumnDef="ActionsColumn">
-            <th mat-header-cell *matHeaderCellDef>
+            <th class="formEdit" mat-header-cell *matHeaderCellDef>
               <ng-template [ngxPermissionsExcept]="['Оператор','Просмотр','Безопасность']">
                 <button mat-icon-button color="primary" [disabled]="blockpower.isAdd" focusable="false"
                   (click)="blockpower.add()">
@@ -1769,7 +1903,7 @@
           (ngModelChange)="blockpower.model.InventarNumber = $event" />
       </mat-form-field>
       <mat-form-field id="template" class="validation">
-        <input matInput placeholder="Коментарий" [ngModel]="blockpower.model?.Coment"
+        <input matInput placeholder="Комментарий" [ngModel]="blockpower.model?.Coment"
           (ngModelChange)="blockpower.model.Coment = $event" />
       </mat-form-field>
       <mat-form-field id="template" class="validation">
@@ -1797,6 +1931,11 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
+      <mat-form-field id="template" class="validation check">
+        <input matInput [hidden]="true" />
+        <mat-checkbox [(ngModel)]="blockpower.model.WriteOffSign" [checked]="blockpower.model.WriteOffSign">
+        </mat-checkbox>
+      </mat-form-field>
     </div>
   </mat-tab>
   <mat-tab label="Коммутаторы">
@@ -1822,8 +1961,9 @@
           </ng-container>
 
           <ng-container matColumnDef="IdSwithes">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
-            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row?.IdSwithes">
+            <th class="id" *matHeaderCellDef mat-sort-header>Id</th>
+            <td [style.background]="row.Statusing?.Color" class="cell" *matCellDef="let row"
+              [matTooltip]="row?.IdSwithes">
               {{row?.IdSwithes}}</td>
           </ng-container>
 
@@ -1902,7 +2042,7 @@
           </ng-container>
 
           <ng-container matColumnDef="Coment">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Коментарий</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Комментарий</th>
             <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row.Coment">
               <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Coment}}</Label>
               <div [ngClass]=row.IdSwithes.toString() id="{{row.IdSwithes}}"
@@ -1933,8 +2073,20 @@
             </td>
           </ng-container>
 
+          <ng-container matColumnDef="WriteOffSign">
+            <th class="id2" *matHeaderCellDef mat-sort-header>Списано</th>
+            <td [style.background]="row.Statusing?.Color" class="cell" *matCellDef="let row"
+              [matTooltip]="row.WriteOffSign ? 'В работе' : 'Списано Утилизировано'">
+              <mat-checkbox [style.display]="row.ModelIsEdit ? 'none':'inline'" [disabled]="true"
+                [(ngModel)]="row.WriteOffSign"></mat-checkbox>
+              <div [ngClass]=row.IdSwithes.toString() id="{{row.IdSwithes}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
+
           <ng-container matColumnDef="ActionsColumn">
-            <th mat-header-cell *matHeaderCellDef>
+            <th class="formEdit" mat-header-cell *matHeaderCellDef>
               <ng-template [ngxPermissionsExcept]="['Оператор','Просмотр','Безопасность']">
                 <button mat-icon-button color="primary" [disabled]="switch.isAdd" focusable="false"
                   (click)="switch.add()">
@@ -2027,7 +2179,7 @@
           (ngModelChange)="switch.model.InventarNum = $event" />
       </mat-form-field>
       <mat-form-field id="template" class="validation">
-        <input matInput placeholder="Коментарий" [ngModel]="switch.model?.Coment"
+        <input matInput placeholder="Комментарий" [ngModel]="switch.model?.Coment"
           (ngModelChange)="switch.model.Coment = $event" />
       </mat-form-field>
       <mat-form-field id="template" class="validation">
@@ -2055,6 +2207,10 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
+      <mat-form-field id="template" class="validation check">
+        <input matInput [hidden]="true" />
+        <mat-checkbox [(ngModel)]="switch.model.WriteOffSign" [checked]="switch.model.WriteOffSign"> </mat-checkbox>
+      </mat-form-field>
     </div>
   </mat-tab>
   <mat-tab label="Cерверное оборудование">
@@ -2066,6 +2222,9 @@
         </mat-form-field>
         <button class="actual" mat-button (click)="excel.ExportTOExcel(tableServerEquipment)">Выгрузить Серверное
           оборудование</button>
+        <button class="actual" mat-button [disabled]="isloadStatistic" (click)="statisticServer()">Проверка доступности
+          серверов</button>
+        <p>{{statusStatistic}}</p>
       </form>
       <div class="tables" #TABLESERVEREQUIPMENT>
         <table mat-table [dataSource]="serverEquipment.dataSource" matSort>
@@ -2081,8 +2240,8 @@
           </ng-container>
 
           <ng-container matColumnDef="Id">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
-            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row?.Id">
+            <th class="id" *matHeaderCellDef mat-sort-header>Id</th>
+            <td [style.background]="row.Statusing?.Color" class="cell" *matCellDef="let row" [matTooltip]="row?.Id">
               {{row?.Id}}</td>
           </ng-container>
 
@@ -2174,7 +2333,7 @@
           </ng-container>
 
           <ng-container matColumnDef="Coment">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Коментарий</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Комментарий</th>
             <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row.Coment">
               <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Coment}}</Label>
               <div [ngClass]=row.Id.toString() id="{{row.Id}}" [style.display]="!row.ModelIsEdit ? 'none':'block'">
@@ -2202,8 +2361,19 @@
             </td>
           </ng-container>
 
+          <ng-container matColumnDef="WriteOffSign">
+            <th class="id2" *matHeaderCellDef mat-sort-header>Списано</th>
+            <td [style.background]="row.Statusing?.Color" class="cell" *matCellDef="let row"
+              [matTooltip]="row.WriteOffSign ? 'В работе' : 'Списано Утилизировано'">
+              <mat-checkbox [style.display]="row.ModelIsEdit ? 'none':'inline'" [disabled]="true"
+                [(ngModel)]="row.WriteOffSign"></mat-checkbox>
+              <div [ngClass]=row.Id.toString() id="{{row.Id}}" [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
+
           <ng-container matColumnDef="ActionsColumn">
-            <th mat-header-cell *matHeaderCellDef>
+            <th class="formEdit" mat-header-cell *matHeaderCellDef>
               <ng-template [ngxPermissionsExcept]="['Оператор','Просмотр','Безопасность']">
                 <button mat-icon-button color="primary" [disabled]="serverEquipment.isAdd" focusable="false"
                   (click)="serverEquipment.add()">
@@ -2335,7 +2505,7 @@
       </mat-form-field>
 
       <mat-form-field id="template" class="validation">
-        <input matInput placeholder="Коментарий" [ngModel]="serverEquipment.model?.Coment"
+        <input matInput placeholder="Комментарий" [ngModel]="serverEquipment.model?.Coment"
           (ngModelChange)="serverEquipment.model.Coment = $event" />
       </mat-form-field>
 
@@ -2367,7 +2537,11 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-
+      <mat-form-field id="template" class="validation check">
+        <input matInput [hidden]="true" />
+        <mat-checkbox [(ngModel)]="serverEquipment.model.WriteOffSign" [checked]="serverEquipment.model.WriteOffSign">
+        </mat-checkbox>
+      </mat-form-field>
     </div>
 
   </mat-tab>
@@ -2395,8 +2569,9 @@
           </ng-container>
 
           <ng-container matColumnDef="IdOtherAll">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
-            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row?.IdOtherAll">
+            <th class="id" *matHeaderCellDef mat-sort-header>Id</th>
+            <td [style.background]="row.Statusing?.Color" class="cell" *matCellDef="let row"
+              [matTooltip]="row?.IdOtherAll">
               {{row?.IdOtherAll}}</td>
           </ng-container>
 
@@ -2488,7 +2663,7 @@
           </ng-container>
 
           <ng-container matColumnDef="Coment">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Коментарий</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Комментарий</th>
             <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row.Coment">
               <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Coment}}</Label>
               <div [ngClass]=row.IdOtherAll.toString() id="{{row.IdOtherAll}}"
@@ -2519,8 +2694,20 @@
             </td>
           </ng-container>
 
+          <ng-container matColumnDef="WriteOffSign">
+            <th class="id2" *matHeaderCellDef mat-sort-header>Списано</th>
+            <td [style.background]="row.Statusing?.Color" class="cell" *matCellDef="let row"
+              [matTooltip]="row.WriteOffSign ? 'В работе' : 'Списано Утилизировано'">
+              <mat-checkbox [style.display]="row.ModelIsEdit ? 'none':'inline'" [disabled]="true"
+                [(ngModel)]="row.WriteOffSign"></mat-checkbox>
+              <div [ngClass]=row.IdOtherAll.toString() id="{{row.IdOtherAll}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
+
           <ng-container matColumnDef="ActionsColumn">
-            <th mat-header-cell *matHeaderCellDef>
+            <th class="formEdit" mat-header-cell *matHeaderCellDef>
               <ng-template [ngxPermissionsExcept]="['Оператор','Просмотр','Безопасность']">
                 <button mat-icon-button color="primary" [disabled]="otherall.isAdd" focusable="false"
                   (click)="otherall.add()">
@@ -2649,7 +2836,7 @@
       </mat-form-field>
 
       <mat-form-field id="template" class="validation">
-        <input matInput placeholder="Коментарий" [ngModel]="otherall.model?.Coment"
+        <input matInput placeholder="Комментарий" [ngModel]="otherall.model?.Coment"
           (ngModelChange)="otherall.model.Coment = $event" />
       </mat-form-field>
 
@@ -2678,6 +2865,11 @@
             {{status.Name}}
           </mat-option>
         </mat-select>
+      </mat-form-field>
+
+      <mat-form-field id="template" class="validation check">
+        <input matInput [hidden]="true" />
+        <mat-checkbox [(ngModel)]="otherall.model.WriteOffSign" [checked]="otherall.model.WriteOffSign"> </mat-checkbox>
       </mat-form-field>
 
     </div>

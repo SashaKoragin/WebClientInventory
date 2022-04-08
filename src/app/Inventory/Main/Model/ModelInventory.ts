@@ -59,6 +59,10 @@ export class Inventar {
             },
             {
                 otdelfunc: null,
+                children: null, types: 'Техника ЭПО', pages: './equipmentSto', fullpath: 'Техника\\Техника ЭПО', model: 'Техника ЭПО', isrule: null
+            },
+            {
+                otdelfunc: null,
                 children: null, types: 'Токены и прочее', pages: './supportToken', fullpath: 'Техника\\Токены и прочее', model: 'Токены и прочее', isrule: null
             },
             ], types: null, pages: null, fullpath: null, model: null, isrule: null
@@ -102,10 +106,15 @@ export class Inventar {
         },
         {
             otdelfunc: 'Процессы',
-            children: [{
-                otdelfunc: null,
-                children: null, types: 'Синхронизация', pages: './process', fullpath: 'Процессы\\Синхронизация', model: 'Синхронизация', isrule: null
-            }], types: null, pages: null, fullpath: null, model: null, isrule: ['Просмотр']
+            children: [
+                {
+                    otdelfunc: null,
+                    children: null, types: 'Процессы и параметры', pages: './process', fullpath: 'Процессы\\Процессы и параметры', model: 'Процессы и параметры', isrule: null
+                },
+                {
+                    otdelfunc: null,
+                    children: null, types: 'Синхронизация', pages: './synchronization', fullpath: 'Процессы\\Синхронизация', model: 'Синхронизация', isrule: null
+                }], types: null, pages: null, fullpath: null, model: null, isrule: ['Просмотр']
         },
         {
             otdelfunc: 'Ошибки',

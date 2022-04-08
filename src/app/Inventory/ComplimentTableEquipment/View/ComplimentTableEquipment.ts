@@ -179,6 +179,7 @@ export class ComplimentTableEquipment implements OnInit {
 
 
     async sendserver() {
+        await this.selectAll.allotdel();
         await this.selectAll.allnamemonitor();
         await this.selectAll.allcopysave();
         await this.selectAll.allkabinet();
