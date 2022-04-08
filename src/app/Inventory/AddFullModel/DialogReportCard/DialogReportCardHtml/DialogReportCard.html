@@ -70,6 +70,26 @@
             </mat-form-field>
         </div>
     </div>
+    <ng-template [ngxPermissionsOnly]="['Табель']">
+        <div class="row w-50">
+            <div class="col d-flex align-items-center">
+                <b class="h3 text-primary ">Отдел:</b>
+            </div>
+            <div class="col">
+                <mat-form-field class="selectin_sql text-primary">
+                    <mat-label class="text-primary">Отдел</mat-label>
+                    <mat-select class="text-primary" placeholder="Отдел"
+                        [(ngModel)]="generateModel.selectedDepartmentIndex" name="department">
+                        <mat-option [value]='null'>Отсутствует</mat-option>
+                        <mat-option class="text-primary" *ngFor="let department of generateModel.otdels"
+                            [value]="department">
+                            {{department.NameOtdel}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+    </ng-template>
 </div>
 <div>
     <button class="mt-2 btn btn-rn btn-primary" [disabled]="modelvalid?.getRowValidatorModel[13].invalid"

@@ -3,6 +3,36 @@
         <div class="allSetting">
             <div class="settingModelOne">
                 <div class="text">
+                    <label>Номер налогового органа:</label>
+                </div>
+                <div class="grid-itemOne">
+                    <mat-form-field class="inputOne">
+                        <input matInput type="number" placeholder="Номер налогового органа" [disabled]="setting.isEdit"
+                            [ngModel]="setting.dataSource?.NumberIfns"
+                            (ngModelChange)="setting.dataSource.NumberIfns = $event" />
+                    </mat-form-field>
+                </div>
+                <div class="text">
+                    <label>Код налогового органа:</label>
+                </div>
+                <div class="grid-itemOne">
+                    <mat-form-field class="inputOne">
+                        <input matInput placeholder="Код налогового органа" [disabled]="setting.isEdit"
+                            [ngModel]="setting.dataSource?.CodeIfns"
+                            (ngModelChange)="setting.dataSource.CodeIfns = $event" />
+                    </mat-form-field>
+                </div>
+                <div class="text">
+                    <label>Адрес организации:</label>
+                </div>
+                <div class="grid-itemOne">
+                    <mat-form-field class="inputOne">
+                        <input matInput placeholder="Адрес организации" [disabled]="setting.isEdit"
+                            [ngModel]="setting.dataSource?.AddressOrganization"
+                            (ngModelChange)="setting.dataSource.AddressOrganization = $event" />
+                    </mat-form-field>
+                </div>
+                <div class="text">
                     <label>Наименование организации:</label>
                 </div>
                 <div class="grid-itemOne">
@@ -49,6 +79,54 @@
                         <input matInput placeholder="Ответственный департамент"
                             [ngModel]="setting.dataSource?.NameDepartament" [disabled]="setting.isEdit"
                             (ngModelChange)="setting.dataSource.NameDepartament = $event" />
+                    </mat-form-field>
+                </div>
+                <div class="text">
+                    <label>Кабинет ответственного:</label>
+                </div>
+                <div class="grid-itemOne">
+                    <mat-form-field class="inputOne">
+                        <input matInput placeholder="Кабинет ответственного" [disabled]="setting.isEdit"
+                            [ngModel]="setting.dataSource?.Room" (ngModelChange)="setting.dataSource.Room = $event" />
+                    </mat-form-field>
+                </div>
+                <div class="text">
+                    <label>Почта:</label>
+                </div>
+                <div class="grid-itemOne">
+                    <mat-form-field class="inputOne">
+                        <input matInput placeholder="Почта" [disabled]="setting.isEdit"
+                            [ngModel]="setting.dataSource?.Mail" (ngModelChange)="setting.dataSource.Mail = $event" />
+                    </mat-form-field>
+                </div>
+                <div class="text">
+                    <label>Код объекта ЭКП:</label>
+                </div>
+                <div class="grid-itemOne">
+                    <mat-form-field class="inputOne">
+                        <input matInput placeholder="Код объекта ЭКП" [disabled]="setting.isEdit"
+                            [ngModel]="setting.dataSource?.CodeObject"
+                            (ngModelChange)="setting.dataSource.CodeObject = $event" />
+                    </mat-form-field>
+                </div>
+                <div class="text">
+                    <label>Сценарий входа:</label>
+                </div>
+                <div class="grid-itemOne">
+                    <mat-form-field class="inputOne">
+                        <input matInput placeholder="Сценарий входа" [disabled]="setting.isEdit"
+                            [ngModel]="setting.dataSource?.ScenarioEntrance"
+                            (ngModelChange)="setting.dataSource.ScenarioEntrance = $event" />
+                    </mat-form-field>
+                </div>
+                <div class="text">
+                    <label>Ун работника кадровой службы:</label>
+                </div>
+                <div class="grid-itemOne">
+                    <mat-form-field class="inputOne">
+                        <input matInput type="number" placeholder="Ун работника кадровой службы"
+                            [disabled]="setting.isEdit" [ngModel]="setting.dataSource?.IdUserDks"
+                            (ngModelChange)="setting.dataSource.IdUserDks = $event" />
                     </mat-form-field>
                 </div>
             </div>
@@ -229,7 +307,8 @@
                     <input matInput (keyup)="settingDepartment.filterstable($event.target.value)"
                         placeholder="Поиск данных">
                 </mat-form-field>
-                <button class="actual" mat-button (click)="excel.ExportTOExcel(tablemfus)">Выгрузить</button>
+                <button class="actual" mat-button
+                    (click)="excel.ExportTOExcel(tablesettingDepartment)">Выгрузить</button>
             </form>
             <div class="tables" #TABLESETTINGDEPARTMENT>
                 <table mat-table [dataSource]="settingDepartment.dataSource" matSort>
@@ -376,7 +455,8 @@
                     <input matInput (keyup)="settingDepartmentRegulations.filterstable($event.target.value)"
                         placeholder="Поиск данных">
                 </mat-form-field>
-                <button class="actual" mat-button (click)="excel.ExportTOExcel(tablemfus)">Выгрузить</button>
+                <button class="actual" mat-button
+                    (click)="excel.ExportTOExcel(tableRegulationsDepartment)">Выгрузить</button>
             </form>
             <div class="tables" #TABLEREGULATIONSDEPARTMENT>
                 <table mat-table [dataSource]="settingDepartmentRegulations.dataSource" matSort>
@@ -436,17 +516,91 @@
         </div>
         <div [style.display]="'none'" #TEMPLATEREGULATIONSDEPARTMENT>
 
-            <!-- <mat-form-field id="template" class="validation">
-                <input matInput placeholder="Регламент" [ngModel]="settingDepartmentRegulations.model.Regulations"
-                    (ngModelChange)="settingDepartmentRegulations.model.Regulations = $event" />
-            </mat-form-field> -->
-
             <mat-form-field id="template" class="validation">
                 <textarea class="RegulationText" matInput placeholder="Регламент"
                     [ngModel]="settingDepartmentRegulations.model.Regulations"
                     (ngModelChange)="settingDepartmentRegulations.model.Regulations = $event"></textarea>
             </mat-form-field>
 
+        </div>
+    </mat-tab>
+    <mat-tab label="Настройка категории телефонов">
+        <div class="modelS">
+            <form class="search">
+                <mat-form-field class="search_blok">
+                    <span matPrefix><i class="material-icons">youtube_searched_for</i></span>
+                    <input matInput (keyup)="settingCategoryPhoneHeader.filterstable($event.target.value)"
+                        placeholder="Поиск данных">
+                </mat-form-field>
+                <button class="actual" mat-button
+                    (click)="excel.ExportTOExcel(tableCategoryPhoneHeader)">Выгрузить</button>
+            </form>
+            <div class="tables" #TABLESETTINGCATEGORYPHONEHEADER>
+                <table mat-table [dataSource]="settingCategoryPhoneHeader.dataSource" matSort>
+
+                    <ng-container matColumnDef="IdCategoryHeaders">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
+                        <td mat-cell *matCellDef="let row" [matTooltip]="row.IdCategoryHeaders">
+                            {{row.IdCategoryHeaders}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="NameHeaders">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Наименование категории</th>
+                        <td mat-cell *matCellDef="let row" [matTooltip]="row.NameHeaders">
+                            <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.NameHeaders}}</Label>
+                            <div [ngClass]=row.IdCategoryHeaders.toString() id="{{row.IdCategoryHeaders}}"
+                                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            </div>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="ActionsColumn">
+                        <th mat-header-cell *matHeaderCellDef>
+                            <button mat-icon-button color="primary" [disabled]="settingCategoryPhoneHeader.isAdd"
+                                focusable="false" (click)="settingCategoryPhoneHeader.add()">
+                                <i class="material-icons">person_add</i>
+                            </button>
+                        </th>
+                        <td mat-cell *matCellDef="let row">
+                            <button mat-icon-button *ngIf="!row.ModelIsEdit"
+                                [disabled]="settingCategoryPhoneHeader.isEdit" color="accent"
+                                (click)="settingCategoryPhoneHeader.edit(row)">
+                                <i class="material-icons">edit</i>
+                            </button>
+                            <button mat-icon-button *ngIf="!row.ModelIsEdit"
+                                [disabled]="settingCategoryPhoneHeader.isEdit"
+                                (click)="settingCategoryPhoneHeader.delete(row)">
+                                <i class="material-icons">delete</i>
+                            </button>
+                            <div *ngIf="row.ModelIsEdit">
+                                <button mat-icon-button type="submit" color="primary" focusable="false"
+                                    (click)="settingCategoryPhoneHeader.save()">
+                                    <i class="material-icons">check</i>
+                                </button>
+                                <button mat-icon-button color="primary" focusable="false"
+                                    (click)="settingCategoryPhoneHeader.cancel(row)">
+                                    <i class="material-icons">cancel</i>
+                                </button>
+                            </div>
+                        </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="settingCategoryPhoneHeader.displayedColumns; sticky: true">
+                    </tr>
+                    <tr mat-row *matRowDef="let row; columns: settingCategoryPhoneHeader.displayedColumns;"></tr>
+                </table>
+            </div>
+            <mat-paginator class="paginator" #categoryPhoneHeaders
+                [pageSizeOptions]="[5, 10, 25, paginatorCategoryPhoneHeader.length]" showFirstLastButtons="true">
+            </mat-paginator>
+        </div>
+        <div [style.display]="'none'" #TEMPLATESETTINGCATEGORYPHONEHEADER>
+
+            <mat-form-field id="template" class="validation">
+                <input matInput placeholder="Наименование категории"
+                    [ngModel]="settingCategoryPhoneHeader.model.NameHeaders"
+                    (ngModelChange)="settingCategoryPhoneHeader.model.NameHeaders = $event" />
+            </mat-form-field>
 
         </div>
     </mat-tab>

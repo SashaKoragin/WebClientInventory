@@ -1,0 +1,10 @@
+<selectsql #Sto [(logica)]="logica" [(selecting)]="selecting" [(columns)]="columns" [(select)]="select"
+    [toolpanel]='TOOLPANEL'></selectsql>
+
+
+<ng-template class="panel" #TOOLPANEL>
+    <button class="panelbutton" mat-button (click)="actualization()">Синхронизация с ЭПО</button>
+    <button class="panelbutton" mat-button (click)="getAllEpo()">Выгрузка ЭПО</button>
+    <button class="panelbutton" mat-button [disabled]="blokingButtonReport" (click)="openDialogReportEpo()">Отчеты</button>
+    <label>{{statusProcessInfo}}</label>
+</ng-template>

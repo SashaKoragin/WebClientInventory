@@ -30,7 +30,7 @@ export class JournalAis3 implements OnInit {
 
     isload: boolean = true;
     loadMessage: string[] = [];
-    modelYear: YearModeReport = new YearModeReport();
+    modelYearorDepartment: YearModeReport = new YearModeReport();
 
     @ViewChild('TEMPLATEJOURNALAIS3', { static: true }) templateJournalAis3: ElementRef;
 
@@ -54,23 +54,33 @@ export class JournalAis3 implements OnInit {
 
     async modelJournal() {
         await this.selectAll.alluser();
+        await this.selectAll.allotdel();
         await this.selectAll.allResourceIt();
         await this.selectAll.allTaskAis3();
         await this.selectAll.allJournalAis3();
+        this.selectAll.select.Otdels.forEach(otdel => {
+            if (this.selectAll.select.ResourceIt.some(x => x.IdOtdel === otdel.IdOtdel)) {
+                this.modelYearorDepartment.otdel.push(otdel);
+            }
+        });
     }
 
     public donloadJournal() {
         const dialogRef = this.dialog.open(ModelDialogSelectYear, {
-            data: this.modelYear
+            data: this.modelYearorDepartment
         })
         dialogRef.afterClosed().subscribe(async (result: YearModeReport) => {
-            if (this.modelYear.selectedYears) {
-                this.editandadd.createJournal(this.modelYear.selectedYears);
+            if (this.modelYearorDepartment.selectedYears !== null && this.modelYearorDepartment.selectedOtdel !== null) {
+                this.editandadd.createJournal(this.modelYearorDepartment.selectedYears, this.modelYearorDepartment.selectedOtdel.IdOtdel);
             }
             else {
-                alert("Не введен год: " + this.modelYear.selectedYears)
+                alert("Не введен Год или Отдел формирование не возможно!!!");
             }
         })
+    }
+    ///Формирование полного журнала
+    public donloadFullJournal() {
+        this.editandadd.createJournal("1", 1, true);
     }
 
 }

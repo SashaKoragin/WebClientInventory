@@ -7,7 +7,8 @@
                     <input matInput (keyup)="nameJournalAis3.filterstable($event.target.value)"
                         placeholder="Поиск данных">
                 </mat-form-field>
-                <button class="actual" mat-button (click)="donloadJournal()">Сформировать журнал</button>
+                <button class="actual" mat-button (click)="donloadJournal()">Сформировать журнал на отдел</button>
+                <button class="actual" mat-button (click)="donloadFullJournal()">Сформировать журнал полный</button>
             </form>
             <div class="tables" #TABLEJOURNALAIS3>
                 <table mat-table [dataSource]="nameJournalAis3.dataSource" matSort>

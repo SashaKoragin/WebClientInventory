@@ -92,6 +92,7 @@ export class FullSelectedModel {
     SettingDepartmentCaseGetServer: SettingDepartmentCaseGetServer[];
     RegulationsDepartment: RegulationsDepartment[];
     Rb_Holiday: Rb_Holiday[];
+    CategoryPhoneHeader: CategoryPhoneHeader[];
     Otdels: Otdel[];
     Users: Users[];
     Position: Position[];
@@ -130,6 +131,11 @@ export class FullSelectedModel {
     JournalAis3: JournalAis3[]; //Журнал для АИС 3
     ResourceIt: ResourceIt[]; //Ресурс для заявки
     TaskAis3: TaskAis3[];  //Задача заявки
+    OtherAll: OtherAll[]; //Разное
+    TypeOther: TypeOther[]; //Тип разного
+    ProizvoditelOther: ProizvoditelOther[]; //Производитель разного
+    ModelOther: ModelOther[]; //Модель разного
+    EventProcess: EventProcess[] //Модель параметров для процесса и процессы
 }
 
 ///Модель отвертов с сервера
@@ -153,6 +159,9 @@ export class Autorization {
 
 export class Organization {
     public Id?: number;
+    public NumberIfns: number = 0;
+    public CodeIfns?: string;
+    public AddressOrganization?: string;
     public NameOrganization?: string;
     public NameFullOrganization?: string;
     public NameFaceLeader?: string;
@@ -164,6 +173,11 @@ export class Organization {
     public PnameOrganization?: string;
     public NameFace?: string;
     public NameDepartament?: string;
+    public Room?: string;
+    public Mail?: string;
+    public CodeObject?: string;
+    public ScenarioEntrance?: string;
+    public IdUserDks: number = 0;
     public DataCreate?: any;
 
 }
@@ -188,6 +202,7 @@ export class Users {
     public Token?: Token[];
     public ScanerAndCamer?: ScanerAndCamer[];
     public BlockPower?: BlockPower[];
+    public OtherAll?: OtherAll[];
     public Document?: Document;
     public Telephon?: Telephon;
     public RuleAndUsers?: RuleAndUsers;
@@ -214,6 +229,8 @@ export class JournalAis3 {
 export class ResourceIt {
     public IdResource: number;
     public NameResource: string;
+    public IdOtdel?: number;
+    public Otdel?: Otdel;
     public ModelIsEdit?: boolean = false;
 }
 
@@ -237,6 +254,7 @@ export class SysBlock {
     public IpAdress: string;
     public Coment: string;
     public IdStatus: number;
+    public WriteOffSign: boolean;
     public IdHistory: string;
     public Token?: Token[];
     public Statusing: Statusing;
@@ -256,6 +274,7 @@ export class Token {
     public SerNum: string;
     public Coment: string;
     public IdStatus: number;
+    public WriteOffSign: boolean;
     public IdHistory: string;
     public Statusing?: Statusing;
     public Supply: Supply;
@@ -306,6 +325,7 @@ export class ScanerAndCamer {
     public IpAdress: string;
     public Coment: string;
     public IdStatus: number;
+    public WriteOffSign: boolean;
     public IdHistory: string;
     public Statusing: Statusing;
     public FullProizvoditel: FullProizvoditel;
@@ -321,8 +341,9 @@ export class Printer {
     public IdUser?: number;
     public IdProizvoditel?: number;
     public IdModel?: number;
-    public IdNumberKabinet?: number;
     public IdSupply?: number;
+    public IdNumberKabinet?: number;
+    public Name: string;
     public ZavNumber?: string;
     public ServiceNumber?: string;
     public InventarNumber?: string;
@@ -330,6 +351,7 @@ export class Printer {
     public IpAdress?: string;
     public Coment?: string;
     public IdStatus?: number;
+    public WriteOffSign: boolean;
     public IdHistory?: string;
     public FullModel?: FullModel;
     public FullProizvoditel?: FullProizvoditel;
@@ -417,7 +439,9 @@ export class NameSysBlock {
 
 export class NameMonitor {
     public IdModelMonitor: number;
-    public Name: string;
+    public NameManufacturer: string;
+    public NameModel: string;
+    public Info: string;
     public ModelIsEdit?: boolean = false;
 }
 
@@ -432,6 +456,7 @@ export class Monitor {
     public InventarNumMonitor: string;
     public Coment: string;
     public IdStatus: number;
+    public WriteOffSign: boolean;
     public IdHistory: string;
     public Statusing?: Statusing;
     public NameMonitor: NameMonitor;
@@ -452,6 +477,7 @@ export class Swithe {
     public InventarNum: string;
     public Coment: string;
     public IdStatus: number;
+    public WriteOffSign: boolean;
     public IdHistory: string;
     public Statusing?: Statusing;
     public ModelSwithe?: ModelSwithes;
@@ -473,8 +499,9 @@ export class Mfu {
     public IdUser?: number;
     public IdProizvoditel: number;
     public IdModel: number;
-    public IdNumberKabinet?: number;
     public IdSupply?: number;
+    public IdNumberKabinet?: number;
+    public Name: string;
     public ZavNumber: string;
     public ServiceNumber: string;
     public InventarNumber: string;
@@ -483,6 +510,7 @@ export class Mfu {
     public IdCopySave: number;
     public Coment: string;
     public IdStatus: number;
+    public WriteOffSign: boolean;
     public IdHistory: string;
     public Statusing: Statusing;
     public FullProizvoditel: FullProizvoditel;
@@ -540,6 +568,9 @@ export class FullMonitorSysBlok {
 export class FullModel {
     public IdModel?: number;
     public NameModel?: string;
+    public UrlModel?: string;
+    public AutoSupport?: boolean;
+    public TypeToner?: string;
     public IdClasification?: number;
     public ModelIsEdit?: boolean = false;
     public Classification?: Classification;
@@ -588,6 +619,7 @@ export class BlockPower {
     public InventarNumber?: string;
     public Coment?: string;
     public IdStatus?: number;
+    public WriteOffSign: boolean;
     public IdHistory?: string;
     public Kabinet?: Kabinet;
     public ModelBlockPower?: ModelBlockPower;
@@ -621,6 +653,7 @@ export class Supply {
 
 export class Telephon {
     public IdTelephon: number;
+    public IdUser?: number;
     public IdSupply?: number;
     public IdNumberKabinet?: number;
     public NameTelephone: string;
@@ -633,11 +666,22 @@ export class Telephon {
     public MacTelephon: string;
     public Coment: string;
     public IdStatus: number;
+    public IdCategoryHeaders: number;
+    public WriteOffSign: boolean;
+    public User?: Users;
+    public CategoryPhoneHeader?: CategoryPhoneHeader;
     public Statusing?: Statusing;
     public Supply: Supply;
     public Kabinet?: Kabinet;
     public ModelIsEdit?: boolean = false;
 }
+
+export class CategoryPhoneHeader {
+    public IdCategoryHeaders: number;
+    public NameHeaders: string;
+    public ModelIsEdit?: boolean = false;
+}
+
 
 export class ServerEquipment {
     public Id: number;
@@ -653,6 +697,7 @@ export class ServerEquipment {
     public IpAdress: string;
     public Coment: string;
     public IdStatus: number;
+    public WriteOffSign: boolean;
     public IdHistory?: string;
     public ModelSeverEquipment?: ModelSeverEquipment;
     public ManufacturerSeverEquipment?: ManufacturerSeverEquipment;
@@ -660,7 +705,49 @@ export class ServerEquipment {
     public Statusing?: Statusing;
     public Supply: Supply;
     public Kabinet?: Kabinet;
+    public ModelIsEdit?: boolean = false;
+}
 
+export class OtherAll {
+    public IdOtherAll: number;
+    public IdUser?: number;
+    public IdSupply?: number;
+    public IdTypeOther?: number;
+    public IdModelOther?: number;
+    public IdProizvoditelOther?: number;
+    public IdNumberKabinet?: number;
+    public ServiceNumber: string;
+    public SerNum: string;
+    public InventarNum: string;
+    public Coment: string;
+    public IdStatus: number;
+    public WriteOffSign: boolean;
+    public IdHistory?: string;
+    public Kabinet?: Kabinet;
+    public ModelOther?: ModelOther;
+    public ProizvoditelOther?: ProizvoditelOther;
+    public Statusing?: Statusing;
+    public Supply?: Supply;
+    public TypeOther?: TypeOther
+    public User?: Users;
+    public ModelIsEdit?: boolean = false;
+}
+
+export class TypeOther {
+    public IdTypeOther: number;
+    public Name: string;
+    public ModelIsEdit?: boolean = false;
+}
+
+export class ProizvoditelOther {
+    public IdProizvoditelOther: number;
+    public Name: string;
+    public ModelIsEdit?: boolean = false;
+}
+
+export class ModelOther {
+    public IdModelOther: number;
+    public Name: string;
     public ModelIsEdit?: boolean = false;
 }
 
@@ -732,6 +819,7 @@ export class FullTemplateSupport {
     public InfoTemplate: string;
     public IdCategiria: number;
     public Description: string;
+    public IsVisibleUserLk: boolean;
     public CategoriaTemplate: CategoriaTemplate[];
 }
 //Категория шаблона СТО
@@ -756,7 +844,8 @@ export class ModelParametrSupport {
         IdSysBlock: number = 0,
         IdScanner: number = 0,
         IdTelephon: number = 0,
-        IdCalendarVks: number = 0) {
+        IdCalendarVks: number = 0,
+        IdAnalisysEpo: number = 0) {
         this.loginField = Login;
         this.passwordField = Password;
         this.idTemplateField = IdTemplate;
@@ -769,6 +858,7 @@ export class ModelParametrSupport {
         this.idScannerField = IdScanner;
         this.idTelephonField = IdTelephon;
         this.idCalendarVksField = IdCalendarVks;
+        this.idAnalisysEpoField = IdAnalisysEpo;
     }
     public loginField: string;
     public passwordField: string;
@@ -782,19 +872,20 @@ export class ModelParametrSupport {
     public idScannerField: number;
     public idTelephonField: number;
     public idCalendarVksField: number;
+    public idAnalisysEpoField: number;
     public errorField: string = null;
     public step3ResponseSupportField: string = null;
     public templateSupportField: TemplateSupport[] = null;
 }
 //Шаблон параметров заглушка
 export class TemplateSupport {
-
     public nameField: string;
     public infoTemplateField: string;
     public nameStepSupportField: string;
     public helpParameterField: string;
     public nameGuidParametrField: string;
     public parametrField: string;
+    public parameterStep3Field: any;
     public typeParametrField: string;
     public nameParametrTypeField: string;
     public selectParametrField: string;
@@ -875,6 +966,29 @@ export class Rb_Holiday {
     public IS_HOLIDAY: boolean;
     public ModelIsEdit?: boolean = false;
 }
+
+export class AnalysisEpoAndInventarka {
+    public Id: number;
+    public IsPrint: boolean;
+    public NameInfoReport: string;
+    public NameListXlsx: string = null;
+    public NameFileXlsx: string = null;
+    public ViewReport: string = null;
+}
+
+export class EventProcess {
+    public Id: number;
+    public NameProcess: string;
+    public DayX?: number;
+    public HoursX?: number;
+    public MinutesX?: number;
+    public ParametersEvent: string;
+    public IsComplete?: boolean;
+    public DataStart?: any;
+    public DataFinish?: any;
+    public ModelIsEdit?: boolean = false;
+}
+
 ///Фильтр коллекций
 export class AllUsersFilters {
 
@@ -882,6 +996,6 @@ export class AllUsersFilters {
 }
 
 export class FilterActual {
-    
+
     public isFilterField: boolean = false
 }

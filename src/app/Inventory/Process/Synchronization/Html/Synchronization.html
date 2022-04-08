@@ -1,16 +1,24 @@
 <mat-tab-group>
-    <mat-tab label="Процессы" >
-            <selectsql [(logica)]="logica" [(selecting)]="selecting" [(columns)]="columns" [(select)]="select"></selectsql>
-    </mat-tab>
-    <mat-tab label="Данные домена AD">
-            <selectsql [(logica)]="logica2" [(selecting)]="selecting2" [(columns)]="columns2" [(select)]="select" [toolpanel]='TOOLPANEL' ></selectsql>
-    </mat-tab>
-    <mat-tab label="Синхронизация Ip Адресов">
-            <selectsql [(logica)]="logica3" [(selecting)]="selecting3" [(columns)]="columns3" [(select)]="select"></selectsql>
-    </mat-tab>
+        <mat-tab label="Данные домена AD">
+                <selectsql [(logica)]="logica1" [(selecting)]="selecting1" [(columns)]="columns1" [(select)]="select" [toolpanel]='TOOLPANEL'>
+                </selectsql>
+        </mat-tab>
+        <mat-tab label="Синхронизация Ip Адресов">
+                <selectsql [(logica)]="logica2" [(selecting)]="selecting2" [(columns)]="columns2" [(select)]="select">
+                </selectsql>
+        </mat-tab>
+        <mat-tab label="Синхронизация c PrintServer">
+                <selectsql [(logica)]="logica3" [(selecting)]="selecting3" [(columns)]="columns3" [(select)]="select" [toolpanel]='TOOLPANELPRINTSERVER'>
+                </selectsql>
+        </mat-tab>
 </mat-tab-group>
 
 <ng-template class="panel" #TOOLPANEL>
-    <button class="panelbutton"  mat-button (click)="synchronization()" >Синхронизировать Ip Адреса</button>
-    <label >{{serverresult}}</label>
+        <button class="panelbutton" mat-button (click)="synchronizationIp()">Синхронизировать Ip Адреса</button>
+        <label>{{serverresult}}</label>
+</ng-template>
+
+<ng-template class="panel" #TOOLPANELPRINTSERVER>
+        <button class="panelbutton" mat-button (click)="synchronizationPrintServer()">Синхронизировать с PrintServer</button>
+        <label>{{serverresult}}</label>
 </ng-template>

@@ -20,7 +20,7 @@ export class ReportCard {
         @Inject(MAT_DIALOG_DATA) public data: ReportCardModel) {
     }
 
-    public generateModel: GenerateModelReportCard = new GenerateModelReportCard();
+    public generateModel: GenerateModelReportCard = new GenerateModelReportCard(this.data.department);
     ///Валидация
     public modelvalid: ModelValidation = new ModelValidation()
     ///Выгрузить отчет
@@ -29,9 +29,15 @@ export class ReportCard {
         this.data.settingParametersField.mouthField = this.generateModel.selectedMouth;
         this.data.settingParametersField.viewField = this.generateModel.selectedView;
         this.data.settingParametersField.typeField = this.generateModel.selectedType;
+        console.log(this.generateModel.selectedDepartmentIndex);
+        if(this.generateModel.selectedDepartmentIndex){
+            this.data.settingParametersField.idDepartmentField = this.generateModel.selectedDepartmentIndex.IdOtdel;
+        }
+        else{
+            this.data.settingParametersField.idDepartmentField = 0
+        }
         this.editandadd.createReportCard(this.data);
         console.log(this.data);
-        
-        // this.dialogDataBase.close();
+       // this.dialogDataBase.close();
     }
 }

@@ -20,6 +20,8 @@ import { TemplatendRuleAis3 } from '../../Inventory/Ais3/TemplatendRuleAis3/View
 import { PathAis3 } from '../../Inventory/Ais3/PathAis3/View/PathAis3';
 import { SettingInventory } from '../../Inventory/SettingInventory/View/SettingInventory';
 import { JournalAis3 } from '../../Inventory/Ais3/JournalAis3/View/JournalAis3';
+import { EquipmentSto } from '../../Inventory/EquipmentSto/View/EquipmentSto';
+import { ModelProcess } from '../../Inventory/Process/ProcessParameter/View/Process';
 
 const appRoutes: Routes = [
     {
@@ -62,6 +64,10 @@ const appRoutes: Routes = [
             {
                 path: 'techical',
                 component: Equipment
+            },
+            {
+                path: 'equipmentSto',
+                component: EquipmentSto
             },
             {
                 path: 'techicalComplement',
@@ -141,6 +147,16 @@ const appRoutes: Routes = [
             },
             {
                 path: 'process',
+                component: ModelProcess,
+                canActivate: [NgxPermissionsGuard],
+                data: {
+                    permissions: {
+                        only: ['Администратор'],
+                    }
+                }
+            },
+            {
+                path: 'synchronization',
                 component: Synchronization,
                 canActivate: [NgxPermissionsGuard],
                 data: {

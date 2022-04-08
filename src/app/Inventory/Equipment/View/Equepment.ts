@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { PostInventar, EditAndAdd, AuthIdentificationSignalR, AuthIdentification } from '../../../Post RequestService/PostRequest';
-import { PrinterTableModel, ScanerAndCamerTableModel, MfuTableModel, SysBlockTableModel, MonitorsTableModel, BlockPowerTableModel, SwitchTableModel, ServerEquipmentTableModel, TokenTableModel } from '../../AddFullModel/ModelTable/TableModel';
+import { PrinterTableModel, ScanerAndCamerTableModel, MfuTableModel, SysBlockTableModel, MonitorsTableModel, BlockPowerTableModel, SwitchTableModel, ServerEquipmentTableModel, TokenTableModel, OtherAllTableModel } from '../../AddFullModel/ModelTable/TableModel';
 import { MatPaginator, MatSort, MatDialog } from '@angular/material';
 import { ImportToExcel } from '../../AddFullModel/ModelTable/PublicFunction';
 import { DatePipe } from '@angular/common';
@@ -46,7 +46,7 @@ export class Equipment implements OnInit {
   @ViewChild('TEMPLATEBLOCKPOWER', { static: true }) templateBlockpower: ElementRef;
   @ViewChild('TEMPLATESWITHES', { static: true }) templateSwithes: ElementRef;
   @ViewChild('TEMPLATESERVEREQUIPMENT', { static: true }) templateServerEquipment: ElementRef;
-
+  @ViewChild('TEMPLATEOTHERALL', { static: true }) templateOtherAll: ElementRef;
 
   isload: boolean = true;
   loadMessage: string[] = []
@@ -67,6 +67,8 @@ export class Equipment implements OnInit {
   @ViewChild('serverEquipments', { static: true }) paginatorServerEquipments: MatPaginator;
   @ViewChild(MatSort, { static: true }) sortServerEquipment: MatSort;
 
+  @ViewChild('otherAlls', { static: true }) paginatorOtherAll: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sortOtherAll: MatSort;
 
 
 
@@ -78,7 +80,7 @@ export class Equipment implements OnInit {
   @ViewChild('TABLEBLOCKPOWERS', { static: false }) tableblockpowers: ElementRef;
   @ViewChild('TABLESWITHES', { static: false }) tableswithes: ElementRef;
   @ViewChild('TABLESERVEREQUIPMENT', { static: false }) tableServerEquipment: ElementRef;
-
+  @ViewChild('TABLESEOTHERALL', { static: false }) tableOtherAll: ElementRef;
 
   excel: ImportToExcel = new ImportToExcel();
 
@@ -90,7 +92,7 @@ export class Equipment implements OnInit {
   public blockpower: BlockPowerTableModel = new BlockPowerTableModel(this.editandadd, this.SignalR);
   public switch: SwitchTableModel = new SwitchTableModel(this.editandadd, this.SignalR)
   public serverEquipment: ServerEquipmentTableModel = new ServerEquipmentTableModel(this.editandadd, this.SignalR)
-
+  public otherall: OtherAllTableModel = new OtherAllTableModel(this.editandadd, this.SignalR)
 
 
 
@@ -136,6 +138,9 @@ export class Equipment implements OnInit {
     await this.selectAll.allServerEquipment();
     message = await this.serverEquipment.addtableModel(this.selectAll.select, this.paginatorServerEquipments, this.sortServerEquipment, this.tableServerEquipment, this.templateServerEquipment)
     this.loadMessage.push(message);
+    await this.selectAll.allOtherAll();
+    message = await this.otherall.addtableModel(this.selectAll.select, this.paginatorOtherAll, this.sortOtherAll, this.tableOtherAll, this.templateOtherAll);
+    this.loadMessage.push(message);
     this.isload = false;
   }
 
@@ -158,6 +163,24 @@ export class Equipment implements OnInit {
     await this.selectAll.allModelSeverEquipment();
     await this.selectAll.allManufacturerSeverEquipment();
     await this.selectAll.allTypeServer();
+    await this.selectAll.allTypeOther();
+    await this.selectAll.allProizvoditelOther();
+    await this.selectAll.allModelOther();
   }
 
+  isloadStatistic: boolean = false;
+  statusStatistic: string = null;
+  //Запрос для статистики серверов
+  public async statisticServer() {
+    this.isloadStatistic = true;
+    this.statusStatistic = "Запущенa проверка доступности серверов!!!"
+    await this.selectAll.statisticServerIsWork();
+    this.isloadStatistic = false;
+    this.statusStatistic = "Завершена проверка доступности серверов!!!"
+  }
+
+  public replaceString(nameMiodel: string): string {
+    return nameMiodel.replace('undefined', '').replace('undefined', '');
+
+  }
 }

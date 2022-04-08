@@ -3,7 +3,7 @@ import { EditAndAdd, PostInventar, AuthIdentificationSignalR } from '../../../Po
 import { DatePipe } from '@angular/common';
 import { MainSettingOrganization } from '../../AddFullModel/ModelTable/SettingOrganization';
 import { ImportToExcel } from '../../AddFullModel/ModelTable/PublicFunction';
-import { SettingDepartmentCaseTableModel, HolidayTableModel, SettingDepartmentRegulations } from '../../AddFullModel/ModelTable/TableModel';
+import { SettingDepartmentCaseTableModel, HolidayTableModel, SettingDepartmentRegulations, SettingCategoryPhoneHeader } from '../../AddFullModel/ModelTable/TableModel';
 import { DateAdapter, MatSort, MAT_DATE_FORMATS } from '@angular/material';
 import { MatPaginator } from '@angular/material/paginator';
 import { AppDateAdapter, APP_DATE_FORMATS } from '../../AddFunctionConvertDate/ConvertDateModel';
@@ -28,29 +28,29 @@ export class SettingInventory implements OnInit {
         public selectAll: PostInventar,
         public SignalR: AuthIdentificationSignalR) { }
 
-    public returnTextHoliday(value:boolean):string{
-        if(value){
-            return this.holiday.modelIsHoliday.find(x=>x.HolidayBoolean === value).HolidayText;
-        }
-        return this.holiday.models.HolidayText;
+    public returnTextHoliday(value: boolean): string {
+        return this.holiday.modelIsHoliday.find(x => x.HolidayBoolean === value).HolidayText
     }
 
     @ViewChild('TEMPLATESETTINGDEPARTMENT', { static: true }) templatesettingDepartment: ElementRef;
     @ViewChild('TEMPLATEHOLIDAY', { static: true }) templateHoliday: ElementRef;
     @ViewChild('TEMPLATEREGULATIONSDEPARTMENT', { static: true }) templateregulationsDepartment: ElementRef;
+    @ViewChild('TEMPLATESETTINGCATEGORYPHONEHEADER', { static: true }) templateCategoryPhoneHeader: ElementRef;
 
     @ViewChild('settingDepartament', { static: true }) paginatorsettingDepartment: MatPaginator;
     @ViewChild('holidays', { static: true }) paginatorHoliday: MatPaginator;
     @ViewChild('regulationsDepartment', { static: true }) paginatorregulationsDepartment: MatPaginator;
+    @ViewChild('categoryPhoneHeaders', { static: true }) paginatorCategoryPhoneHeader: MatPaginator;
 
     @ViewChild(MatSort, { static: true }) sortsettingDepartment: MatSort;
     @ViewChild(MatSort, { static: true }) sortHoliday: MatSort;
     @ViewChild(MatSort, { static: true }) sortRegulationsDepartment: MatSort;
+    @ViewChild(MatSort, { static: true }) sortCategoryPhoneHeader: MatSort;
 
     @ViewChild('TABLESETTINGDEPARTMENT', { static: false }) tablesettingDepartment: ElementRef;
     @ViewChild('TABLEHOLIDAY', { static: false }) tableHoliday: ElementRef;
     @ViewChild('TABLEREGULATIONSDEPARTMENT', { static: false }) tableRegulationsDepartment: ElementRef;
-
+    @ViewChild('TABLESETTINGCATEGORYPHONEHEADER', { static: false }) tableCategoryPhoneHeader: ElementRef;
 
     isload: boolean = true;
     loadMessage: string[] = []
@@ -59,7 +59,7 @@ export class SettingInventory implements OnInit {
     public settingDepartment: SettingDepartmentCaseTableModel = new SettingDepartmentCaseTableModel(this.editandadd, this.SignalR);
     public holiday: HolidayTableModel = new HolidayTableModel(this.editandadd, this.SignalR);
     public settingDepartmentRegulations: SettingDepartmentRegulations = new SettingDepartmentRegulations(this.editandadd, this.SignalR);
-
+    public settingCategoryPhoneHeader: SettingCategoryPhoneHeader = new SettingCategoryPhoneHeader(this.editandadd, this.SignalR);
 
     public async ngOnInit(): Promise<void> {
         await this.start()
@@ -71,6 +71,7 @@ export class SettingInventory implements OnInit {
         await this.selectAll.settingDepartamentCase();
         await this.selectAll.holidayDays();
         await this.selectAll.settingDepartmentRegulations();
+        await this.selectAll.settingCategoryPhoneHeader();
         message = await this.setting.addtableModel(this.selectAll.select);
         this.loadMessage.push(message);
         message = await this.holiday.addtableModel(this.selectAll.select, this.paginatorHoliday, this.sortHoliday, this.tableHoliday, this.templateHoliday);
@@ -78,6 +79,8 @@ export class SettingInventory implements OnInit {
         message = await this.settingDepartment.addtableModel(this.selectAll.select, this.paginatorsettingDepartment, this.sortsettingDepartment, this.tablesettingDepartment, this.templatesettingDepartment)
         this.loadMessage.push(message);
         message = await this.settingDepartmentRegulations.addtableModel(this.selectAll.select, this.paginatorregulationsDepartment, this.sortRegulationsDepartment, this.tableRegulationsDepartment, this.templateregulationsDepartment)
+        this.loadMessage.push(message);
+        message = await this.settingCategoryPhoneHeader.addtableModel(this.selectAll.select, this.paginatorCategoryPhoneHeader, this.sortCategoryPhoneHeader, this.tableCategoryPhoneHeader, this.templateCategoryPhoneHeader);
         this.loadMessage.push(message);
         this.isload = false;
     }

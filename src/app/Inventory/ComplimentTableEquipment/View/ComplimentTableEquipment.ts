@@ -6,7 +6,7 @@ import {
     NameSupplyTableModel, NameKabinetTableModel, NameStatusingTableModel, ModelSeverEquipmenTableModel, ManufacturerSeverEquipmentTableModel
 } from '../../AddFullModel/ModelTable/TableModel';
 import { MatPaginator, DateAdapter, MAT_DATE_FORMATS } from '@angular/material';
-import { TypeServerTableModel, ResourceItTableModel, TaskAis3TableModel } from '../../AddFullModel/ModelTable/TableModel';
+import { TypeServerTableModel, ResourceItTableModel, TaskAis3TableModel, TypeOtherTableModel, ProizvoditelOtherTableModel, ModelOtherTableModel } from '../../AddFullModel/ModelTable/TableModel';
 import { AppDateAdapter, APP_DATE_FORMATS } from '../../AddFunctionConvertDate/ConvertDateModel';
 @Component(({
     selector: 'complimentTableEquipment',
@@ -42,6 +42,11 @@ export class ComplimentTableEquipment implements OnInit {
 
     @ViewChild('TEMPLATERESOURCEIT', { static: false }) templateResourceIt: ElementRef;
     @ViewChild('TEMPLATETASKAIS3', { static: false }) templateTaskAis3: ElementRef;
+
+    @ViewChild('TEMPLATETYPEOTHER', { static: false }) templateTypeOther: ElementRef;
+    @ViewChild('TEMPLATEPROIZVODITELOTHER', { static: false }) templateProizvoditelOther: ElementRef;
+    @ViewChild('TEMPLATEMODELOTHER', { static: false }) templateModelOther: ElementRef;
+
     //Таблицы
     @ViewChild('TABLEMODELSYSBLOCK', { static: false }) tableModelSysBlock: ElementRef;
     @ViewChild('TABLEMODELMONITOR', { static: false }) tableModelMonitor: ElementRef;
@@ -62,6 +67,10 @@ export class ComplimentTableEquipment implements OnInit {
 
     @ViewChild('TABLERESOURCEIT', { static: false }) tableResourceIt: ElementRef;
     @ViewChild('TABLETASKAIS3', { static: false }) tableTaskAis3: ElementRef;
+
+    @ViewChild('TABLETYPEOTHER', { static: false }) tableTypeOther: ElementRef;
+    @ViewChild('TABLEPROIZVODITELOTHER', { static: false }) tableProizvoditelOther: ElementRef;
+    @ViewChild('TABLEMODELOTHER', { static: false }) tableModelOther: ElementRef;
 
     isload: boolean = true;
     loadMessage: string[] = []
@@ -85,6 +94,10 @@ export class ComplimentTableEquipment implements OnInit {
     @ViewChild('nameResourceIts', { static: false }) paginatornameResourceIt: MatPaginator;
     @ViewChild('nameTaskAis3s', { static: false }) paginatornameTaskAis3: MatPaginator;
 
+    @ViewChild('nameTypeOthers', { static: false }) paginatornameTypeOther: MatPaginator;
+    @ViewChild('nameProizvoditelOthers', { static: false }) paginatornameProizvoditelOther: MatPaginator;
+    @ViewChild('nameModelOthers', { static: false }) paginatornameModelOther: MatPaginator;
+
     public nameSysBlock: NameSysBlockTableModel = new NameSysBlockTableModel(this.editandadd, this.SignalR);
     public nameMonitor: NameMonitorTableModel = new NameMonitorTableModel(this.editandadd, this.SignalR);
     public nameModelBlokPower: NameModelBlokPowerTableModel = new NameModelBlokPowerTableModel(this.editandadd, this.SignalR)
@@ -103,8 +116,16 @@ export class ComplimentTableEquipment implements OnInit {
     public nameManufacturerSeverEquipment: ManufacturerSeverEquipmentTableModel = new ManufacturerSeverEquipmentTableModel(this.editandadd, this.SignalR)
 
     ///Задания для заявок
-    public nameResourceIt: ResourceItTableModel  = new ResourceItTableModel(this.editandadd, this.SignalR);
-    public nameTaskAis3: TaskAis3TableModel  = new TaskAis3TableModel(this.editandadd, this.SignalR);
+    public nameResourceIt: ResourceItTableModel = new ResourceItTableModel(this.editandadd, this.SignalR);
+    public nameTaskAis3: TaskAis3TableModel = new TaskAis3TableModel(this.editandadd, this.SignalR);
+
+    public nameTypeOther: TypeOtherTableModel = new TypeOtherTableModel(this.editandadd, this.SignalR);
+    public nameProizvoditelOther: ProizvoditelOtherTableModel = new ProizvoditelOtherTableModel(this.editandadd, this.SignalR)
+    public nameModelOther: ModelOtherTableModel = new ModelOtherTableModel(this.editandadd, this.SignalR)
+
+
+
+
 
     ngOnInit(): void {
         this.start()
@@ -143,15 +164,22 @@ export class ComplimentTableEquipment implements OnInit {
         this.loadMessage.push(message);
         message = await this.nameManufacturerSeverEquipment.addtableModel(this.selectAll.select, this.paginatornameManufacturerSeverEquipment, null, this.tableManufacturerSeverEquipment, this.templateManufacturerSeverEquipment);
         this.loadMessage.push(message);
-        message = await this.nameResourceIt.addtableModel(this.selectAll.select, this.paginatornameResourceIt,null,this.tableResourceIt, this.templateResourceIt);
+        message = await this.nameResourceIt.addtableModel(this.selectAll.select, this.paginatornameResourceIt, null, this.tableResourceIt, this.templateResourceIt);
         this.loadMessage.push(message);
         message = await this.nameTaskAis3.addtableModel(this.selectAll.select, this.paginatornameTaskAis3, null, this.tableTaskAis3, this.templateTaskAis3);
+        this.loadMessage.push(message);
+        message = await this.nameTypeOther.addtableModel(this.selectAll.select, this.paginatornameTypeOther, null, this.tableTypeOther, this.templateTypeOther);
+        this.loadMessage.push(message);
+        message = await this.nameProizvoditelOther.addtableModel(this.selectAll.select, this.paginatornameProizvoditelOther, null, this.tableProizvoditelOther, this.templateProizvoditelOther);
+        this.loadMessage.push(message);
+        message = await this.nameModelOther.addtableModel(this.selectAll.select, this.paginatornameModelOther, null, this.tableModelOther, this.templateModelOther)
         this.loadMessage.push(message);
         this.isload = false;
     }
 
 
     async sendserver() {
+        await this.selectAll.allotdel();
         await this.selectAll.allnamemonitor();
         await this.selectAll.allcopysave();
         await this.selectAll.allkabinet();
@@ -169,5 +197,8 @@ export class ComplimentTableEquipment implements OnInit {
         await this.selectAll.allTypeServer();
         await this.selectAll.allResourceIt();
         await this.selectAll.allTaskAis3();
+        await this.selectAll.allTypeOther();
+        await this.selectAll.allProizvoditelOther();
+        await this.selectAll.allModelOther();
     }
 }

@@ -28,7 +28,8 @@ import { TemplatendRuleAis3 } from '../../Inventory/Ais3/TemplatendRuleAis3/View
 import { PathAis3 } from '../../Inventory/Ais3/PathAis3/View/PathAis3';
 import { SettingInventory } from '../../Inventory/SettingInventory/View/SettingInventory';
 import { JournalAis3 } from '../../Inventory/Ais3/JournalAis3/View/JournalAis3';
-import { ModelDialogSelectYear } from '../../Inventory/AddFullModel/DialogSelectYear/DialogYearTs/dialogSelectYear';
+import { EquipmentSto } from '../../Inventory/EquipmentSto/View/EquipmentSto';
+import { ModelProcess } from '../../Inventory/Process/ProcessParameter/View/Process';
 
 
 @NgModule(({
@@ -52,7 +53,8 @@ import { ModelDialogSelectYear } from '../../Inventory/AddFullModel/DialogSelect
         User, DocumentSelect, ErrorInventory,
         Select, UploadsFile,
         ComplimentTableEquipment, Analitics,
-        BookAccounting, Synchronization, Log, PathAis3, TemplatendRuleAis3, SettingInventory, JournalAis3
+        BookAccounting, Synchronization, Log, PathAis3, TemplatendRuleAis3, SettingInventory, JournalAis3, EquipmentSto, ModelProcess
+
     ]
 
 }) as any)

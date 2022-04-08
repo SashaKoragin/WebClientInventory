@@ -23,7 +23,7 @@
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>Заявки</th>
                         <td [style.background]="row.StatusUser?.ColorStatus" mat-cell *matCellDef="let row">
                             <ng-template [ngxPermissionsExcept]="['Просмотр','Безопасность']">
-                                <button mat-icon-button [matMenuTriggerFor]="menu" color="primary" matTooltip="Меню">
+                                <button mat-icon-button [matMenuTriggerFor]="menu" color="primary" matTooltip="Заявки">
                                     <mat-icon>more_vert</mat-icon>
                                     <mat-menu #menu="matMenu">
                                         <div class="MenuButton"
@@ -37,13 +37,27 @@
                                         </div>
                                     </mat-menu>
                                 </button>
+                                <button mat-icon-button [matMenuTriggerFor]="menus" color="primary"
+                                    matTooltip="Служебные записки">
+                                    <mat-icon>more_vert</mat-icon>
+                                    <mat-menu #menus="matMenu">
+                                        <div class="MenuButton" *ngFor="let template of templateServer.modelMemo">
+                                            <button mat-menu-item
+                                                (click)="createMemoReport(row.IdUser, row.Name, template, row.StatusUser?.StatusText, row.TabelNumber)"
+                                                [matTooltip]="template.nameMemo">
+                                                <mat-icon>input</mat-icon>
+                                                {{template.nameMemo}}
+                                            </button>
+                                        </div>
+                                    </mat-menu>
+                                </button>
                             </ng-template>
                         </td>
                     </ng-container>
 
                     <ng-container matColumnDef="IdUser">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
-                        <td [style.background]="row.StatusUser?.ColorStatus" mat-cell *matCellDef="let row"
+                        <th class="id" *matHeaderCellDef mat-sort-header>Id</th>
+                        <td [style.background]="row.StatusUser?.ColorStatus" class="cell" *matCellDef="let row"
                             [matTooltip]="row.IdUser">{{row.IdUser}}</td>
                     </ng-container>
 
@@ -177,7 +191,7 @@
             <mat-paginator #users [pageSizeOptions]="[10, 20, 50, paginator.length]" showFirstLastButtons="true">
             </mat-paginator>
             <div class="procedure">
-                <label>Последняя актулизация:</label>
+                <label>Последняя актуализация:</label>
                 <table mat-table [dataSource]="dataSource" *ngIf="dataSource.data.length > 0">
                     <ng-container matColumnDef="Id">
                         <th mat-header-cell *matHeaderCellDef>Id</th>
@@ -309,8 +323,8 @@
             <div class="tables" #TABLEOTDELS>
                 <table mat-table [dataSource]="otdel.dataSource">
                     <ng-container matColumnDef="IdOtdel">
-                        <th mat-header-cell *matHeaderCellDef>Id</th>
-                        <td mat-cell *matCellDef="let row">
+                        <th class="id" *matHeaderCellDef>Id</th>
+                        <td class="cell" *matCellDef="let row">
                             {{row.IdOtdel}}
                         </td>
                     </ng-container>
@@ -426,7 +440,7 @@
                 <table mat-table [dataSource]="telephone.dataSource" matSort>
 
                     <ng-container matColumnDef="Logic">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Заявки</th>
+                        <th class="logic" mat-header-cell *matHeaderCellDef>Заявки</th>
                         <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
                             <ng-template [ngxPermissionsExcept]="['Просмотр','Безопасность']">
                                 <button mat-icon-button [matMenuTriggerFor]="menu" color="primary" matTooltip="Меню">
@@ -452,9 +466,19 @@
                     </ng-container>
 
                     <ng-container matColumnDef="IdTelephone">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
-                        <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row"
+                        <th class="id" *matHeaderCellDef mat-sort-header>Id</th>
+                        <td [style.background]="row.Statusing?.Color" class="cell" *matCellDef="let row"
                             [matTooltip]="row.IdTelephon">{{row.IdTelephon}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="User.Name">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Владелец</th>
+                        <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row.User?.Name">
+                          <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.User?.Name}}</Label>
+                          <div [ngClass]=row.IdTelephon.toString() id="{{row.IdTelephon}}"
+                            [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                          </div>
                         </td>
                     </ng-container>
 
@@ -513,7 +537,7 @@
 
 
                     <ng-container matColumnDef="SerNumber">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Сирийный номер</th>
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Серийный номер</th>
                         <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row"
                             [matTooltip]="row?.SerNumber">
                             <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row?.SerNumber}}</Label>
@@ -567,7 +591,7 @@
                     </ng-container>
 
                     <ng-container matColumnDef="Coment">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Коментарий</th>
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Комментарий</th>
                         <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row"
                             [matTooltip]="row.Coment">
                             <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Coment}}</Label>
@@ -588,9 +612,30 @@
                         </td>
                     </ng-container>
 
+                    <ng-container matColumnDef="CategoryPhoneHeader.NameHeaders">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Категория</th>
+                        <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row.CategoryPhoneHeader?.NameHeaders">
+                          <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.CategoryPhoneHeader?.NameHeaders}}</Label>
+                          <div [ngClass]=row.IdTelephon.toString() id="{{row.IdTelephon}}"
+                            [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                          </div>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="WriteOffSign">
+                        <th class="id2" *matHeaderCellDef mat-sort-header>Списано</th>
+                        <td [style.background]="row.Statusing?.Color" class="cell" *matCellDef="let row"
+                            [matTooltip]="row.WriteOffSign ? 'В работе' : 'Списано Утилизировано'">
+                            <mat-checkbox [style.display]="row.ModelIsEdit ? 'none':'inline'" [disabled]="true"
+                                [(ngModel)]="row.WriteOffSign"></mat-checkbox>
+                            <div [ngClass]=row.IdTelephon.toString() id="{{row.IdTelephon}}"
+                                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                            </div>
+                        </td>
+                    </ng-container>
 
                     <ng-container matColumnDef="ActionsColumn">
-                        <th mat-header-cell *matHeaderCellDef>
+                        <th class="logic" mat-header-cell *matHeaderCellDef>
                             <ng-template [ngxPermissionsExcept]="['Оператор','Просмотр','Безопасность']">
                                 <button mat-icon-button color="primary" [disabled]="telephone.isAdd" focusable="false"
                                     (click)="telephone.add()">
@@ -635,6 +680,19 @@
         <div [style.display]="'none'" #TEMPLATETELEPHONE>
 
             <mat-form-field id="template" class="validation">
+                <mat-select (click)="telephone.calbackfiltersAll()" [placeholder]="telephone.model.User?.Name"
+                  [(ngModel)]="telephone.model.User" name="user">
+                  <mat-select-filter class="filter" [placeholder]="telephone.model.User?.Name" [displayMember]="'Name'"
+                    [array]="telephone.users" (filteredReturn)="telephone.filteredUsers =$event">
+                  </mat-select-filter>
+                  <mat-option [value]='null'>None</mat-option>
+                  <mat-option *ngFor="let user of telephone.filteredUsers" [value]="user">
+                    {{user.Name}}
+                  </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field id="template" class="validation">
                 <mat-select (click)="telephone.calbackfiltersAll()" [placeholder]="telephone.model.Supply?.DatePostavki"
                     [(ngModel)]="telephone.model.Supply" name="supply">
                     <mat-select-filter class="filter" [placeholder]="telephone.model.Supply?.DatePostavki"
@@ -655,8 +713,7 @@
             </mat-form-field>
 
             <mat-form-field id="template" class="validation">
-                <input matInput
-                    placeholder="Телефон внутренний" [ngModel]="telephone.model?.Telephon_"
+                <input matInput placeholder="Телефон внутренний" [ngModel]="telephone.model?.Telephon_"
                     (ngModelChange)="telephone.model.Telephon_ = $event" />
             </mat-form-field>
 
@@ -670,10 +727,9 @@
                     (ngModelChange)="telephone.model.ServiceNum = $event" />
             </mat-form-field>
 
-
             <mat-form-field id="template" class="validation">
                 <input matInput [formControl]="telephone.modelvalid?.getRowValidatorModel[4].get('SerNumber')"
-                    placeholder="Сирийный номер" [ngModel]="telephone.model?.SerNumber"
+                    placeholder="Серийный номер" [ngModel]="telephone.model?.SerNumber"
                     (ngModelChange)="telephone.model.SerNumber = $event" />
             </mat-form-field>
 
@@ -683,8 +739,7 @@
             </mat-form-field>
 
             <mat-form-field id="template" class="validation">
-                <input matInput
-                    placeholder="Ip Адрес" [ngModel]="telephone.model?.IpTelephon"
+                <input matInput placeholder="Ip Адрес" [ngModel]="telephone.model?.IpTelephon"
                     (ngModelChange)="telephone.model.IpTelephon = $event" />
             </mat-form-field>
 
@@ -710,7 +765,7 @@
             </mat-form-field>
 
             <mat-form-field id="template" class="validation">
-                <input matInput placeholder="Коментарий" [ngModel]="telephone.model?.Coment"
+                <input matInput placeholder="Комментарий" [ngModel]="telephone.model?.Coment"
                     (ngModelChange)="telephone.model.Coment = $event" />
             </mat-form-field>
 
@@ -725,6 +780,25 @@
                         {{status.Name}}
                     </mat-option>
                 </mat-select>
+            </mat-form-field>
+
+            <mat-form-field id="template" class="validation">
+                <mat-select (click)="telephone.calbackfiltersAll()" [placeholder]="telephone.model.CategoryPhoneHeader?.NameHeaders"
+                  [(ngModel)]="telephone.model.CategoryPhoneHeader" name="user">
+                  <mat-select-filter class="filter" [placeholder]="telephone.model.CategoryPhoneHeader?.NameHeaders" [displayMember]="'NameHeaders'"
+                    [array]="telephone.categoryPhoneHeader" (filteredReturn)="telephone.filteredCategoryPhoneHeader =$event">
+                  </mat-select-filter>
+                  <mat-option [value]='null'>None</mat-option>
+                  <mat-option *ngFor="let phone of telephone.filteredCategoryPhoneHeader" [value]="phone">
+                    {{phone.NameHeaders}}
+                  </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field id="template" class="validation check">
+                <input matInput [hidden]="true" />
+                <mat-checkbox [(ngModel)]="telephone.model.WriteOffSign" [checked]="telephone.model.WriteOffSign">
+                </mat-checkbox>
             </mat-form-field>
         </div>
     </mat-tab>

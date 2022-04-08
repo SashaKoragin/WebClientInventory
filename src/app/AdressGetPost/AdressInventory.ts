@@ -6,6 +6,7 @@ export const ServerPort: string = '8182';
 export class AdressInventarka {
     public autificationInventar = `http://${ServerHost}:${ServerPort}/Inventarka/Authorization`;
     public alluser = `http://${ServerHost}:${ServerPort}/Inventarka/AllUsers`;
+
     public allrule = `http://${ServerHost}:${ServerPort}/Inventarka/AllRules`;
     public allotdelget = `http://${ServerHost}:${ServerPort}/Inventarka/AllOtdels`;
     public addandedituser = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditUser?userIdEdit=`;
@@ -55,9 +56,10 @@ export class AdressInventarka {
     public generatedocument = `http://${ServerHost}:${ServerPort}/Inventarka/Invoice`;
     public addfiledb = `http://${ServerHost}:${ServerPort}/Inventarka/AddFileDb`;
     public selectdocument = `http://${ServerHost}:${ServerPort}/Inventarka/LoadDocument`;
-    public selectbook = `http://${ServerHost}:${ServerPort}/Inventarka/LoadBook`
+    public selectbook = `http://${ServerHost}:${ServerPort}/Inventarka/LoadBook`;
 
-    public actualIpAdresComputers = `http://${ServerHost}:${ServerPort}/Inventarka/ActualComputerIp`
+    public actualIpAdresComputers = `http://${ServerHost}:${ServerPort}/Inventarka/ActualComputerIp`;
+    public actualPrintServer = `http://${ServerHost}:${ServerPort}/Inventarka/ActualPrintServer`;
     public actualstatusModel = `http://${ServerHost}:${ServerPort}/Inventarka/ActualUsers`;
     public telephoneHelper = `http://${ServerHost}:${ServerPort}/Inventarka/GenerateTelephoneHelper`;
     public bookModels = `http://${ServerHost}:${ServerPort}/Inventarka/GenerateBookAccounting`;
@@ -159,12 +161,37 @@ export class AdressInventarka {
     public getJournalAis3 = `http://${ServerHost}:${ServerPort}/Inventarka/GetJournalAis3`;
     public addAndEditJournalAis3 = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditJournalAis3`;
     //Формирование актов списания
-    public act = `http://${ServerHost}:${ServerPort}/Inventarka/CreateAct`
+    public act = `http://${ServerHost}:${ServerPort}/Inventarka/CreateAct`;
     //Формирование журнала АИС 3 для доступов
-    public createJournalAis3 = `http://${ServerHost}:${ServerPort}/Inventarka/CreateJournalAis3?year={year}`
+    public createJournalAis3 = `http://${ServerHost}:${ServerPort}/Inventarka/CreateJournalAis3?year={year}&idOtdel={idOtdel}&isAllJournal={isAllJournal}`;
     //Создание табелей
-    public createReportCard = `http://${ServerHost}:${ServerPort}/Inventarka/CreateReportCard`
+    public createReportCard = `http://${ServerHost}:${ServerPort}/Inventarka/CreateReportCard`;
     //Создание служебных записок
-    public createMemoReport = `http://${ServerHost}:${ServerPort}/Inventarka/CreateMemoReport`
+    public createMemoReport = `http://${ServerHost}:${ServerPort}/Inventarka/CreateMemoReport`;
 
+    //Разное 
+    public allOtherAll = `http://${ServerHost}:${ServerPort}/Inventarka/AllOtherAll`;
+    public allModelOther = `http://${ServerHost}:${ServerPort}/Inventarka/AllModelOther`;
+    public allTypeOther = `http://${ServerHost}:${ServerPort}/Inventarka/AllTypeOther`;
+    public allProizvoditelOther = `http://${ServerHost}:${ServerPort}/Inventarka/AllProizvoditelOther`;
+
+    public addAndEditOtherAll = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditOtherAll?userIdEdit=`;
+    public addAndEditModelOther = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditModelOther`;
+    public addAndEditTypeOther = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditTypeOther`;
+    public addAndEditProizvoditelOther = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditProizvoditelOther`;
+    public deleteOtherAll = `http://${ServerHost}:${ServerPort}/Inventarka/DeleteOtherAll?userIdEdit=`;
+    //Актулизация данных с ЭПО
+    public updateEpo = `http://${ServerHost}:${ServerPort}/Inventarka/UpdateDataSto?idProcess=4`;
+    //Получение всех отчетов с ЭПО
+    public getModelReportAnalysisEpo = `http://${ServerHost}:${ServerPort}/Inventarka/GetModelReportAnalysisEpo`;
+    //Полные отчеты по ЭПО с Инвенторизацией
+    public allReportEpoAndInventory = `http://${ServerHost}:${ServerPort}/Inventarka/AllReportInventoryAndEpo`
+    //Параметры для процесов
+    public allEventProcess = `http://${ServerHost}:${ServerPort}/Inventarka/AllEventProcess`
+    public addAndEditEventProcess = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditEventProcess`
+    ///Проверка статусов серверов онлайн
+    public statusServerDataBase = `http://${ServerHost}:${ServerPort}/Inventarka/StatusIpServerOnline`
+    ///Категории телефонов
+    public allCategoryPhoneHeader = `http://${ServerHost}:${ServerPort}/Inventarka/AllCategoryPhoneHeader`;
+    public addAndEditCategoryPhoneHeader = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditCategoryPhoneHeader`;
 }

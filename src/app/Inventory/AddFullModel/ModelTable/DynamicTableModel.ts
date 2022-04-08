@@ -17,7 +17,7 @@ export class DynamicTableColumnModel {
   //Ошибки
   public selectserver: SelectTableModel[] = [
     { text: "Выбор не актуальных пользователей", indexsevr: 6, indexcolumnmodel: 0 },
-    { text: "Ошибки по инвенторизации", indexsevr: 7, indexcolumnmodel: 1 },
+    { text: "Ошибки по инвентаризации", indexsevr: 7, indexcolumnmodel: 1 },
     { text: "Не совпадения имен с Инвентарным номером", indexsevr: 16, indexcolumnmodel: 2 },
     { text: "Дубли имен компьютеров в БД", indexsevr: 17, indexcolumnmodel: 3 },
     { text: "Несоответствие имен по Ip Адресам", indexsevr: 20, indexcolumnmodel: 4 },
@@ -48,30 +48,33 @@ export class DynamicTableColumnModel {
 
   //Синхронизация
   public selectsynhronization: SelectTableModel[] = [
-    { text: "Аналитика процесов протекающих в системе", indexsevr: 14, indexcolumnmodel: 0 },
-    { text: "Данные домена:", indexsevr: 15, indexcolumnmodel: 1 },
-    { text: "Синхронизированные Ip Адреса", indexsevr: 18, indexcolumnmodel: 2 },
+    { text: "Данные домена:", indexsevr: 15, indexcolumnmodel: 0 },
+    { text: "Синхронизированные Ip Адреса", indexsevr: 18, indexcolumnmodel: 1 },
+    { text: "Синхронизация с PrintServer", indexsevr: 51, indexcolumnmodel: 2 }
   ]
   //Синхронизация
-  // public mainsynhronization:SelectTableModel = this.selectsynhronization[0];
+
   //Синхронизация
-  public columnssynhronization: Table[] = [{ Type: "IsProcessComplete", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 },
-  { Type: "ComputerIpAdressSynhronization", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 },
-  { Type: "SynhronizationIp", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 },
+  public columnssynhronization: Table[] = [
+    { Type: "ComputerIpAdressSynhronization", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 },
+    { Type: "SynhronizationIp", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 },
+    { Type: "SynchronizationPrintServerToDataBase", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 }
   ];
 
   //Журнал логирования
-  public log: SelectTableModel[] = [{ text: "Журнал логов редактирования", indexsevr: 21, indexcolumnmodel: 0 },
-  { text: "Вся техника на отдел", indexsevr: 22, indexcolumnmodel: 1 },
-  { text: "Вся техника в БД", indexsevr: 29, indexcolumnmodel: 2 },
-  { text: "Списанная техника в БД", indexsevr: 30, indexcolumnmodel: 3 },
+  public log: SelectTableModel[] = [
+    { text: "Журнал логов редактирования", indexsevr: 21, indexcolumnmodel: 0 },
+    { text: "Вся техника на отдел", indexsevr: 22, indexcolumnmodel: 1 },
+    { text: "Вся техника в БД", indexsevr: 29, indexcolumnmodel: 2 },
+    { text: "Списанная техника в БД", indexsevr: 30, indexcolumnmodel: 3 },
   ]
 
   //Журнал таблицы с логом
-  public columnslog: Table[] = [{ Type: "HistoryLog", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 },
-  { Type: "TecnicalOtdel", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 },
-  { Type: "AllTechnics", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 },
-  { Type: "AllTechnics", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 },
+  public columnslog: Table[] = [
+    { Type: "HistoryLog", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 },
+    { Type: "TecnicalOtdel", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 },
+    { Type: "AllTechnics", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 },
+    { Type: "AllTechnics", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 },
   ];
 
   /////Почта письма
@@ -93,7 +96,7 @@ export class DynamicTableColumnModel {
   public mainTemplateAndRule: SelectTableModel[] = [{ text: "Не отозванные роли и шаблоны уволенных сотрудников.", indexsevr: 39, indexcolumnmodel: 0 },
   { text: "Устаревшие роли сотрудников АИС 3?", indexsevr: 40, indexcolumnmodel: 1 },
   { text: "Дубликаты ролей по наличию шаблона АИС 3", indexsevr: 41, indexcolumnmodel: 2 },
-  { text: "Шаблоны или роли в них преднозначены для начальников кураторов и руководителей", indexsevr: 42, indexcolumnmodel: 3 },
+  { text: "Шаблоны или роли в них предназначены для начальников кураторов и руководителей", indexsevr: 42, indexcolumnmodel: 3 },
   { text: "Роли которые даны отдельно от шаблона", indexsevr: 43, indexcolumnmodel: 4 },
   { text: "Избыточные роли у пользователя", indexsevr: 46, indexcolumnmodel: 5 },]
 
@@ -106,6 +109,12 @@ export class DynamicTableColumnModel {
   { Type: "UserRulesRuk", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 },
   { Type: "RuleNotTemplateUser", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 },
   { Type: "RuleUserReplace", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 }]
+
+  ///Модель техники ЭПО
+  public mainEquipmentSto: SelectTableModel[] = [{ text: "Выгруженные данные с ЭПО", indexsevr: 50, indexcolumnmodel: 0 }]
+
+  ///Модель техники ЭПО
+  public equipmentStoAll: Table[] = [{ Type: "EquipmentSto", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 }]
 }
 ///Класс селектора
 export class SelectTableModel {

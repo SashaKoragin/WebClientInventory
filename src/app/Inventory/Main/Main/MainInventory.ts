@@ -1,8 +1,8 @@
-import { Component, Pipe, PipeTransform } from '@angular/core';
+import { Component } from '@angular/core';
 import { Inventar, ModelInventar } from '../Model/ModelInventory'
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
-import { AuthIdentification, AuthIdentificationSignalR } from '../../../Post RequestService/PostRequest';
+import { AuthIdentification } from '../../../Post RequestService/PostRequest';
 
 
 

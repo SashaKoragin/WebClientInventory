@@ -1,5 +1,5 @@
 import { FormGroup, FormControl, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
-import { Otdel, Position, FullProizvoditel, FullModel, NameSysBlock, NameMonitor, ProizvoditelBlockPower, ModelBlockPower, ModelSwithes, TypeServer, Users, TaskAis3, ResourceIt } from '../../ModelInventory/InventoryModel';
+import { Otdel, Position, FullProizvoditel, FullModel, NameSysBlock, NameMonitor, ProizvoditelBlockPower, ModelBlockPower, ModelSwithes, TypeServer, Users, TaskAis3, ResourceIt, TypeOther, ProizvoditelOther, ModelOther } from '../../ModelInventory/InventoryModel';
 import { View, Type, Mouth } from '../DialogReportCard/ReportCardModel/ReportCardModel';
 
 
@@ -52,7 +52,7 @@ export class ModelValidation {
     //Валидация производителя мониторов
     public validationFullNameMonitor(control: AbstractControl): ValidationErrors {
         var nameProizvoditel = control.value as NameMonitor;
-        return (nameProizvoditel == undefined || nameProizvoditel.Name) == undefined ? { 'error': true } : null
+        return (nameProizvoditel == undefined || nameProizvoditel.NameManufacturer) == undefined ? { 'error': true } : null
     };
 
     //Валидация Модели
@@ -67,6 +67,22 @@ export class ModelValidation {
         return (nameProizvoditel == undefined || nameProizvoditel.Name) == undefined ? { 'error': true } : null
     };
 
+    //Валидация типа Разного
+    public validationTypeOther(control: AbstractControl): ValidationErrors {
+        var nameTypeOther = control.value as TypeOther;
+        return (nameTypeOther == undefined || nameTypeOther.Name) == undefined ? { 'error': true } : null
+    };
+
+    //Валидация производителя Разного
+    public validationProizvoditelOther(control: AbstractControl): ValidationErrors {
+        var nameProizvoditelOther = control.value as ProizvoditelOther;
+        return (nameProizvoditelOther == undefined || nameProizvoditelOther.Name) == undefined ? { 'error': true } : null
+    };
+    //Валидация моделей Разного
+    public validationModelOther(control: AbstractControl): ValidationErrors {
+        var nameModelOther = control.value as ModelOther;
+        return (nameModelOther == undefined || nameModelOther.Name) == undefined ? { 'error': true } : null
+    };
     //Валидация Модели ИБП
     public validationFullModelIbp(control: AbstractControl): ValidationErrors {
         var nameModel = control.value as ModelBlockPower;
@@ -178,6 +194,20 @@ export class ModelValidation {
             'Mouth': new FormControl({ value: new Mouth() }, [Validators.required, this.validationMouthModel]),
             'View': new FormControl({ value: new View() }, [Validators.required, this.validationViewModel]),
             'Type': new FormControl({ value: new Type() }, [Validators.required, this.validationTypeModel]),
+        }),
+        //Модель разного оборудования
+        new FormGroup({
+            'TypeOther': new FormControl({ value: new TypeOther() }, [Validators.required, this.validationTypeOther]),
+            'ProizvoditelOther': new FormControl({ value: new ProizvoditelOther() }, [Validators.required, this.validationProizvoditelOther]),
+            'ModelOther': new FormControl({ value: new ModelOther() }, [Validators.required, this.validationModelOther]),
+            'SerNum': new FormControl(null, Validators.required),
+            'InventarNum': new FormControl(null, Validators.required)
+        }),
+        new FormGroup({
+            'DayX': new FormControl(null, [Validators.min(1), Validators.max(31)]),
+            'HoursX': new FormControl(null, [Validators.min(0), Validators.max(23)]),
+            'MinutesX': new FormControl(null, [Validators.min(0), Validators.max(60)]),
         })
+
     ];
 }
