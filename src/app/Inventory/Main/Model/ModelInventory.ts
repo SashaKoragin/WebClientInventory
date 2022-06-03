@@ -27,12 +27,7 @@ export class Inventar {
             children: [{
                 otdelfunc: null,
                 children: null, types: 'Справочники для редактирования', pages: './techicalComplement', fullpath: 'Справочники\\Справочники', model: 'Справочники', isrule: ['Просмотр']
-            },
-            {
-                otdelfunc: null,
-                children: null, types: 'Справочники АКСИОК', pages: './aksiokDirectory', fullpath: 'Справочники\\Справочники АКСИОК', model: 'Справочники АКСИОК', isrule: ['Просмотр']
-            }
-            ], types: null, pages: null, fullpath: null, model: null, isrule: null
+            }], types: null, pages: null, fullpath: null, model: null, isrule: null
 
         },
         {
@@ -65,10 +60,6 @@ export class Inventar {
             {
                 otdelfunc: null,
                 children: null, types: 'Техника ЭПО', pages: './equipmentSto', fullpath: 'Техника\\Техника ЭПО', model: 'Техника ЭПО', isrule: null
-            },
-            {
-                otdelfunc: null,
-                children: null, types: 'Техника АКСИОК', pages: './aksiok', fullpath: 'Техника\\Техника АКСИОК', model: 'Техника АКСИОК', isrule: null
             },
             {
                 otdelfunc: null,

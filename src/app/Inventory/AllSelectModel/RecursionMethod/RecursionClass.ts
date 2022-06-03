@@ -1,37 +1,11 @@
-import { Users, Otdel, EquipmentType } from '../../ModelInventory/InventoryModel';
+import { Users, Otdel } from '../../ModelInventory/InventoryModel';
 
 export class Recursion {
 
    public userEcvipment: ModelUserAndEquipment[] = [];
    public otdelandUserEcvipment: ModelUserAndEquipment[] = [];
-   public modelAksiok: ModelAksiok[] = [];
    ///Разкладка пользователей в рекурсию
 
-   public methodModelAksiok(EquipmentType: EquipmentType[]) {
-      var i;
-      for (const type of EquipmentType) {
-         i = 0;
-         var use = new ModelAksiok();
-         use.Name = type.NameType
-         use.Code = type.CodeType,
-            use.ModelAksiok = [];
-         if (type.Producer != null || typeof type.Producer != 'undefined') {
-            for (const product of type.Producer) {
-               // console.log(type.Producer);
-               use.ModelAksiok.push({ Name: product.NameProducer, Code: product.CodeProducer, ModelAksiok: [] });
-               if (product.EquipmentModel != null || typeof product.EquipmentModel != 'undefined') {
-                  for (const model of product.EquipmentModel) {
-                     use.ModelAksiok[i].ModelAksiok.push({ Name: model.NameModel, Code: model.CodeModel, ModelAksiok: [] });
-                  }
-               }
-               i++
-            }
-         }
-         if (use.ModelAksiok.length > 0) {
-            this.modelAksiok.push(use);
-         }
-      }
-   }
 
 
    public methodEquipmentUserRecursion(Users: Users[]) {
@@ -40,7 +14,7 @@ export class Recursion {
       for (const user of Users) {
          i = 0;
          var use = new ModelUserAndEquipment();
-         use.Name = user.NameUser;
+         use.Name = user.Name;
          use.IdUser = user.IdUser;
          use.Children = [];
          use.InputServer = false;
@@ -49,7 +23,7 @@ export class Recursion {
             use.Children.push({ Name: "Монитор", IdUser: null, Types: null, InputServer: false, Children: [{ Children: [], Name: null, IdUser: null, Types: [], InputServer: false }] })
             for (const monitor of user.Monitors) {
                use.Children[i].Children[0].Types.push({
-                  Name: monitor.NameMonitor.NameManufacturer, NameModel: null, SerNumber: monitor.SerNum,
+                  Name: this.replaceString(monitor.NameMonitor.NameManufacturer + ' ' + monitor.NameMonitor.NameModel + ' ' + monitor.NameMonitor.Info), NameModel: null, SerNumber: monitor.SerNum,
                   ServiceNumber: null, InventerNumber: monitor.InventarNumMonitor,
                   Kabinet: monitor.Kabinet ? monitor.Kabinet.NumberKabinet : null,
                   Status: monitor.Coment,
@@ -195,12 +169,12 @@ export class Recursion {
                   || (user.Telephon != null || typeof user.Telephon != 'undefined') || (user.Swithe != null || typeof user.Swithe != 'undefined')
                   || (user.OtherAll != null || typeof user.OtherAll != 'undefined')
                ) {
-                  otd.Children.push({ Name: user.NameUser, IdUser: user.IdUser, IdUserOtdel: otdel.IdUser, InputServer: true, Types: null, Children: [] })
+                  otd.Children.push({ Name: user.Name, IdUser: user.IdUser, IdUserOtdel: otdel.IdUser, InputServer: true, Types: null, Children: [] })
                   if (user.Monitors != null || typeof user.Monitors != 'undefined') {
                      otd.Children[j].Children.push({ Name: "Монитор", IdUser: null, Types: null, InputServer: false, Children: [{ Children: [], Name: null, IdUser: null, Types: [], InputServer: false }] });
                      for (const monitor of user.Monitors) {
                         otd.Children[j].Children[i].Children[0].Types.push({
-                           Name: monitor.NameMonitor.NameManufacturer, NameModel: null, SerNumber: monitor.SerNum,
+                           Name: this.replaceString(monitor.NameMonitor.NameManufacturer + ' ' + monitor.NameMonitor.NameModel + ' ' + monitor.NameMonitor.Info), NameModel: null, SerNumber: monitor.SerNum,
                            ServiceNumber: null, InventerNumber: monitor.InventarNumMonitor,
                            Kabinet: monitor.Kabinet ? monitor.Kabinet.NumberKabinet : null,
                            Status: monitor.Coment,
@@ -325,6 +299,9 @@ export class Recursion {
       }
    }
 
+   private replaceString(nameMiodel: string): string {
+      return nameMiodel.replace('undefined', '').replace('undefined', '');
+   }
 }
 
 
@@ -348,11 +325,4 @@ export class Equipment {
    NameComputer: string;
    IpAdress: string;
    Status: string;
-}
-
-export class ModelAksiok {
-   public Code: string;
-   public Name: string;
-   public ModelAksiok: ModelAksiok[];
-
 }

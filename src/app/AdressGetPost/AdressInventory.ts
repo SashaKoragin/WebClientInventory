@@ -1,5 +1,5 @@
-//export const ServerHost: string = 'I7751-APP127';  //localhost
-export const ServerHost: string = 'localhost'
+export const ServerHost: string = 'I7751-W40204180';  //localhost
+//export const ServerHost: string = 'localhost'
 export const ServerPort: string = '8182';
 //К примеру новая структура
 //http://I7751-W40204180:8182/Inventarka/AllRules
@@ -182,8 +182,6 @@ export class AdressInventarka {
     public deleteOtherAll = `http://${ServerHost}:${ServerPort}/Inventarka/DeleteOtherAll?userIdEdit=`;
     //Актулизация данных с ЭПО
     public updateEpo = `http://${ServerHost}:${ServerPort}/Inventarka/UpdateDataSto?idProcess=4`;
-    //Актуализация данных с АКСИОК
-    public updateAksiok = `http://${ServerHost}:${ServerPort}/Inventarka/UpdateAksiok?idProcess=6&userLogin={userLogin}&passwordUser={passwordUser}`;
     //Получение всех отчетов с ЭПО
     public getModelReportAnalysisEpo = `http://${ServerHost}:${ServerPort}/Inventarka/GetModelReportAnalysisEpo`;
     //Полные отчеты по ЭПО с Инвенторизацией
@@ -196,13 +194,4 @@ export class AdressInventarka {
     ///Категории телефонов
     public allCategoryPhoneHeader = `http://${ServerHost}:${ServerPort}/Inventarka/AllCategoryPhoneHeader`;
     public addAndEditCategoryPhoneHeader = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditCategoryPhoneHeader`;
-    ///Вытащить дополнительные характеристики объекта АКСИОК
-    public selectModelCharacteristicJson = `http://${ServerHost}:${ServerPort}/Inventarka/SelectModelCharacteristicJson?idModel={idModel}`;
-
-    ///Аксиок модели и категории для анализа редактирования или удаления
-    public aksiokAddAndEditModelValidation = `http://${ServerHost}:${ServerPort}/Inventarka/AksiokAddAndEditModelValidation`;
-    public selectAllFullСategories = `http://${ServerHost}:${ServerPort}/Inventarka/SelectFullСategories`;
-    public selectAllEquipmentType = `http://${ServerHost}:${ServerPort}/Inventarka/SelectEquipmentType`;
-    public selectAllProducer = `http://${ServerHost}:${ServerPort}/Inventarka/SelectAllProducer`;
-    public selectAllEquipmentModel = `http://${ServerHost}:${ServerPort}/Inventarka/SelectAllEquipmentModel`;
 }
