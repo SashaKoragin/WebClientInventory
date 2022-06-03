@@ -150,8 +150,12 @@
 
           <ng-container matColumnDef="NameUser">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Имя пользователя</th>
+<<<<<<< HEAD
             <td [style.background]="row.StatusUser?.ColorStatus" mat-cell *matCellDef="let row"
               [matTooltip]="row.NameUser">
+=======
+            <td [style.background]="row.StatusUser?.ColorStatus" mat-cell *matCellDef="let row" [matTooltip]="row.NameUser">
+>>>>>>> parent of 4c0c144... Revert "Merge branch 'master' into ServiceNewStructureDB"
               <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.NameUser}}</Label>
               <div [ngClass]=row.IdUser.toString() id="{{row.IdUser}}"
                 [style.display]="!row.ModelIsEdit ? 'none':'block'">
