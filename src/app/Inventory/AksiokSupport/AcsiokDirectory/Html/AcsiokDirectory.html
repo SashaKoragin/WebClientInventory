@@ -1,0 +1,110 @@
+<mat-tab-group [style.display]="isBeginTask ? 'inline':'none'">
+    <mat-tab label="Все модели и типа в Аксиок">
+        <div class="head" [style.display]="logicaTemplate?.select ? 'grid' : 'none'">
+            <div class="button"><button mat-button (click)="updateAksiokAllModel()">Обновить</button></div>
+            <div class="grid-container2" *ngFor="let selectvalue of selectingTemplate?.parametrs">
+                <div class="grid-item2">
+                    <label>{{selectvalue.name}}</label>
+                </div>
+                <div class="grid-item2">
+                    <mat-checkbox [(ngModel)]="selectvalue.isvisible"></mat-checkbox>
+                </div>
+                <div class="grid-item2" [style.display]="selectvalue.template===2 ? 'grid' : 'none'">
+                    <mat-form-field>
+                        <mat-select placeholder="Отбор данных!" [(ngModel)]="selectvalue.select" name="sel">
+                            <mat-option *ngFor="let sel of selectingTemplate.selectparamString" [value]="sel">
+                                {{sel.viewValue}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="grid-item2" [style.display]="selectvalue.template !== 2 ? 'grid' : 'none'">
+                    <mat-form-field>
+                        <mat-select placeholder="Отбор данных!" [(ngModel)]="selectvalue.select" name="sel">
+                            <mat-option *ngFor="let sel of selectingTemplate.selectparamNumber" [value]="sel">
+                                {{sel.viewValue}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="grid-item2" [style.display]="selectvalue.template === 1 ? 'grid' : 'none'">
+                    <mat-form-field class="select">
+                        <input matInput type="textT" #tooltip1="matTooltip" matTooltip={{selectvalue.paramvalue}}
+                            matTooltipPosition="right" [(ngModel)]="selectvalue.paramvalue"
+                            [formControl]="selectvalue.formTemplate">
+                        <label class="lableerror" *ngIf="selectvalue.formTemplate.invalid" [ngClass]="'error'">Не
+                            соответствует формату дате</label>
+                    </mat-form-field>
+                </div>
+                <div class="grid-item2" [style.display]="selectvalue.template === 2 ? 'grid' : 'none'">
+                    <mat-form-field class="select">
+                        <input matInput type="textT" #tooltip2="matTooltip" matTooltip={{selectvalue.paramvalue}}
+                            matTooltipPosition="right" [(ngModel)]="selectvalue.paramvalue"
+                            [formControl]="selectvalue.formTemplate">
+                        <label class="lableerror" *ngIf="selectvalue.formTemplate.invalid" [ngClass]="'error'">Не
+                            соответствует формату строке</label>
+                    </mat-form-field>
+                </div>
+                <div class="grid-item2" [style.display]="selectvalue.template === 3 ? 'grid' : 'none'">
+                    <mat-form-field class="select">
+                        <input matInput type="textT" #tooltip3="matTooltip" matTooltip={{selectvalue.paramvalue}}
+                            matTooltipPosition="right" [(ngModel)]="selectvalue.paramvalue"
+                            [formControl]="selectvalue.formTemplate">
+                        <label class="lableerror" *ngIf="selectvalue.formTemplate.invalid" [ngClass]="'error'">Не
+                            соответствует формату цифр</label>
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+        <div class="mat-app-background basic-container" [style.display]="logicaTemplate?.date ? 'none' : 'grid'">
+            <div class="button">
+                <button mat-button (click)="back()">Назад</button>
+            </div>
+
+            <form class="search">
+                <mat-form-field class="search_blok">
+                    <span matPrefix><i class="material-icons">youtube_searched_for</i></span>
+                    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Поиск данных">
+                </mat-form-field>
+            </form>
+            <cdk-virtual-scroll-viewport class="scroll" appendOnly itemSize="50">
+                <mat-tree [dataSource]="dataSourceModel" [treeControl]="treeControlModel">
+                    <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+                        <div class="element-detail">
+                            <div class="container-fluid">
+                                <div class="row justify-content-start align-items-end border border-warning">
+                                    <div class="col text-left border border-primary text-primary textT">
+                                        <p class="textT">{{node.model.Name}}</p>
+                                    </div>
+                                    <div class="col text-left border border-primary text-primary textT">
+                                        <p class="textT">{{node.model.Code}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </mat-tree-node>
+                    <mat-tree-node class="mainCellType" *matTreeNodeDef="let node;when: hasChildModel"
+                        matTreeNodePadding>
+                        <button class="content" matTreeNodeToggle mat-icon-button>
+                            {{node.model.ModelAksiok.length}}
+                        </button>
+                        <div class="help">
+                            Код: {{node.model.Code}}; Наименование: {{node.model.Name}}
+                        </div>
+                    </mat-tree-node>
+                </mat-tree>
+            </cdk-virtual-scroll-viewport>
+        </div>
+
+        <div [style.display]="logicaTemplate?.progress ? 'none':'inline'">
+            <p>Идет загрузка данных подождите пожалуйста!!!</p>
+            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+        </div>
+
+    </mat-tab>
+</mat-tab-group>
+
+
+<div [style.display]="isBeginTask ? 'none':'inline'">
+    <p>Идет процесс загрузки шаблонов повторите запрос позже!!!</p>
+</div>

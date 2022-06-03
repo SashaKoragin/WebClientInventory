@@ -20,8 +20,7 @@
                 [matMenuTriggerFor]="menu" color="primary" matTooltip="Меню">
                 <mat-icon>more_vert</mat-icon>
                 <mat-menu #menu="matMenu">
-                  <div class="MenuButton"
-                    *ngFor="let template of support | filters:[row.IdCategoriaSupport]">
+                  <div class="MenuButton" *ngFor="let template of support | filters:[row.IdCategoriaSupport]">
                     <button mat-menu-item (click)="alltechnic.createSTO(row,template,authService,dialog)"
                       [matTooltip]="template.InfoTemplate">
                       <mat-icon>input</mat-icon>
@@ -42,8 +41,8 @@
 
           <ng-container matColumnDef="Users">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Пользователь</th>
-            <td [style.background]="row.Color" mat-cell *matCellDef="let row" [matTooltip]="row.Name">
-              {{row.Name}}
+            <td [style.background]="row.Color" mat-cell *matCellDef="let row" [matTooltip]="row.NameUser">
+              {{row.NameUser}}
             </td>
           </ng-container>
 
@@ -132,7 +131,7 @@
                 <mat-icon>more_vert</mat-icon>
                 <mat-menu #menu="matMenu">
                   <div class="MenuButton" *ngFor="let template of templateServer.modelMemo">
-                    <button mat-menu-item (click)="createMemoReport(row.IdUser, row.Name, template)"
+                    <button mat-menu-item (click)="createMemoReport(row.IdUser, row.NameUser, template)"
                       [matTooltip]="template.nameMemo">
                       <mat-icon>input</mat-icon>
                       {{template.nameMemo}}
@@ -149,10 +148,11 @@
               [matTooltip]="row.IdUser">{{row.IdUser}}</td>
           </ng-container>
 
-          <ng-container matColumnDef="Name">
+          <ng-container matColumnDef="NameUser">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Имя пользователя</th>
-            <td [style.background]="row.StatusUser?.ColorStatus" mat-cell *matCellDef="let row" [matTooltip]="row.Name">
-              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Name}}</Label>
+            <td [style.background]="row.StatusUser?.ColorStatus" mat-cell *matCellDef="let row"
+              [matTooltip]="row.NameUser">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.NameUser}}</Label>
               <div [ngClass]=row.IdUser.toString() id="{{row.IdUser}}"
                 [style.display]="!row.ModelIsEdit ? 'none':'block'">
               </div>

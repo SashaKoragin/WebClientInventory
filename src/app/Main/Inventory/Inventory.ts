@@ -30,6 +30,9 @@ import { SettingInventory } from '../../Inventory/SettingInventory/View/SettingI
 import { JournalAis3 } from '../../Inventory/Ais3/JournalAis3/View/JournalAis3';
 import { EquipmentSto } from '../../Inventory/EquipmentSto/View/EquipmentSto';
 import { ModelProcess } from '../../Inventory/Process/ProcessParameter/View/Process';
+import { AksiokDirectory } from '../../Inventory/AksiokSupport/Aksiok/View/AksiokDirectory';
+import { Aksiok } from '../../Inventory/AksiokSupport/AksiokDirectory/View/Aksiok';
+
 
 
 @NgModule(({
@@ -53,7 +56,7 @@ import { ModelProcess } from '../../Inventory/Process/ProcessParameter/View/Proc
         User, DocumentSelect, ErrorInventory,
         Select, UploadsFile,
         ComplimentTableEquipment, Analitics,
-        BookAccounting, Synchronization, Log, PathAis3, TemplatendRuleAis3, SettingInventory, JournalAis3, EquipmentSto, ModelProcess
+        BookAccounting, Synchronization, Log, PathAis3, TemplatendRuleAis3, SettingInventory, JournalAis3, EquipmentSto, ModelProcess, AksiokDirectory, Aksiok
 
     ]
 
