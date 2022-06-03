@@ -17,9 +17,9 @@
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
                         <td mat-cell *matCellDef="let row" [matTooltip]="row.IdUser">{{row.IdUser}}</td>
                     </ng-container>
-                    <ng-container matColumnDef="User.Name">
+                    <ng-container matColumnDef="User.NameUser">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>Имя пользователя</th>
-                        <td mat-cell *matCellDef="let row" [matTooltip]="row.User?.Name">{{row.User?.Name}}</td>
+                        <td mat-cell *matCellDef="let row" [matTooltip]="row.User?.NameUser">{{row.User?.NameUser}}</td>
                     </ng-container>
                     <ng-container matColumnDef="User.TabelNumber">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>Табельный номер пользователя</th>

@@ -25,10 +25,10 @@
               {{row?.IdToken}}</td>
           </ng-container>
 
-          <ng-container matColumnDef="User.Name">
+          <ng-container matColumnDef="User.NameUser">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Пользователь</th>
-            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row.User?.Name">
-              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.User?.Name}}</Label>
+            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row.User?.NameUser">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.User?.NameUser}}</Label>
               <div [ngClass]=row.IdToken.toString() id="{{row.IdToken}}"
                 [style.display]="!row.ModelIsEdit ? 'none':'block'">
               </div>
@@ -145,11 +145,11 @@
             </td>
           </ng-container>
 
-          <ng-container matColumnDef="Statusing.Name">
+          <ng-container matColumnDef="Statusing.NameStatus">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Статус</th>
             <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row"
-              [matTooltip]="row.Statusing?.Name">
-              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Statusing?.Name}}</Label>
+              [matTooltip]="row.Statusing?.NameStatus">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Statusing?.NameStatus}}</Label>
               <div [ngClass]=row.IdToken.toString() id="{{row.IdToken}}"
                 [style.display]="!row.ModelIsEdit ? 'none':'block'">
               </div>
@@ -212,13 +212,13 @@
         <!--Пользователь-->
         <mat-form-field id="template" class="validation">
           <mat-select (click)="token.calbackfiltersAll()" (selectionChange)="filterSysBlokToken($event.value);"
-            [placeholder]="token.model.User?.Name" [(ngModel)]="token.model.User" name="user">
-            <mat-select-filter class="filter" [placeholder]="token.model.User?.Name" [displayMember]="'Name'"
+            [placeholder]="token.model.User?.NameUser" [(ngModel)]="token.model.User" name="user">
+            <mat-select-filter class="filter" [placeholder]="token.model.User?.NameUser" [displayMember]="'NameUser'"
               [array]="token.user" (filteredReturn)="token.filteredUser =$event">
             </mat-select-filter>
             <mat-option [value]='null'>None</mat-option>
             <mat-option *ngFor="let user of token.filteredUser" [value]="user">
-              {{user.Name}}
+              {{user.NameUser}}
             </mat-option>
           </mat-select>
         </mat-form-field>
@@ -276,14 +276,14 @@
 
         <!--Статус-->
         <mat-form-field id="template" class="validation">
-          <mat-select (click)="token.calbackfiltersAll()" [placeholder]="token.model.Statusing?.Name"
+          <mat-select (click)="token.calbackfiltersAll()" [placeholder]="token.model.Statusing?.NameStatus"
             [(ngModel)]="token.model.Statusing" name="status">
-            <mat-select-filter class="filter" [placeholder]="token.model.Statusing?.Name" [displayMember]="'Name'"
+            <mat-select-filter class="filter" [placeholder]="token.model.Statusing?.NameStatus" [displayMember]="'NameStatus'"
               [array]="token.statusing" (filteredReturn)="token.filteredStatusing =$event">
             </mat-select-filter>
             <mat-option [value]='null'>None</mat-option>
             <mat-option *ngFor="let status of token.filteredStatusing" [value]="status">
-              {{status.Name}}
+              {{status.NameStatus}}
             </mat-option>
           </mat-select>
         </mat-form-field>

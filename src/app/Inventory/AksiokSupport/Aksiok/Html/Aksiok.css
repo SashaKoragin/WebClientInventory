@@ -1,0 +1,65 @@
+::ng-deep .placeholder{
+    color: blue;
+    font-size: 24px;
+}
+
+.panel{
+    margin: 5px;
+}
+.panelbutton{
+    background: azure;
+    margin: inherit;
+    border-radius: 80px;
+    margin: 5px;
+}
+
+button, 
+button:active, 
+button:focus {
+    outline: none;
+}
+
+
+.head{
+    display: inherit;
+    padding: 5;
+    margin-left: 5px;
+    grid-template-columns: max-content 70%;
+    align-items: center;
+    font-size: 20px;
+    border: cyan;
+    font-style: normal;
+    width: 19%;
+}
+
+.parameter{
+    margin-left: 25px;
+    height: 75px;
+}
+.formAttribute{
+    width: 100%;
+}
+.mat-input-element:disabled{
+    color: black;
+}
+.All{
+    text-align: center;
+    color: black;
+    font-size: 30px;
+}
+.parametersAll{
+    display: inline-block;
+    padding: 5;
+    margin-left: 5px;
+    grid-template-columns: max-content 70%;
+    align-items: center;
+    font-size: 20px;
+    border: cyan;
+    font-style: normal;
+    width: 19%;
+}
+
+.parameterAll{
+    margin-left: 25px;
+    height: 75px;
+}
