@@ -98,7 +98,6 @@ export class Equipment implements OnInit {
 
   public MenuAksiok: MenuAksiok = new MenuAksiok()
 
-  public MenuAksiok:MenuAksiok = new MenuAksiok()
 
   public async ngOnInit(): Promise<void> {
     await this.start()

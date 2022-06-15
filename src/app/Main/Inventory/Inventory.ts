@@ -30,12 +30,8 @@ import { SettingInventory } from '../../Inventory/SettingInventory/View/SettingI
 import { JournalAis3 } from '../../Inventory/Ais3/JournalAis3/View/JournalAis3';
 import { EquipmentSto } from '../../Inventory/EquipmentSto/View/EquipmentSto';
 import { ModelProcess } from '../../Inventory/Process/ProcessParameter/View/Process';
-import { AksiokDirectory } from '../../Inventory/AksiokSupport/Aksiok/View/AksiokDirectory';
-import { Aksiok } from '../../Inventory/AksiokSupport/AksiokDirectory/View/Aksiok';
-
 import { AksiokDirectory } from '../../Inventory/AksiokSupport/AcsiokDirectory/View/AcsiokDirectory';
 import { Aksiok } from '../../Inventory/AksiokSupport/Aksiok/View/Aksiok';
-
 
 @NgModule(({
     imports: [
@@ -58,11 +54,7 @@ import { Aksiok } from '../../Inventory/AksiokSupport/Aksiok/View/Aksiok';
         User, DocumentSelect, ErrorInventory,
         Select, UploadsFile,
         ComplimentTableEquipment, Analitics,
-<<<<<<< HEAD
         BookAccounting, Synchronization, Log, PathAis3, TemplatendRuleAis3, SettingInventory, JournalAis3, EquipmentSto, ModelProcess, AksiokDirectory, Aksiok
-=======
-        BookAccounting, Synchronization, Log, PathAis3, TemplatendRuleAis3, SettingInventory, JournalAis3, EquipmentSto, ModelProcess,AksiokDirectory,Aksiok
->>>>>>> parent of 4c0c144... Revert "Merge branch 'master' into ServiceNewStructureDB"
 
     ]
 
