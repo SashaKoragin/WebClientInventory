@@ -16,8 +16,9 @@ import { deserialize } from 'class-transformer';
 import { FormControl } from '@angular/forms';
 import { ModelDialog, DialogDiscription } from '../ModelDialogDiscription/View/DialogDiscription';
 import { SelectionModel } from '@angular/cdk/collections';
-import { INewLogicaTable, SettingDepartmentCaseGetServer, SettingDepartmentCaseToServer, Rb_Holiday, CategoryPhoneHeader, RegulationsDepartment, RegulationsDepartmentToServer, ResourceIt, TaskAis3, ModelOther, ProizvoditelOther, TypeOther } from '../../ModelInventory/InventoryModel';
+import { INewLogicaTable, SettingDepartmentCaseGetServer, SettingDepartmentCaseToServer, Rb_Holiday, CategoryPhoneHeader, RegulationsDepartment, RegulationsDepartmentToServer, ResourceIt, TaskAis3, ModelOther, ProizvoditelOther, TypeOther, AksiokAddAndEdit } from '../../ModelInventory/InventoryModel';
 import { ModelSelect, ParametrsAct } from '../../AllSelectModel/ParametrModel';
+import { DialogAksiokEditAndAdd } from '../DialogAksiokEditAndAdd/DialogAksiokEditAndAddTs/DialogAksiokEditAndAdd';
 const moment = _rollupMoment || _moment;
 
 ///Добавление ролей в БД на пользователя 
@@ -52,7 +53,7 @@ export class AddAndDeleteRuleUser {
 
   selectUserDb() {
     if (this.selectionUsers.selected.length === 1) {
-      this.firstUser = "Роли пользователя: " + this.selectionUsers.selected[0].Name
+      this.firstUser = "Роли пользователя: " + this.selectionUsers.selected[0].NameUser
       this.editandadd.ruleAndUsers(this.selectionUsers.selected[0].IdUser).toPromise().then((model: RuleUsers[]) => {
         if (model) {
           this.dataSourceRule.data = model;
@@ -356,7 +357,7 @@ export class UserTableModel implements INewLogicaTable<Users>  {
   }
 
 
-  public displayedColumns = ['Logic', 'IdUser', 'Name', 'TabelNumber', 'Telephon.SerNumber', 'Telephon.Telephon_', 'Telephon.TelephonUndeground', 'Position.NamePosition', 'Otdel.NameOtdel', 'StatusActual', 'ActionsColumn'];
+  public displayedColumns = ['Logic', 'IdUser', 'NameUser', 'TabelNumber', 'Telephon.SerNumber', 'Telephon.Telephon_', 'Telephon.TelephonUndeground', 'Position.NamePosition', 'Otdel.NameOtdel', 'StatusActual', 'ActionsColumn'];
   public dataSource: MatTableDataSource<Users> = new MatTableDataSource<Users>();
   public modelvalid: ModelValidation = new ModelValidation()
   public otdels: Otdel[];
@@ -622,7 +623,7 @@ export class SwitchTableModel implements INewLogicaTable<Swithe>{
   public supples: Supply[]
   public user: Users[];
 
-  displayedColumns = ['Logic', 'IdSwithes', 'User.Name', 'Supply.DatePostavki', 'ModelSwithe.NameModel', 'ModelSwithe.CountPort', 'ServiceNum', 'SerNum', 'InventarNum', 'Coment', 'Kabinet.NumberKabinet', 'Statusing.Name', 'WriteOffSign', 'ActionsColumn'];
+  displayedColumns = ['Logic', 'IdSwithes', 'User.NameUser', 'Supply.DatePostavki', 'ModelSwithe.NameModel', 'ModelSwithe.CountPort', 'ServiceNum', 'SerNum', 'InventarNum', 'Coment', 'Kabinet.NumberKabinet', 'Statusing.NameStatus', 'WriteOffSign', 'ActionsColumn'];
   dataSource: MatTableDataSource<Swithe> = new MatTableDataSource<Swithe>();
   isAdd: boolean;
   isEdit: boolean;
@@ -906,7 +907,7 @@ export class ServerEquipmentTableModel implements INewLogicaTable<ServerEquipmen
   public modelSeverEquipment: ModelSeverEquipment[];
   public manufacturerSeverEquipment: ManufacturerSeverEquipment[];
 
-  displayedColumns = ['Logic', 'Id', 'Supply.DatePostavki', 'TypeServer.NameType', 'ModelSeverEquipment.NameModel', 'ManufacturerSeverEquipment.NameManufacturer', 'ServiceNum', 'SerNum', 'InventarNum', 'NameServer', 'IpAdress', 'Coment', 'Kabinet.NumberKabinet', 'Statusing.Name', 'WriteOffSign', 'ActionsColumn'];
+  displayedColumns = ['Logic', 'Id', 'Supply.DatePostavki', 'TypeServer.NameType', 'ModelSeverEquipment.NameModel', 'ManufacturerSeverEquipment.NameManufacturer', 'ServiceNum', 'SerNum', 'InventarNum', 'NameServer', 'IpAdress', 'Coment', 'Kabinet.NumberKabinet', 'Statusing.NameStatus', 'WriteOffSign', 'ActionsColumn'];
 
   dataSource: MatTableDataSource<ServerEquipment> = new MatTableDataSource<ServerEquipment>();
   isAdd: boolean;
@@ -1199,7 +1200,7 @@ export class OtherAllTableModel implements INewLogicaTable<OtherAll>{
   public typeOther: TypeOther[];
   public user: Users[];
 
-  displayedColumns = ['Logic', 'IdOtherAll', 'User.Name', 'Supply.DatePostavki', 'TypeOther.Name', 'ModelOther.Name', 'ProizvoditelOther.Name', 'ServiceNumber', 'SerNum', 'InventarNum', 'Coment', 'Kabinet.NumberKabinet', 'Statusing.Name', 'WriteOffSign', 'ActionsColumn'];
+  displayedColumns = ['Logic', 'IdOtherAll', 'User.NameUser', 'Supply.DatePostavki', 'TypeOther.Name', 'ModelOther.Name', 'ProizvoditelOther.Name', 'ServiceNumber', 'SerNum', 'InventarNum', 'Coment', 'Kabinet.NumberKabinet', 'Statusing.NameStatus', 'WriteOffSign', 'ActionsColumn'];
   dataSource: MatTableDataSource<OtherAll> = new MatTableDataSource<OtherAll>();
   isAdd: boolean;
   isEdit: boolean;
@@ -1491,7 +1492,7 @@ export class TokenTableModel implements INewLogicaTable<Token>{
   public SysBlockAllModel: SysBlock[];
   public sysblock: SysBlock[];
 
-  public displayedColumns = ['Logic', 'IdToken', 'User.Name', 'Supply.DatePostavki', 'ProizvoditelName', 'SerNum', 'SysBlock.NameComputer', 'SysBlock.ServiceNum', 'SysBlock.SerNum', 'SysBlock.InventarNumSysBlok', 'SysBlock.IpAdress', 'SysBlock.Kabinet.NumberKabinet', 'Coment', 'Statusing.Name', 'WriteOffSign', 'ActionsColumn']
+  public displayedColumns = ['Logic', 'IdToken', 'User.NameUser', 'Supply.DatePostavki', 'ProizvoditelName', 'SerNum', 'SysBlock.NameComputer', 'SysBlock.ServiceNum', 'SysBlock.SerNum', 'SysBlock.InventarNumSysBlok', 'SysBlock.IpAdress', 'SysBlock.Kabinet.NumberKabinet', 'Coment', 'Statusing.NameStatus', 'WriteOffSign', 'ActionsColumn']
   dataSource: MatTableDataSource<Token> = new MatTableDataSource<Token>();
   isAdd: boolean;
   isEdit: boolean;
@@ -1834,7 +1835,23 @@ export class PrinterTableModel implements INewLogicaTable<Printer> {
     });
   }
 
-  public displayedColumns = ['Logic', 'IdModel', 'User.Name', 'Supply.DatePostavki', 'FullProizvoditel.NameProizvoditel', 'FullModel.NameModel', 'Name', 'ZavNumber', 'ServiceNumber', 'InventarNumber', 'IpAdress', 'Coment', 'Kabinet.NumberKabinet', 'Statusing.Name', 'WriteOffSign', 'ActionsColumn'];
+  public aksiokEditAndAdd(model: Printer, modelRequest: string, dialog: MatDialog){
+   var aksiokAddAndEdit = new AksiokAddAndEdit();
+   aksiokAddAndEdit.parametersModelField.modelRequestField = modelRequest;
+   aksiokAddAndEdit.parametersModelField.inventoryNumField = model.InventarNumber;
+   aksiokAddAndEdit.parametersModelField.serNumberField = model.ZavNumber;
+   this.editandadd.validationModelAksiok(aksiokAddAndEdit).toPromise().then((modelAksiok: AksiokAddAndEdit) => {
+      console.log(modelAksiok)
+  });
+
+  //  const dialogRef = dialog.open(DialogAksiokEditAndAdd, {
+  //   width: "800px",
+  //   height: "500px",
+  //   data: aksiokAddAndEdit
+  // })
+  }
+
+  public displayedColumns = ['Logic', 'IdModel', 'User.NameUser', 'Supply.DatePostavki', 'FullProizvoditel.NameProizvoditel', 'FullModel.NameModel', 'Name', 'ZavNumber', 'ServiceNumber', 'InventarNumber', 'IpAdress', 'Coment', 'Kabinet.NumberKabinet', 'Statusing.NameStatus', 'WriteOffSign', 'ActionsColumn'];
   public dataSource: MatTableDataSource<Printer> = new MatTableDataSource<Printer>();
   public modelvalid: ModelValidation = new ModelValidation()
   public kabinet: Kabinet[];
@@ -2158,7 +2175,7 @@ export class ScanerAndCamerTableModel implements INewLogicaTable<ScanerAndCamer>
     });
   }
 
-  public displayedColumns = ['Logic', 'IdModel', 'User.Name', 'Supply.DatePostavki', 'FullProizvoditel.NameProizvoditel', 'FullModel.NameModel', 'ZavNumber', 'ServiceNumber', 'InventarNumber', 'IpAdress', 'Coment', 'Kabinet.NumberKabinet', 'Statusing.Name', 'WriteOffSign', 'ActionsColumn'];
+  public displayedColumns = ['Logic', 'IdModel', 'User.NameUser', 'Supply.DatePostavki', 'FullProizvoditel.NameProizvoditel', 'FullModel.NameModel', 'ZavNumber', 'ServiceNumber', 'InventarNumber', 'IpAdress', 'Coment', 'Kabinet.NumberKabinet', 'Statusing.NameStatus', 'WriteOffSign', 'ActionsColumn'];
   public dataSource: MatTableDataSource<ScanerAndCamer> = new MatTableDataSource<ScanerAndCamer>();
   public modelvalid: ModelValidation = new ModelValidation()
   public kabinet: Kabinet[];
@@ -2479,7 +2496,7 @@ export class MfuTableModel implements INewLogicaTable<Mfu>  {
     });
   }
 
-  public displayedColumns = ['Logic', 'IdModel', 'User.Name', 'Supply.DatePostavki', 'FullProizvoditel.NameProizvoditel', 'FullModel.NameModel', 'Name', 'ZavNumber', 'ServiceNumber', 'InventarNumber', 'IpAdress', 'CopySave.SerNum', 'Coment', 'Kabinet.NumberKabinet', 'Statusing.Name', 'WriteOffSign', 'ActionsColumn'];
+  public displayedColumns = ['Logic', 'IdModel', 'User.NameUser', 'Supply.DatePostavki', 'FullProizvoditel.NameProizvoditel', 'FullModel.NameModel', 'Name', 'ZavNumber', 'ServiceNumber', 'InventarNumber', 'IpAdress', 'CopySave.SerNum', 'Coment', 'Kabinet.NumberKabinet', 'Statusing.NameStatus', 'WriteOffSign', 'ActionsColumn'];
   public dataSource: MatTableDataSource<Mfu> = new MatTableDataSource<Mfu>();
   public modelvalid: ModelValidation = new ModelValidation()
   public kabinet: Kabinet[];
@@ -2819,7 +2836,7 @@ export class SysBlockTableModel implements INewLogicaTable<SysBlock>  {
     this.editandadd.createAct(modelSelect, model.SerNum);
   }
 
-  public displayedColumns = ['Logic', 'IdModel', 'User.Name', 'Supply.DatePostavki', 'NameSysBlock.NameComputer', 'ServiceNum', 'SerNum', 'InventarNumSysBlok', 'NameComputer', 'IpAdress', 'Kabinet.NumberKabinet', 'Coment', 'Statusing.Name', 'WriteOffSign', 'ActionsColumn'];
+  public displayedColumns = ['Logic', 'IdModel', 'User.NameUser', 'Supply.DatePostavki', 'NameSysBlock.NameComputer', 'ServiceNum', 'SerNum', 'InventarNumSysBlok', 'NameComputer', 'IpAdress', 'Kabinet.NumberKabinet', 'Coment', 'Statusing.NameStatus', 'WriteOffSign', 'ActionsColumn'];
   public dataSource: MatTableDataSource<SysBlock> = new MatTableDataSource<SysBlock>();
   public modelvalid: ModelValidation = new ModelValidation()
   public models: NameSysBlock[];
@@ -3143,7 +3160,7 @@ export class MonitorsTableModel implements INewLogicaTable<Monitor>  {
     });
   }
 
-  public displayedColumns = ['Logic', 'IdModel', 'User.Name', 'Supply.DatePostavki', 'NameMonitor.NameManufacturer', 'NameMonitor.NameModel', 'ServiceNum', 'SerNum', 'InventarNumMonitor', 'Kabinet.NumberKabinet', 'Coment', 'Statusing.Name', 'WriteOffSign', 'ActionsColumn'];
+  public displayedColumns = ['Logic', 'IdModel', 'User.NameUser', 'Supply.DatePostavki', 'NameMonitor.NameManufacturer', 'NameMonitor.NameModel', 'ServiceNum', 'SerNum', 'InventarNumMonitor', 'Kabinet.NumberKabinet', 'Coment', 'Statusing.NameStatus', 'WriteOffSign', 'ActionsColumn'];
   public dataSource: MatTableDataSource<Monitor> = new MatTableDataSource<Monitor>();
   public modelvalid: ModelValidation = new ModelValidation()
   public models: NameMonitor[];
@@ -3461,7 +3478,7 @@ export class TelephonsTableModel implements INewLogicaTable<Telephon> {
     });
   }
 
-  public displayedColumns = ['Logic', 'IdTelephone', 'User.Name', 'Supply.DatePostavki', 'NameTelephone', 'Telephon_', 'TelephonUndeground', 'ServiceNum', 'SerNumber', 'InventarNum', 'IpTelephon', 'MacTelephon', 'Kabinet.NumberKabinet', 'Coment', 'Statusing.Name', 'CategoryPhoneHeader.NameHeaders', 'WriteOffSign', 'ActionsColumn'];
+  public displayedColumns = ['Logic', 'IdTelephone', 'User.NameUser', 'Supply.DatePostavki', 'NameTelephone', 'Telephon_', 'TelephonUndeground', 'ServiceNum', 'SerNumber', 'InventarNum', 'IpTelephon', 'MacTelephon', 'Kabinet.NumberKabinet', 'Coment', 'Statusing.NameStatus', 'CategoryPhoneHeader.NameHeaders', 'WriteOffSign', 'ActionsColumn'];
   public dataSource: MatTableDataSource<Telephon> = new MatTableDataSource<Telephon>();
   public modelvalid: ModelValidation = new ModelValidation()
 
@@ -3743,7 +3760,7 @@ export class BlockPowerTableModel implements INewLogicaTable<BlockPower> {
     throw new Error("Method not implemented.");
   }
 
-  public displayedColumns = ['Logic', 'IdBlockPowers', 'User.Name', 'Supply.DatePostavki', 'ProizvoditelBlockPower.Name', 'ModelBlockPower.Name', 'ZavNumber', 'ServiceNumber', 'InventarNumber', 'Coment', 'Kabinet.NumberKabinet', 'Statusing.Name', 'WriteOffSign', 'ActionsColumn'];
+  public displayedColumns = ['Logic', 'IdBlockPowers', 'User.NameUser', 'Supply.DatePostavki', 'ProizvoditelBlockPower.Name', 'ModelBlockPower.Name', 'ZavNumber', 'ServiceNumber', 'InventarNumber', 'Coment', 'Kabinet.NumberKabinet', 'Statusing.NameStatus', 'WriteOffSign', 'ActionsColumn'];
   public dataSource: MatTableDataSource<BlockPower> = new MatTableDataSource<BlockPower>();
   public modelvalid: ModelValidation = new ModelValidation()
 
@@ -4035,7 +4052,7 @@ export class NameSysBlockTableModel implements INewLogicaTable<NameSysBlock> {
     throw new Error("Method not implemented.");
   }
 
-  public displayedColumns = ['IdModelSysBlock', 'NameComputer', 'NameManufacturer', 'NameProizvoditel', 'ActionsColumn'];
+  public displayedColumns = ['IdModelSysBlock', 'NameComputer', 'ActionsColumn'];
   public dataSource: MatTableDataSource<NameSysBlock> = new MatTableDataSource<NameSysBlock>();
 
   isAdd: boolean;
@@ -4217,7 +4234,7 @@ export class NameMonitorTableModel implements INewLogicaTable<NameMonitor> {
   createSTO(model: NameMonitor, template: FullTemplateSupport, authService: AuthIdentification, dialog: MatDialog): void {
     throw new Error("Method not implemented.");
   }
-  public displayedColumns = ['IdModelMonitor', 'NameManufacturer', 'NameModel', 'Info', 'ActionsColumn'];
+  public displayedColumns = ['IdModelMonitor', 'NameManufacturer', 'ActionsColumn'];
   public dataSource: MatTableDataSource<NameMonitor> = new MatTableDataSource<NameMonitor>();
 
 
@@ -5903,7 +5920,7 @@ export class NameStatusingTableModel implements INewLogicaTable<Statusing> {
     throw new Error("Method not implemented.");
   }
 
-  public displayedColumns = ['IdStatus', 'Name', 'Color', 'ActionsColumn'];
+  public displayedColumns = ['IdStatus', 'NameStatus', 'Color', 'ActionsColumn'];
   public dataSource: MatTableDataSource<Statusing> = new MatTableDataSource<Statusing>();
 
   isAdd: boolean;
@@ -6830,7 +6847,7 @@ export class MailIdentifiersTableModel implements INewLogicaTable<MailIdentifier
   createSTO(model: MailIdentifier, template: FullTemplateSupport, authService: AuthIdentification, dialog: MatDialog): void {
     throw new Error("Method not implemented.");
   }
-  displayedColumns: any[] = ['IdUser', 'User.Name', 'User.TabelNumber', 'IdentifierUser', 'MailGroup.NameGroup', 'MailGroup.IdOtdelNumber', 'ActionsColumn'];
+  displayedColumns: any[] = ['IdUser', 'User.NameUser', 'User.TabelNumber', 'IdentifierUser', 'MailGroup.NameGroup', 'MailGroup.IdOtdelNumber', 'ActionsColumn'];
   public dataSource: MatTableDataSource<MailIdentifier> = new MatTableDataSource<MailIdentifier>();
   public modelvalid: ModelValidation = new ModelValidation()
   public group: MailGroup[];
@@ -8336,7 +8353,7 @@ export class JournalAis3TableModel implements INewLogicaTable<JournalAis3>  {
     throw new Error("Method not implemented.");
   }
 
-  public displayedColumns = ['IdJournal', 'TaskAis3.NameTask', 'ResourceIt.NameResource', 'User.Otdel.NameOtdel', 'User.Name', 'NameTarget', 'TaskUser', 'DateTask', 'ActionsColumn'];
+  public displayedColumns = ['IdJournal', 'TaskAis3.NameTask', 'ResourceIt.NameResource', 'User.Otdel.NameOtdel', 'User.NameUser', 'NameTarget', 'TaskUser', 'DateTask', 'ActionsColumn'];
   public dataSource: MatTableDataSource<JournalAis3> = new MatTableDataSource<JournalAis3>();
 
   public modelvalid: ModelValidation = new ModelValidation()
@@ -8408,25 +8425,29 @@ export class JournalAis3TableModel implements INewLogicaTable<JournalAis3>  {
   castomefiltermodel() {
     this.dataSource.filterPredicate = (data, filter) => {
       var tot = false;
-      for (let column of this.displayedColumns) {
-        if (typeof data[column] !== 'undefined') {
-          if ((column in data) && (new Date(data[column].toString()).toString() == "Invalid Date")) {
-            tot = (tot || data[column].toString().trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
-          } else {
-            var date = new Date(data[column].toString());
-            var m = date.toDateString().slice(4, 7) + " " + date.getDate() + " " + date.getFullYear();
-            tot = (tot || m.toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+      try {
+        for (let column of this.displayedColumns) {
+          if (typeof data[column] !== 'undefined') {
+            if ((column in data) && (new Date(data[column].toString()).toString() == "Invalid Date")) {
+              tot = (tot || data[column].toString().trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+            } else {
+              var date = new Date(data[column].toString());
+              var m = date.toDateString().slice(4, 7) + " " + date.getDate() + " " + date.getFullYear();
+              tot = (tot || m.toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+            }
           }
-        }
-        else {
-          if (data[column.split('.')[0]] !== null) {
-            if (typeof (data[column.split('.')[0]]) === 'object') {
-              if (data[column.split('.')[0]][column.split('.')[1]]) {
-                tot = (tot || data[column.split('.')[0]][column.split('.')[1]].trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+          else {
+            if (data[column.split('.')[0]] !== null) {
+              if (typeof (data[column.split('.')[0]]) === 'object') {
+                if (data[column.split('.')[0]][column.split('.')[1]]) {
+                  tot = (tot || data[column.split('.')[0]][column.split('.')[1]].trim().toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1);
+                }
               }
             }
           }
         }
+      }
+      catch {
       }
       return tot;
     }

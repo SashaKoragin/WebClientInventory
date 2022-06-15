@@ -5,6 +5,7 @@ import { MatPaginator, MatSort, MatDialog } from '@angular/material';
 import { ImportToExcel } from '../../AddFullModel/ModelTable/PublicFunction';
 import { DatePipe } from '@angular/common';
 import { AllUsersFilters } from '../../ModelInventory/InventoryModel';
+import { MenuAksiok } from '../../AddFullModel/DialogAksiokEditAndAdd/DialogAksiokModel/ModelAksiokMenu';
 
 
 
@@ -95,10 +96,7 @@ export class Equipment implements OnInit {
   public otherall: OtherAllTableModel = new OtherAllTableModel(this.editandadd, this.SignalR)
 
 
-<<<<<<< HEAD
   public MenuAksiok: MenuAksiok = new MenuAksiok()
-=======
->>>>>>> 4c0c1444c44a66b242967be41869d43025c46b2e
 
 
   public async ngOnInit(): Promise<void> {
@@ -183,8 +181,4 @@ export class Equipment implements OnInit {
     this.statusStatistic = "Завершена проверка доступности серверов!!!"
   }
 
-  public replaceString(nameMiodel: string): string {
-    return nameMiodel.replace('undefined', '').replace('undefined', '');
-
-  }
 }
