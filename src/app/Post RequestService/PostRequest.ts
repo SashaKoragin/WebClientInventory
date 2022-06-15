@@ -16,7 +16,7 @@ import { DocumentReport } from '../Inventory/AllSelectModel/Report/ReportModel';
 import { UploadFile } from '../Inventory/AddFullModel/ModelTable/FileModel';
 import { BookModels } from '../Inventory/ModelInventory/ViewInventory';
 import { NgxPermissionsService } from 'ngx-permissions';
-import { WebMailModel, FullTemplateSupport, ModelParametrSupport, ServerEquipment, ModelSeverEquipment, ManufacturerSeverEquipment, TypeServer, RuleUsers, Token, Organization, SettingDepartmentCaseGetServer, Rb_Holiday, RegulationsDepartmentToServer, ResourceIt, TaskAis3, JournalAis3, AllUsersFilters, OtherAll, ModelOther, TypeOther, ProizvoditelOther, AnalysisEpoAndInventarka, EventProcess, CategoryPhoneHeader, AksiokAddAndEdit } from '../Inventory/ModelInventory/InventoryModel';
+import { WebMailModel, FullTemplateSupport, ModelParametrSupport, ServerEquipment, ModelSeverEquipment, ManufacturerSeverEquipment, TypeServer, RuleUsers, Token, Organization, SettingDepartmentCaseGetServer, Rb_Holiday, RegulationsDepartmentToServer, ResourceIt, TaskAis3, JournalAis3, AllUsersFilters, OtherAll, ModelOther, TypeOther, ProizvoditelOther, AnalysisEpoAndInventarka, EventProcess, CategoryPhoneHeader } from '../Inventory/ModelInventory/InventoryModel';
 import { Router, NavigationExtras } from '@angular/router';
 import { ReportCardModel } from '../Inventory/AddFullModel/DialogReportCard/ReportCardModel/ReportCardModel';
 import { ModelMemoReport } from '../LKUser/Main/Model/ReportMemo';
@@ -650,11 +650,6 @@ export class PostInventar {
 export class EditAndAdd {
     constructor(private http: HttpClient) { }
 
-    ///Проверка модели на возможность внесения или редактирования АКСИОК
-    validationModelAksiok(aksiokAddAndEdit: AksiokAddAndEdit) {
-        return this.http.post(url.aksiokAddAndEditModelValidation, aksiokAddAndEdit, httpOptionsJson);
-    }
-
     ///Редактирование глобальных настроек приложения для документо-оборота
     addandeditorganization(organization: Organization, userIdEdit: string) {
         return this.http.post(url.addAndEditOrganization.concat(userIdEdit), organization, httpOptionsJson);
@@ -956,7 +951,17 @@ export class EditAndAdd {
     }
     ///Генерация табелей
     createReportCard(model: ReportCardModel) {
-        return this.http.post(url.createReportCard, model, { responseType: 'arraybuffer', headers: new HttpHeaders({ 'Content-Type': 'application/json' }) });
+        this.http.post(url.createReportCard, model, { responseType: 'arraybuffer', headers: new HttpHeaders({ 'Content-Type': 'application/json' }) }).subscribe(async model => {
+            var blob = new Blob([model], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            var url = window.URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = `Табель`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        });
     }
 
     ///Создание служебных записок на отдел
@@ -1045,10 +1050,6 @@ export class SelectAllParametrs {
     public startProcessUpdateSto() {
         this.http.post(url.updateEpo, null, httpOptionsJson).toPromise().then();
     }
-    ///Обновление данных из АКСИОК
-    public startPocessUpdateAksiok(userLogin: string, passwordUser: string) {
-        this.http.post(url.updateAksiok.replace("{userLogin}", userLogin).replace("{passwordUser}", passwordUser), null, httpOptionsJson).toPromise().then();
-    }
     ///Получение отчетов по ЭПО всех
     public async selectAllReportEpo() {
         return await this.http.get(url.getModelReportAnalysisEpo, httpOptionsJson).toPromise().then(model => {
@@ -1056,10 +1057,6 @@ export class SelectAllParametrs {
                 return deserializeArray<AnalysisEpoAndInventarka>(AnalysisEpoAndInventarka, model.toString())
             }
         });
-    }
-    ///Вытащить дополнительные характеристики объекта АКСИОК
-    public async selectModelCharacteristicJson(idModel: number) {
-        return await this.http.get(url.selectModelCharacteristicJson.replace("{idModel}", idModel.toString())).toPromise()
     }
 
     //Все отчеты по ЭПО с Инвенторизацией
