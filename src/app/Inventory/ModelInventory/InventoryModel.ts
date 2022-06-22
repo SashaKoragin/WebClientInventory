@@ -80,6 +80,7 @@ export class TehnicalSqlAndTreeAis3 {
     Otdel: Otdel[] = null;
     AllTemplateAndTree: AllTemplateAndTree[] = null;
     TemplateAllIfns: TemplateAllIfns[] = null;
+    EquipmentType: EquipmentType[] = null;
 }
 
 export class Documents {
@@ -185,7 +186,7 @@ export class Organization {
 
 export class Users {
     public IdUser?: number;
-    public Name?: string;
+    public NameUser?: string;
     public SmallName?: string;
     public DateInWork?: any;
     public IdOtdel?: number;
@@ -306,7 +307,7 @@ export class StatusUser {
 
 export class Statusing {
     public IdStatus: number;
-    public Name: string;
+    public NameStatus: string;
     public Color: string;
     public ModelIsEdit?: boolean = false;
 }
@@ -432,16 +433,16 @@ export class SettingDepartmentCaseToServer {
 export class NameSysBlock {
     public IdModelSysBlock: number;
     public NameComputer: string;
-    public NameManufacturer: string;
-    public NameProizvoditel: string;
+    public IdFullCategoria: number;
+    public FullCategoria?: FullCategoria;
     public ModelIsEdit?: boolean = false;
 }
 
 export class NameMonitor {
     public IdModelMonitor: number;
     public NameManufacturer: string;
-    public NameModel: string;
-    public Info: string;
+    public IdFullCategoria: number;
+    public FullCategoria?: FullCategoria;
     public ModelIsEdit?: boolean = false;
 }
 
@@ -491,7 +492,10 @@ export class ModelSwithes {
     public IdModelSwithes: number;
     public NameModel: string;
     public CountPort: string;
+    public IdFullCategoria: number;
+    public FullCategoria?: FullCategoria;
     public ModelIsEdit?: boolean = false;
+
 }
 
 export class Mfu {
@@ -571,9 +575,12 @@ export class FullModel {
     public UrlModel?: string;
     public AutoSupport?: boolean;
     public TypeToner?: string;
-    public IdClasification?: number;
-    public ModelIsEdit?: boolean = false;
+    public IdClasification: number;
+    public IdFullCategoria: number;
     public Classification?: Classification;
+    public FullCategoria?: FullCategoria;
+    public ModelIsEdit?: boolean = false;
+
 }
 
 export class CopySave {
@@ -633,7 +640,10 @@ export class BlockPower {
 export class ModelBlockPower {
     public IdModelBP: number;
     public Name: string;
+    public IdFullCategoria: number;
+    public FullCategoria?: FullCategoria;
     public ModelIsEdit?: boolean = false;
+
 }
 
 export class ProizvoditelBlockPower {
@@ -748,12 +758,16 @@ export class ProizvoditelOther {
 export class ModelOther {
     public IdModelOther: number;
     public Name: string;
+    public IdFullCategoria: number;
+    public FullCategoria?: FullCategoria;
     public ModelIsEdit?: boolean = false;
 }
 
 export class ModelSeverEquipment {
     public IdModelSeverEquipment: number;
     public NameModel: string;
+    public IdFullCategoria: number;
+    public FullCategoria?: FullCategoria;
     public ModelIsEdit?: boolean = false;
 }
 
@@ -989,6 +1003,14 @@ export class EventProcess {
     public ModelIsEdit?: boolean = false;
 }
 
+export class FullCategoria {
+    public Id: number;
+    public IdEquipmentType: number;
+    public IdProducer: number;
+    public IdEquipmentModel: number;
+    public IsSignOfRelevance: boolean;
+}
+
 ///Фильтр коллекций
 export class AllUsersFilters {
 
@@ -998,4 +1020,72 @@ export class AllUsersFilters {
 export class FilterActual {
 
     public isFilterField: boolean = false
+}
+
+export class EquipmentType {
+    public Id: number;
+    public NameType: string;
+    public CodeType: string;
+    public Producer: Producer[] = null;
+}
+
+export class Producer {
+    public Id: number;
+    public NameProducer: string;
+    public CodeProducer: string;
+    public EquipmentModel: EquipmentModel[] = null;
+}
+
+export class EquipmentModel {
+    public Id: number;
+    public NameModel: string;
+    public CodeModel: string;
+}
+
+export class FullCategories {
+    public Id: number;
+    public IdEquipmentType: number;
+    public IdProducer: number;
+    public IdEquipmentModel: number;
+    public IsSignOfRelevance: boolean;
+}
+///Модель выбора
+export class AksiokAllModel {
+    public Id: number;
+    public KindEquipmentName: string;
+    public NameType: string;
+    public NameProducer: string;
+    public NameModel: string;
+    public NumberContractDelivery: string;
+    public NumberContractSto: string;
+    public ComputerName: string;
+    public SerialNumber: string;
+    public InventoryNumber: string;
+    public ServiceNumber: string;
+    public IndividualServiceNumber: string;
+    public YearOfIssue: number;
+}
+
+export class AllCharacteristics {
+    public AksiokAllModel: AksiokAllModel;
+    public ValueCharacteristicJson: ValueCharacteristicJson[] = [];
+}
+
+export class ValueCharacteristicJson {
+    public Text: string;
+    public Index: number;
+    public Value: string;
+}
+
+export class AksiokAddAndEdit {
+    public parametersModelField: ParametersModel = new ParametersModel();
+}
+
+export class ParametersModel {
+    public idFullCategoriaField: number = 0;
+    public modelRequestField: string;
+    public serNumberField: string;
+    public inventoryNumField: string;
+    public codeErrorField: number = 0;
+    public errorServerField: string = null;
 }

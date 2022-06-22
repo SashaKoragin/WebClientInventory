@@ -1,5 +1,5 @@
 import { FormGroup, FormControl, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
-import { Otdel, Position, FullProizvoditel, FullModel, NameSysBlock, NameMonitor, ProizvoditelBlockPower, ModelBlockPower, ModelSwithes, TypeServer, Users, TaskAis3, ResourceIt, TypeOther, ProizvoditelOther, ModelOther } from '../../ModelInventory/InventoryModel';
+import { Otdel, Position, FullProizvoditel, FullModel, NameSysBlock, NameMonitor, ProizvoditelBlockPower, ModelBlockPower, ModelSwithes, TypeServer, Users, TaskAis3, ResourceIt, TypeOther, ProizvoditelOther, ModelOther, EquipmentType, Producer, EquipmentModel } from '../../ModelInventory/InventoryModel';
 import { View, Type, Mouth } from '../DialogReportCard/ReportCardModel/ReportCardModel';
 
 
@@ -30,7 +30,7 @@ export class ModelValidation {
     //Валидация пользователя
     public validationUsers(control: AbstractControl): ValidationErrors {
         var nameUsers = control.value as Users;
-        return (nameUsers == undefined || nameUsers.Name) == undefined ? { 'error': true } : null
+        return (nameUsers == undefined || nameUsers.NameUser) == undefined ? { 'error': true } : null
     }
 
     //Валидация наименование должности
@@ -122,11 +122,27 @@ export class ModelValidation {
         }
     }
 
+    //Валидация типа оборудования
+    public validationEquipmentType(control: AbstractControl): ValidationErrors {
+        var nameEquipmentType = control.value as EquipmentType;
+        return (nameEquipmentType == undefined || nameEquipmentType.NameType) == undefined ? { 'error': true } : null
+    };
+    //Валидация производителя оборудования
+    public validationProducer(control: AbstractControl): ValidationErrors {
+        var nameProducer = control.value as Producer;
+        return (nameProducer == undefined || nameProducer.NameProducer) == undefined ? { 'error': true } : null
+    };
+    //Валидация производителя оборудования
+    public validationEquipmentModel(control: AbstractControl): ValidationErrors {
+        var nameEquipmentModel = control.value as EquipmentModel;
+        return (nameEquipmentModel == undefined || nameEquipmentModel.NameModel) == undefined ? { 'error': true } : null
+    };
+
     ///Валидационная модель проверки Групп
     getRowValidatorModel: FormGroup[] = [
         ///Валидация пользователя
         new FormGroup({
-            'Name': new FormControl(null, Validators.required),
+            'NameUser': new FormControl(null, Validators.required),
             'TabelNumber': new FormControl(null, Validators.required),
             'NamePosition': new FormControl({ value: new Position() }, [Validators.required, this.validationNamePosition]),
             'NameOtdel': new FormControl({ value: new Otdel() }, [Validators.required, this.validationNameOtdel]),
@@ -207,6 +223,11 @@ export class ModelValidation {
             'DayX': new FormControl(null, [Validators.min(1), Validators.max(31)]),
             'HoursX': new FormControl(null, [Validators.min(0), Validators.max(23)]),
             'MinutesX': new FormControl(null, [Validators.min(0), Validators.max(60)]),
+        }),
+        new FormGroup({
+            'EquipmentType': new FormControl(null, [Validators.required, this.validationEquipmentType]),
+            'Producer': new FormControl(null, [Validators.required, this.validationProducer]),
+            'EquipmentModel': new FormControl(null, [Validators.required, this.validationEquipmentModel]),
         })
 
     ];

@@ -111,10 +111,13 @@ export class DynamicTableColumnModel {
   { Type: "RuleUserReplace", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 }]
 
   ///Модель техники ЭПО
-  public mainEquipmentSto: SelectTableModel[] = [{ text: "Выгруженные данные с ЭПО", indexsevr: 50, indexcolumnmodel: 0 }]
+  public mainEquipmentSto: SelectTableModel[] = [{ text: "Выгруженные данные с ЭПО", indexsevr: 50, indexcolumnmodel: 0 },
+  { text: "Выгруженные данные  Аксиок", indexsevr: 55, indexcolumnmodel: 1 }
+  ]
 
   ///Модель техники ЭПО
-  public equipmentStoAll: Table[] = [{ Type: "EquipmentSto", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 }]
+  public equipmentStoAll: Table[] = [{ Type: "EquipmentSto", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 },
+  { Type: "AksiokAllModel", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 }]
 }
 ///Класс селектора
 export class SelectTableModel {

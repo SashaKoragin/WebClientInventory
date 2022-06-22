@@ -22,6 +22,8 @@ import { SettingInventory } from '../../Inventory/SettingInventory/View/SettingI
 import { JournalAis3 } from '../../Inventory/Ais3/JournalAis3/View/JournalAis3';
 import { EquipmentSto } from '../../Inventory/EquipmentSto/View/EquipmentSto';
 import { ModelProcess } from '../../Inventory/Process/ProcessParameter/View/Process';
+import { AksiokDirectory } from '../../Inventory/AksiokSupport/AcsiokDirectory/View/AcsiokDirectory';
+import { Aksiok } from '../../Inventory/AksiokSupport/Aksiok/View/Aksiok';
 
 const appRoutes: Routes = [
     {
@@ -68,6 +70,14 @@ const appRoutes: Routes = [
             {
                 path: 'equipmentSto',
                 component: EquipmentSto
+            },
+            {
+                path: 'aksiokDirectory',
+                component: AksiokDirectory
+            },
+            {
+                path: 'aksiok',
+                component: Aksiok
             },
             {
                 path: 'techicalComplement',

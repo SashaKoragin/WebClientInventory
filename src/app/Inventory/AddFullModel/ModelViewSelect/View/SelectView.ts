@@ -1,9 +1,10 @@
-import { Component, Input, ViewChild, ElementRef, Renderer2, AfterViewInit, TemplateRef } from '@angular/core';
+import { Component, Input, ViewChild, ElementRef, TemplateRef, Output, EventEmitter } from '@angular/core';
 import { GenerateParametrs, LogicaDataBase } from '../../../AllSelectModel/GenerateParametrFront';
-import { MatPaginator, MatTableDataSource } from '@angular/material';
+import { MatPaginator } from '@angular/material';
 import { SelectAllParametrs } from '../../../../Post RequestService/PostRequest';
 import * as XLSX from 'xlsx';
 import { Table } from '../../ModelTable/DynamicTableModel';
+
 
 @Component(({
   selector: 'selectsql',
@@ -25,6 +26,8 @@ export class Select {
   @Input() columns: Table;
   @Input() selecting: GenerateParametrs;
   @Input() select: SelectAllParametrs;
+
+  @Output() onChangedBack = new EventEmitter<boolean>();
 
   @ViewChild('tables', { static: false }) paginator: MatPaginator;
 
@@ -80,6 +83,7 @@ export class Select {
     this.logica.logicadatabase();; //Закрываем логику Данных
     this.logica.logicaselect(); //Открываем логику загрузки
     this.columns.displayedColumns = null;
+    this.onChangedBack.emit(true);
   }
 
   FilterDataTable(filterValue: string) {

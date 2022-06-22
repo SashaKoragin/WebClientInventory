@@ -1,0 +1,135 @@
+<selectsql #Aksiok [(logica)]="logica" [(selecting)]="selecting" [(columns)]="columns" [(select)]="select"
+    [toolpanel]='TOOLPANEL' [logicstooltable]='LOGICSTOOLTABLE' (onChangedBack)="isBackBoolean($event)"></selectsql>
+
+
+<ng-template class="panel" #TOOLPANEL>
+    <button class="panelbutton" mat-button (click)="synchronization()">Запуск синхронизации с АКСИОК</button>
+    <label>{{statusProcessInfo}}</label>
+</ng-template>
+
+<ng-template #LOGICSTOOLTABLE let-row='row'>
+    <mat-checkbox placeholder="Просмотр атрибутов" (click)="$event.stopPropagation();"
+        (change)="selectionRowModel.toggle(row);selectModelAksiok()" [checked]="selectionRowModel.isSelected(row)">
+    </mat-checkbox>
+</ng-template>
+<div
+    [style.display]="!selectionChildAksiok?.logica.select && valueAttribute.ValueCharacteristicJson.length > 0 ? 'inline-block' : 'none'">
+    <div class="All">Основные характеристики объекта:</div>
+    <div [style.display]="inline-block">
+        <div class="parametersAll">
+            <div class="parameterAll">
+                <mat-form-field class="formAttribute">
+                    <input matInput [disabled]="true" value="{{valueAttribute.AksiokAllModel?.Id}}" />
+                    <mat-placeholder class="placeholder">Ун документа</mat-placeholder>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="parametersAll">
+            <div class="parameterAll">
+                <mat-form-field class="formAttribute">
+                    <input matInput [disabled]="true" value="{{valueAttribute.AksiokAllModel?.KindEquipmentName}}" />
+                    <mat-placeholder class="placeholder">Вид оборудования/ПО</mat-placeholder>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="parametersAll">
+            <div class="parameterAll">
+                <mat-form-field class="formAttribute">
+                    <input matInput [disabled]="true" value="{{valueAttribute.AksiokAllModel?.NameType}}" />
+                    <mat-placeholder class="placeholder">Тип оборудования</mat-placeholder>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="parametersAll">
+            <div class="parameterAll">
+                <mat-form-field class="formAttribute">
+                    <input matInput [disabled]="true" value="{{valueAttribute.AksiokAllModel?.NameProducer}}" />
+                    <mat-placeholder class="placeholder">Производитель</mat-placeholder>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="parametersAll">
+            <div class="parameterAll">
+                <mat-form-field class="formAttribute">
+                    <input matInput [disabled]="true" value="{{valueAttribute.AksiokAllModel?.NameModel}}" />
+                    <mat-placeholder class="placeholder">Модель</mat-placeholder>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="parametersAll">
+            <div class="parameterAll">
+                <mat-form-field class="formAttribute">
+                    <input matInput [disabled]="true"
+                        value="{{valueAttribute.AksiokAllModel?.NumberContractDelivery}}" />
+                    <mat-placeholder class="placeholder">Номер контракта на поставку</mat-placeholder>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="parametersAll">
+            <div class="parameterAll">
+                <mat-form-field class="formAttribute">
+                    <input matInput [disabled]="true" value="{{valueAttribute.AksiokAllModel?.NumberContractSto}}" />
+                    <mat-placeholder class="placeholder">Номер контракта СТО</mat-placeholder>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="parametersAll">
+            <div class="parameterAll">
+                <mat-form-field class="formAttribute">
+                    <input matInput [disabled]="true" value="{{valueAttribute.AksiokAllModel?.ComputerName}}" />
+                    <mat-placeholder class="placeholder">Имя компьютера</mat-placeholder>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="parametersAll">
+            <div class="parameterAll">
+                <mat-form-field class="formAttribute">
+                    <input matInput [disabled]="true" value="{{valueAttribute.AksiokAllModel?.SerialNumber}}" />
+                    <mat-placeholder class="placeholder">Серийный номер</mat-placeholder>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="parametersAll">
+            <div class="parameterAll">
+                <mat-form-field class="formAttribute">
+                    <input matInput [disabled]="true" value="{{valueAttribute.AksiokAllModel?.InventoryNumber}}" />
+                    <mat-placeholder class="placeholder">Инвентарный номер</mat-placeholder>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="parametersAll">
+            <div class="parameterAll">
+                <mat-form-field class="formAttribute">
+                    <input matInput [disabled]="true" value="{{valueAttribute.AksiokAllModel?.ServiceNumber}}" />
+                    <mat-placeholder class="placeholder">Сервисный номер</mat-placeholder>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="parametersAll">
+            <div class="parameterAll">
+                <mat-form-field class="formAttribute">
+                    <input matInput [disabled]="true"
+                        value="{{valueAttribute.AksiokAllModel?.IndividualServiceNumber}}" />
+                    <mat-placeholder class="placeholder">Индивидуальный сервисный номер</mat-placeholder>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="parametersAll">
+            <div class="parameterAll">
+                <mat-form-field class="formAttribute">
+                    <input matInput [disabled]="true" value="{{valueAttribute.AksiokAllModel?.YearOfIssue}}" />
+                    <mat-placeholder class="placeholder">Год выпуска</mat-placeholder>
+                </mat-form-field>
+            </div>
+        </div>
+    </div>
+    <div class="All">Дополнительные характеристики объекта:</div>
+    <div class="head" *ngFor="let property of valueAttribute.ValueCharacteristicJson">
+        <div class="parameter">
+            <mat-form-field class="formAttribute">
+                <input matInput [disabled]="true" value="{{property.Value}}" />
+                <mat-placeholder class="placeholder">{{property.Text}}</mat-placeholder>
+            </mat-form-field>
+        </div>
+    </div>
+</div>
