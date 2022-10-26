@@ -35,6 +35,7 @@ export class Descrepancies implements OnInit {
         this.select.addselectallparametrs(new ModelSelect(this.dinamicmodel.mainselectComparableUser.indexsevr)).subscribe((model: ModelSelect) => {
             this.selecting = new GenerateParametrs(model);
             this.columns = this.dinamicmodel.columnsComparableUser[this.dinamicmodel.mainselectComparableUser.indexcolumnmodel]
+      
         })
     }
 
