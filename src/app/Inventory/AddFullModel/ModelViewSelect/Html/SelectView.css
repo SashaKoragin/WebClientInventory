@@ -14,8 +14,13 @@ button:hover {
 }
 .head {
     width:max-content;
+    padding-bottom: 200;
 }
 
+.lableerror{
+  color: red;
+  font-size: 14px;
+}
 
 .grid-container2 {
     display: grid;

@@ -52,7 +52,11 @@ export class Inventar {
             {
                 otdelfunc: null,
                 children: null, types: 'Журнал для заявок', pages: './journalAis3', fullpath: 'Пользователи\\Журнал для заявок', model: 'Журнал для заявок', isrule: null
-            }
+            },
+            {
+                otdelfunc: null,
+                children: null, types: 'Разночтение БД', pages: './Descrepancies', fullpath: 'Пользователи\\Разночтение БД', model: 'Разночтение БД', isrule: null
+            },
             ], types: null, pages: null, fullpath: null, model: null, isrule: null
         },
         {

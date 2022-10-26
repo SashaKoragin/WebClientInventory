@@ -32,10 +32,11 @@ import { EquipmentSto } from '../../Inventory/EquipmentSto/View/EquipmentSto';
 import { ModelProcess } from '../../Inventory/Process/ProcessParameter/View/Process';
 import { AksiokDirectory } from '../../Inventory/AksiokSupport/AcsiokDirectory/View/AcsiokDirectory';
 import { Aksiok } from '../../Inventory/AksiokSupport/Aksiok/View/Aksiok';
+import { DragAndDrop } from '../../Inventory/AddFullModel/UploadFilleDragAndDrop/Ts/UploadFilleDragAndDrop';
+import { Descrepancies } from '../../Inventory/Descrepancies/View/Descrepancies';
 
 @NgModule(({
     imports: [
-
         FormsModule,
         CommonModule,
         AngularMaterialModule,
@@ -54,14 +55,10 @@ import { Aksiok } from '../../Inventory/AksiokSupport/Aksiok/View/Aksiok';
         User, DocumentSelect, ErrorInventory,
         Select, UploadsFile,
         ComplimentTableEquipment, Analitics,
-        BookAccounting, Synchronization, Log, PathAis3, TemplatendRuleAis3, SettingInventory, JournalAis3, EquipmentSto, ModelProcess, AksiokDirectory, Aksiok
-
+        BookAccounting, Synchronization, Log, PathAis3, TemplatendRuleAis3, SettingInventory, JournalAis3, EquipmentSto, ModelProcess, AksiokDirectory, Aksiok, Descrepancies
     ]
 
 }) as any)
 
 export class InventarModule {
-
-
-
 }

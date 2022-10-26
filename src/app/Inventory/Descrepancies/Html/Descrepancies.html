@@ -1,0 +1,24 @@
+<b class="text">Выбор выборки ошибок:</b>
+<mat-form-field class="selectin_sql">
+    <mat-select placeholder="Выборки" [(ngModel)]="dinamicmodel.mainselectComparableUser" name="sel"
+        (selectionChange)="descrepanciesServer($event)">
+        <mat-option *ngFor="let sel of dinamicmodel.selectComparableUser" [value]="sel">
+            {{sel.text}}
+        </mat-option>
+    </mat-select>
+</mat-form-field>
+<selectsql [(logica)]="logica" [(selecting)]="selecting" [(columns)]="columns" [(select)]="select"
+    [toolpanel]='dinamicmodel.mainselectComparableUser.indexsevr === 61?TOOLPANEL:TOOLPANELTEHX'></selectsql>
+
+
+<ng-template class="panel" #TOOLPANEL>
+    <button class="panelbutton" mat-button (click)="getReportXlsx()">Выгрузка отчета</button>
+    <button class="panelbutton" mat-button (click)="analysisGroupActiveDirectory()">Отчет по группам
+        ActiveDirectory</button>
+    <button class="panelbutton" mat-button (click)="startProcessComparableUser()">Запуск процесса сбора данных</button>
+    <label>{{statusProcessInfo}}</label>
+</ng-template>
+
+<ng-template class="panel" #TOOLPANELTEHX>
+    <button class="panelbutton" mat-button (click)="getReportXlsx()">Выгрузка отчета техники</button>
+</ng-template>

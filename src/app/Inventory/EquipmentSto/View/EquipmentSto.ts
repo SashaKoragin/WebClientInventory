@@ -68,7 +68,7 @@ export class EquipmentSto implements OnInit {
 
     ///Актулизация ЭПО
     public actualization() {
-        this.select.startProcessUpdateSto();
+        this.select.startProcessInventory(4);
     }
 
     public openDialogReportEpo() {

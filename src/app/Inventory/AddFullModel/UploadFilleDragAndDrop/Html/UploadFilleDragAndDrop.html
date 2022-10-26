@@ -1,0 +1,20 @@
+<div draggable="true" ngClass="{{dragAreaClass}}">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <a href="javascript:void(0)" (click)="file.click()">
+                <mat-icon>cloud_upload</mat-icon>
+            </a>
+            <input type="file" #file [multiple]="false" accept="image/tif, image/tiff, application/pdf"
+                (change)="onFileChange($event)" style="display: none;">
+            <div class="dragged-files-wrapper" *ngIf="files">
+                <div class="file" *ngFor="let file of files" style="display: inline-flex;">
+                    <mat-icon>insert_drive_file</mat-icon>
+                    <div>{{file.name}}</div>
+                    <a href="javascript:void(0)" (click)="delete()">
+                        <mat-icon>delete</mat-icon>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

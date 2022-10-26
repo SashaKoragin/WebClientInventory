@@ -27,12 +27,7 @@
 
           <ng-container matColumnDef="User.NameUser">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Пользователь</th>
-<<<<<<< HEAD
-            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row"
-              [matTooltip]="row.User?.NameUser">
-=======
             <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row.User?.NameUser">
->>>>>>> parent of 4c0c144... Revert "Merge branch 'master' into ServiceNewStructureDB"
               <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.User?.NameUser}}</Label>
               <div [ngClass]=row.IdToken.toString() id="{{row.IdToken}}"
                 [style.display]="!row.ModelIsEdit ? 'none':'block'">
@@ -216,7 +211,7 @@
 
         <!--Пользователь-->
         <mat-form-field id="template" class="validation">
-          <mat-select (click)="token.calbackfiltersAll()" (selectionChange)="filterSysBlokToken($event.value);"
+          <mat-select (click)="token.calbackfiltersAll()" (selectionChange)="token.filterSysBlokToken($event.value);"
             [placeholder]="token.model.User?.NameUser" [(ngModel)]="token.model.User" name="user">
             <mat-select-filter class="filter" [placeholder]="token.model.User?.NameUser" [displayMember]="'NameUser'"
               [array]="token.user" (filteredReturn)="token.filteredUser =$event">
@@ -260,7 +255,7 @@
 
         <!--Системный блок-->
         <mat-form-field id="template" class="validation">
-          <mat-select (click)="delay(150);filterSysBlokToken($event.value);token.calbackfiltersAll()"
+          <mat-select (click)="token.calbackfiltersAll()"
             [placeholder]="token.model.SysBlock?.NameComputer" [(ngModel)]="token.model.SysBlock" name="sysblock">
             <mat-select-filter class="filter" [placeholder]="token.model.SysBlock?.NameComputer"
               [displayMember]="'NameComputer'" [array]="token.sysblock"
@@ -283,14 +278,8 @@
         <mat-form-field id="template" class="validation">
           <mat-select (click)="token.calbackfiltersAll()" [placeholder]="token.model.Statusing?.NameStatus"
             [(ngModel)]="token.model.Statusing" name="status">
-<<<<<<< HEAD
-            <mat-select-filter class="filter" [placeholder]="token.model.Statusing?.NameStatus"
-              [displayMember]="'NameStatus'" [array]="token.statusing"
-              (filteredReturn)="token.filteredStatusing =$event">
-=======
             <mat-select-filter class="filter" [placeholder]="token.model.Statusing?.NameStatus" [displayMember]="'NameStatus'"
               [array]="token.statusing" (filteredReturn)="token.filteredStatusing =$event">
->>>>>>> parent of 4c0c144... Revert "Merge branch 'master' into ServiceNewStructureDB"
             </mat-select-filter>
             <mat-option [value]='null'>None</mat-option>
             <mat-option *ngFor="let status of token.filteredStatusing" [value]="status">

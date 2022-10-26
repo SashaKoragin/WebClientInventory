@@ -1,5 +1,6 @@
 import { FormGroup, FormControl, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Otdel, Position, FullProizvoditel, FullModel, NameSysBlock, NameMonitor, ProizvoditelBlockPower, ModelBlockPower, ModelSwithes, TypeServer, Users, TaskAis3, ResourceIt, TypeOther, ProizvoditelOther, ModelOther, EquipmentType, Producer, EquipmentModel } from '../../ModelInventory/InventoryModel';
+import { EquipmentState, EquipmentStateSto, EquipmentExpertise } from '../DialogAksiokEditAndAdd/DialogAksiokModel/DialogAksiokModel';
 import { View, Type, Mouth } from '../DialogReportCard/ReportCardModel/ReportCardModel';
 
 
@@ -137,7 +138,21 @@ export class ModelValidation {
         var nameEquipmentModel = control.value as EquipmentModel;
         return (nameEquipmentModel == undefined || nameEquipmentModel.NameModel) == undefined ? { 'error': true } : null
     };
-
+    ///Валидация статуса оборудования 
+    public validationState(control: AbstractControl): ValidationErrors {
+        var nameState = control.value as EquipmentState;
+        return (nameState == undefined || nameState.NameState) == undefined ? { 'error': true } : null
+    }
+    ///Валидация статуса СТО оборудования 
+    public validationStateSto(control: AbstractControl): ValidationErrors {
+        var nameStateSto = control.value as EquipmentStateSto;
+        return (nameStateSto == undefined || nameStateSto.NameStateSto) == undefined ? { 'error': true } : null
+    }
+    ///Валидация статуса Экспертизы оборудования 
+    public validationExpertise(control: AbstractControl): ValidationErrors {
+        var nameExpertise = control.value as EquipmentExpertise;
+        return (nameExpertise == undefined || nameExpertise.NameExpertise) == undefined ? { 'error': true } : null
+    }
     ///Валидационная модель проверки Групп
     getRowValidatorModel: FormGroup[] = [
         ///Валидация пользователя
@@ -228,7 +243,9 @@ export class ModelValidation {
             'EquipmentType': new FormControl(null, [Validators.required, this.validationEquipmentType]),
             'Producer': new FormControl(null, [Validators.required, this.validationProducer]),
             'EquipmentModel': new FormControl(null, [Validators.required, this.validationEquipmentModel]),
+            'State': new FormControl(null, [Validators.required, this.validationState]),
+            'StateSto': new FormControl(null, [Validators.required, this.validationStateSto]),
+            'Expertise': new FormControl(null, [Validators.required, this.validationExpertise])
         })
-
     ];
 }

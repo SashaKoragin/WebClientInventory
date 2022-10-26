@@ -118,6 +118,19 @@ export class DynamicTableColumnModel {
   ///Модель техники ЭПО
   public equipmentStoAll: Table[] = [{ Type: "EquipmentSto", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 },
   { Type: "AksiokAllModel", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 }]
+  ////////
+
+  //Сравнение данных из разных БД систем
+  public selectComparableUser: SelectTableModel[] = [
+    { text: "Полный анализ разночтений пользовательских данных: Lotus, AD, DKS, Inventory", indexsevr: 61, indexcolumnmodel: 0 },
+    { text: "Полный анализ разночтений техники: AD, АКСИОК, Inventory", indexsevr: 64, indexcolumnmodel: 1 },
+
+  ]
+  //Сравнение данных из разных БД систем
+  public mainselectComparableUser: SelectTableModel = this.selectComparableUser[0];
+  //Сравнение данных из разных БД систем
+  public columnsComparableUser: Table[] = [{ Type: "ComparableUserResult", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 },
+  { Type: "ModelComparableAllSystemInventory", Colums: [], Model: new MatTableDataSource<any>(), displayedColumns: null, allCountRow: 0 }];
 }
 ///Класс селектора
 export class SelectTableModel {
