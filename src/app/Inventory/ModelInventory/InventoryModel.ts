@@ -3,6 +3,7 @@ import { User } from '../User/View/User';
 import { ElementRef } from '@angular/core';
 import { Book } from './ViewInventory';
 import { AuthIdentification } from '../../Post RequestService/PostRequest';
+import { Expose } from 'class-transformer';
 
 
 
@@ -136,7 +137,9 @@ export class FullSelectedModel {
     TypeOther: TypeOther[]; //Тип разного
     ProizvoditelOther: ProizvoditelOther[]; //Производитель разного
     ModelOther: ModelOther[]; //Модель разного
-    EventProcess: EventProcess[] //Модель параметров для процесса и процессы
+    EventProcess: EventProcess[]; //Модель параметров для процесса и процессы
+    ParameterEventProcess: ParameterEventProcess[]; //Параметры для выбранного процесса
+    SelectDayOfTheWeek: SelectDayOfTheWeek[];
 }
 
 ///Модель отвертов с сервера
@@ -174,6 +177,8 @@ export class Organization {
     public PnameOrganization?: string;
     public NameFace?: string;
     public NameDepartament?: string;
+    public CodeRegion: number = 0;
+    public CodeCyti: number = 0;
     public Room?: string;
     public Mail?: string;
     public CodeObject?: string;
@@ -671,7 +676,7 @@ export class Telephon {
     public TelephonUndeground: string;
     public ServiceNum: string;
     public SerNumber: string;
-    public InventarNum: string;
+    public InventarNumberTelephone: string;
     public IpTelephon: string;
     public MacTelephon: string;
     public Coment: string;
@@ -989,18 +994,39 @@ export class AnalysisEpoAndInventarka {
     public NameFileXlsx: string = null;
     public ViewReport: string = null;
 }
-
+///Процессы
 export class EventProcess {
-    public Id: number;
-    public NameProcess: string;
-    public DayX?: number;
+    public IdProcess: number;
+    public InfoEvent: string;
+    public IdDayOfTheWeek?: number;
     public HoursX?: number;
     public MinutesX?: number;
-    public ParametersEvent: string;
+    public IsTimeEventProcess: boolean;
+    public IsExistsParameters: boolean;
     public IsComplete?: boolean;
     public DataStart?: any;
     public DataFinish?: any;
+    public FindNameSpace: string;
+    public NameDll: string;
+    public NameMethodProcess: string;
+    public SelectDayOfTheWeek?: SelectDayOfTheWeek;
     public ModelIsEdit?: boolean = false;
+}
+///Параметры для процесса
+export class ParameterEventProcess {
+    public IdParameters: number;
+    public NameParameters: string;
+    public InfoParameters: string;
+    public Parameters: string;
+    public ModelIsEdit?: boolean = false;
+}
+
+///Расписание запуска процесса
+export class SelectDayOfTheWeek {
+    public IdDayOfTheWeek: number;
+    public RuTextDayOfTheWeek: string;
+    public EngTextDayOfTheWeek: string;
+    public EnumDay: number;
 }
 
 export class FullCategoria {
@@ -1024,21 +1050,27 @@ export class FilterActual {
 
 export class EquipmentType {
     public Id: number;
+    @Expose({ name: "Name" })
     public NameType: string;
+    @Expose({ name: "Code" })
     public CodeType: string;
     public Producer: Producer[] = null;
 }
 
 export class Producer {
     public Id: number;
+    @Expose({ name: "Name" })
     public NameProducer: string;
+    @Expose({ name: "Code" })
     public CodeProducer: string;
     public EquipmentModel: EquipmentModel[] = null;
 }
 
 export class EquipmentModel {
     public Id: number;
+    @Expose({ name: "Name" })
     public NameModel: string;
+    @Expose({ name: "Code" })
     public CodeModel: string;
 }
 
@@ -1079,13 +1111,65 @@ export class ValueCharacteristicJson {
 
 export class AksiokAddAndEdit {
     public parametersModelField: ParametersModel = new ParametersModel();
+    public kitsEquipmentField: KitsEquipment = null;
+    public parametersRequestAksiokField: ParametersRequestAksiok = null;
+    public uploadFileAksiokField: UploadFileAksiok = null;
 }
 
 export class ParametersModel {
     public idFullCategoriaField: number = 0;
+    public idStateField: number = 0;
+    public idStateStoField: number = 0;
+    public idExpertiseField: number = 0;
     public modelRequestField: string;
     public serNumberField: string;
     public inventoryNumField: string;
     public codeErrorField: number = 0;
     public errorServerField: string = null;
+    public yearOfIssueField: number = 0;
+    public exploitationStartYearField: number = 0;
+    public loginUserField: string = null;;
+    public passwordField: string = null;;
+}
+
+export class KitsEquipment {
+    public inventoryNumField: string;
+    public errorServerField: string = null;
+    public kitsEquipmentServerField: KitsEquipmentServer[] = null
+}
+
+export class KitsEquipmentServer {
+    public idField: number;
+    public serialNumberField: string;
+    public inventoryNumberField: string;
+    public isKitField: boolean;
+}
+
+export class ParametersRequestAksiok {
+    public fileAktField: FileAkt = null;
+    public fileExpertiseField: FileExpertise = null;
+    public idTypeField: number;
+    public idProducerField: number;
+    public idModelField: number;
+    public idStateField: number;
+    public idStateStoField: number;
+    public idExpertiseField: number;
+}
+
+export class FileAkt {
+    public nameFileField: string;
+    public fileField: number[];
+    public typeFileField: string;
+}
+
+export class FileExpertise {
+    public nameFileField: string;
+    public fileField: number[];
+    public typeFileField: string;
+}
+
+export class UploadFileAksiok {
+    public nameFileField: string;
+    public fileField: number[];
+    public typeFileField: string;
 }

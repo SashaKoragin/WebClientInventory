@@ -1,8 +1,10 @@
-//export const ServerHost: string = 'I7751-APP127';  //localhost
-export const ServerHost: string = 'localhost'
+export const ServerHost: string = '77068-APP065';  //localhost
+//export const ServerHost: string = 'localhost'
 export const ServerPort: string = '8182';
+
+
 //К примеру новая структура
-//http://I7751-W40204180:8182/Inventarka/AllRules
+//http://77068-APP065:8182/Inventarka/AllRules
 export class AdressInventarka {
     public autificationInventar = `http://${ServerHost}:${ServerPort}/Inventarka/Authorization`;
     public alluser = `http://${ServerHost}:${ServerPort}/Inventarka/AllUsers`;
@@ -82,6 +84,8 @@ export class AdressInventarka {
 
     ///Получение файла по POST запросу параметр int для выбора View
     public getFileXlsx = `http://${ServerHost}:${ServerPort}/Inventarka/GenerateFileXlsxSqlView`;
+    ///Генерация ролей для анализа из ActiveDirectory
+    public getFileXlsxRuleActiveDirectory = `http://${ServerHost}:${ServerPort}/Inventarka/GenerateFileXlsxRuleActiveDirectory`;
 
     ///Удаление записей
     public deleteUser = `http://${ServerHost}:${ServerPort}/Inventarka/DeleteUser?userIdEdit=`;
@@ -180,17 +184,16 @@ export class AdressInventarka {
     public addAndEditTypeOther = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditTypeOther`;
     public addAndEditProizvoditelOther = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditProizvoditelOther`;
     public deleteOtherAll = `http://${ServerHost}:${ServerPort}/Inventarka/DeleteOtherAll?userIdEdit=`;
-    //Актулизация данных с ЭПО
-    public updateEpo = `http://${ServerHost}:${ServerPort}/Inventarka/UpdateDataSto?idProcess=4`;
-    //Актуализация данных с АКСИОК
-    public updateAksiok = `http://${ServerHost}:${ServerPort}/Inventarka/UpdateAksiok?idProcess=6&userLogin={userLogin}&passwordUser={passwordUser}`;
     //Получение всех отчетов с ЭПО
     public getModelReportAnalysisEpo = `http://${ServerHost}:${ServerPort}/Inventarka/GetModelReportAnalysisEpo`;
     //Полные отчеты по ЭПО с Инвенторизацией
     public allReportEpoAndInventory = `http://${ServerHost}:${ServerPort}/Inventarka/AllReportInventoryAndEpo`
     //Параметры для процесов
-    public allEventProcess = `http://${ServerHost}:${ServerPort}/Inventarka/AllEventProcess`
-    public addAndEditEventProcess = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditEventProcess`
+    public allEventProcess = `http://${ServerHost}:${ServerPort}/Inventarka/AllEventProcess`;
+    public allDayOfTheWeekProcess = `http://${ServerHost}:${ServerPort}/Inventarka/AllDayOfTheWeekProcess`
+    public allEventProcessParameters = `http://${ServerHost}:${ServerPort}/Inventarka/AllEventProcessParameters?idProcess={idProcess}`;
+    public addAndEditEventProcess = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditEventProcess`;
+    public editParameterEventProcess = `http://${ServerHost}:${ServerPort}/Inventarka/EditParameterEventProcess`;
     ///Проверка статусов серверов онлайн
     public statusServerDataBase = `http://${ServerHost}:${ServerPort}/Inventarka/StatusIpServerOnline`
     ///Категории телефонов
@@ -201,8 +204,21 @@ export class AdressInventarka {
 
     ///Аксиок модели и категории для анализа редактирования или удаления
     public aksiokAddAndEditModelValidation = `http://${ServerHost}:${ServerPort}/Inventarka/AksiokAddAndEditModelValidation`;
-    public selectAllFullСategories = `http://${ServerHost}:${ServerPort}/Inventarka/SelectFullСategories`;
-    public selectAllEquipmentType = `http://${ServerHost}:${ServerPort}/Inventarka/SelectEquipmentType`;
+    public kitsEquipmentValidation = `http://${ServerHost}:${ServerPort}/Inventarka/KitsEquipmentValidation`;
+    public selectAllFullСategories = `http://${ServerHost}:${ServerPort}/Inventarka/SelectAllFullСategories`;
+    public selectAllEquipmentType = `http://${ServerHost}:${ServerPort}/Inventarka/SelectAllEquipmentType`;
     public selectAllProducer = `http://${ServerHost}:${ServerPort}/Inventarka/SelectAllProducer`;
     public selectAllEquipmentModel = `http://${ServerHost}:${ServerPort}/Inventarka/SelectAllEquipmentModel`;
+    ///Api Добавления или редактирования с заполненой моделью
+    public aksiokAddAndEditModel = `http://${ServerHost}:${ServerPort}/Inventarka/AksiokAddAndEditModel`;
+    ///Api Выгрузки файлов (Акта, Экспертизы) из АКСИОК
+    public uploadFileAksiok = `http://${ServerHost}:${ServerPort}/Inventarka/UploadFileAksiok`;
+    ///Выгрузка отчета по всем БД для анализа изи систем Lotus Notes, Active Derectory, DKS
+    public reportFileXlsxSqlView = `http://${ServerHost}:${ServerPort}/Inventarka/ReportFileXlsxSqlView`;
+
+    ///Выгрузка отчета по всем БД для анализа техники из систем Lotus Notes, Active Derectory, DKS
+    public reportFileSqlViewTechReport = `http://${ServerHost}:${ServerPort}/Inventarka/ReportFileSqlViewTechReport`;
+
+    ///Api для запуска процеса системы инвентаризации
+    public startProcess = `http://${ServerHost}:${ServerPort}/Inventarka/StartProcessInventory?idProcess={idProcess}&userLogin={userLogin}&passwordUser={passwordUser}`
 }

@@ -94,32 +94,6 @@
                     </mat-tree-node>
                 </mat-tree>
             </cdk-virtual-scroll-viewport>
-            <cdk-virtual-scroll-viewport class="scroll" appendOnly itemSize="50" >
-            <mat-tree [dataSource]="dataSourceModel" [treeControl]="treeControlModel">
-                <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
-                    <div class="element-detail">
-                        <div class="container-fluid">
-                            <div class="row justify-content-start align-items-end border border-warning">
-                                <div class="col text-left border border-primary text-primary textT">
-                                    <p class="textT">{{node.model.Name}}</p>
-                                </div>
-                                <div class="col text-left border border-primary text-primary textT">
-                                    <p class="textT">{{node.model.Code}}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </mat-tree-node>
-                <mat-tree-node class="mainCellType" *matTreeNodeDef="let node;when: hasChildModel" matTreeNodePadding>
-                    <button class="content" matTreeNodeToggle mat-icon-button>
-                        {{node.model.ModelAksiok.length}}
-                    </button>
-                    <div class="help">
-                        Код: {{node.model.Code}}; Наименование: {{node.model.Name}}
-                    </div>
-                </mat-tree-node>
-            </mat-tree>
-        </cdk-virtual-scroll-viewport>
         </div>
 
         <div [style.display]="logicaTemplate?.progress ? 'none':'inline'">

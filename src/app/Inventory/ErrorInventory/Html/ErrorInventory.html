@@ -1,10 +1,10 @@
-
 <b class="text">Выбор выборки ошибок:</b>
 <mat-form-field class="selectin_sql">
-        <mat-select placeholder="Выборки" [(ngModel)]="dinamicmodel.mainselect"  name="sel" (selectionChange)="errorserver($event)">
-            <mat-option *ngFor="let sel of dinamicmodel.selectserver" [value]="sel">
-                {{sel.text}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
-<selectsql [(logica)]="logica" [(selecting)]="selecting" [(columns)]="columns" [(select)]="select" ></selectsql>
+    <mat-select placeholder="Выборки" [(ngModel)]="dinamicmodel.mainselect" name="sel"
+        (selectionChange)="errorserver($event)">
+        <mat-option *ngFor="let sel of dinamicmodel.selectserver" [value]="sel">
+            {{sel.text}}
+        </mat-option>
+    </mat-select>
+</mat-form-field>
+<selectsql [(logica)]="logica" [(selecting)]="selecting" [(columns)]="columns" [(select)]="select"></selectsql>

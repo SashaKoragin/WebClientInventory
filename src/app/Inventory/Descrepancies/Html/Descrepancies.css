@@ -1,0 +1,17 @@
+.selectin_sql{
+    width: 500px;
+ }
+.text{
+       margin-right: 30px;
+}
+
+.panel{
+       margin: 5px;
+   }
+   .panelbutton{
+       background: azure;
+       margin: inherit;
+       border-radius: 80px;
+       margin: 5px;
+   }
+   

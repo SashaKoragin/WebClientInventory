@@ -24,6 +24,7 @@ import { EquipmentSto } from '../../Inventory/EquipmentSto/View/EquipmentSto';
 import { ModelProcess } from '../../Inventory/Process/ProcessParameter/View/Process';
 import { AksiokDirectory } from '../../Inventory/AksiokSupport/AcsiokDirectory/View/AcsiokDirectory';
 import { Aksiok } from '../../Inventory/AksiokSupport/Aksiok/View/Aksiok';
+import { Descrepancies } from '../../Inventory/Descrepancies/View/Descrepancies';
 
 const appRoutes: Routes = [
     {
@@ -94,6 +95,10 @@ const appRoutes: Routes = [
             {
                 path: 'users',
                 component: User
+            },
+            {
+                path: 'Descrepancies',
+                component: Descrepancies
             },
             {
                 path: 'pathAis3',

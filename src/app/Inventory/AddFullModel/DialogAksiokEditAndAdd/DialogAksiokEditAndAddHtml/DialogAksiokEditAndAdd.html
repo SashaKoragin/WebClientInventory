@@ -1,100 +1,254 @@
-<div>
+<div class="headAksiok">
     <b class="h2 text-primary">Работа с АКСИОК редактирование или добавление!</b>
 </div>
-<div class="container">
-    <div class="row w-50">
-        <div class="col d-flex align-items-center">
-            <b class="h3 text-primary ">Тип оборудования:</b>
+<div [style.display]="loadModelServer ? 'none' : 'grid'">
+    <div class="container">
+        <div class="row w-100">
+            <div class="col d-flex align-items-center">
+                <b class="h3 text-primary ">Тип оборудования:</b>
+            </div>
+            <div class="col w-100">
+                <mat-form-field class="selectin_sql text-primary w-100">
+                    <mat-label class="text-primary">Тип оборудования</mat-label>
+                    <mat-select class="text-primary" [placeholder]="modelAksiok.selectedEquipmentType?.NameType"
+                        (selectionChange)="modelAksiok.filterEquipmentType()"
+                        [formControl]="modelValid?.getRowValidatorModel[16].get('EquipmentType')"
+                        [(ngModel)]="modelAksiok.selectedEquipmentType" name="type">
+                        <mat-select-filter class="filter" [placeholder]="modelAksiok.selectedEquipmentType?.NameType"
+                            [displayMember]="'NameType'" [array]="modelAksiok.equipmentType"
+                            (filteredReturn)="modelAksiok.filteredeEquipmentType =$event;">
+                        </mat-select-filter>
+                        <mat-option class="text-primary" *ngFor="let type of modelAksiok.filteredeEquipmentType"
+                            [value]="type">
+                            {{type.NameType}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
         </div>
-        <div class="col">
-            <mat-form-field class="selectin_sql text-primary">
-                <mat-label class="text-primary">Тип оборудования</mat-label>
-                <mat-select class="text-primary" placeholder="Тип оборудования"
-                    [formControl]="modelValid?.getRowValidatorModel[16].get('EquipmentType')"
-                    [(ngModel)]="modelAksiok.selectedEquipmentType" name="type">
-                    <mat-option class="text-primary" *ngFor="let type of modelAksiok.equipmentType" [value]="type">
-                        {{type.NameType}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
+        <div class="row w-100">
+            <div class="col d-flex align-items-center w-100">
+                <b class="h3 text-primary ">Производитель оборудования:</b>
+            </div>
+            <div class="col w-100">
+                <mat-form-field class="selectin_sql text-primary w-100">
+                    <mat-label class="text-primary">Производитель оборудования</mat-label>
+                    <mat-select class="text-primary" placeholder="modelAksiok.selectedProducer?.NameProducer"
+                        (selectionChange)="modelAksiok.filterEquipmentModel()"
+                        [formControl]="modelValid?.getRowValidatorModel[16].get('Producer')"
+                        [(ngModel)]="modelAksiok.selectedProducer" name="producer">
+                        <mat-select-filter class="filter" [placeholder]="modelAksiok.selectedProducer?.NameProducer"
+                            [displayMember]="'NameProducer'" [array]="modelAksiok.producer"
+                            (filteredReturn)="modelAksiok.filteredeProducer = $event">
+                        </mat-select-filter>
+                        <mat-option class="text-primary" *ngFor="let producer of modelAksiok.filteredeProducer"
+                            [value]="producer">
+                            {{producer.NameProducer}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row w-100">
+            <div class="col d-flex align-items-center w-100">
+                <b class="h3 text-primary ">Модель оборудования:</b>
+            </div>
+            <div class="col w-100">
+                <mat-form-field class="selectin_sql text-primary w-100">
+                    <mat-label class="text-primary">Модель оборудования</mat-label>
+                    <mat-select class="text-primary" placeholder="modelAksiok.selectedEquipmentModel?.NameModel"
+                        [formControl]="modelValid?.getRowValidatorModel[16].get('EquipmentModel')"
+                        [(ngModel)]="modelAksiok.selectedEquipmentModel" name="model">
+                        <mat-select-filter class="filter" [placeholder]="modelAksiok.selectedEquipmentModel?.NameModel"
+                            [displayMember]="'NameModel'" [array]="modelAksiok.equipmentModel"
+                            (filteredReturn)="modelAksiok.filteredeEquipmentModel = $event">
+                        </mat-select-filter>
+                        <mat-option class="text-primary" *ngFor="let model of modelAksiok.filteredeEquipmentModel"
+                            [value]="model">
+                            {{model.NameModel}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row w-100">
+            <div class="col d-flex align-items-center w-100">
+                <b class="h3 text-primary ">Статус:</b>
+            </div>
+            <div class="col w-100">
+                <mat-form-field class="selectin_sql text-primary w-100">
+                    <mat-label class="text-primary">Статус</mat-label>
+                    <mat-select class="text-primary" placeholder="modelAksiok.selectedState?.NameState"
+                        [formControl]="modelValid?.getRowValidatorModel[16].get('State')"
+                        [(ngModel)]="modelAksiok.selectedState" name="state">
+                        <mat-select-filter class="filter" [placeholder]="modelAksiok.selectedState?.NameState"
+                            [displayMember]="'NameState'" [array]="modelAksiok.state"
+                            (filteredReturn)="modelAksiok.filteredeState = $event">
+                        </mat-select-filter>
+                        <mat-option class="text-primary" *ngFor="let state of modelAksiok.filteredeState"
+                            [value]="state">
+                            {{state.NameState}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row file w-100" [style.display]="modelAksiok.selectedState.Id === 80 ? 'inline-flex':'none'">
+            <div class="col d-flex align-items-center w-100">
+                <b class="h3 text-primary ">Файл акта списания:</b>
+            </div>
+            <div class="col w-100">
+                <DragAndDropFile (onChangedFile)="addfileAkt($event)" #fileReaderAktModel></DragAndDropFile>
+            </div>
+        </div>
+        <div class="row w-100">
+            <div class="col d-flex align-items-center w-100">
+                <b class="h3 text-primary ">Статус СТО:</b>
+            </div>
+            <div class="col w-100">
+                <mat-form-field class="selectin_sql text-primary w-100">
+                    <mat-label class="text-primary">Статус СТО</mat-label>
+                    <mat-select class="text-primary" placeholder="modelAksiok.selectedStateSto?.NameStateSto"
+                        [formControl]="modelValid?.getRowValidatorModel[16].get('StateSto')"
+                        [(ngModel)]="modelAksiok.selectedStateSto" name="stateSto">
+                        <mat-select-filter class="filter" [placeholder]="modelAksiok.selectedStateSto?.NameStateSto"
+                            [displayMember]="'NameStateSto'" [array]="modelAksiok.stateSto"
+                            (filteredReturn)="modelAksiok.filteredeStateSto = $event">
+                        </mat-select-filter>
+                        <mat-option class="text-primary" *ngFor="let stateSto of modelAksiok.filteredeStateSto"
+                            [value]="stateSto">
+                            {{stateSto.NameStateSto}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row w-100">
+            <div class="col d-flex align-items-center w-100">
+                <b class="h3 text-primary ">Статус экспертизы:</b>
+            </div>
+            <div class="col w-100">
+                <mat-form-field class="selectin_sql text-primary w-100">
+                    <mat-label class="text-primary">Статус экспертизы</mat-label>
+                    <mat-select class="text-primary" placeholder="modelAksiok.selectedExpertise?.NameExpertise"
+                        [formControl]="modelValid?.getRowValidatorModel[16].get('Expertise')"
+                        [(ngModel)]="modelAksiok.selectedExpertise" name="stateExpertise">
+                        <mat-select-filter class="filter" [placeholder]="modelAksiok.selectedExpertise?.NameExpertise"
+                            [displayMember]="'NameExpertise'" [array]="modelAksiok.stateExpertise"
+                            (filteredReturn)="modelAksiok.filteredeExpertise = $event">
+                        </mat-select-filter>
+                        <mat-option class="text-primary" *ngFor="let stateExpertis of modelAksiok.filteredeExpertise"
+                            [value]="stateExpertis">
+                            {{stateExpertis.NameExpertise}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row file w-100" [style.display]="modelAksiok.selectedExpertise.Id === 30 ? 'inline-flex':'none'">
+            <div class="col d-flex align-items-center w-100">
+                <b class="h3 text-primary ">Файл экспертизы:</b>
+            </div>
+            <div class="col w-100">
+                <DragAndDropFile (onChangedFile)="addfileExpertis($event)"></DragAndDropFile>
+            </div>
+        </div>
+        <div class="row w-100">
+            <div class="col d-flex align-items-center w-100">
+                <b class="h3 text-primary ">Серийный номер:</b>
+            </div>
+            <div class="col w-100">
+                <mat-form-field class="selectin_sql text-primary w-100">
+                    <input placeholder="Серийный номер" matInput [disabled]="true"
+                        value="{{data.parametersModelField.serNumberField}}" />
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row w-100">
+            <div class="col d-flex align-items-center">
+                <b class="h3 text-primary ">Год выпуска оборудования:</b>
+            </div>
+            <div class="col w-100">
+                <mat-form-field class="selectin_sql text-primary w-100">
+                    <input placeholder="Год выпуска оборудования" matInput type="number"
+                        [(ngModel)]="data.parametersModelField.yearOfIssueField" />
+
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row w-100">
+            <div class="col d-flex align-items-center">
+                <b class="h3 text-primary ">Год ввода в эксплуатацию:</b>
+            </div>
+            <div class="col w-100">
+                <mat-form-field class="selectin_sql text-primary w-100">
+                    <input placeholder="Год ввода в эксплуатацию" matInput type="number"
+                        [(ngModel)]="data.parametersModelField.exploitationStartYearField" />
+               </mat-form-field>
+            </div>
+        </div>
+        <div class="row w-100">
+            <div class="col d-flex align-items-center w-100">
+                <b class="h3 text-primary ">Комплектовать?:</b>
+            </div>
+            <div class="col">
+                <div class="check">
+                    <mat-checkbox placeholder="Комплектовать?" [checked]="isCheckedKits" (change)="changed($event)">
+                    </mat-checkbox>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="row w-50">
-        <div class="col d-flex align-items-center">
-            <b class="h3 text-primary ">Производитель оборудования:</b>
-        </div>
-        <div class="col">
-            <mat-form-field class="selectin_sql text-primary">
-                <mat-label class="text-primary">Производитель оборудования</mat-label>
-                <mat-select class="text-primary" placeholder="Производитель оборудования"
-                    [formControl]="modelValid?.getRowValidatorModel[16].get('Producer')"
-                    [(ngModel)]="modelAksiok.selectedProducer" name="producer">
-                    <mat-option class="text-primary" *ngFor="let producer of modelAksiok.producer" [value]="producer">
-                        {{producer.NameProducer}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-        </div>
+    <div [style.display]="kitsError !== null ? 'grid' : 'none'">
+        <b class="h3 text-danger ">{{kitsError}}</b>
     </div>
-    <div class="row w-50">
-        <div class="col d-flex align-items-center">
-            <b class="h3 text-primary ">Модель оборудования:</b>
-        </div>
-        <div class="col">
-            <mat-form-field class="selectin_sql text-primary">
-                <mat-label class="text-primary">Модель оборудования</mat-label>
-                <mat-select class="text-primary" placeholder="Модель оборудования"
-                    [formControl]="modelValid?.getRowValidatorModel[16].get('EquipmentModel')"
-                    [(ngModel)]="modelAksiok.selectedEquipmentModel" name="model">
-                    <mat-option class="text-primary" *ngFor="let model of modelAksiok.equipmentModel" [value]="model">
-                        {{model.NameModel}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-        </div>
+    <div [style.display]="isCheckedKits ? 'grid' : 'none' ">
+        <b class="h3 text-primary">Найденно соответствие:</b>
+        <table mat-table [dataSource]="dataSourceKits">
+            <ng-container matColumnDef="IdField">
+                <th class="id" *matHeaderCellDef>Id</th>
+                <td class="cell" *matCellDef="let row" [matTooltip]="row.Id">
+                    {{row.idField}}
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="SerialNumberField">
+                <th class="id" *matHeaderCellDef>Серийный номер</th>
+                <td class="cell" *matCellDef="let row" [matTooltip]="row.SerialNumber">
+                    {{row.serialNumberField}}
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="InventoryNumberField">
+                <th class="id" *matHeaderCellDef>Инвентарный номер</th>
+                <td class="cell" *matCellDef="let row" [matTooltip]="row.InventoryNumber">
+                    {{row.inventoryNumberField}}
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="IsKitField">
+                <th class="id" *matHeaderCellDef>Комплектность</th>
+                <td class="cell" *matCellDef="let row" [matTooltip]="row.IsKit">
+                    {{row.isKitField}}
+                </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumnsKits; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumnsKits;"></tr>
+        </table>
     </div>
-    <div class="row w-50">
-        <div class="col d-flex align-items-center">
-            <b class="h3 text-primary ">Серийный номер:</b>
+    <div class="panelButton">
+        <div class="pane" [style.display]="data.parametersModelField.modelRequestField === 'Edit' ? 'inline':'none'">
+            <button class="mt-2 btn btn-rn btn-primary" [disabled]="modelValid?.getRowValidatorModel[16].invalid"
+                matTooltip="Редактировать" type="submit" (click)="edit()">Редактировать</button>
         </div>
-        <div class="col">
-            <mat-form-field class="selectin_sql text-primary">
-                <input placeholder="Серийный номер" matInput [disabled]="true"
-                    value="{{dialogDataBase.componentInstance.parametersModelField.serNumberField}}" />
-            </mat-form-field>
+        <div class="pane" [style.display]="data.parametersModelField.modelRequestField === 'Add' ? 'inline':'none'">
+            <button class="mt-2 btn btn-rn btn-primary" [disabled]="modelValid?.getRowValidatorModel[16].invalid"
+                matTooltip="Добавить" type="submit" (click)="add()">Добавить</button>
         </div>
-    </div>
-    <div class="row w-50">
-        <div class="col d-flex align-items-center">
-            <b class="h3 text-primary ">Инвентарный номер:</b>
+        <div class="pane">
+            <button class=" mt-2 btn btn-rn btn-danger" (click)="closeDialog()" mat-button>Закрыть (Отменить)</button>
         </div>
-        <div class="col">
-            <mat-form-field class="selectin_sql text-primary">
-                <input placeholder="Инвентарный номер" matInput [disabled]="true"
-                    value="{{dialogDataBase.componentInstance.parametersModelField.inventoryNumField}}" />
-            </mat-form-field>
-        </div>
-    </div>
-    <div class="row w-50">
-        <div class="col d-flex align-items-center">
-            <b class="h3 text-primary ">Комплектность:</b>
-        </div>
-        <div class="col">
-            <mat-checkbox placeholder="Комплектовать?">
-                <!-- 
-                (click)="$event.stopPropagation();"
-                (change)="selectionRowModel.toggle(row);selectModelAksiok()" [checked]="selectionRowModel.isSelected(row)" -->
-            </mat-checkbox>
-        </div>
+
     </div>
 </div>
-<div
-    [style.display]="dialogDataBase.componentInstance.parametersModelField.modelRequestField === 'Edit' ? 'inline':'none'">
-    <button class="mt-2 btn btn-rn btn-primary" [disabled]="modelValid?.getRowValidatorModel[16].invalid"
-        matTooltip="Редактировать" type="submit" (click)="edit()">Редактировать</button>
-</div>
-<div
-    [style.display]="dialogDataBase.componentInstance.parametersModelField.modelRequestField === 'Add' ? 'inline':'none'">
-    <button class="mt-2 btn btn-rn btn-primary" [disabled]="modelValid?.getRowValidatorModel[16].invalid"
-        matTooltip="Добавить" type="submit" (click)="edit()">Добавить</button>
+<div [style.display]="loadModelServer ? 'inline':'none'">
+    <p>Идет загрузка данных подождите пожалуйста!!!</p>
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
 </div>

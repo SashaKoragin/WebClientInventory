@@ -1,5 +1,5 @@
 import { FormControl, ValidatorFn, AbstractControl } from '@angular/forms';
-import { ModelSelect, LogicaSelect } from './ParametrModel';
+import { ModelSelect, LogicaSelect, Parametrs } from './ParametrModel';
 import * as _moment from 'moment';
 import * as _rollupMoment from 'moment';
 import { DatePipe } from '@angular/common';
@@ -190,10 +190,19 @@ export class GenerateParametrs {
         { value: ' IN ', viewValue: 'Из перечня', num: 11 } // in ('1','2','3','4')
     ];
 
+    ///Метод подготовки генерации сложных отчетов
+    generateModelSelectExcelReport() {
+        this.model.logicaSelectField = this.generatecommand(true);
+        for (const param of this.parametrs) {
+            this.model.parametrsField.find(x => x.infoField === param.nameparametr).isVisibleField = param.isvisible
+        }
+        return this.model
+    }
+
     ///Генерит команду и БД на которой выполнить команду
-    generatecommand(): LogicaSelect {
+    generatecommand(excludePrifixAs: boolean = false): LogicaSelect {
         var generate = new GenerateFullCommand();
-        var logica = generate.generateCommand(generate.generateVisible(this.selectedtoserver, this.parametrs), this.parametrs);
+        var logica = generate.generateCommand(generate.generateVisible(this.selectedtoserver, this.parametrs, excludePrifixAs), this.parametrs);
         logica.idField = this.selectedtoserver.idField;
         logica.nameDllField = this.selectedtoserver.nameDllField;
         logica.findNameSpaceField = this.selectedtoserver.findNameSpaceField;
@@ -248,18 +257,28 @@ class GenerateFullCommand {
     }
 
     ///Генерация другая по параметрам с названиями (Старый образец но еще используется)
-    generateVisible(logica: LogicaSelect, parametrs: SelectParam[]): LogicaSelect {
+    generateVisible(logica: LogicaSelect, parametrs: SelectParam[], excludePrifixAs: boolean = false): LogicaSelect {
         var command: LogicaSelect = new LogicaSelect()
         var str: string = '';
         var countparam: number = parametrs.filter(sel => sel.isvisible === true).length
         var countend: number = 0;
         for (const param of parametrs.filter(sel => sel.isvisible === true)) {
             countend++;
-            if (countend === countparam) {
-                str = str.concat(param.nameparametr + ' as ' + `'${param.name.trim()}'`)
+            if (excludePrifixAs) {
+                if (countend === countparam) {
+                    str = str.concat(param.nameparametr)
+                }
+                else {
+                    str = str.concat(param.nameparametr + ', ')
+                }
             }
             else {
-                str = str.concat(param.nameparametr + ' as ' + `'${param.name.trim()}'` + ', ')
+                if (countend === countparam) {
+                    str = str.concat(param.nameparametr + ' as ' + `'${param.name.trim()}'`)
+                }
+                else {
+                    str = str.concat(param.nameparametr + ' as ' + `'${param.name.trim()}'` + ', ')
+                }
             }
         }
         if (str == '') {

@@ -1,8 +1,8 @@
 import {
   Users, FullSelectedModel, Otdel, Position, Printer, Mfu, ScanerAndCamer, SysBlock, CopySave,
   Monitor, NameSysBlock, Supply, Classification, Swithe,
-  Kabinet, FullModel, Statusing, FullProizvoditel, ModelReturn, NameMonitor, Telephon, BlockPower, ModelBlockPower, ProizvoditelBlockPower, ModelSwithes, ModeleReturn, MailIdentifier, MailGroup, ServerEquipment, Token,
-  FullTemplateSupport, ModelParametrSupport, ModelSeverEquipment, ManufacturerSeverEquipment, TypeServer, AllTechnics, RuleUsers, JournalAis3, OtherAll, EventProcess
+  Kabinet, FullModel, Statusing, FullProizvoditel, ModelReturn, NameMonitor, Telephon, BlockPower, ProizvoditelBlockPower, ModeleReturn, MailIdentifier, MailGroup, ServerEquipment, Token,
+  FullTemplateSupport, ModelParametrSupport, ModelSeverEquipment, ManufacturerSeverEquipment, TypeServer, AllTechnics, RuleUsers, JournalAis3, OtherAll, EventProcess, ParameterEventProcess
 } from '../../ModelInventory/InventoryModel';
 import { MatTableDataSource, MatPaginator, MatSort, MatDialog } from '@angular/material';
 import { ModelValidation } from '../ValidationModel/UserValidation';
@@ -16,7 +16,7 @@ import { deserialize } from 'class-transformer';
 import { FormControl } from '@angular/forms';
 import { ModelDialog, DialogDiscription } from '../ModelDialogDiscription/View/DialogDiscription';
 import { SelectionModel } from '@angular/cdk/collections';
-import { INewLogicaTable, SettingDepartmentCaseGetServer, SettingDepartmentCaseToServer, Rb_Holiday, CategoryPhoneHeader, RegulationsDepartment, RegulationsDepartmentToServer, ResourceIt, TaskAis3, ModelOther, ProizvoditelOther, TypeOther, AksiokAddAndEdit } from '../../ModelInventory/InventoryModel';
+import { INewLogicaTable, SettingDepartmentCaseGetServer, SettingDepartmentCaseToServer, Rb_Holiday, CategoryPhoneHeader, RegulationsDepartment, RegulationsDepartmentToServer, ResourceIt, TaskAis3, ModelOther, ProizvoditelOther, TypeOther, AksiokAddAndEdit, ModelBlockPower, ModelSwithes, SelectDayOfTheWeek } from '../../ModelInventory/InventoryModel';
 import { ModelSelect, ParametrsAct } from '../../AllSelectModel/ParametrModel';
 import { DialogAksiokEditAndAdd } from '../DialogAksiokEditAndAdd/DialogAksiokEditAndAddTs/DialogAksiokEditAndAdd';
 const moment = _rollupMoment || _moment;
@@ -582,7 +582,6 @@ export class UserTableModel implements INewLogicaTable<Users>  {
   public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef, template: ElementRef): Promise<string> {
     this.modeltable = JSON.parse(JSON.stringify(model.Users));
     this.table = table;  //Таблица
-    console.log(model.Users);
     this.fulltemplate = template; //Заложенный шаблон
     this.dataSource.paginator = paginator;
     this.dataSource.sort = sort
@@ -615,6 +614,42 @@ export class SwitchTableModel implements INewLogicaTable<Swithe>{
   createSTO(model: Swithe, template: FullTemplateSupport, authService: AuthIdentification, dialog: MatDialog): void {
     throw new Error("Method not implemented.");
   }
+
+  public aksiokEditAndAdd(model: Swithe, modelRequest: string, dialog: MatDialog, authService: AuthIdentification) {
+    this.editandadd.isBeginTask(6).toPromise().then((isCheck: boolean) => {
+      var isBeginTask = isCheck
+      if (isBeginTask) {
+        var aksiokAddAndEdit = new AksiokAddAndEdit();
+        aksiokAddAndEdit.parametersModelField.modelRequestField = modelRequest;
+        aksiokAddAndEdit.parametersModelField.inventoryNumField = model.InventarNum;
+        aksiokAddAndEdit.parametersModelField.serNumberField = model.SerNum;
+        if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'Edit' || aksiokAddAndEdit.parametersModelField.modelRequestField === 'Add') {
+          this.editandadd.validationModelAksiok(aksiokAddAndEdit).toPromise().then((modelAksiok: AksiokAddAndEdit) => {
+            if (modelAksiok.parametersModelField.errorServerField) {
+              alert(modelAksiok.parametersModelField.errorServerField);
+              return;
+            }
+            else {
+              const dialogRef = dialog.open(DialogAksiokEditAndAdd, {
+                width: "1000px",
+                height: "750px",
+                data: modelAksiok
+              })
+            }
+          });
+        }
+        else {
+          aksiokAddAndEdit.parametersModelField.loginUserField = authService.autorization.loginField;
+          aksiokAddAndEdit.parametersModelField.passwordField = authService.autorization.passwordField;
+          this.editandadd.uploadFileAksiok(aksiokAddAndEdit);
+        }
+      }
+      else {
+        alert("Процесс по синхронизации данных ещё не завершён!!!")
+      }
+    });
+  }
+
 
   public modelvalid: ModelValidation = new ModelValidation()
   public kabinet: Kabinet[];
@@ -899,6 +934,41 @@ export class ServerEquipmentTableModel implements INewLogicaTable<ServerEquipmen
     throw new Error("Method not implemented.");
   }
 
+  public aksiokEditAndAdd(model: ServerEquipment, modelRequest: string, dialog: MatDialog, authService: AuthIdentification) {
+    this.editandadd.isBeginTask(6).toPromise().then((isCheck: boolean) => {
+      var isBeginTask = isCheck
+      if (isBeginTask) {
+        var aksiokAddAndEdit = new AksiokAddAndEdit();
+        aksiokAddAndEdit.parametersModelField.modelRequestField = modelRequest;
+        aksiokAddAndEdit.parametersModelField.inventoryNumField = model.InventarNum;
+        aksiokAddAndEdit.parametersModelField.serNumberField = model.SerNum;
+        if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'Edit' || aksiokAddAndEdit.parametersModelField.modelRequestField === 'Add') {
+          this.editandadd.validationModelAksiok(aksiokAddAndEdit).toPromise().then((modelAksiok: AksiokAddAndEdit) => {
+            if (modelAksiok.parametersModelField.errorServerField) {
+              alert(modelAksiok.parametersModelField.errorServerField);
+              return;
+            }
+            else {
+              const dialogRef = dialog.open(DialogAksiokEditAndAdd, {
+                width: "1000px",
+                height: "750px",
+                data: modelAksiok
+              })
+            }
+          });
+        }
+        else {
+          aksiokAddAndEdit.parametersModelField.loginUserField = authService.autorization.loginField;
+          aksiokAddAndEdit.parametersModelField.passwordField = authService.autorization.passwordField;
+          this.editandadd.uploadFileAksiok(aksiokAddAndEdit);
+        }
+      }
+      else {
+        alert("Процесс по синхронизации данных ещё не завершён!!!")
+      }
+    });
+  }
+
   public modelvalid: ModelValidation = new ModelValidation()
   public kabinet: Kabinet[];
   public statusing: Statusing[];
@@ -1059,6 +1129,8 @@ export class ServerEquipmentTableModel implements INewLogicaTable<ServerEquipmen
     if (this.modelToServer.Supply) {
       this.modelToServer.Supply.DatePostavki = `/Date(${new Date(this.modelToServer.Supply.DatePostavki).getTime()})/`;
     }
+    var converter = new ConvertDate();
+    this.modelToServer = converter.convertDateToServer<ServerEquipment>(JSON.parse(JSON.stringify(this.modelToServer)));
     this.editandadd.addAndEditServerEquipment(this.modelToServer, this.SignalR.iduser).toPromise().then((model: ModelReturn<ServerEquipment>) => {
       if (model.Model === null) {
         alert(model.Message)
@@ -1180,6 +1252,7 @@ export class ServerEquipmentTableModel implements INewLogicaTable<ServerEquipmen
   }
 }
 
+
 export class OtherAllTableModel implements INewLogicaTable<OtherAll>{
 
   constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
@@ -1189,6 +1262,42 @@ export class OtherAllTableModel implements INewLogicaTable<OtherAll>{
   createSTO(model: OtherAll, template: FullTemplateSupport, authService: AuthIdentification, dialog: MatDialog): void {
     throw new Error("Method not implemented.");
   }
+
+  public aksiokEditAndAdd(model: OtherAll, modelRequest: string, dialog: MatDialog, authService: AuthIdentification) {
+    this.editandadd.isBeginTask(6).toPromise().then((isCheck: boolean) => {
+      var isBeginTask = isCheck
+      if (isBeginTask) {
+        var aksiokAddAndEdit = new AksiokAddAndEdit();
+        aksiokAddAndEdit.parametersModelField.modelRequestField = modelRequest;
+        aksiokAddAndEdit.parametersModelField.inventoryNumField = model.InventarNum;
+        aksiokAddAndEdit.parametersModelField.serNumberField = model.SerNum;
+        if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'Edit' || aksiokAddAndEdit.parametersModelField.modelRequestField === 'Add') {
+          this.editandadd.validationModelAksiok(aksiokAddAndEdit).toPromise().then((modelAksiok: AksiokAddAndEdit) => {
+            if (modelAksiok.parametersModelField.errorServerField) {
+              alert(modelAksiok.parametersModelField.errorServerField);
+              return;
+            }
+            else {
+              const dialogRef = dialog.open(DialogAksiokEditAndAdd, {
+                width: "1000px",
+                height: "750px",
+                data: modelAksiok
+              })
+            }
+          });
+        }
+        else {
+          aksiokAddAndEdit.parametersModelField.loginUserField = authService.autorization.loginField;
+          aksiokAddAndEdit.parametersModelField.passwordField = authService.autorization.passwordField;
+          this.editandadd.uploadFileAksiok(aksiokAddAndEdit);
+        }
+      }
+      else {
+        alert("Процесс по синхронизации данных ещё не завершён!!!")
+      }
+    });
+  }
+
 
   public modelvalid: ModelValidation = new ModelValidation();
 
@@ -1614,6 +1723,19 @@ export class TokenTableModel implements INewLogicaTable<Token>{
     filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
     this.dataSource.filter = filterValue;
   }
+  //Фильтрация компьютеров победа
+  public async filterSysBlokToken(value: any) {
+    if (value != null) {
+      this.model.SysBlock = null
+      this.filteredSysBlock = null
+      this.sysblock = this.SysBlockAllModel.filter(x => x.IdUser === value.IdUser && x.IdStatus !== 16)
+    }
+    else {
+      this.sysblock = this.SysBlockAllModel.filter(x => x.IdUser === this.modelCancelError.IdUser && x.IdStatus !== 16)
+    }
+    this.filteredSysBlock = this.sysblock;
+  }
+
 
   public calbackfiltersAll(): void {
     this.filteredStatusing = this.statusing.slice();
@@ -1635,14 +1757,13 @@ export class TokenTableModel implements INewLogicaTable<Token>{
   }
 
   public edit(model: Token): void {
-
     this.sysblock = this.SysBlockAllModel.filter(x => x.IdUser === model.IdUser && new Array(undefined, null, 16).some(y => y === x.IdStatus))
     model.ModelIsEdit = true;
     this.modelCancelError = JSON.parse(JSON.stringify(model));
+    this.filterSysBlokToken(null);
     this.model = JSON.parse(JSON.stringify(model));
     this.addtemplate(model.IdToken);
     this.isEditAndAddTrue();
-    console.log(this.model);
   }
 
   ///Конвертация даты поставки во вложенной моделе подготовка оправки на сервер
@@ -1835,20 +1956,39 @@ export class PrinterTableModel implements INewLogicaTable<Printer> {
     });
   }
 
-  public aksiokEditAndAdd(model: Printer, modelRequest: string, dialog: MatDialog){
-   var aksiokAddAndEdit = new AksiokAddAndEdit();
-   aksiokAddAndEdit.parametersModelField.modelRequestField = modelRequest;
-   aksiokAddAndEdit.parametersModelField.inventoryNumField = model.InventarNumber;
-   aksiokAddAndEdit.parametersModelField.serNumberField = model.ZavNumber;
-   this.editandadd.validationModelAksiok(aksiokAddAndEdit).toPromise().then((modelAksiok: AksiokAddAndEdit) => {
-      console.log(modelAksiok)
-  });
-
-  //  const dialogRef = dialog.open(DialogAksiokEditAndAdd, {
-  //   width: "800px",
-  //   height: "500px",
-  //   data: aksiokAddAndEdit
-  // })
+  public aksiokEditAndAdd(model: Printer, modelRequest: string, dialog: MatDialog, authService: AuthIdentification) {
+    this.editandadd.isBeginTask(6).toPromise().then((isCheck: boolean) => {
+      var isBeginTask = isCheck
+      if (isBeginTask) {
+        var aksiokAddAndEdit = new AksiokAddAndEdit();
+        aksiokAddAndEdit.parametersModelField.modelRequestField = modelRequest;
+        aksiokAddAndEdit.parametersModelField.inventoryNumField = model.InventarNumber;
+        aksiokAddAndEdit.parametersModelField.serNumberField = model.ZavNumber;
+        if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'Edit' || aksiokAddAndEdit.parametersModelField.modelRequestField === 'Add') {
+          this.editandadd.validationModelAksiok(aksiokAddAndEdit).toPromise().then((modelAksiok: AksiokAddAndEdit) => {
+            if (modelAksiok.parametersModelField.errorServerField) {
+              alert(modelAksiok.parametersModelField.errorServerField);
+              return;
+            }
+            else {
+              const dialogRef = dialog.open(DialogAksiokEditAndAdd, {
+                width: "1000px",
+                height: "750px",
+                data: modelAksiok
+              })
+            }
+          });
+        }
+        else {
+          aksiokAddAndEdit.parametersModelField.loginUserField = authService.autorization.loginField;
+          aksiokAddAndEdit.parametersModelField.passwordField = authService.autorization.passwordField;
+          this.editandadd.uploadFileAksiok(aksiokAddAndEdit);
+        }
+      }
+      else {
+        alert("Процесс по синхронизации данных ещё не завершён!!!")
+      }
+    });
   }
 
   public displayedColumns = ['Logic', 'IdModel', 'User.NameUser', 'Supply.DatePostavki', 'FullProizvoditel.NameProizvoditel', 'FullModel.NameModel', 'Name', 'ZavNumber', 'ServiceNumber', 'InventarNumber', 'IpAdress', 'Coment', 'Kabinet.NumberKabinet', 'Statusing.NameStatus', 'WriteOffSign', 'ActionsColumn'];
@@ -2175,6 +2315,42 @@ export class ScanerAndCamerTableModel implements INewLogicaTable<ScanerAndCamer>
     });
   }
 
+  public aksiokEditAndAdd(model: ScanerAndCamer, modelRequest: string, dialog: MatDialog, authService: AuthIdentification) {
+    this.editandadd.isBeginTask(6).toPromise().then((isCheck: boolean) => {
+      var isBeginTask = isCheck
+      if (isBeginTask) {
+        var aksiokAddAndEdit = new AksiokAddAndEdit();
+        aksiokAddAndEdit.parametersModelField.modelRequestField = modelRequest;
+        aksiokAddAndEdit.parametersModelField.inventoryNumField = model.InventarNumber;
+        aksiokAddAndEdit.parametersModelField.serNumberField = model.ZavNumber;
+        if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'Edit' || aksiokAddAndEdit.parametersModelField.modelRequestField === 'Add') {
+          this.editandadd.validationModelAksiok(aksiokAddAndEdit).toPromise().then((modelAksiok: AksiokAddAndEdit) => {
+            if (modelAksiok.parametersModelField.errorServerField) {
+              alert(modelAksiok.parametersModelField.errorServerField);
+              return;
+            }
+            else {
+              const dialogRef = dialog.open(DialogAksiokEditAndAdd, {
+                width: "1000px",
+                height: "750px",
+                data: modelAksiok
+              })
+            }
+          });
+        }
+        else {
+          aksiokAddAndEdit.parametersModelField.loginUserField = authService.autorization.loginField;
+          aksiokAddAndEdit.parametersModelField.passwordField = authService.autorization.passwordField;
+          this.editandadd.uploadFileAksiok(aksiokAddAndEdit);
+        }
+      }
+      else {
+        alert("Процесс по синхронизации данных ещё не завершён!!!")
+      }
+    });
+  }
+
+
   public displayedColumns = ['Logic', 'IdModel', 'User.NameUser', 'Supply.DatePostavki', 'FullProizvoditel.NameProizvoditel', 'FullModel.NameModel', 'ZavNumber', 'ServiceNumber', 'InventarNumber', 'IpAdress', 'Coment', 'Kabinet.NumberKabinet', 'Statusing.NameStatus', 'WriteOffSign', 'ActionsColumn'];
   public dataSource: MatTableDataSource<ScanerAndCamer> = new MatTableDataSource<ScanerAndCamer>();
   public modelvalid: ModelValidation = new ModelValidation()
@@ -2496,6 +2672,42 @@ export class MfuTableModel implements INewLogicaTable<Mfu>  {
     });
   }
 
+  public aksiokEditAndAdd(model: Mfu, modelRequest: string, dialog: MatDialog, authService: AuthIdentification) {
+    this.editandadd.isBeginTask(6).toPromise().then((isCheck: boolean) => {
+      var isBeginTask = isCheck
+      if (isBeginTask) {
+        var aksiokAddAndEdit = new AksiokAddAndEdit();
+        aksiokAddAndEdit.parametersModelField.modelRequestField = modelRequest;
+        aksiokAddAndEdit.parametersModelField.inventoryNumField = model.InventarNumber;
+        aksiokAddAndEdit.parametersModelField.serNumberField = model.ZavNumber;
+        if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'Edit' || aksiokAddAndEdit.parametersModelField.modelRequestField === 'Add') {
+          this.editandadd.validationModelAksiok(aksiokAddAndEdit).toPromise().then((modelAksiok: AksiokAddAndEdit) => {
+            if (modelAksiok.parametersModelField.errorServerField) {
+              alert(modelAksiok.parametersModelField.errorServerField);
+              return;
+            }
+            else {
+              const dialogRef = dialog.open(DialogAksiokEditAndAdd, {
+                width: "1000px",
+                height: "750px",
+                data: modelAksiok
+              })
+            }
+          });
+        }
+        else {
+          aksiokAddAndEdit.parametersModelField.loginUserField = authService.autorization.loginField;
+          aksiokAddAndEdit.parametersModelField.passwordField = authService.autorization.passwordField;
+          this.editandadd.uploadFileAksiok(aksiokAddAndEdit);
+        }
+      }
+      else {
+        alert("Процесс по синхронизации данных ещё не завершён!!!")
+      }
+    });
+  }
+
+
   public displayedColumns = ['Logic', 'IdModel', 'User.NameUser', 'Supply.DatePostavki', 'FullProizvoditel.NameProizvoditel', 'FullModel.NameModel', 'Name', 'ZavNumber', 'ServiceNumber', 'InventarNumber', 'IpAdress', 'CopySave.SerNum', 'Coment', 'Kabinet.NumberKabinet', 'Statusing.NameStatus', 'WriteOffSign', 'ActionsColumn'];
   public dataSource: MatTableDataSource<Mfu> = new MatTableDataSource<Mfu>();
   public modelvalid: ModelValidation = new ModelValidation()
@@ -2791,6 +3003,9 @@ export class SysBlockTableModel implements INewLogicaTable<SysBlock>  {
   public createSTO(model: SysBlock, template: FullTemplateSupport, authService: AuthIdentification, dialog: MatDialog) {
     if (model.User) {
       model.User.Otdel.User = null;
+      if (model.User.Telephon) {
+        model.User.Telephon.User = null;
+      }
     }
     var modelDialog = new ModelDialog();
     modelDialog.discription = template.Description;
@@ -2827,6 +3042,42 @@ export class SysBlockTableModel implements INewLogicaTable<SysBlock>  {
       }
     });
   }
+
+  public aksiokEditAndAdd(model: SysBlock, modelRequest: string, dialog: MatDialog, authService: AuthIdentification) {
+    this.editandadd.isBeginTask(6).toPromise().then((isCheck: boolean) => {
+      var isBeginTask = isCheck
+      if (isBeginTask) {
+        var aksiokAddAndEdit = new AksiokAddAndEdit();
+        aksiokAddAndEdit.parametersModelField.modelRequestField = modelRequest;
+        aksiokAddAndEdit.parametersModelField.inventoryNumField = model.InventarNumSysBlok;
+        aksiokAddAndEdit.parametersModelField.serNumberField = model.SerNum;
+        if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'Edit' || aksiokAddAndEdit.parametersModelField.modelRequestField === 'Add') {
+          this.editandadd.validationModelAksiok(aksiokAddAndEdit).toPromise().then((modelAksiok: AksiokAddAndEdit) => {
+            if (modelAksiok.parametersModelField.errorServerField) {
+              alert(modelAksiok.parametersModelField.errorServerField);
+              return;
+            }
+            else {
+              const dialogRef = dialog.open(DialogAksiokEditAndAdd, {
+                width: "1000px",
+                height: "750px",
+                data: modelAksiok
+              })
+            }
+          });
+        }
+        else {
+          aksiokAddAndEdit.parametersModelField.loginUserField = authService.autorization.loginField;
+          aksiokAddAndEdit.parametersModelField.passwordField = authService.autorization.passwordField;
+          this.editandadd.uploadFileAksiok(aksiokAddAndEdit);
+        }
+      }
+      else {
+        alert("Процесс по синхронизации данных ещё не завершён!!!")
+      }
+    });
+  }
+
   ///Создание акта
   public createAct(model: SysBlock) {
     var modelSelect = new ModelSelect(0);
@@ -3160,6 +3411,41 @@ export class MonitorsTableModel implements INewLogicaTable<Monitor>  {
     });
   }
 
+  public aksiokEditAndAdd(model: Monitor, modelRequest: string, dialog: MatDialog, authService: AuthIdentification) {
+    this.editandadd.isBeginTask(6).toPromise().then((isCheck: boolean) => {
+      var isBeginTask = isCheck
+      if (isBeginTask) {
+        var aksiokAddAndEdit = new AksiokAddAndEdit();
+        aksiokAddAndEdit.parametersModelField.modelRequestField = modelRequest;
+        aksiokAddAndEdit.parametersModelField.inventoryNumField = model.InventarNumMonitor;
+        aksiokAddAndEdit.parametersModelField.serNumberField = model.SerNum;
+        if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'Edit' || aksiokAddAndEdit.parametersModelField.modelRequestField === 'Add') {
+          this.editandadd.validationModelAksiok(aksiokAddAndEdit).toPromise().then((modelAksiok: AksiokAddAndEdit) => {
+            if (modelAksiok.parametersModelField.errorServerField) {
+              alert(modelAksiok.parametersModelField.errorServerField);
+              return;
+            }
+            else {
+              const dialogRef = dialog.open(DialogAksiokEditAndAdd, {
+                width: "1000px",
+                height: "750px",
+                data: modelAksiok
+              })
+            }
+          });
+        }
+        else {
+          aksiokAddAndEdit.parametersModelField.loginUserField = authService.autorization.loginField;
+          aksiokAddAndEdit.parametersModelField.passwordField = authService.autorization.passwordField;
+          this.editandadd.uploadFileAksiok(aksiokAddAndEdit);
+        }
+      }
+      else {
+        alert("Процесс по синхронизации данных ещё не завершён!!!")
+      }
+    });
+  }
+
   public displayedColumns = ['Logic', 'IdModel', 'User.NameUser', 'Supply.DatePostavki', 'NameMonitor.NameManufacturer', 'NameMonitor.NameModel', 'ServiceNum', 'SerNum', 'InventarNumMonitor', 'Kabinet.NumberKabinet', 'Coment', 'Statusing.NameStatus', 'WriteOffSign', 'ActionsColumn'];
   public dataSource: MatTableDataSource<Monitor> = new MatTableDataSource<Monitor>();
   public modelvalid: ModelValidation = new ModelValidation()
@@ -3478,7 +3764,7 @@ export class TelephonsTableModel implements INewLogicaTable<Telephon> {
     });
   }
 
-  public displayedColumns = ['Logic', 'IdTelephone', 'User.NameUser', 'Supply.DatePostavki', 'NameTelephone', 'Telephon_', 'TelephonUndeground', 'ServiceNum', 'SerNumber', 'InventarNum', 'IpTelephon', 'MacTelephon', 'Kabinet.NumberKabinet', 'Coment', 'Statusing.NameStatus', 'CategoryPhoneHeader.NameHeaders', 'WriteOffSign', 'ActionsColumn'];
+  public displayedColumns = ['Logic', 'IdTelephone', 'User.NameUser', 'Supply.DatePostavki', 'NameTelephone', 'Telephon_', 'TelephonUndeground', 'ServiceNum', 'SerNumber', 'InventarNumberTelephone', 'IpTelephon', 'MacTelephon', 'Kabinet.NumberKabinet', 'Coment', 'Statusing.NameStatus', 'CategoryPhoneHeader.NameHeaders', 'WriteOffSign', 'ActionsColumn'];
   public dataSource: MatTableDataSource<Telephon> = new MatTableDataSource<Telephon>();
   public modelvalid: ModelValidation = new ModelValidation()
 
@@ -3759,6 +4045,42 @@ export class BlockPowerTableModel implements INewLogicaTable<BlockPower> {
   createSTO(model: BlockPower, template: FullTemplateSupport, authService: AuthIdentification, dialog: MatDialog): void {
     throw new Error("Method not implemented.");
   }
+
+  public aksiokEditAndAdd(model: BlockPower, modelRequest: string, dialog: MatDialog, authService: AuthIdentification) {
+    this.editandadd.isBeginTask(6).toPromise().then((isCheck: boolean) => {
+      var isBeginTask = isCheck
+      if (isBeginTask) {
+        var aksiokAddAndEdit = new AksiokAddAndEdit();
+        aksiokAddAndEdit.parametersModelField.modelRequestField = modelRequest;
+        aksiokAddAndEdit.parametersModelField.inventoryNumField = model.InventarNumber;
+        aksiokAddAndEdit.parametersModelField.serNumberField = model.ZavNumber;
+        if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'Edit' || aksiokAddAndEdit.parametersModelField.modelRequestField === 'Add') {
+          this.editandadd.validationModelAksiok(aksiokAddAndEdit).toPromise().then((modelAksiok: AksiokAddAndEdit) => {
+            if (modelAksiok.parametersModelField.errorServerField) {
+              alert(modelAksiok.parametersModelField.errorServerField);
+              return;
+            }
+            else {
+              const dialogRef = dialog.open(DialogAksiokEditAndAdd, {
+                width: "1000px",
+                height: "750px",
+                data: modelAksiok
+              })
+            }
+          });
+        }
+        else {
+          aksiokAddAndEdit.parametersModelField.loginUserField = authService.autorization.loginField;
+          aksiokAddAndEdit.parametersModelField.passwordField = authService.autorization.passwordField;
+          this.editandadd.uploadFileAksiok(aksiokAddAndEdit);
+        }
+      }
+      else {
+        alert("Процесс по синхронизации данных ещё не завершён!!!")
+      }
+    });
+  }
+
 
   public displayedColumns = ['Logic', 'IdBlockPowers', 'User.NameUser', 'Supply.DatePostavki', 'ProizvoditelBlockPower.Name', 'ModelBlockPower.Name', 'ZavNumber', 'ServiceNumber', 'InventarNumber', 'Coment', 'Kabinet.NumberKabinet', 'Statusing.NameStatus', 'WriteOffSign', 'ActionsColumn'];
   public dataSource: MatTableDataSource<BlockPower> = new MatTableDataSource<BlockPower>();
@@ -4140,6 +4462,8 @@ export class NameSysBlockTableModel implements INewLogicaTable<NameSysBlock> {
 
   public save(): void {
     this.modifimethod();
+    var converter = new ConvertDate();
+    this.model = converter.convertDateToServer<NameSysBlock>(JSON.parse(JSON.stringify(this.model)));
     this.editandadd.addAndEditNameSysBlock(this.model).toPromise().then((model: ModelReturn<NameSysBlock>) => {
       if (model.Model === null) {
         alert(model.Message)
@@ -4322,6 +4646,8 @@ export class NameMonitorTableModel implements INewLogicaTable<NameMonitor> {
 
   public save(): void {
     this.modifimethod();
+    var converter = new ConvertDate();
+    this.model = converter.convertDateToServer<NameMonitor>(JSON.parse(JSON.stringify(this.model)));
     this.editandadd.addAndEditNameMonitor(this.model).toPromise().then((model: ModelReturn<NameMonitor>) => {
       if (model.Model === null) {
         alert(model.Message)
@@ -4505,6 +4831,8 @@ export class NameModelBlokPowerTableModel implements INewLogicaTable<ModelBlockP
 
   public save(): void {
     this.modifimethod();
+    var converter = new ConvertDate();
+    this.model = converter.convertDateToServer<ModelBlockPower>(JSON.parse(JSON.stringify(this.model)));
     this.editandadd.addAndEditNameModelBlokPower(this.model).toPromise().then((model: ModelReturn<ModelBlockPower>) => {
       if (model.Model === null) {
         alert(model.Message)
@@ -4687,6 +5015,8 @@ export class NameProizvoditelBlockPowerTableModel implements INewLogicaTable<Pro
 
   public save(): void {
     this.modifimethod();
+    var converter = new ConvertDate();
+    this.model = converter.convertDateToServer<ProizvoditelBlockPower>(JSON.parse(JSON.stringify(this.model)));
     this.editandadd.addAndEditNameProizvoditelBlockPower(this.model).toPromise().then((model: ModelReturn<ProizvoditelBlockPower>) => {
       if (model.Model === null) {
         alert(model.Message)
@@ -4876,6 +5206,8 @@ export class NameFullModelTableModel implements INewLogicaTable<FullModel> {
 
   public save(): void {
     this.modifimethod();
+    var converter = new ConvertDate();
+    this.model = converter.convertDateToServer<FullModel>(JSON.parse(JSON.stringify(this.model)));
     this.editandadd.addAndEditNameFullModel(this.model).toPromise().then((model: ModelReturn<FullModel>) => {
       if (model.Model === null) {
         alert(model.Message)
@@ -5064,6 +5396,8 @@ export class NameFullProizvoditelTableModel implements INewLogicaTable<FullProiz
 
   public save(): void {
     this.modifimethod();
+    var converter = new ConvertDate();
+    this.model = converter.convertDateToServer<FullProizvoditel>(JSON.parse(JSON.stringify(this.model)));
     this.editandadd.addAndEditNameFullProizvoditel(this.model).toPromise().then((model: ModelReturn<FullProizvoditel>) => {
       if (model.Model === null) {
         alert(model.Message)
@@ -5249,6 +5583,8 @@ export class NameClassificationTableModel implements INewLogicaTable<Classificat
 
   public save(): void {
     this.modifimethod();
+    var converter = new ConvertDate();
+    this.model = converter.convertDateToServer<Classification>(JSON.parse(JSON.stringify(this.model)));
     this.editandadd.addAndEditNameClassification(this.model).toPromise().then((model: ModelReturn<Classification>) => {
       if (model.Model === null) {
         alert(model.Message)
@@ -5435,6 +5771,8 @@ export class NameCopySaveTableModel implements INewLogicaTable<CopySave> {
 
   public save(): void {
     this.modifimethod();
+    var converter = new ConvertDate();
+    this.model = converter.convertDateToServer<CopySave>(JSON.parse(JSON.stringify(this.model)));
     this.editandadd.addAndEditNameCopySave(this.model).toPromise().then((model: ModelReturn<CopySave>) => {
       if (model.Model === null) {
         alert(model.Message)
@@ -5620,6 +5958,8 @@ export class NameKabinetTableModel implements INewLogicaTable<Kabinet> {
 
   public save(): void {
     this.modifimethod();
+    var converter = new ConvertDate();
+    this.model = converter.convertDateToServer<Kabinet>(JSON.parse(JSON.stringify(this.model)));
     this.editandadd.addAndEditNameKabinet(this.model).toPromise().then((model: ModelReturn<Kabinet>) => {
       if (model.Model === null) {
         alert(model.Message)
@@ -5818,6 +6158,8 @@ export class NameSupplyTableModel implements INewLogicaTable<Supply> {
 
   public save(): void {
     this.modifimethod();
+    var converter = new ConvertDate();
+    this.model = converter.convertDateToServer<Supply>(JSON.parse(JSON.stringify(this.model)));
     this.editandadd.addAndEditNameSupplys(this.modelToServer).toPromise().then((model: ModelReturn<Supply>) => {
       if (model.Model === null) {
         alert(model.Message)
@@ -6007,6 +6349,8 @@ export class NameStatusingTableModel implements INewLogicaTable<Statusing> {
 
   public save(): void {
     this.modifimethod();
+    var converter = new ConvertDate();
+    this.model = converter.convertDateToServer<Statusing>(JSON.parse(JSON.stringify(this.model)));
     this.editandadd.addAndEditNameStatus(this.model).toPromise().then((model: ModelReturn<Statusing>) => {
       if (model.Model === null) {
         alert(model.Message)
@@ -6192,6 +6536,8 @@ export class NameModelSwitheTableModel implements INewLogicaTable<ModelSwithes> 
 
   public save(): void {
     this.modifimethod();
+    var converter = new ConvertDate();
+    this.model = converter.convertDateToServer<ModelSwithes>(JSON.parse(JSON.stringify(this.model)));
     this.editandadd.addAndEditModelSwitch(this.model).toPromise().then((model: ModelReturn<ModelSwithes>) => {
       if (model.Model === null) {
         alert(model.Message)
@@ -6378,6 +6724,8 @@ export class ModelSeverEquipmenTableModel implements INewLogicaTable<ModelSeverE
 
   public save(): void {
     this.modifimethod();
+    var converter = new ConvertDate();
+    this.model = converter.convertDateToServer<ModelSeverEquipment>(JSON.parse(JSON.stringify(this.model)));
     this.editandadd.addAndEditModelSeverEquipment(this.model).toPromise().then((model: ModelReturn<ModelSeverEquipment>) => {
       if (model.Model === null) {
         alert(model.Message)
@@ -6561,6 +6909,8 @@ export class ManufacturerSeverEquipmentTableModel implements INewLogicaTable<Man
 
   public save(): void {
     this.modifimethod();
+    var converter = new ConvertDate();
+    this.model = converter.convertDateToServer<ManufacturerSeverEquipment>(JSON.parse(JSON.stringify(this.model)));
     this.editandadd.addAndEditManufacturerSeverEquipment(this.model).toPromise().then((model: ModelReturn<ManufacturerSeverEquipment>) => {
       if (model.Model === null) {
         alert(model.Message)
@@ -6745,6 +7095,8 @@ export class TypeServerTableModel implements INewLogicaTable<TypeServer>{
 
   public save(): void {
     this.modifimethod();
+    var converter = new ConvertDate();
+    this.model = converter.convertDateToServer<TypeServer>(JSON.parse(JSON.stringify(this.model)));
     this.editandadd.addAndEditTypeServer(this.model).toPromise().then((model: ModelReturn<TypeServer>) => {
       if (model.Model === null) {
         alert(model.Message)
@@ -8694,6 +9046,8 @@ export class TypeOtherTableModel implements INewLogicaTable<TypeOther>{
 
   public save(): void {
     this.modifimethod();
+    var converter = new ConvertDate();
+    this.model = converter.convertDateToServer<TypeOther>(JSON.parse(JSON.stringify(this.model)));
     this.editandadd.addAndEditTypeOther(this.model).toPromise().then((model: ModelReturn<TypeOther>) => {
       if (model.Model === null) {
         alert(model.Message)
@@ -8882,6 +9236,8 @@ export class ProizvoditelOtherTableModel implements INewLogicaTable<Proizvoditel
 
   public save(): void {
     this.modifimethod();
+    var converter = new ConvertDate();
+    this.model = converter.convertDateToServer<ProizvoditelOther>(JSON.parse(JSON.stringify(this.model)));
     this.editandadd.addAndEditProizvoditelOther(this.model).toPromise().then((model: ModelReturn<ProizvoditelOther>) => {
       if (model.Model === null) {
         alert(model.Message)
@@ -9070,6 +9426,8 @@ export class ModelOtherTableModel implements INewLogicaTable<ModelOther>{
 
   public save(): void {
     this.modifimethod();
+    var converter = new ConvertDate();
+    this.model = converter.convertDateToServer<ModelOther>(JSON.parse(JSON.stringify(this.model)));
     this.editandadd.addAndEditModelOther(this.model).toPromise().then((model: ModelReturn<ModelOther>) => {
       if (model.Model === null) {
         alert(model.Message)
@@ -9169,9 +9527,12 @@ export class EventProcessTableModel implements INewLogicaTable<EventProcess>{
   createSTO(model: EventProcess, template: FullTemplateSupport, authService: AuthIdentification, dialog: MatDialog): void {
     throw new Error("Method not implemented.");
   }
+
+  public selectDayOfTheWeek: SelectDayOfTheWeek[];
   public modelvalid: ModelValidation = new ModelValidation()
-  public displayedColumns = ['Id', 'NameProcess', 'DayX', 'HoursX', 'MinutesX', 'ParametersEvent', 'IsComplete', 'DataStart', 'DataFinish', 'ActionsColumn'];
+  public displayedColumns = ['Logic', 'IdProcess', 'InfoEvent', 'SelectDayOfTheWeek.RuTextDayOfTheWeek', 'HoursX', 'MinutesX', 'IsTimeEventProcess', 'IsExistsParameters', 'IsComplete', 'DataStart', 'DataFinish', 'ActionsColumn'];
   public dataSource: MatTableDataSource<EventProcess> = new MatTableDataSource<EventProcess>();
+
 
   isAdd: boolean;
   isEdit: boolean;
@@ -9181,6 +9542,9 @@ export class EventProcessTableModel implements INewLogicaTable<EventProcess>{
   index: number;
   modeltable: EventProcess[];
   modelToServer: EventProcess;
+
+  public filteredSelectDayOfTheWeek: any;
+
   //Подписка
   public subscribeAddAndUpdate: any = null;
   //Шаблоны для манипулирования DOM
@@ -9200,12 +9564,12 @@ export class EventProcessTableModel implements INewLogicaTable<EventProcess>{
         this.removetemplate();
         this.model = submodel
       }
-      var index = this.dataSource.data.find(x => x.Id === submodel.Id);
-      var indexzero = this.dataSource.data.find(x => x.Id === 0);
+      var index = this.dataSource.data.find(x => x.IdProcess === submodel.IdProcess);
+      var indexzero = this.dataSource.data.find(x => x.IdProcess === 0);
       try {
         if (indexzero) {
           ///Для изменявшего
-          this.dataSource.data.find(x => x.Id === 0).Id = submodel.Id;
+          this.dataSource.data.find(x => x.IdProcess === 0).IdProcess = submodel.IdProcess;
         }
         else {
           if (index) {
@@ -9228,7 +9592,7 @@ export class EventProcessTableModel implements INewLogicaTable<EventProcess>{
   }
 
   calbackfiltersAll(): void {
-    throw new Error("Method not implemented.");
+    this.filteredSelectDayOfTheWeek = this.selectDayOfTheWeek.slice();
   }
 
   filterstable(filterValue: string): void {
@@ -9246,14 +9610,14 @@ export class EventProcessTableModel implements INewLogicaTable<EventProcess>{
     this.model = newmodel;
     await this.dataSource._updateChangeSubscription();
     await this.dataSource.paginator.lastPage();
-    this.addtemplate(newmodel.Id);
+    this.addtemplate(newmodel.IdProcess);
   }
 
   edit(model: EventProcess): void {
     model.ModelIsEdit = true;
     this.modelCancelError = JSON.parse(JSON.stringify(model));
     this.model = JSON.parse(JSON.stringify(model));
-    this.addtemplate(model.Id)
+    this.addtemplate(model.IdProcess)
     this.isEditAndAddTrue();
   }
 
@@ -9284,7 +9648,7 @@ export class EventProcessTableModel implements INewLogicaTable<EventProcess>{
       this.index = 0;
     }
     else {
-      var userdefault = this.modeltable.find(x => x.Id === this.model.Id);
+      var userdefault = this.modeltable.find(x => x.IdProcess === this.model.IdProcess);
       this.dataSource.data[this.modeltable.indexOf(userdefault)] = model;
       this.index = 0;
     }
@@ -9295,7 +9659,196 @@ export class EventProcessTableModel implements INewLogicaTable<EventProcess>{
   newmodel(): EventProcess {
     var newuser: EventProcess = new EventProcess();
     newuser.ModelIsEdit = true;
-    newuser.Id = 0;
+    newuser.IdProcess = 0;
+    return newuser;
+  }
+
+  //Костыль дожидаемся обновление DOM
+  async delay(ms: number): Promise<void> {
+    await new Promise(resolve => setTimeout(() => resolve(null), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+  }
+
+  ///Добавить шаблон в строку это просто жесть
+  async addtemplate(index: number): Promise<void> {
+    var i = 0;
+    await this.delay(10);
+    this.temlateList = this.fulltemplate.nativeElement.querySelectorAll("mat-form-field[id=template]");
+    this.rowList = this.table.nativeElement.querySelectorAll("div[class='" + index + "']");
+    for (var row of this.rowList) {
+      row.append(this.temlateList[i])
+      i++;
+    }
+  }
+
+  ///Удалить шаблон из строки и востановить текущий шаблон
+  removetemplate(): void {
+    var i = 0;
+    for (var row of this.rowList) {
+      row.removeChild(this.temlateList[i]);
+      this.fulltemplate.nativeElement.append(this.temlateList[i])
+      i++;
+    }
+  }
+
+  modifimethod(): void {
+    this.model.SelectDayOfTheWeek ? this.model.IdDayOfTheWeek = this.model.SelectDayOfTheWeek.IdDayOfTheWeek : this.model.IdDayOfTheWeek = null;
+    this.isEdit = true;
+    this.model.ModelIsEdit = false;
+  }
+
+  public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef<any>, template: ElementRef<any>): Promise<string> {
+    this.table = table;  //Таблица
+    console.log(model.SelectDayOfTheWeek);
+    console.log(model.EventProcess);
+    this.fulltemplate = template; //Заложенный шаблон 
+    this.modeltable = JSON.parse(JSON.stringify(model.EventProcess));
+    this.dataSource.data = model.EventProcess;
+    this.dataSource.paginator = paginator;
+    this.dataSource.sort = sort;
+    this.selectDayOfTheWeek = model.SelectDayOfTheWeek;
+    this.filteredSelectDayOfTheWeek = this.selectDayOfTheWeek.slice();
+    return "Процессы заполнены";
+  }
+
+  isEditAndAddTrue(): void {
+    this.isEdit = true;
+    this.isAdd = true;
+  }
+
+  isEditAndAddFalse(): void {
+    this.isAdd = false;
+    this.isEdit = false;
+  }
+}
+
+export class ParameterEventProcessTableModel implements INewLogicaTable<ParameterEventProcess>{
+
+  constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
+    this.subscribeservers();
+  }
+
+  createSTO(model: ParameterEventProcess, template: FullTemplateSupport, authService: AuthIdentification, dialog: MatDialog): void {
+    throw new Error("Method not implemented.");
+  }
+
+  public displayedColumns = ['IdParameters', 'NameParameters', 'InfoParameters', 'Parameters', 'ActionsColumn'];
+  public dataSource: MatTableDataSource<ParameterEventProcess> = new MatTableDataSource<ParameterEventProcess>();
+
+  isAdd: boolean;
+  isEdit: boolean;
+  modelCancelError: ParameterEventProcess = new ParameterEventProcess();
+  model: ParameterEventProcess = new ParameterEventProcess();
+
+  index: number;
+  modeltable: ParameterEventProcess[];
+  modelToServer: ParameterEventProcess;
+  //Подписка
+  public subscribeAddAndUpdate: any = null;
+
+  //Шаблоны для манипулирования DOM
+  temlateList: any;
+  rowList: any;
+  fulltemplate: ElementRef<any>;
+  table: ElementRef<any>;
+
+  public subscribeservers() {
+    this.subscribeAddAndUpdate = new BroadcastEventListener<ParameterEventProcess>('SubscribeParameterEventProcess');
+    this.SignalR.conect.listen(this.subscribeAddAndUpdate);
+    this.subscribeAddAndUpdate.subscribe((substring: string) => {
+      var submodel = deserialize<ParameterEventProcess>(ParameterEventProcess, substring);
+      this.index = 0;
+      if (this.isEdit) {
+        this.isEditAndAddFalse();
+        this.removetemplate();
+        this.model = submodel
+      }
+
+      var index = this.dataSource.data.find(x => x.IdParameters === submodel.IdParameters);
+      var indexzero = this.dataSource.data.find(x => x.IdParameters === 0);
+      try {
+        if (indexzero) {
+          ///Для изменявшего
+          this.dataSource.data.find(x => x.IdParameters === 0).IdParameters = submodel.IdParameters;
+        }
+        else {
+          if (index) {
+            ///Для остальных пользователей изменение
+            this.dataSource.data[this.dataSource.data.indexOf(index)] = submodel;
+            this.modeltable[this.modeltable.indexOf(index)] = submodel;
+          }
+        }
+        this.dataSource._updateChangeSubscription();
+      }
+      catch (e) {
+        console.log(e);
+      }
+    });
+  }
+
+  calbackfiltersAll(): void {
+    alert("В данной модели функция не будет реализована!!!");
+    throw new Error("Method not implemented.");
+  }
+
+  filterstable(filterValue: string): void {
+    filterValue = filterValue.trim(); // Remove whitespace
+    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
+    this.dataSource.filter = filterValue;
+  }
+
+  public async add(): Promise<void> {
+    alert("В данной модели функция не будет реализована!!!");
+    throw new Error("Method not implemented.");
+  }
+
+  edit(model: ParameterEventProcess): void {
+    model.ModelIsEdit = true;
+    this.modelCancelError = JSON.parse(JSON.stringify(model));
+    this.model = JSON.parse(JSON.stringify(model));
+    this.addtemplate(model.IdParameters)
+    this.isEditAndAddTrue();
+  }
+
+  public save(): void {
+    this.modifimethod();
+    var converter = new ConvertDate();
+    this.modelToServer = converter.convertDateToServer<ParameterEventProcess>(JSON.parse(JSON.stringify(this.model)));
+    this.editandadd.editParameterEventProcess(this.modelToServer).toPromise().then((model: ModelReturn<ParameterEventProcess>) => {
+      if (model.Model === null) {
+        alert(model.Message)
+        this.cancel(this.modelCancelError);
+      }
+    });
+    //Запрос на сохранение и обновление данных
+  }
+
+  ///Удаление
+  delete(): void {
+    alert("В данной модели функция не будет реализована!!!");
+    throw new Error("Method not implemented.");
+  }
+
+  ///Отмена
+  cancel(model: ParameterEventProcess): void {
+    model.ModelIsEdit = false;
+    this.isEditAndAddFalse();
+    if (this.index > 0) {
+      this.dataSource.data.pop();
+      this.index = 0;
+    }
+    else {
+      var userdefault = this.modeltable.find(x => x.IdParameters === this.model.IdParameters);
+      this.dataSource.data[this.modeltable.indexOf(userdefault)] = model;
+      this.index = 0;
+    }
+    this.dataSource._updateChangeSubscription();
+    this.removetemplate();
+  }
+
+  newmodel(): ParameterEventProcess {
+    var newuser: ParameterEventProcess = new ParameterEventProcess();
+    newuser.ModelIsEdit = true;
+    newuser.IdParameters = 0;
     return newuser;
   }
 
@@ -9333,9 +9886,10 @@ export class EventProcessTableModel implements INewLogicaTable<EventProcess>{
 
   public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef<any>, template: ElementRef<any>): Promise<string> {
     this.table = table;  //Таблица
+    console.log(this.dataSource)
     this.fulltemplate = template; //Заложенный шаблон
-    this.modeltable = JSON.parse(JSON.stringify(model.EventProcess));
-    this.dataSource.data = model.EventProcess;
+    this.modeltable = JSON.parse(JSON.stringify(model.ParameterEventProcess));
+    this.dataSource.data = model.ParameterEventProcess;
     this.dataSource.paginator = paginator;
     this.dataSource.sort = sort;
     return "Параметры для процессов заполнены";
@@ -9350,7 +9904,11 @@ export class EventProcessTableModel implements INewLogicaTable<EventProcess>{
     this.isAdd = false;
     this.isEdit = false;
   }
+
 }
+
+
+
 
 export class SettingCategoryPhoneHeader implements INewLogicaTable<CategoryPhoneHeader>  {
 

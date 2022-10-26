@@ -7,7 +7,7 @@ import {
     BlockPower, UsersIsActualsStats, Classification, Rules,
     FullSelectedModel, NameMonitor, FullProizvoditel, Statusing,
     FullModel, CopySave, NameSysBlock, Otdel, Position,
-    Telephon, Supply, ModelBlockPower, ProizvoditelBlockPower, Swithe, ModelSwithes, MailIdentifier, MailGroup, AllTechnics, SettingDepartmentCaseToServer, RegulationsDepartment
+    Telephon, Supply, ModelBlockPower, ProizvoditelBlockPower, Swithe, ModelSwithes, MailIdentifier, MailGroup, AllTechnics, SettingDepartmentCaseToServer, RegulationsDepartment, Producer, EquipmentModel
 } from '../Inventory/ModelInventory/InventoryModel';
 import { AdressInventarka, ServerHost } from '../AdressGetPost/AdressInventory';
 import { deserializeArray } from 'class-transformer';
@@ -16,10 +16,11 @@ import { DocumentReport } from '../Inventory/AllSelectModel/Report/ReportModel';
 import { UploadFile } from '../Inventory/AddFullModel/ModelTable/FileModel';
 import { BookModels } from '../Inventory/ModelInventory/ViewInventory';
 import { NgxPermissionsService } from 'ngx-permissions';
-import { WebMailModel, FullTemplateSupport, ModelParametrSupport, ServerEquipment, ModelSeverEquipment, ManufacturerSeverEquipment, TypeServer, RuleUsers, Token, Organization, SettingDepartmentCaseGetServer, Rb_Holiday, RegulationsDepartmentToServer, ResourceIt, TaskAis3, JournalAis3, AllUsersFilters, OtherAll, ModelOther, TypeOther, ProizvoditelOther, AnalysisEpoAndInventarka, EventProcess, CategoryPhoneHeader, AksiokAddAndEdit } from '../Inventory/ModelInventory/InventoryModel';
+import { WebMailModel, FullTemplateSupport, ModelParametrSupport, ServerEquipment, ModelSeverEquipment, ManufacturerSeverEquipment, TypeServer, RuleUsers, Token, Organization, SettingDepartmentCaseGetServer, Rb_Holiday, RegulationsDepartmentToServer, ResourceIt, TaskAis3, JournalAis3, AllUsersFilters, OtherAll, ModelOther, TypeOther, ProizvoditelOther, AnalysisEpoAndInventarka, EventProcess, CategoryPhoneHeader, AksiokAddAndEdit, EquipmentType, FullCategories, KitsEquipment, UploadFileAksiok, ParameterEventProcess, SelectDayOfTheWeek } from '../Inventory/ModelInventory/InventoryModel';
 import { Router, NavigationExtras } from '@angular/router';
 import { ReportCardModel } from '../Inventory/AddFullModel/DialogReportCard/ReportCardModel/ReportCardModel';
 import { ModelMemoReport } from '../LKUser/Main/Model/ReportMemo';
+import { ModelAksiok } from '../Inventory/AddFullModel/DialogAksiokEditAndAdd/DialogAksiokModel/DialogAksiokModel';
 
 
 const url: AdressInventarka = new AdressInventarka();
@@ -193,6 +194,36 @@ export class PostInventar {
                 var a = document.createElement('a');
                 a.href = url;
                 a.download = "Телефонный справочник инспекции";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            });
+    }
+    ///Выгрузка умного отчета по сравнению данных с системами
+    public downLoadReportFileXlsxSqlView(modelSelect: ModelSelect) {
+        this.http.post(url.reportFileXlsxSqlView, modelSelect,
+            { responseType: 'arraybuffer', headers: new HttpHeaders({ 'Content-Type': 'application/json' }) }).subscribe(async model => {
+                var blob = new Blob([model], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                var url = window.URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = modelSelect.logicaSelectField.nameReportFileField;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            });
+    }
+    ///Выгрузка умного отчета по сравнению данных техники с системами
+    public downLoadReportFileSqlViewTechReport(modelSelect: ModelSelect) {
+        this.http.post(url.reportFileSqlViewTechReport, modelSelect,
+            { responseType: 'arraybuffer', headers: new HttpHeaders({ 'Content-Type': 'application/json' }) }).subscribe(async model => {
+                var blob = new Blob([model], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                var url = window.URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = modelSelect.logicaSelectField.nameReportFileField;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
@@ -605,11 +636,30 @@ export class PostInventar {
             }
         })
     }
-    ///Все параметры для процесса
+    ///Все процесса
     async allEventProcess() {
         this.select.EventProcess = await this.http.get(url.allEventProcess, httpOptionsJson).toPromise().then(model => {
             if (model) {
                 return deserializeArray<EventProcess>(EventProcess, model.toString());
+            }
+        });
+    }
+    ///Расписание процесса дни
+    async allDayOfTheWeekProcess() {
+        this.select.SelectDayOfTheWeek = await this.http.get(url.allDayOfTheWeekProcess, httpOptionsJson).toPromise().then((model) => {
+            if (model) {
+                return deserializeArray<SelectDayOfTheWeek>(SelectDayOfTheWeek, model.toString());
+            }
+        });
+
+
+    }
+
+    ///Все параметры для процеса
+    async allParametersProcess(idProcess: number) {
+        this.select.ParameterEventProcess = await this.http.get(url.allEventProcessParameters.replace("{idProcess}", idProcess.toString()), httpOptionsJson).toPromise().then((model) => {
+            if (model) {
+                return deserializeArray<ParameterEventProcess>(ParameterEventProcess, model.toString());
             }
         });
     }
@@ -650,9 +700,66 @@ export class PostInventar {
 export class EditAndAdd {
     constructor(private http: HttpClient) { }
 
+    ///Проверка по УН запущен ли процесс или нет
+    public isBeginTask(idTask: number) {
+        return this.http.get(url.isBeginTask.replace("{idTask}", idTask.toString()), httpOptionsJson)
+    }
     ///Проверка модели на возможность внесения или редактирования АКСИОК
     validationModelAksiok(aksiokAddAndEdit: AksiokAddAndEdit) {
         return this.http.post(url.aksiokAddAndEditModelValidation, aksiokAddAndEdit, httpOptionsJson);
+    }
+    ///Выгрузка файла с сервера АКСИОК
+    uploadFileAksiok(aksiokAddAndEdit: AksiokAddAndEdit) {
+        this.http.post(url.uploadFileAksiok, aksiokAddAndEdit, httpOptionsJson).subscribe(async (uploadFile: UploadFileAksiok) => {
+            if (uploadFile) {
+                console.log(uploadFile);
+                var blob = new Blob([new Uint8Array(uploadFile.fileField).buffer], { type: uploadFile.typeFileField });
+                new Blob()
+                var url = window.URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = uploadFile.nameFileField;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            }
+            else {
+                alert("Отсутствует файл для выгрузки!!!")
+            }
+        });
+        ;
+    }
+    ///Проверка на комплектность оборудования
+    validationKitsEquipment(kitsEquipment: KitsEquipment) {
+        return this.http.post(url.kitsEquipmentValidation, kitsEquipment, httpOptionsJson);
+    }
+    ///Получить все типы АКСИОК
+    async selectAllAksiok(modelAksiok: ModelAksiok) {
+        modelAksiok.equipmentType = await this.http.get(url.selectAllEquipmentType, httpOptionsJson).toPromise().then(model => {
+            if (model) {
+                return deserializeArray<EquipmentType>(EquipmentType, model.toString())
+            }
+        });
+        modelAksiok.producer = await this.http.get(url.selectAllProducer, httpOptionsJson).toPromise().then(model => {
+            if (model) {
+                return deserializeArray<Producer>(Producer, model.toString())
+            }
+        });
+        modelAksiok.equipmentModel = await this.http.get(url.selectAllEquipmentModel, httpOptionsJson).toPromise().then(model => {
+            if (model) {
+                return deserializeArray<EquipmentModel>(EquipmentModel, model.toString())
+            }
+        });
+        modelAksiok.fullCategories = await this.http.get(url.selectAllFullСategories, httpOptionsJson).toPromise().then(model => {
+            if (model) {
+                return deserializeArray<FullCategories>(FullCategories, model.toString())
+            }
+        });
+    }
+    ///Функция Api добавления или редактирования Модели
+    aksiokAddAndEditModel(aksiokAddAndEdit: AksiokAddAndEdit) {
+        return this.http.post(url.aksiokAddAndEditModel, aksiokAddAndEdit, httpOptionsJson);
     }
 
     ///Редактирование глобальных настроек приложения для документо-оборота
@@ -885,6 +992,10 @@ export class EditAndAdd {
     addAndEditEventProcess(model: EventProcess) {
         return this.http.post(url.addAndEditEventProcess, model, httpOptionsJson)
     }
+    ///Редактирование для параметров
+    editParameterEventProcess(model: ParameterEventProcess) {
+        return this.http.post(url.editParameterEventProcess, model, httpOptionsJson)
+    }
     ///Создание заявки на СТО
     createSupport(modelParametrSupport: ModelParametrSupport) {
         return this.http.post(url.serviceSupport, modelParametrSupport, httpOptionsJson);
@@ -1041,14 +1152,11 @@ export class SelectAllParametrs {
         return this.http.get(url.isBeginTask.replace("{idTask}", idTask.toString()), httpOptionsJson)
     }
 
-    ///Обновить данные с сайта ЭПО
-    public startProcessUpdateSto() {
-        this.http.post(url.updateEpo, null, httpOptionsJson).toPromise().then();
+    ///Запуск любого процесса на сервере
+    public startProcessInventory(idProcess: number, userLogin: string = null, passwordUser: string = null) {
+        this.http.post(url.startProcess.replace("{idProcess}", idProcess.toString()).replace("{userLogin}", userLogin).replace("{passwordUser}", passwordUser), null, httpOptionsJson).toPromise().then();
     }
-    ///Обновление данных из АКСИОК
-    public startPocessUpdateAksiok(userLogin: string, passwordUser: string) {
-        this.http.post(url.updateAksiok.replace("{userLogin}", userLogin).replace("{passwordUser}", passwordUser), null, httpOptionsJson).toPromise().then();
-    }
+
     ///Получение отчетов по ЭПО всех
     public async selectAllReportEpo() {
         return await this.http.get(url.getModelReportAnalysisEpo, httpOptionsJson).toPromise().then(model => {

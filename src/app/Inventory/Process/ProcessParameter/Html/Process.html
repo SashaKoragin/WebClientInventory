@@ -1,6 +1,6 @@
 <h1>Настройки процессов</h1>
 <mat-tab-group [style.display]="isLoad ? 'none' : 'grid'">
-  <mat-tab label="Параметры">
+  <mat-tab label="Процессы">
     <div class="mat-elevation-z8">
       <form class="search">
         <mat-form-field class="search_blok">
@@ -14,27 +14,42 @@
       <div class="tables" #TABLEEVENTPROCESS>
         <table mat-table [dataSource]="eventProcess.dataSource" matSort>
 
-          <ng-container matColumnDef="Id">
-            <th class="id" *matHeaderCellDef mat-sort-header>Id</th>
-            <td class="cell" *matCellDef="let row" [matTooltip]="row.Id">
-              {{row.Id}}
+          <ng-container matColumnDef="Logic">
+            <th class="logic" mat-header-cell *matHeaderCellDef>Просмотр параметров</th>
+            <td class="cell" mat-cell *matCellDef="let row">
+              <ng-template ngxPermissionsOnly="Администратор">
+                <mat-checkbox (click)="$event.stopPropagation();"
+                  (change)="selectionEventProcess.toggle(row);selectProcessParametersStart()"
+                  [checked]="selectionEventProcess.isSelected(row)">
+                </mat-checkbox>
+              </ng-template>
             </td>
           </ng-container>
 
-          <ng-container matColumnDef="NameProcess">
+          <ng-container matColumnDef="IdProcess">
+            <th class="id" *matHeaderCellDef mat-sort-header>Id</th>
+            <td class="cell" *matCellDef="let row" [matTooltip]="row.IdProcess">
+              {{row.IdProcess}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="InfoEvent">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Информация о задании</th>
-            <td mat-cell *matCellDef="let row" [matTooltip]="row.NameProcess">
-              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.NameProcess}}</Label>
-              <div [ngClass]=row.Id.toString() id="{{row.Id}}" [style.display]="!row.ModelIsEdit ? 'none':'block'">
+            <td mat-cell *matCellDef="let row" [matTooltip]="row.InfoEvent">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.InfoEvent}}</Label>
+              <div [ngClass]=row.IdProcess.toString() id="{{row.IdProcess}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
               </div>
             </td>
           </ng-container>
 
-          <ng-container matColumnDef="DayX">
-            <th class="id2" mat-header-cell *matHeaderCellDef mat-sort-header>День запуска</th>
-            <td mat-cell *matCellDef="let row" [matTooltip]="row.DayX">
-              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.DayX}}</Label>
-              <div [ngClass]=row.Id.toString() id="{{row.Id}}" [style.display]="!row.ModelIsEdit ? 'none':'block'">
+          <ng-container matColumnDef="SelectDayOfTheWeek.RuTextDayOfTheWeek">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>День недели запуска</th>
+            <td mat-cell *matCellDef="let row">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'"
+              [matTooltip]="row.SelectDayOfTheWeek?.RuTextDayOfTheWeek">{{row.SelectDayOfTheWeek?.RuTextDayOfTheWeek}}</Label>
+              <div [ngClass]=row.IdProcess.toString() id="{{row.IdProcess}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
               </div>
             </td>
           </ng-container>
@@ -43,7 +58,8 @@
             <th class="id2" mat-header-cell *matHeaderCellDef mat-sort-header>Час запуска</th>
             <td mat-cell *matCellDef="let row" [matTooltip]="row.HoursX">
               <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.HoursX}}</Label>
-              <div [ngClass]=row.Id.toString() id="{{row.Id}}" [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              <div [ngClass]=row.IdProcess.toString() id="{{row.IdProcess}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
               </div>
             </td>
           </ng-container>
@@ -52,17 +68,29 @@
             <th class="id2" mat-header-cell *matHeaderCellDef mat-sort-header>Минуты запуска</th>
             <td mat-cell *matCellDef="let row" [matTooltip]="row.MinutesX">
               <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.MinutesX}}</Label>
-              <div [ngClass]=row.Id.toString() id="{{row.Id}}" [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              <div [ngClass]=row.IdProcess.toString() id="{{row.IdProcess}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
               </div>
             </td>
           </ng-container>
 
-          <ng-container matColumnDef="ParametersEvent">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Параметры задания</th>
-            <td mat-cell *matCellDef="let row" [matTooltip]="row.ParametersEvent">
-              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.ParametersEvent}}</Label>
-              <div [ngClass]=row.Id.toString() id="{{row.Id}}" [style.display]="!row.ModelIsEdit ? 'none':'block'">
+          <ng-container matColumnDef="IsTimeEventProcess">
+            <th class="id2" mat-header-cell *matHeaderCellDef mat-sort-header>Запуск</th>
+            <td class="cell" mat-cell *matCellDef="let row"
+              [matTooltip]="row.IsTimeEventProcess ? 'Запускаем по времени' : 'Не запускаем по времени'">
+              <mat-checkbox [style.display]="row.ModelIsEdit ? 'none':'inline'" [disabled]="true"
+                [(ngModel)]="row.IsTimeEventProcess"></mat-checkbox>
+              <div [ngClass]=row.IdProcess.toString() id="{{row.IdProcess}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
               </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="IsExistsParameters">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Признак параметров для процеса</th>
+            <td mat-cell *matCellDef="let row"
+              [matTooltip]="row.IsExistsParameters? 'Есть параметры': 'Нет параметров'">
+              {{row.IsExistsParameters? 'Есть параметры': 'Нет параметров'}}
             </td>
           </ng-container>
 
@@ -130,13 +158,22 @@
     </div>
     <div [style.display]="'none'" #TEMPLATEEVENTPROCESS>
       <mat-form-field id="template" class="validation">
-        <input matInput placeholder="Информация о задании" [ngModel]="eventProcess.model?.NameProcess"
-          (ngModelChange)="eventProcess.model.NameProcess = $event" />
+        <input matInput placeholder="Информация о задании" [ngModel]="eventProcess.model?.InfoEvent"
+          (ngModelChange)="eventProcess.model.InfoEvent = $event" />
       </mat-form-field>
       <mat-form-field id="template" class="validation">
-        <input matInput type="number" [formControl]="eventProcess.modelvalid?.getRowValidatorModel[15].get('DayX')"
-          placeholder="День запуска" [ngModel]="eventProcess.model?.DayX"
-          (ngModelChange)="eventProcess.model.DayX = $event" />
+        <mat-select (click)="eventProcess.calbackfiltersAll()"
+          [placeholder]="eventProcess.model.SelectDayOfTheWeek?.RuTextDayOfTheWeek"
+          [(ngModel)]="eventProcess.model.SelectDayOfTheWeek" name="user">
+          <mat-select-filter class="filter" [placeholder]="eventProcess.model.SelectDayOfTheWeek?.RuTextDayOfTheWeek"
+            [displayMember]="'RuTextDayOfTheWeek'" [array]="eventProcess.selectDayOfTheWeek"
+            (filteredReturn)="eventProcess.filteredSelectDayOfTheWeek =$event">
+          </mat-select-filter>
+          <mat-option [value]='null'>None</mat-option>
+          <mat-option *ngFor="let dayOfTheWeek of eventProcess.filteredSelectDayOfTheWeek" [value]="dayOfTheWeek">
+            {{dayOfTheWeek.RuTextDayOfTheWeek}}
+          </mat-option>
+        </mat-select>
       </mat-form-field>
       <mat-form-field id="template" class="validation">
         <input matInput type="number" [formControl]="eventProcess.modelvalid?.getRowValidatorModel[15].get('HoursX')"
@@ -148,10 +185,184 @@
           placeholder="Минуты запуска" [ngModel]="eventProcess.model?.MinutesX"
           (ngModelChange)="eventProcess.model.MinutesX = $event" />
       </mat-form-field>
+      <mat-form-field id="template" class="validation check">
+        <input matInput [hidden]="true" />
+        <mat-checkbox [(ngModel)]="eventProcess.model.IsTimeEventProcess"
+          [checked]="eventProcess.model.IsTimeEventProcess"></mat-checkbox>
+      </mat-form-field>
+    </div>
+    <div [style.display]="isVisibleParameters ? 'inline':'none'">
+      <div class="head">Информация о параметрах процесса:</div>
+      <div class="tables" #TABLEPARAMETEREVENTPROCESS>
+        <div *ngIf="parameterEventProcessTableModel.dataSource.data.length > 0">
+          <div>
+            <table mat-table [dataSource]="parameterEventProcessTableModel.dataSource" matSort>
+
+              <ng-container matColumnDef="IdParameters">
+                <th class="id" *matHeaderCellDef mat-sort-header>Id</th>
+                <td class="cell" *matCellDef="let row" [matTooltip]="row.IdParameters">
+                  {{row.IdParameters}}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="NameParameters">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Наименование параметра</th>
+                <td mat-cell *matCellDef="let row" [matTooltip]="row.NameParameters">
+                  {{row.NameParameters}}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="InfoParameters">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Информация о параметрах</th>
+                <td mat-cell *matCellDef="let row" [matTooltip]="row.InfoParameters">
+                  {{row.InfoParameters}}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="Parameters">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Параметр</th>
+                <td mat-cell *matCellDef="let row" [matTooltip]="row.Parameters">
+                  <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Parameters}}</Label>
+                  <div [ngClass]=row.IdParameters.toString() id="{{row.IdParameters}}"
+                    [style.display]="!row.ModelIsEdit ? 'none':'block'">
+                  </div>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="ActionsColumn">
+                <th class="formEdit" mat-header-cell *matHeaderCellDef>
+                  <ng-template [ngxPermissionsExcept]="['Оператор','Просмотр']">
+                    <button mat-icon-button color="primary" [disabled]="parameterEventProcessTableModel.isAdd"
+                      focusable="false" (click)="parameterEventProcessTableModel.add()">
+                      <i class="material-icons">person_add</i>
+                    </button>
+                  </ng-template>
+                </th>
+                <td mat-cell *matCellDef="let row">
+                  <ng-template [ngxPermissionsExcept]="['Просмотр']">
+                    <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="parameterEventProcessTableModel.isEdit"
+                      color="accent" (click)="parameterEventProcessTableModel.edit(row)">
+                      <i class="material-icons">edit</i>
+                    </button>
+                  </ng-template>
+                  <ng-template [ngxPermissionsExcept]="['Просмотр','Оператор','Редактор']">
+                    <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="parameterEventProcessTableModel.isEdit"
+                      (click)="parameterEventProcessTableModel.delete()">
+                      <i class="material-icons">delete</i>
+                    </button>
+                  </ng-template>
+                  <div *ngIf="row.ModelIsEdit">
+                    <button mat-icon-button type="submit" color="primary" focusable="false"
+                      (click)="parameterEventProcessTableModel.save()">
+                      <i class="material-icons">check</i>
+                    </button>
+                    <button mat-icon-button color="primary" focusable="false"
+                      (click)="parameterEventProcessTableModel.cancel(row)">
+                      <i class="material-icons">cancel</i>
+                    </button>
+                  </div>
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="parameterEventProcessTableModel.displayedColumns; sticky: true"></tr>
+              <tr mat-row *matRowDef="let row; columns: parameterEventProcessTableModel.displayedColumns;"></tr>
+            </table>
+          </div>
+        </div>
+        <mat-paginator [style.display]="parameterEventProcessTableModel.dataSource.data.length > 0 ? 'inline':'none'"
+          class="paginator" #eventParameterEventProcess [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons="true">
+        </mat-paginator>
+      </div>
+      <div *ngIf="parameterEventProcessTableModel.dataSource.data.length === 0">Отсутствуют параметры для данного
+        процеса!!!</div>
+      <div [style.display]="'none'" #TEMPLATEPARAMETEREVENTPROCESS>
+        <mat-form-field id="template" class="validation">
+          <input matInput placeholder="Параметр" [ngModel]="parameterEventProcessTableModel.model?.Parameters"
+            (ngModelChange)="parameterEventProcessTableModel.model.Parameters = $event" />
+        </mat-form-field>
+      </div>
+    </div>
+  </mat-tab>
+  <mat-tab label="Все параметры в системе">
+    <div class="tables" #TABLEPARAMETEREVENTPROCESSALL>
+      <table mat-table [dataSource]="parameterEventProcessTableModelAll.dataSource" matSort>
+
+        <ng-container matColumnDef="IdParameters">
+          <th class="id" *matHeaderCellDef mat-sort-header>Id</th>
+          <td class="cell" *matCellDef="let row" [matTooltip]="row.IdParameters">
+            {{row.IdParameters}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="NameParameters">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Наименование параметра</th>
+          <td mat-cell *matCellDef="let row" [matTooltip]="row.NameParameters">
+            {{row.NameParameters}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="InfoParameters">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Информация о параметрах</th>
+          <td mat-cell *matCellDef="let row" [matTooltip]="row.InfoParameters">
+            {{row.InfoParameters}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="Parameters">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Параметр</th>
+          <td mat-cell *matCellDef="let row" [matTooltip]="row.Parameters">
+            <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.Parameters}}</Label>
+            <div [ngClass]=row.IdParameters.toString() id="{{row.IdParameters}}"
+              [style.display]="!row.ModelIsEdit ? 'none':'block'">
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="ActionsColumn">
+          <th class="formEdit" mat-header-cell *matHeaderCellDef>
+            <ng-template [ngxPermissionsExcept]="['Оператор','Просмотр']">
+              <button mat-icon-button color="primary" [disabled]="parameterEventProcessTableModelAll.isAdd"
+                focusable="false" (click)="parameterEventProcessTableModelAll.add()">
+                <i class="material-icons">person_add</i>
+              </button>
+            </ng-template>
+          </th>
+          <td mat-cell *matCellDef="let row">
+            <ng-template [ngxPermissionsExcept]="['Просмотр']">
+              <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="parameterEventProcessTableModelAll.isEdit"
+                color="accent" (click)="parameterEventProcessTableModelAll.edit(row)">
+                <i class="material-icons">edit</i>
+              </button>
+            </ng-template>
+            <ng-template [ngxPermissionsExcept]="['Просмотр','Оператор','Редактор']">
+              <button mat-icon-button *ngIf="!row.ModelIsEdit" [disabled]="parameterEventProcessTableModelAll.isEdit"
+                (click)="parameterEventProcessTableModelAll.delete()">
+                <i class="material-icons">delete</i>
+              </button>
+            </ng-template>
+            <div *ngIf="row.ModelIsEdit">
+              <button mat-icon-button type="submit" color="primary" focusable="false"
+                (click)="parameterEventProcessTableModelAll.save()">
+                <i class="material-icons">check</i>
+              </button>
+              <button mat-icon-button color="primary" focusable="false"
+                (click)="parameterEventProcessTableModelAll.cancel(row)">
+                <i class="material-icons">cancel</i>
+              </button>
+            </div>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="parameterEventProcessTableModelAll.displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: parameterEventProcessTableModelAll.displayedColumns;"></tr>
+      </table>
+    </div>
+    <mat-paginator [style.display]="parameterEventProcessTableModelAll.dataSource.data.length > 0 ? 'inline':'none'"
+      class="paginator" #eventParameterEventProcessAll [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons="true">
+    </mat-paginator>
+
+    <div [style.display]="'none'" #TEMPLATEPARAMETEREVENTPROCESSALL>
       <mat-form-field id="template" class="validation">
-        <input matInput placeholder="Параметры задания через точку с запятой"
-          [ngModel]="eventProcess.model?.ParametersEvent"
-          (ngModelChange)="eventProcess.model.ParametersEvent = $event" />
+        <input matInput placeholder="Параметр" [ngModel]="parameterEventProcessTableModelAll.model?.Parameters"
+          (ngModelChange)="parameterEventProcessTableModelAll.model.Parameters = $event" />
       </mat-form-field>
     </div>
   </mat-tab>

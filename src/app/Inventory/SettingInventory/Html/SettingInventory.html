@@ -91,6 +91,26 @@
                     </mat-form-field>
                 </div>
                 <div class="text">
+                    <label>Код региона:</label>
+                </div>
+                <div class="grid-itemOne">
+                    <mat-form-field class="inputOne">
+                        <input matInput type="number" placeholder="Код региона" [disabled]="setting.isEdit"
+                            [ngModel]="setting.dataSource?.CodeRegion"
+                            (ngModelChange)="setting.dataSource.CodeRegion = $event" />
+                    </mat-form-field>
+                </div>
+                <div class="text">
+                    <label>Код города:</label>
+                </div>
+                <div class="grid-itemOne">
+                    <mat-form-field class="inputOne">
+                        <input matInput type="number" placeholder="Код города" [disabled]="setting.isEdit"
+                            [ngModel]="setting.dataSource?.CodeCyti"
+                            (ngModelChange)="setting.dataSource.CodeCyti = $event" />
+                    </mat-form-field>
+                </div>
+                <div class="text">
                     <label>Почта:</label>
                 </div>
                 <div class="grid-itemOne">
@@ -99,6 +119,7 @@
                             [ngModel]="setting.dataSource?.Mail" (ngModelChange)="setting.dataSource.Mail = $event" />
                     </mat-form-field>
                 </div>
+
                 <div class="text">
                     <label>Код объекта ЭКП:</label>
                 </div>

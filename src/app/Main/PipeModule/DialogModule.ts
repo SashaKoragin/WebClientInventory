@@ -8,6 +8,8 @@ import { ReportCard } from '../../Inventory/AddFullModel/DialogReportCard/Dialog
 import { NgxPermissionsModule } from 'ngx-permissions';
 import { ReportEpo } from '../../Inventory/AddFullModel/DialogReportEpo/DialogReportEpoTs/DialogReportEpo';
 import { PipeModule } from './PipeInventory';
+import { DialogAksiokEditAndAdd } from '../../Inventory/AddFullModel/DialogAksiokEditAndAdd/DialogAksiokEditAndAddTs/DialogAksiokEditAndAdd';
+import { DragAndDrop } from '../../Inventory/AddFullModel/UploadFilleDragAndDrop/Ts/UploadFilleDragAndDrop';
 
 @NgModule({
     imports: [
@@ -18,9 +20,9 @@ import { PipeModule } from './PipeInventory';
         NgxPermissionsModule,
         PipeModule
     ],
-    entryComponents: [DialogDiscription, ModelDialogSelectYear, ReportCard, ReportEpo],
+    entryComponents: [DialogDiscription, ModelDialogSelectYear, ReportCard, ReportEpo, DialogAksiokEditAndAdd,DragAndDrop],
     declarations: [
-        DialogDiscription, ModelDialogSelectYear, ReportCard, ReportEpo
+        DialogDiscription, ModelDialogSelectYear, ReportCard, ReportEpo, DialogAksiokEditAndAdd,DragAndDrop
     ],
 })
 export class DialogModule { }

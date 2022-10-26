@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { SelectAllParametrs, AuthIdentificationSignalR, AuthIdentification } from '../../../../Post RequestService/PostRequest';
+import { SelectAllParametrs, AuthIdentificationSignalR, AuthIdentification, PostInventar } from '../../../../Post RequestService/PostRequest';
 import { BroadcastEventListener } from 'ng2-signalr';
 import { ModeleReturn, AksiokAllModel, AllCharacteristics } from '../../../ModelInventory/InventoryModel';
 import { DynamicTableColumnModel, Table } from '../../../AddFullModel/ModelTable/DynamicTableModel';
@@ -18,7 +18,7 @@ import { Select } from '../../../AddFullModel/ModelViewSelect/View/SelectView';
 
 
 export class Aksiok implements OnInit {
-    constructor(public select: SelectAllParametrs, public SignalR: AuthIdentificationSignalR, public authService: AuthIdentification,) { }
+    constructor(public select: SelectAllParametrs, public SignalR: AuthIdentificationSignalR, public authService: AuthIdentification, public selectall: PostInventar,) { }
 
     @ViewChild('Aksiok', { static: false }) selectionChildAksiok: Select;
     dinamicmodel: DynamicTableColumnModel = new DynamicTableColumnModel();
@@ -51,7 +51,6 @@ export class Aksiok implements OnInit {
         this.subscribeStatusProcess.subscribe((statusProcess: ModeleReturn<string>) => {
             this.statusProcessInfo = statusProcess.Message;
         });
-
     }
 
     selectModelAksiok() {
@@ -74,7 +73,7 @@ export class Aksiok implements OnInit {
 
     ///Запуск процесса актуализации АКСИОК
     synchronization() {
-        this.select.startPocessUpdateAksiok(this.authService.autorization.loginField, this.authService.autorization.passwordField);
+        this.select.startProcessInventory(6, this.authService.autorization.loginField, this.authService.autorization.passwordField);
     }
 
     ///Событие назад из дочернего компонента)))
@@ -82,6 +81,9 @@ export class Aksiok implements OnInit {
         if (back) {
             this.valueAttribute = new AllCharacteristics();
         }
+    }
+    async getAllAksiok() {
+        await this.selectall.downLoadXlsxSql(this.selecting.generatecommand())
     }
 
 }

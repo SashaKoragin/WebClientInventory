@@ -2,9 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { SelectAllParametrs } from '../../../../Post RequestService/PostRequest';
 import { GenerateParametrs, LogicaDataBase } from '../../../AllSelectModel/GenerateParametrFront';
 import { ModelSelect } from '../../../AllSelectModel/ParametrModel';
-import { DesirilizeXml, Document, Documents, ModelReturn } from '../../../ModelInventory/InventoryModel';
-import { MatTableDataSource, MatPaginator } from '@angular/material';
-import { deserialize } from 'class-transformer';
+import { Document} from '../../../ModelInventory/InventoryModel';
+
 import { DynamicTableColumnModel, Table } from '../../../AddFullModel/ModelTable/DynamicTableModel';
 import { Select } from '../../../AddFullModel/ModelViewSelect/View/SelectView';
 
