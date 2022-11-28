@@ -18,7 +18,7 @@
             </form>
 
             <div class="tables" #TABLEUSERS>
-                <table mat-table [dataSource]="user.dataSource" matSort>
+                <table mat-table [dataSource]="user.dataSource" matSort >
                     <ng-container matColumnDef="Logic">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>Заявки</th>
                         <td [style.background]="row.StatusUser?.ColorStatus" mat-cell *matCellDef="let row">

@@ -103,8 +103,8 @@ export class LogicaDataBase {
 }
 
 export class GenerateParametrs {
-    constructor(public model: ModelSelect) {
-        this.parametrs = this.generateparametrs(model);
+    constructor(public model: ModelSelect, isSelectDefault: boolean = false) {
+        this.parametrs = this.generateparametrs(model, isSelectDefault);
         this.selectedtoserver = model.logicaSelectField;
     }
 
@@ -126,7 +126,7 @@ export class GenerateParametrs {
 
 
 
-    private generateparametrs(modelselect: ModelSelect): SelectParam[] {
+    private generateparametrs(modelselect: ModelSelect, isSelectDefault: boolean): SelectParam[] {
         var parametrs: SelectParam[] = [];
         for (const param of modelselect.parametrsField) {
             var newparam: SelectParam = new SelectParam()
@@ -145,16 +145,25 @@ export class GenerateParametrs {
                     if (param.typeColumnField == 'varchar') {
                         newparam.template = 2;
                         newparam.formTemplate = new FormSelect().stringPole;
+                        if (isSelectDefault) {
+                            newparam.select = this.selectparamString[7];
+                        }
                     }
                     if (param.typeColumnField == 'smalldatetime') {
                         newparam.template = 1;
                         newparam.formTemplate = new FormSelect().datePole;
+                        if (isSelectDefault) {
+                            newparam.select = this.selectparamNumber[1];
+                        }
                     }
                 }
                 else {
                     newparam.numеrtemplate = false;
                     newparam.template = 3;
                     newparam.formTemplate = new FormSelect().numberPole;
+                    if (isSelectDefault) {
+                        newparam.select = this.selectparamNumber[1];
+                    }
                 }
             }
             parametrs.push(newparam);
@@ -209,21 +218,20 @@ export class GenerateParametrs {
         logica.isResultXmlField = this.selectedtoserver.isResultXmlField;
         logica.nameReportListField = this.selectedtoserver.nameReportListField;
         logica.nameReportFileField = this.selectedtoserver.nameReportFileField;
-        //  console.log(logica)
+        console.log(logica);
         return logica;
     }
 
     ///Генерит команду в бд для схемы xml
-    generatecommandxml(columnDynamic: Table = null): LogicaSelect {
+    generatecommandxml(columnDynamic: Table = null, isTop: boolean = false): LogicaSelect {
         var generate = new GenerateFullCommand();
-        var logica = generate.generateCommand(generate.generateVisibleDynamic(this.selectedtoserver, this.parametrs, columnDynamic), this.parametrs);
+        var logica = generate.generateCommand(generate.generateVisibleDynamic(this.selectedtoserver, this.parametrs, columnDynamic, isTop), this.parametrs);
         logica.idField = this.selectedtoserver.idField;
         logica.nameDllField = this.selectedtoserver.nameDllField;
         logica.findNameSpaceField = this.selectedtoserver.findNameSpaceField;
         logica.isResultXmlField = this.selectedtoserver.isResultXmlField;
         logica.nameReportListField = this.selectedtoserver.nameReportListField;
         logica.nameReportFileField = this.selectedtoserver.nameReportFileField;
-        // console.log(logica)
         return logica;
     }
 }
@@ -233,8 +241,10 @@ class GenerateFullCommand {
     //Параметр не подставляется тогда и только тогда когда все
     // параметры SelectCompanent.num равны 0!!! Вожно!!!
     where: string = 'Where ';
+    //Отбор 2000
+    top: string = 'Top 2000'
     ///Динамическая генерация раскладка xml без названия (Новый образец генерится с параметрами)
-    generateVisibleDynamic(logica: LogicaSelect, parametrs: SelectParam[], columnDynamic: Table = null): LogicaSelect {
+    generateVisibleDynamic(logica: LogicaSelect, parametrs: SelectParam[], columnDynamic: Table = null, isTop: boolean = false): LogicaSelect {
         var command: LogicaSelect = new LogicaSelect()
         var str: string = '';
         var countparam: number = parametrs.filter(sel => sel.isvisible === true).length
@@ -252,12 +262,17 @@ class GenerateFullCommand {
         if (str == '') {
             str = str.concat(' * ')
         }
-        command.selectUserField = logica.selectUserField.replace('{0}', str);
+        if (isTop) {
+            command.selectUserField = logica.selectUserField.replace('{-1}', this.top).replace('{0}', str);
+        }
+        else {
+            command.selectUserField = logica.selectUserField.replace('{-1}', '').replace('{0}', str);
+        }
         return command;
     }
 
     ///Генерация другая по параметрам с названиями (Старый образец но еще используется)
-    generateVisible(logica: LogicaSelect, parametrs: SelectParam[], excludePrifixAs: boolean = false): LogicaSelect {
+    generateVisible(logica: LogicaSelect, parametrs: SelectParam[], excludePrifixAs: boolean = false, isTop: boolean = false): LogicaSelect {
         var command: LogicaSelect = new LogicaSelect()
         var str: string = '';
         var countparam: number = parametrs.filter(sel => sel.isvisible === true).length
@@ -284,8 +299,12 @@ class GenerateFullCommand {
         if (str == '') {
             str = str.concat(' * ')
         }
-
-        command.selectUserField = logica.selectUserField.replace('{0}', str);
+        if (isTop) {
+            command.selectUserField = logica.selectUserField.replace('{-1}', this.top).replace('{0}', str);
+        }
+        else {
+            command.selectUserField = logica.selectUserField.replace('{-1}', '').replace('{0}', str);
+        }
         return command;
     }
 

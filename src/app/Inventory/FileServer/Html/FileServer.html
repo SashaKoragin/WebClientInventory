@@ -1,0 +1,23 @@
+<SelectFormSql [(selectFileServer)]="dinamicmodel.selectFileServerNewModel" [toolpanel]='TOOLPANEL'
+    [logicstooltable]='LOGICSTOOLTABLE' (onChangedBackSelect)="onChangedReturnSelect($event)"></SelectFormSql>
+
+
+<ng-template class="panel" #TOOLPANEL>
+    <button class="panelbutton" mat-button (click)="downloadServer()">Выгрузить выборку</button>
+</ng-template>
+
+<ng-template #LOGICSTOOLTABLE let-row='row'>
+    <button mat-icon-button [matMenuTriggerFor]="menu" color="primary" matTooltip="Работа с файлом">
+        <mat-icon>more_vert</mat-icon>
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="viewFile(row)" matTooltip="Показать в папке">
+                <mat-icon>input</mat-icon>
+                Показать в папке
+            </button>
+            <button mat-menu-item (click)="downloadFile(row)" matTooltip="Выгрузить файл">
+                <mat-icon>input</mat-icon>
+                Выгрузить файл
+            </button>
+        </mat-menu>
+    </button>
+</ng-template>

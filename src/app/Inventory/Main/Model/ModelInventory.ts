@@ -57,6 +57,10 @@ export class Inventar {
                 otdelfunc: null,
                 children: null, types: 'Разночтение БД', pages: './Descrepancies', fullpath: 'Пользователи\\Разночтение БД', model: 'Разночтение БД', isrule: null
             },
+            {
+                otdelfunc: null,
+                children: null, types: 'Файловый сервер', pages: './FileServer', fullpath: 'Пользователи\\Файловый сервер', model: 'Файловый сервер', isrule: null
+            },
             ], types: null, pages: null, fullpath: null, model: null, isrule: null
         },
         {
