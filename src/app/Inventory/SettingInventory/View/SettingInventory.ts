@@ -1,13 +1,11 @@
 import { OnInit, Component, ViewChild, ElementRef } from '@angular/core';
 import { EditAndAdd, PostInventar, AuthIdentificationSignalR } from '../../../Post RequestService/PostRequest';
-import { DatePipe } from '@angular/common';
 import { MainSettingOrganization } from '../../AddFullModel/ModelTable/SettingOrganization';
 import { ImportToExcel } from '../../AddFullModel/ModelTable/PublicFunction';
 import { SettingDepartmentCaseTableModel, HolidayTableModel, SettingDepartmentRegulations, SettingCategoryPhoneHeader } from '../../AddFullModel/ModelTable/TableModel';
 import { DateAdapter, MatSort, MAT_DATE_FORMATS } from '@angular/material';
 import { MatPaginator } from '@angular/material/paginator';
 import { AppDateAdapter, APP_DATE_FORMATS } from '../../AddFunctionConvertDate/ConvertDateModel';
-import { RegulationsDepartment } from '../../ModelInventory/InventoryModel';
 
 
 @Component(({

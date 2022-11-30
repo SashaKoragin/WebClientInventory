@@ -221,4 +221,8 @@ export class AdressInventarka {
 
     ///Api для запуска процеса системы инвентаризации
     public startProcess = `http://${ServerHost}:${ServerPort}/Inventarka/StartProcessInventory?idProcess={idProcess}&userLogin={userLogin}&passwordUser={passwordUser}`
+    ///Выгрузка файла с сервера
+    public downloadFileServer = `http://${ServerHost}:${ServerPort}/Inventarka/DownloadFileServer?idFile={idFile}`;
+    ///Детализация файла на сервере
+    public modelFileDetailing = `http://${ServerHost}:${ServerPort}/Inventarka/ModelFileDetailing?idFile={idFile}`;
 }

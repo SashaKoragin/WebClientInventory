@@ -16,6 +16,9 @@
             "breakOnLoad": true,
             "sourceMapPathOverrides": {
                 "webpack:///./*": "${webRoot}/*"
+            },
+            "env": {
+                "NODE_TLS_REJECT_UNAUTHORIZED": 1
             }
         }
     ]

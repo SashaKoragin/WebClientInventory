@@ -1173,3 +1173,38 @@ export class UploadFileAksiok {
     public fileField: number[];
     public typeFileField: string;
 }
+
+export class DownloadFileServer {
+    public fullPathFileField: string;
+    public nameFileField: string;
+    public itemTypeTextField: string;
+    public typeMimeField: string;
+    public fileExtensionField: string;
+    public fileByteField: number[];
+}
+
+export class ModelFileDetals {
+    public allAutorFileField: string[];
+    public idFileField: number;
+    public idUserField: number;
+    public nameUserField: string;
+    public smallNameField: string;
+    public tabelNumberField: string;
+    public nameOtdelField: string;
+    public nameSaveField: string;
+    public fileOwnerAuthorField: string;
+    public lastAuthorField: string;
+    public fullPathFileField: string;
+    public pathFileField: string;
+    public nameFileField: string;
+    public itemTypeTextField: string;
+    public typeMimeField: string;
+    public fileExtensionField: string;
+    public sizeFileTextField: string;
+    public sizeFileField: number;
+    public hashFileField: string;
+    public dateCreatedField: Date;
+    public dateAccessedField: any;
+    public dateModifiedField: any;
+    public dateSavedField: any;
+}
