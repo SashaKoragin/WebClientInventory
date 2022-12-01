@@ -4,8 +4,7 @@ import { PostInventar } from '../../../Post RequestService/PostRequest';
 import { GenerateParametrs } from '../../AllSelectModel/GenerateParametrFront';
 import { ModelFileDetals } from '../../ModelInventory/InventoryModel';
 import { SelectionModel } from '@angular/cdk/collections';
-
-
+//import { shell} from "electron"
 
 @Component(({
     selector: 'FileServer',
@@ -32,11 +31,12 @@ export class FileServer {
     }
 
     public viewFile(row: any) {
-        console.log("file://////" + row.PathFile)
+        console.log(row.PathFile);
         if (row.PathFile) {
-            var url = "file://////" + row.PathFile;
-            console.log(url)
-            window.open(url, "file");
+            console.log(row.PathFile);
+            //alert("Болт")
+            // shell.openPath(row.PathFile);
+
         }
         else {
             alert("Путь к файлу должен быть в заголовке!!!")
