@@ -25,6 +25,7 @@ import { ModelProcess } from '../../Inventory/Process/ProcessParameter/View/Proc
 import { AksiokDirectory } from '../../Inventory/AksiokSupport/AcsiokDirectory/View/AcsiokDirectory';
 import { Aksiok } from '../../Inventory/AksiokSupport/Aksiok/View/Aksiok';
 import { Descrepancies } from '../../Inventory/Descrepancies/View/Descrepancies';
+import { FileServer } from '../../Inventory/FileServer/View/FileServer';
 
 const appRoutes: Routes = [
     {
@@ -99,6 +100,10 @@ const appRoutes: Routes = [
             {
                 path: 'Descrepancies',
                 component: Descrepancies
+            },
+            {
+                path: 'FileServer',
+                component: FileServer
             },
             {
                 path: 'pathAis3',

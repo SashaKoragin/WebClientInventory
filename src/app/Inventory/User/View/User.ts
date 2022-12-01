@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { PostInventar, EditAndAdd, AuthIdentificationSignalR, AuthIdentification, SelectAllParametrs } from '../../../Post RequestService/PostRequest';
-import { MatTableDataSource, MatPaginator, MatSort, MatDialog } from '@angular/material';
+import { MatTableDataSource, MatPaginator, MatSort, MatDialog, Sort } from '@angular/material';
 import { UserTableModel, TelephonsTableModel, OtdelTableModel, AddAndDeleteRuleUser } from '../../AddFullModel/ModelTable/TableModel';
 import { UsersIsActualsStats, AllUsersFilters } from '../../ModelInventory/InventoryModel';
 import { ImportToExcel } from '../../AddFullModel/ModelTable/PublicFunction';
@@ -115,6 +115,7 @@ export class User implements OnInit {
             this.serveranswer = model.toString();
         });
     }
+
 
     async loadsModel() {
         this.filterActual.filterActualField.isFilterField = true;

@@ -16,7 +16,7 @@ import { DocumentReport } from '../Inventory/AllSelectModel/Report/ReportModel';
 import { UploadFile } from '../Inventory/AddFullModel/ModelTable/FileModel';
 import { BookModels } from '../Inventory/ModelInventory/ViewInventory';
 import { NgxPermissionsService } from 'ngx-permissions';
-import { WebMailModel, FullTemplateSupport, ModelParametrSupport, ServerEquipment, ModelSeverEquipment, ManufacturerSeverEquipment, TypeServer, RuleUsers, Token, Organization, SettingDepartmentCaseGetServer, Rb_Holiday, RegulationsDepartmentToServer, ResourceIt, TaskAis3, JournalAis3, AllUsersFilters, OtherAll, ModelOther, TypeOther, ProizvoditelOther, AnalysisEpoAndInventarka, EventProcess, CategoryPhoneHeader, AksiokAddAndEdit, EquipmentType, FullCategories, KitsEquipment, UploadFileAksiok, ParameterEventProcess, SelectDayOfTheWeek } from '../Inventory/ModelInventory/InventoryModel';
+import { WebMailModel, FullTemplateSupport, ModelParametrSupport, ServerEquipment, ModelSeverEquipment, ManufacturerSeverEquipment, TypeServer, RuleUsers, Token, Organization, SettingDepartmentCaseGetServer, Rb_Holiday, RegulationsDepartmentToServer, ResourceIt, TaskAis3, JournalAis3, AllUsersFilters, OtherAll, ModelOther, TypeOther, ProizvoditelOther, AnalysisEpoAndInventarka, EventProcess, CategoryPhoneHeader, AksiokAddAndEdit, EquipmentType, FullCategories, KitsEquipment, UploadFileAksiok, ParameterEventProcess, SelectDayOfTheWeek, DownloadFileServer } from '../Inventory/ModelInventory/InventoryModel';
 import { Router, NavigationExtras } from '@angular/router';
 import { ReportCardModel } from '../Inventory/AddFullModel/DialogReportCard/ReportCardModel/ReportCardModel';
 import { ModelMemoReport } from '../LKUser/Main/Model/ReportMemo';
@@ -185,6 +185,27 @@ export class PostInventar {
         return this.http.post(url.actualPrintServer, null, httpOptionsJson);
     }
 
+    ///Детализация модели с сервера со всеми авторами
+    public downLoadFileDetal(idFile: number) {
+        return this.http.post(url.modelFileDetailing.replace("{idFile}", idFile.toString()), null, httpOptionsJson);
+    }
+
+    //Выгрузка файла с сетевого ресурса
+    downloadFileServer(idFile: number) {
+        return this.http.post(url.downloadFileServer.replace("{idFile}", idFile.toString()), null,
+            { responseType: "json", headers: new HttpHeaders({ 'Content-Type': 'application/json' }) }).subscribe(async (model: DownloadFileServer) => {
+                var blob = new Blob([new Uint8Array(model.fileByteField).buffer], { type: model.typeMimeField });
+                var url = window.URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = model.nameFileField;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            });
+    }
+
     //Генерация справочника инспекции
     telephonehelp(model: ModelSelect) {
         return this.http.post(url.telephoneHelper, model,
@@ -200,6 +221,9 @@ export class PostInventar {
                 window.URL.revokeObjectURL(url);
             });
     }
+
+
+
     ///Выгрузка умного отчета по сравнению данных с системами
     public downLoadReportFileXlsxSqlView(modelSelect: ModelSelect) {
         this.http.post(url.reportFileXlsxSqlView, modelSelect,

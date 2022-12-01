@@ -34,6 +34,8 @@ import { AksiokDirectory } from '../../Inventory/AksiokSupport/AcsiokDirectory/V
 import { Aksiok } from '../../Inventory/AksiokSupport/Aksiok/View/Aksiok';
 import { DragAndDrop } from '../../Inventory/AddFullModel/UploadFilleDragAndDrop/Ts/UploadFilleDragAndDrop';
 import { Descrepancies } from '../../Inventory/Descrepancies/View/Descrepancies';
+import { FileServer } from '../../Inventory/FileServer/View/FileServer';
+import { SelectFormSql } from '../../Inventory/AddFullModel/ModelFileServerSelect/View/FileServerSelect';
 
 @NgModule(({
     imports: [
@@ -55,7 +57,8 @@ import { Descrepancies } from '../../Inventory/Descrepancies/View/Descrepancies'
         User, DocumentSelect, ErrorInventory,
         Select, UploadsFile,
         ComplimentTableEquipment, Analitics,
-        BookAccounting, Synchronization, Log, PathAis3, TemplatendRuleAis3, SettingInventory, JournalAis3, EquipmentSto, ModelProcess, AksiokDirectory, Aksiok, Descrepancies
+        BookAccounting, Synchronization, Log, PathAis3, TemplatendRuleAis3, SettingInventory, JournalAis3, EquipmentSto, ModelProcess, AksiokDirectory, Aksiok, Descrepancies,
+        FileServer, SelectFormSql
     ]
 
 }) as any)

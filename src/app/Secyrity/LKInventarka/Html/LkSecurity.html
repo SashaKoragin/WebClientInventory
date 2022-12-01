@@ -11,7 +11,7 @@
                 </mat-form-field>
                 <mat-form-field class="width">
                     <input matInput placeholder="Введите пароль:" type="password"
-                        [(ngModel)]="authService.autorizationLk.passwordField" />
+                        [(ngModel)]="authService.autorizationLk.passwordField" (keyup.enter)="loginLk()" />
                 </mat-form-field>
             </div>
         </div>

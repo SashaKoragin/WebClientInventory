@@ -1,0 +1,218 @@
+<SelectFormSql [(selectFileServer)]="dinamicmodel.selectFileServerNewModel" [toolpanel]='TOOLPANEL'
+    [logicstooltable]='LOGICSTOOLTABLE' (onChangedBackSelect)="onChangedReturnSelect($event)"></SelectFormSql>
+
+
+<ng-template class="panel" #TOOLPANEL>
+    <button class="panelbutton" mat-button (click)="downloadServer()">Выгрузить выборку</button>
+</ng-template>
+
+<ng-template #LOGICSTOOLTABLE let-row='row'>
+    <mat-checkbox class="checkbox" placeholder="Детализация файла" (click)="$event.stopPropagation();"
+        (change)="selectionRowModel.toggle(row);selectModelAksiok()" [checked]="selectionRowModel.isSelected(row)">
+    </mat-checkbox>
+    <button mat-icon-button [matMenuTriggerFor]="menu" color="primary" matTooltip="Работа с файлом">
+        <mat-icon>more_vert</mat-icon>
+        <mat-menu #menu="matMenu">
+            <a href="file:///{{row.FullPathFile}}" target="_blank">ffff</a>
+            <button mat-menu-item (click)="viewFile(row)" matTooltip="Показать в папке">
+                <mat-icon>input</mat-icon>
+                Показать в папке
+            </button>
+            <button mat-menu-item (click)="downloadFile(row)" matTooltip="Выгрузить файл">
+                <mat-icon>input</mat-icon>
+                Выгрузить файл
+            </button>
+        </mat-menu>
+    </button>
+</ng-template>
+
+<div [style.display]="selectionRowModel.selected.length > 0 ? 'inline-block' : 'none'">
+    <div class="All">Детализация атрибутов файла:</div>
+    <div [style.display]="inline-block">
+        <div class="parametersAll">
+            <div class="parameterAll">
+                <mat-form-field class="formAttribute">
+                    <input matInput [disabled]="true" value="{{modelFileDetals?.idFileField}}" />
+                    <mat-placeholder class="placeholder">Ун файла</mat-placeholder>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="parametersAll">
+            <div class="parameterAll">
+                <mat-form-field class="formAttribute">
+                    <input matInput [disabled]="true" value="{{modelFileDetals?.idUserField}}" />
+                    <mat-placeholder class="placeholder">Ун пользователя</mat-placeholder>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="parametersAll">
+            <div class="parameterAll">
+                <mat-form-field class="formAttribute">
+                    <input matInput [disabled]="true" value="{{modelFileDetals?.nameUserField}}" />
+                    <mat-placeholder class="placeholder">Наименование пользователя в БД</mat-placeholder>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="parametersAll">
+            <div class="parameterAll">
+                <mat-form-field class="formAttribute">
+                    <input matInput [disabled]="true" value="{{modelFileDetals?.smallNameField}}" />
+                    <mat-placeholder class="placeholder">Сокращенное имя пользователя в БД</mat-placeholder>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="parametersAll">
+            <div class="parameterAll">
+                <mat-form-field class="formAttribute">
+                    <input matInput [disabled]="true" value="{{modelFileDetals?.tabelNumberField}}" />
+                    <mat-placeholder class="placeholder">Табельный номер в БД</mat-placeholder>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="parametersAll">
+            <div class="parameterAll">
+                <mat-form-field class="formAttribute">
+                    <input matInput [disabled]="true" value="{{modelFileDetals?.nameOtdelField}}" />
+                    <mat-placeholder class="placeholder">Наименование отдела</mat-placeholder>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="parametersAll">
+            <div class="parameterAll">
+                <mat-form-field class="formAttribute">
+                    <input matInput [disabled]="true" value="{{modelFileDetals?.nameSaveField}}" />
+                    <mat-placeholder class="placeholder">Кто сохранил</mat-placeholder>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="parametersAll">
+            <div class="parameterAll">
+                <mat-form-field class="formAttribute">
+                    <input matInput [disabled]="true" value="{{modelFileDetals?.fileOwnerAuthorField}}" />
+                    <mat-placeholder class="placeholder">Владелец файла</mat-placeholder>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="parametersAll">
+            <div class="parameterAll">
+                <mat-form-field class="formAttribute">
+                    <input matInput [disabled]="true" value="{{modelFileDetals?.lastAuthorField}}" />
+                    <mat-placeholder class="placeholder">Последний автор</mat-placeholder>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="parametersAll">
+            <div class="parameterAll">
+                <mat-form-field class="formAttribute">
+                    <input matInput [disabled]="true" value="{{modelFileDetals?.fullPathFileField}}" />
+                    <mat-placeholder class="placeholder">Полный путь к файлу</mat-placeholder>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="parametersAll">
+            <div class="parameterAll">
+                <mat-form-field class="formAttribute">
+                    <input matInput [disabled]="true" value="{{modelFileDetals?.pathFileField}}" />
+                    <mat-placeholder class="placeholder">Путь к файлу</mat-placeholder>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="parametersAll">
+            <div class="parameterAll">
+                <mat-form-field class="formAttribute">
+                    <input matInput [disabled]="true" value="{{modelFileDetals?.nameFileField}}" />
+                    <mat-placeholder class="placeholder">Наименование файла</mat-placeholder>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="parametersAll">
+            <div class="parameterAll">
+                <mat-form-field class="formAttribute">
+                    <input matInput [disabled]="true" value="{{modelFileDetals?.itemTypeTextField}}" />
+                    <mat-placeholder class="placeholder">Тип файла</mat-placeholder>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="parametersAll">
+            <div class="parameterAll">
+                <mat-form-field class="formAttribute">
+                    <input matInput [disabled]="true" value="{{modelFileDetals?.typeMimeField}}" />
+                    <mat-placeholder class="placeholder">Mime файла</mat-placeholder>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="parametersAll">
+            <div class="parameterAll">
+                <mat-form-field class="formAttribute">
+                    <input matInput [disabled]="true" value="{{modelFileDetals?.fileExtensionField}}" />
+                    <mat-placeholder class="placeholder">Расширение файла</mat-placeholder>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="parametersAll">
+            <div class="parameterAll">
+                <mat-form-field class="formAttribute">
+                    <input matInput [disabled]="true" value="{{modelFileDetals?.sizeFileTextField}}" />
+                    <mat-placeholder class="placeholder">Размер файла (текст)</mat-placeholder>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="parametersAll">
+            <div class="parameterAll">
+                <mat-form-field class="formAttribute">
+                    <input matInput [disabled]="true" value="{{modelFileDetals?.sizeFileField}}" />
+                    <mat-placeholder class="placeholder">Размер файла</mat-placeholder>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="parametersAll">
+            <div class="parameterAll">
+                <mat-form-field class="formAttribute">
+                    <input matInput [disabled]="true" value="{{modelFileDetals?.hashFileField}}" />
+                    <mat-placeholder class="placeholder">Hash файла</mat-placeholder>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="parametersAll">
+            <div class="parameterAll">
+                <mat-form-field class="formAttribute">
+                    <input matInput [disabled]="true" value="{{modelFileDetals?.dateCreatedField}}" />
+                    <mat-placeholder class="placeholder">Дата создания файла</mat-placeholder>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="parametersAll">
+            <div class="parameterAll">
+                <mat-form-field class="formAttribute">
+                    <input matInput [disabled]="true" value="{{modelFileDetals?.dateAccessedField}}" />
+                    <mat-placeholder class="placeholder">Дата последнего доступа</mat-placeholder>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="parametersAll">
+            <div class="parameterAll">
+                <mat-form-field class="formAttribute">
+                    <input matInput [disabled]="true" value="{{modelFileDetals?.dateModifiedField}}" />
+                    <mat-placeholder class="placeholder">Дата последнего редактирования</mat-placeholder>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="parametersAll">
+            <div class="parameterAll">
+                <mat-form-field class="formAttribute">
+                    <input matInput [disabled]="true" value="{{modelFileDetals?.dateSavedField}}" />
+                    <mat-placeholder class="placeholder">Дата сохранения файла</mat-placeholder>
+                </mat-form-field>
+            </div>
+        </div>
+    </div>
+    <div class="All">Дополнительные авторы документа:</div>
+    <div class="head" *ngFor="let autor of modelFileDetals?.allAutorFileField">
+        <div class="parameter">
+            <mat-form-field class="formAttribute">
+                <input matInput [disabled]="true" value="{{autor}}" />
+                <mat-placeholder class="placeholder">Автор</mat-placeholder>
+            </mat-form-field>
+        </div>
+    </div>
+</div>
