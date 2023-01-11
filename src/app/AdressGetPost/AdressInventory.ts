@@ -1,5 +1,5 @@
-//export const ServerHost: string = '77068-APP065';  //localhost
-export const ServerHost: string = 'localhost'
+export const ServerHost: string = '77068-APP065';  //localhost
+//export const ServerHost: string = 'localhost'
 export const ServerPort: string = '8182';
 
 

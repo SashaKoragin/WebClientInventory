@@ -194,15 +194,19 @@ export class PostInventar {
     downloadFileServer(idFile: number) {
         return this.http.post(url.downloadFileServer.replace("{idFile}", idFile.toString()), null,
             { responseType: "json", headers: new HttpHeaders({ 'Content-Type': 'application/json' }) }).subscribe(async (model: DownloadFileServer) => {
-                var blob = new Blob([new Uint8Array(model.fileByteField).buffer], { type: model.typeMimeField });
-                var url = window.URL.createObjectURL(blob);
-                var a = document.createElement('a');
-                a.href = url;
-                a.download = model.nameFileField;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                window.URL.revokeObjectURL(url);
+                if (model.fileByteField !== null) {
+                    var blob = new Blob([new Uint8Array(model.fileByteField).buffer], { type: model.typeMimeField });
+                    var url = window.URL.createObjectURL(blob);
+                    var a = document.createElement('a');
+                    a.href = url;
+                    a.download = model.nameFileField;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                    return;
+                }
+                alert("Файла по данному пути уже нет!!!");
             });
     }
 

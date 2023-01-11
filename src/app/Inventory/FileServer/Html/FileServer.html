@@ -13,7 +13,6 @@
     <button mat-icon-button [matMenuTriggerFor]="menu" color="primary" matTooltip="Работа с файлом">
         <mat-icon>more_vert</mat-icon>
         <mat-menu #menu="matMenu">
-            <a href="file:///{{row.FullPathFile}}" target="_blank">ffff</a>
             <button mat-menu-item (click)="viewFile(row)" matTooltip="Показать в папке">
                 <mat-icon>input</mat-icon>
                 Показать в папке
