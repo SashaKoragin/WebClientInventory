@@ -16,14 +16,16 @@ import { DocumentReport } from '../Inventory/AllSelectModel/Report/ReportModel';
 import { UploadFile } from '../Inventory/AddFullModel/ModelTable/FileModel';
 import { BookModels } from '../Inventory/ModelInventory/ViewInventory';
 import { NgxPermissionsService } from 'ngx-permissions';
-import { WebMailModel, FullTemplateSupport, ModelParametrSupport, ServerEquipment, ModelSeverEquipment, ManufacturerSeverEquipment, TypeServer, RuleUsers, Token, Organization, SettingDepartmentCaseGetServer, Rb_Holiday, RegulationsDepartmentToServer, ResourceIt, TaskAis3, JournalAis3, AllUsersFilters, OtherAll, ModelOther, TypeOther, ProizvoditelOther, AnalysisEpoAndInventarka, EventProcess, CategoryPhoneHeader, AksiokAddAndEdit, EquipmentType, FullCategories, KitsEquipment, UploadFileAksiok, ParameterEventProcess, SelectDayOfTheWeek, DownloadFileServer } from '../Inventory/ModelInventory/InventoryModel';
+import { WebMailModel, FullTemplateSupport, ModelParametrSupport, ServerEquipment, ModelSeverEquipment, ManufacturerSeverEquipment, TypeServer, RuleUsers, Token, Organization, SettingDepartmentCaseGetServer, Rb_Holiday, RegulationsDepartmentToServer, ResourceIt, TaskAis3, JournalAis3, AllUsersFilters, OtherAll, ModelOther, TypeOther, ProizvoditelOther, AnalysisEpoAndInventarka, EventProcess, CategoryPhoneHeader, AksiokAddAndEdit, EquipmentType, FullCategories, KitsEquipment, UploadFileAksiok, ParameterEventProcess, SelectDayOfTheWeek, DownloadFileServer, StatusHolyday, ModelPhone } from '../Inventory/ModelInventory/InventoryModel';
 import { Router, NavigationExtras } from '@angular/router';
 import { ReportCardModel } from '../Inventory/AddFullModel/DialogReportCard/ReportCardModel/ReportCardModel';
 import { ModelMemoReport } from '../LKUser/Main/Model/ReportMemo';
 import { ModelAksiok } from '../Inventory/AddFullModel/DialogAksiokEditAndAdd/DialogAksiokModel/DialogAksiokModel';
+import { SelectProcess } from '../Inventory/ModelInventory/SelectProcess';
 
 
 const url: AdressInventarka = new AdressInventarka();
+
 const httpOptionsJson = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
 
@@ -194,15 +196,19 @@ export class PostInventar {
     downloadFileServer(idFile: number) {
         return this.http.post(url.downloadFileServer.replace("{idFile}", idFile.toString()), null,
             { responseType: "json", headers: new HttpHeaders({ 'Content-Type': 'application/json' }) }).subscribe(async (model: DownloadFileServer) => {
-                var blob = new Blob([new Uint8Array(model.fileByteField).buffer], { type: model.typeMimeField });
-                var url = window.URL.createObjectURL(blob);
-                var a = document.createElement('a');
-                a.href = url;
-                a.download = model.nameFileField;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                window.URL.revokeObjectURL(url);
+                if (model.fileByteField !== null) {
+                    var blob = new Blob([new Uint8Array(model.fileByteField).buffer], { type: model.typeMimeField });
+                    var url = window.URL.createObjectURL(blob);
+                    var a = document.createElement('a');
+                    a.href = url;
+                    a.download = model.nameFileField;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                    return;
+                }
+                alert("Файла по данному пути уже нет!!!");
             });
     }
 
@@ -325,15 +331,22 @@ export class PostInventar {
     }
     ///Загрузка справочника праздничных дней
     async holidayDays() {
-        this.select.Rb_Holiday = await this.http.get(url.getholiday, httpOptionsJson).toPromise().then((model: Rb_Holiday[]) => {
+        this.select.Rb_Holiday = await this.http.get(url.getHoliday, httpOptionsJson).toPromise().then((model: Rb_Holiday[]) => {
             if (model) {
                 var holiday = deserializeArray<Rb_Holiday>(Rb_Holiday, model.toString());
-                console.log(holiday);
                 return holiday;
             }
         })
     }
-
+    ///Статусы праздничных дней
+    async statusHoliday() {
+        this.select.StatusHolyday = await this.http.get(url.getStatusHoliday, httpOptionsJson).toPromise().then((model: Rb_Holiday[]) => {
+            if (model) {
+                var statusHolyday = deserializeArray<StatusHolyday>(StatusHolyday, model.toString());
+                return statusHolyday;
+            }
+        })
+    }
 
     ///Выборка всего из БД в всех пользователей
     async alluser(filterActual: AllUsersFilters = new AllUsersFilters()) {
@@ -572,6 +585,14 @@ export class PostInventar {
             }
         });
     }
+    ///Модель телефонов
+    async allModelPhone() {
+        this.select.ModelPhone = await this.http.get(url.allModelPhone, httpOptionsJson).toPromise().then(model => {
+            if (model) {
+                return deserializeArray<ModelPhone>(ModelPhone, model.toString())
+            }
+        });
+    }
     ///Все модели комутаторов
     async allmodelswithes() {
         this.select.ModelSwithe = await this.http.get(url.allmodelswithes, httpOptionsJson).toPromise().then(model => {
@@ -675,8 +696,6 @@ export class PostInventar {
                 return deserializeArray<SelectDayOfTheWeek>(SelectDayOfTheWeek, model.toString());
             }
         });
-
-
     }
 
     ///Все параметры для процеса
@@ -754,6 +773,21 @@ export class EditAndAdd {
         });
         ;
     }
+    ///Выгрузка карточка оборудования
+    uploadCardAksiokAndInventory(aksiokAddAndEdit: AksiokAddAndEdit) {
+        this.http.post(url.createCardAksiokAndInventory, aksiokAddAndEdit, { responseType: 'arraybuffer', headers: new HttpHeaders({ 'Content-Type': 'application/json' }) }).subscribe(async model => {
+            var blob = new Blob([model], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            var url = window.URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = `Карточка оборудования`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        });
+    }
+
     ///Проверка на комплектность оборудования
     validationKitsEquipment(kitsEquipment: KitsEquipment) {
         return this.http.post(url.kitsEquipmentValidation, kitsEquipment, httpOptionsJson);
@@ -1003,6 +1037,10 @@ export class EditAndAdd {
     addAndEditModelOther(model: ModelOther) {
         return this.http.post(url.addAndEditModelOther, model, httpOptionsJson);
     }
+    ///Добавление или редактирование моделей телефонов
+    addAndEditModelPhone(model: ModelPhone) {
+        return this.http.post(url.addAndEditModelPhone, model, httpOptionsJson);
+    }
     ///Добавление или редактирование типов разного
     addAndEditTypeOther(model: TypeOther) {
         return this.http.post(url.addAndEditTypeOther, model, httpOptionsJson);
@@ -1022,6 +1060,7 @@ export class EditAndAdd {
     }
     ///Создание заявки на СТО
     createSupport(modelParametrSupport: ModelParametrSupport) {
+        console.log(modelParametrSupport);
         return this.http.post(url.serviceSupport, modelParametrSupport, httpOptionsJson);
     }
 
@@ -1032,8 +1071,24 @@ export class EditAndAdd {
 
 
     ///Генерация QR Code для техники
-    createQRCode(serialNumber: string, isAll: boolean) {
-        this.http.post(url.generateQrCode.replace("{serialNumber}", serialNumber).replace("{isAll}", String(isAll)), null,
+    createQRCode(serialNumber: string, inventoryNumber: string, isAll: boolean) {
+        this.http.post(url.generateQrCode.replace("{serialNumber}", serialNumber).replace("{inventoryNumber}", inventoryNumber).replace("{isAll}", String(isAll)), null,
+            { responseType: 'arraybuffer', headers: new HttpHeaders({ 'Content-Type': 'application/json' }) }).subscribe(model => {
+                var blob = new Blob([model], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+                var url = window.URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = "QR Code Technical";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            });
+    }
+    // &inventoryNumber={inventoryNumber}&
+    ///Генерация этикетки для техники под принтер Zebra
+    createTicketCode128(serialNumber: string, inventoryNumber: string, isAll: boolean) {
+        this.http.post(url.generateTicket128CodeTechnical.replace("{serialNumber}", serialNumber).replace("{inventoryNumber}", inventoryNumber).replace("{isAll}", String(isAll)), null,
             { responseType: 'arraybuffer', headers: new HttpHeaders({ 'Content-Type': 'application/json' }) }).subscribe(model => {
                 var blob = new Blob([model], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
                 var url = window.URL.createObjectURL(blob);
@@ -1177,8 +1232,8 @@ export class SelectAllParametrs {
     }
 
     ///Запуск любого процесса на сервере
-    public startProcessInventory(idProcess: number, userLogin: string = null, passwordUser: string = null) {
-        this.http.post(url.startProcess.replace("{idProcess}", idProcess.toString()).replace("{userLogin}", userLogin).replace("{passwordUser}", passwordUser), null, httpOptionsJson).toPromise().then();
+    public startProcessInventory(selectProcess: SelectProcess) {
+        this.http.post(url.startProcess, selectProcess, httpOptionsJson).toPromise().then();
     }
 
     ///Получение отчетов по ЭПО всех

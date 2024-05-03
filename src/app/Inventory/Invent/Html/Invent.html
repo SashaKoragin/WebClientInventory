@@ -94,7 +94,8 @@
                         <div class="mat-tree-node">
                             <button class="content" mat-icon-button matTreeNodeToggle
                                 [attr.aria-label]="'toggle ' + node.model.Name">
-                                {{node.model.Children[0].Children.length===0 ? node.model.Children[0].Types.length : node.model.Children.length }}
+                                {{node.model.Children[0].Children.length===0 ? node.model.Children[0].Types.length :
+                                node.model.Children.length }}
                             </button>
                             <span>{{node.model.Name}}</span>
                         </div>
@@ -207,7 +208,8 @@
                         <div class="mat-tree-node">
                             <button class="content" mat-icon-button matTreeNodeToggle
                                 [attr.aria-label]="'toggle ' + node.model.Name">
-                                {{node.model.Children[0].Children.length===0 ? node.model.Children[0].Types.length : node.model.Children.length }}
+                                {{node.model.Children[0].Children.length===0 ? node.model.Children[0].Types.length :
+                                node.model.Children.length }}
                             </button>
                             <span>{{node.model.Name}}</span>
                             <ng-template [ngxPermissionsExcept]="['Просмотр','Безопасность']">
@@ -247,8 +249,10 @@
 
 <ng-template class="panel" #TOOLPANEL>
     <button class="panelbutton" mat-button (click)="getAllTechnics()">Выгрузка с сервера всей техники в БД</button>
-    <button class="panelbutton" mat-button (click)="editandadd.createQRCode(null, true)">Формирование QR Code на всю
-        технику</button>
+    <button class="panelbutton" mat-button (click)="editandadd.createQRCode(null, null, true)">Формирование QR-Code на
+        всю технику</button>
+    <button class="panelbutton" mat-button (click)="editandadd.createTicketCode128(null, null, true)">Формирование
+        этикеток на всю технику</button>
 </ng-template>
 
 <ng-template #LOGICSTOOLTABLE let-row='row'>

@@ -59,7 +59,8 @@ export class ModelProcess implements OnInit {
     public parameterEventProcessTableModelAll: ParameterEventProcessTableModel = new ParameterEventProcessTableModel(this.editandadd, this.SignalR);
 
     public async ngOnInit(): Promise<void> {
-        await this.start()
+        this.loadMessage = [];
+        await this.start();
         this.selectionEventProcess.clear();
         this.isVisibleParameters = false;
     }

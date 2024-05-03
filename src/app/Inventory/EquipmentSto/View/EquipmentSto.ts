@@ -8,6 +8,7 @@ import { BroadcastEventListener } from 'ng2-signalr';
 import { Select } from '../../AddFullModel/ModelViewSelect/View/SelectView';
 import { ModeleReturn } from '../../ModelInventory/InventoryModel';
 import { ReportEpo } from '../../AddFullModel/DialogReportEpo/DialogReportEpoTs/DialogReportEpo';
+import { SelectProcess } from '../../ModelInventory/SelectProcess';
 
 @Component(({
     selector: 'equipmentSto',
@@ -68,7 +69,9 @@ export class EquipmentSto implements OnInit {
 
     ///Актулизация ЭПО
     public actualization() {
-        this.select.startProcessInventory(4);
+        var select = new SelectProcess(4);
+
+        this.select.startProcessInventory(select);
     }
 
     public openDialogReportEpo() {

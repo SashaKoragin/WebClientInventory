@@ -7,6 +7,7 @@ import { LogicaDataBase, GenerateParametrs } from '../../../AllSelectModel/Gener
 import { ModelSelect } from '../../../AllSelectModel/ParametrModel';
 import { SelectionModel } from '@angular/cdk/collections';
 import { Select } from '../../../AddFullModel/ModelViewSelect/View/SelectView';
+import { SelectProcess } from '../../../ModelInventory/SelectProcess';
 
 
 @Component(({
@@ -73,7 +74,8 @@ export class Aksiok implements OnInit {
 
     ///Запуск процесса актуализации АКСИОК
     synchronization() {
-        this.select.startProcessInventory(6, this.authService.autorization.loginField, this.authService.autorization.passwordField);
+        var select = new SelectProcess(6, this.authService.autorization.loginField, this.authService.autorization.passwordField);
+        this.select.startProcessInventory(select);
     }
 
     ///Событие назад из дочернего компонента)))

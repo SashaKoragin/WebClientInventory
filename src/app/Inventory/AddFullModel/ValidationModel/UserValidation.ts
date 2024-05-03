@@ -1,5 +1,5 @@
 import { FormGroup, FormControl, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
-import { Otdel, Position, FullProizvoditel, FullModel, NameSysBlock, NameMonitor, ProizvoditelBlockPower, ModelBlockPower, ModelSwithes, TypeServer, Users, TaskAis3, ResourceIt, TypeOther, ProizvoditelOther, ModelOther, EquipmentType, Producer, EquipmentModel } from '../../ModelInventory/InventoryModel';
+import { Otdel, Position, FullProizvoditel, FullModel, NameSysBlock, NameMonitor, ProizvoditelBlockPower, ModelBlockPower, ModelSwithes, TypeServer, Users, TaskAis3, ResourceIt, TypeOther, ProizvoditelOther, ModelOther, EquipmentType, Producer, EquipmentModel, ModelPhone } from '../../ModelInventory/InventoryModel';
 import { EquipmentState, EquipmentStateSto, EquipmentExpertise } from '../DialogAksiokEditAndAdd/DialogAksiokModel/DialogAksiokModel';
 import { View, Type, Mouth } from '../DialogReportCard/ReportCardModel/ReportCardModel';
 
@@ -7,6 +7,7 @@ import { View, Type, Mouth } from '../DialogReportCard/ReportCardModel/ReportCar
 
 export class ModelValidation {
 
+    constructor(public dateGuarantee: Date = new Date()) { }
     //Валидация года
     public validationMouthModel(control: AbstractControl): ValidationErrors {
         var nameNameOtdel = control.value as Mouth;
@@ -153,6 +154,12 @@ export class ModelValidation {
         var nameExpertise = control.value as EquipmentExpertise;
         return (nameExpertise == undefined || nameExpertise.NameExpertise) == undefined ? { 'error': true } : null
     }
+    ///Валидация модели телефонов
+    public validationModelPhone(control: AbstractControl): ValidationErrors {
+        var namePhone = control.value as ModelPhone;
+        return (namePhone == undefined || namePhone.NameModel) == undefined ? { 'error': true } : null
+    }
+
     ///Валидационная модель проверки Групп
     getRowValidatorModel: FormGroup[] = [
         ///Валидация пользователя
@@ -180,7 +187,7 @@ export class ModelValidation {
             'Model': new FormControl({ value: new NameMonitor() }, [Validators.required, this.validationFullNameMonitor]),
         }),
         new FormGroup({
-            'NameTelephone': new FormControl(null, Validators.required),
+            'NameModel': new FormControl({ value: new ModelPhone() }, [Validators.required, this.validationModelPhone]),
             'SerNumber': new FormControl(null, Validators.required),
             'MacTelephone': new FormControl(null, Validators.required)
         }),
@@ -192,8 +199,8 @@ export class ModelValidation {
         }),
         new FormGroup({
             'NameCopySave': new FormControl(null, Validators.required),
-            'SerNum': new FormControl(null, Validators.required),
-            'InventarNum': new FormControl(null, Validators.required),
+            'SerNumCopySave': new FormControl(null, Validators.required),
+            'InventarNumCopySave': new FormControl(null, Validators.required),
         }),
         new FormGroup({
             'Model': new FormControl({ value: new ModelSwithes() }, [Validators.required, this.validationFullModelSwith]),
@@ -245,7 +252,8 @@ export class ModelValidation {
             'EquipmentModel': new FormControl(null, [Validators.required, this.validationEquipmentModel]),
             'State': new FormControl(null, [Validators.required, this.validationState]),
             'StateSto': new FormControl(null, [Validators.required, this.validationStateSto]),
-            'Expertise': new FormControl(null, [Validators.required, this.validationExpertise])
+            'Expertise': new FormControl(null, [Validators.required, this.validationExpertise]),
+            'Guarantee': new FormControl({ value: this.dateGuarantee, disabled: true }, [Validators.required])
         })
     ];
 }

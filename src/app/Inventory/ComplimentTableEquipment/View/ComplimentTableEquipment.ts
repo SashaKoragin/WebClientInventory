@@ -6,7 +6,7 @@ import {
     NameSupplyTableModel, NameKabinetTableModel, NameStatusingTableModel, ModelSeverEquipmenTableModel, ManufacturerSeverEquipmentTableModel
 } from '../../AddFullModel/ModelTable/TableModel';
 import { MatPaginator, DateAdapter, MAT_DATE_FORMATS } from '@angular/material';
-import { TypeServerTableModel, ResourceItTableModel, TaskAis3TableModel, TypeOtherTableModel, ProizvoditelOtherTableModel, ModelOtherTableModel } from '../../AddFullModel/ModelTable/TableModel';
+import { TypeServerTableModel, ResourceItTableModel, TaskAis3TableModel, TypeOtherTableModel, ProizvoditelOtherTableModel, ModelOtherTableModel, ModelPhoneTableModel } from '../../AddFullModel/ModelTable/TableModel';
 import { AppDateAdapter, APP_DATE_FORMATS } from '../../AddFunctionConvertDate/ConvertDateModel';
 @Component(({
     selector: 'complimentTableEquipment',
@@ -47,6 +47,9 @@ export class ComplimentTableEquipment implements OnInit {
     @ViewChild('TEMPLATEPROIZVODITELOTHER', { static: false }) templateProizvoditelOther: ElementRef;
     @ViewChild('TEMPLATEMODELOTHER', { static: false }) templateModelOther: ElementRef;
 
+    @ViewChild('TEMPLATEMODELPHONE', { static: false }) templateModelPhone: ElementRef;
+
+
     //Таблицы
     @ViewChild('TABLEMODELSYSBLOCK', { static: false }) tableModelSysBlock: ElementRef;
     @ViewChild('TABLEMODELMONITOR', { static: false }) tableModelMonitor: ElementRef;
@@ -71,6 +74,8 @@ export class ComplimentTableEquipment implements OnInit {
     @ViewChild('TABLETYPEOTHER', { static: false }) tableTypeOther: ElementRef;
     @ViewChild('TABLEPROIZVODITELOTHER', { static: false }) tableProizvoditelOther: ElementRef;
     @ViewChild('TABLEMODELOTHER', { static: false }) tableModelOther: ElementRef;
+
+    @ViewChild('TABLEMODELPHONE', { static: false }) tableModelPhone: ElementRef;
 
     isload: boolean = true;
     loadMessage: string[] = []
@@ -98,6 +103,10 @@ export class ComplimentTableEquipment implements OnInit {
     @ViewChild('nameProizvoditelOthers', { static: false }) paginatornameProizvoditelOther: MatPaginator;
     @ViewChild('nameModelOthers', { static: false }) paginatornameModelOther: MatPaginator;
 
+    @ViewChild('nameModelPhones', { static: false }) paginatornameModelPhone: MatPaginator;
+
+
+
     public nameSysBlock: NameSysBlockTableModel = new NameSysBlockTableModel(this.editandadd, this.SignalR);
     public nameMonitor: NameMonitorTableModel = new NameMonitorTableModel(this.editandadd, this.SignalR);
     public nameModelBlokPower: NameModelBlokPowerTableModel = new NameModelBlokPowerTableModel(this.editandadd, this.SignalR)
@@ -120,9 +129,9 @@ export class ComplimentTableEquipment implements OnInit {
     public nameTaskAis3: TaskAis3TableModel = new TaskAis3TableModel(this.editandadd, this.SignalR);
 
     public nameTypeOther: TypeOtherTableModel = new TypeOtherTableModel(this.editandadd, this.SignalR);
-    public nameProizvoditelOther: ProizvoditelOtherTableModel = new ProizvoditelOtherTableModel(this.editandadd, this.SignalR)
-    public nameModelOther: ModelOtherTableModel = new ModelOtherTableModel(this.editandadd, this.SignalR)
-
+    public nameProizvoditelOther: ProizvoditelOtherTableModel = new ProizvoditelOtherTableModel(this.editandadd, this.SignalR);
+    public nameModelOther: ModelOtherTableModel = new ModelOtherTableModel(this.editandadd, this.SignalR);
+    public nameModelPhone: ModelPhoneTableModel = new ModelPhoneTableModel(this.editandadd, this.SignalR);
 
 
 
@@ -174,6 +183,8 @@ export class ComplimentTableEquipment implements OnInit {
         this.loadMessage.push(message);
         message = await this.nameModelOther.addtableModel(this.selectAll.select, this.paginatornameModelOther, null, this.tableModelOther, this.templateModelOther)
         this.loadMessage.push(message);
+        message = await this.nameModelPhone.addtableModel(this.selectAll.select, this.paginatornameModelPhone, null, this.tableModelPhone, this.templateModelPhone)
+        this.loadMessage.push(message);
         this.isload = false;
     }
 
@@ -200,5 +211,6 @@ export class ComplimentTableEquipment implements OnInit {
         await this.selectAll.allTypeOther();
         await this.selectAll.allProizvoditelOther();
         await this.selectAll.allModelOther();
+        await this.selectAll.allModelPhone();
     }
 }

@@ -1,9 +1,12 @@
+
 const Path = require('path');
 var Webpack = require('webpack');
+
 
 const crypto = require('crypto');
 const crypto_org_createHash = crypto.createHash;
 crypto.createHash = algorithm => crypto_org_createHash(algorithm == "md4" ? "sha256" : algorithm);
+
 
 module.exports = {
   mode: "development",
@@ -55,6 +58,7 @@ module.exports = {
     ],
 
   },
+
   resolve: {
     extensions: ['.tsx', '.ts', '.js']
   },

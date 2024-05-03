@@ -1,7 +1,6 @@
-//export const ServerHost: string = '77068-APP065';  //localhost
-export const ServerHost: string = 'localhost'
+export const ServerHost: string = '77068-APP065';  //localhost
+//export const ServerHost: string = 'localhost'
 export const ServerPort: string = '8182';
-
 
 //К примеру новая структура
 //http://77068-APP065:8182/Inventarka/AllRules
@@ -49,6 +48,7 @@ export class AdressInventarka {
     public allmailidentifies = `http://${ServerHost}:${ServerPort}/Inventarka/AllMailIdentifies`;
     public allmailgroups = `http://${ServerHost}:${ServerPort}/Inventarka/AllMailGroups`;
     public alltoken = `http://${ServerHost}:${ServerPort}/Inventarka/AllToken`;
+    public allModelPhone = `http://${ServerHost}:${ServerPort}/Inventarka/AllModelPhone`;
 
     public selectparametr = `http://${ServerHost}:${ServerPort}/Inventarka/GenerateSqlSelect`;
     public selectxml = `http://${ServerHost}:${ServerPort}/Inventarka/SelectXml`;
@@ -78,6 +78,7 @@ export class AdressInventarka {
     public addAndEditNameClassification = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditNameClassification`;
     public addAndEditNameFullProizvoditel = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditNameFullProizvoditel`;
     public addAndEditNameCopySave = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditNameCopySave`;
+    public addAndEditModelPhone = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditModelPhone`;
 
     public addAndEditMailIdentifies = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditMailIdentifies`;
     public addAndEditMailGroups = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditMailGroups`;
@@ -125,7 +126,9 @@ export class AdressInventarka {
     ///Снять статусы со списанной техники
     public isCheckStatusNull = `http://${ServerHost}:${ServerPort}/Inventarka/IsCheckStatusNull`;
     ///Генерация Qr кодов для техники
-    public generateQrCode = `http://${ServerHost}:${ServerPort}/Inventarka/GenerateQrCodeTechnical?serialNumber={serialNumber}&isAll={isAll}`;
+    public generateQrCode = `http://${ServerHost}:${ServerPort}/Inventarka/GenerateQrCodeTechnical?serialNumber={serialNumber}&inventoryNumber={inventoryNumber}&isAll={isAll}`;
+    ///Генерация этикетки по коду Code128 
+    public generateTicket128CodeTechnical = `http://${ServerHost}:${ServerPort}/Inventarka/GenerateTicket128CodeTechnical?serialNumber={serialNumber}&inventoryNumber={inventoryNumber}&isAll={isAll}`;
     ///Генерация QR кодов по кабинетам
     public generateQrCodeOffice = `http://${ServerHost}:${ServerPort}/Inventarka/GenerateQrCodeOffice?numberOffice={numberOffice}&isAll={isAll}`;
     ///Личный кабинет для техники
@@ -148,7 +151,8 @@ export class AdressInventarka {
     public settingDepartmentCase = `http://${ServerHost}:${ServerPort}/Inventarka/SettingDepartmentCase`
     public addAndEditSettingDepartmentCase = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditSettingDepartmentCase?userIdEdit=`;
     //Настройки праздничных дней в инвенторизации
-    public getholiday = `http://${ServerHost}:${ServerPort}/Inventarka/GetHoliday`
+    public getHoliday = `http://${ServerHost}:${ServerPort}/Inventarka/GetHoliday`
+    public getStatusHoliday = `http://${ServerHost}:${ServerPort}/Inventarka/GetStatusHoliday`
     public addAndEditHoliday = `http://${ServerHost}:${ServerPort}/Inventarka/AddAndEditRbHoliday?userIdEdit=`;
     public deleteHoliday = `http://${ServerHost}:${ServerPort}/Inventarka/DeleteRbHoliday?userIdEdit=`;
     //Настройки регламентов отдела
@@ -216,13 +220,15 @@ export class AdressInventarka {
     ///Выгрузка отчета по всем БД для анализа изи систем Lotus Notes, Active Derectory, DKS
     public reportFileXlsxSqlView = `http://${ServerHost}:${ServerPort}/Inventarka/ReportFileXlsxSqlView`;
 
-    ///Выгрузка отчета по всем БД для анализа техники из систем Lotus Notes, Active Derectory, DKS
+    ///Выгрузка отчета по всем БД для анализа техники из систем АКСИОК, Инвентаризация, AD
     public reportFileSqlViewTechReport = `http://${ServerHost}:${ServerPort}/Inventarka/ReportFileSqlViewTechReport`;
 
-    ///Api для запуска процеса системы инвентаризации
-    public startProcess = `http://${ServerHost}:${ServerPort}/Inventarka/StartProcessInventory?idProcess={idProcess}&userLogin={userLogin}&passwordUser={passwordUser}`
+    ///Api для запуска процесса системы инвентаризации
+    public startProcess = `http://${ServerHost}:${ServerPort}/Inventarka/StartProcessInventory`
     ///Выгрузка файла с сервера
     public downloadFileServer = `http://${ServerHost}:${ServerPort}/Inventarka/DownloadFileServer?idFile={idFile}`;
     ///Детализация файла на сервере
     public modelFileDetailing = `http://${ServerHost}:${ServerPort}/Inventarka/ModelFileDetailing?idFile={idFile}`;
+    ///Создание карточки оборудования
+    public createCardAksiokAndInventory = `http://${ServerHost}:${ServerPort}/Inventarka/CreateCardAksiokAndInventory`;
 }

@@ -71,9 +71,18 @@ export class User implements OnInit {
 
 
     ///Создание QR Code Model SerialNumber
-    createQRCode(serialNumber: string, isAll: boolean) {
+    createQRCode(serialNumber: string, inventoryNumber: string, isAll: boolean = false) {
         if (serialNumber) {
-            this.editandadd.createQRCode(serialNumber, isAll);
+            this.editandadd.createQRCode(serialNumber, inventoryNumber, isAll);
+        }
+        else {
+            alert(`У оборудования отсутствует серийный номер - ${serialNumber}!`)
+        }
+    }
+    ///Формирование наклейки этикетки
+    createLabel(serialNumber: string, inventoryNumber: string, isAll: boolean = false) {
+        if (serialNumber) {
+            this.editandadd.createTicketCode128(serialNumber, inventoryNumber, isAll);
         }
         else {
             alert(`У оборудования отсутствует серийный номер - ${serialNumber}!`)
@@ -135,6 +144,7 @@ export class User implements OnInit {
         await this.selectall.allstatysing();
         await this.selectall.allkabinet();
         await this.selectall.allsupply();
+        await this.selectall.allModelPhone();
         message = await this.telephone.addtableModel(this.selectall.select, this.paginatortelephones, this.sorttelephones, this.tabletelephones, this.templateTelephone);
         this.loadMessage.push(message);
         message = await this.roleAndUser.addtableModel(this.selectall.select, this.paginatorRoles, this.sortroleAndUser, this.tableModelRule);

@@ -255,11 +255,11 @@
                                 [style.display]="!row.ModelIsEdit ? 'none':'block'"></div>
                         </td>
                     </ng-container>
-                    <ng-container matColumnDef="IS_HOLIDAY">
-                        <th mat-header-cell *matHeaderCellDef>Рабочий или выходной день</th>
+                    <ng-container matColumnDef="IdStatusHolidays">
+                        <th mat-header-cell *matHeaderCellDef>Статус дня</th>
                         <td mat-cell *matCellDef="let row">
                             <Label
-                                [style.display]="row.ModelIsEdit ? 'none':'block'">{{returnTextHoliday(row.IS_HOLIDAY)}}</Label>
+                                [style.display]="row.ModelIsEdit ? 'none':'block'">{{row.StatusHolyday?.NameStatus}}</Label>
                             <div [ngClass]=row.Id.toString() id="{{row.Id}}"
                                 [style.display]="!row.ModelIsEdit ? 'none':'block'"></div>
                         </td>
@@ -307,14 +307,15 @@
                 <mat-datepicker #picker1></mat-datepicker>
             </mat-form-field>
             <mat-form-field id="template" class="validation">
-                <mat-select (click)="holiday.calbackfiltersAll()" [placeholder]="holiday.models.HolidayText"
-                    [(ngModel)]="holiday.models" name="HolidayText">
-                    <mat-select-filter class="filter" [placeholder]="holiday.models.HolidayText"
-                        [displayMember]="'HolidayText'" [array]="holiday.modelIsHoliday"
+                <mat-select (click)="holiday.calbackfiltersAll()"
+                    [placeholder]="holiday.model.StatusHolyday?.NameStatus" [(ngModel)]="holiday.model.StatusHolyday"
+                    name="NameStatus">
+                    <mat-select-filter class="filter" [placeholder]="holiday.model.NameStatus"
+                        [displayMember]="'NameStatus'" [array]="holiday.modelStatusHolyday"
                         (filteredReturn)="holiday.filteredHoliday = $event">
                     </mat-select-filter>
                     <mat-option *ngFor="let holidayModel of holiday.filteredHoliday" [value]="holidayModel">
-                        {{holidayModel.HolidayText}}
+                        {{holidayModel.NameStatus}}
                     </mat-option>
                 </mat-select>
             </mat-form-field>

@@ -1,9 +1,27 @@
-.modeltable{
+::ng-deep .mat-tab-label-content {
+  font-size: 16px;
+  color: black;
+  font-weight: bold;
+}
+
+::ng-deep .mat-tooltip {
+  background: grey !important;
+  font-size: 18px !important;
+}
+
+::ng-deep .mat-tab-list .mat-tab-labels .mat-tab-label-active {
+  font-size: 20px;
+  font-weight: bold;
+  font-family: 'Times New Roman';
+}
+
+
+.modeltable {
   display: inline-flex;
 }
 
 
-.procedure{
+.procedure {
   margin-top: 30px;
 }
 
@@ -12,49 +30,51 @@ table {
   width: 100%;
   table-layout: fixed;
 }
-::ng-deep .mat-tab-label-content{
-font-size: 18px;
-color: black;
-font-weight: bold;
+
+::ng-deep .mat-tab-label-content {
+  font-size: 18px;
+  color: black;
+  font-weight: bold;
 }
 
 ::ng-deep .mat-tab-list .mat-tab-labels .mat-tab-label-active {
-font-size: 20px;
- font-weight: bold;
- font-family: 'Times New Roman';
+  font-size: 20px;
+  font-weight: bold;
+  font-family: 'Times New Roman';
 }
 
-th.mat-header-cell{
- text-align: center;
- white-space: pre-wrap;
- padding-left: 5px;
- padding-right: 5px;
- border: groove;
- background: cadetblue;  
- font-family: 'Times New Roman';
- font-size: 18px;
- font-weight: bold;
+th.mat-header-cell {
+  text-align: center;
+  white-space: pre-wrap;
+  padding-left: 5px;
+  padding-right: 5px;
+  border: groove;
+  background: cadetblue;
+  font-family: 'Times New Roman';
+  font-size: 18px;
+  font-weight: bold;
 }
 
-td.mat-cell{
-text-align: left;
-white-space: nowrap;
-padding-left: 5px;
-padding-right: 5px;
-border: groove;
-background: darkkhaki;
-font-family: 'Times New Roman';
-font-size: 14px;
-font-weight: bold;
+td.mat-cell {
+  text-align: left;
+  white-space: nowrap;
+  padding-left: 5px;
+  padding-right: 5px;
+  border: groove;
+  background: darkkhaki;
+  font-family: 'Times New Roman';
+  font-size: 14px;
+  font-weight: bold;
 }
 
 .tables {
-position: relative;
-max-height: 600px;
-overflow: auto;
+  position: relative;
+  max-height: 600px;
+  overflow: auto;
 }
 
-th, td {
+th,
+td {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -73,18 +93,19 @@ th, td {
   font-size: 48px;
 }
 
- .validation{
+.validation {
   width: 100%;
 }
-.paginator{
-  margin-bottom: 100px;
-} 
 
-.search_blok{
+.paginator {
+  margin-bottom: 100px;
+}
+
+.search_blok {
   width: 30%;
 }
 
-.search{
+.search {
   width: 80%;
 }
 
@@ -94,76 +115,81 @@ th, td {
   align-items: center;
   margin: 10px;
 }
+
 .actual:hover {
-     background-color: orange;
+  background-color: orange;
 }
 
-::ng-deep.mat-menu-panel{
+::ng-deep.mat-menu-panel {
   max-width: none !important;
 }
 
-.MenuButton{
-  width: max-content;;
+.MenuButton {
+  width: max-content;
+  ;
 }
 
-.modelUser{
+.modelUser {
   margin: 15;
   width: 40%;
 }
 
-.modelRule{
+.modelRule {
   margin: 15;
   width: 40%;
 }
 
-td.cell{
+td.cell {
   text-align: center;
   white-space: nowrap;
   padding-left: 5px;
   padding-right: 5px;
   border: groove;
-  color: rgba(0,0,0,.87);
+  color: rgba(0, 0, 0, .87);
   background: darkkhaki;
   font-family: 'Times New Roman';
- font-size: 14px;
- font-weight: bold;
+  font-size: 14px;
+  font-weight: bold;
 }
-.check{
-text-align: center;
+
+.check {
+  text-align: center;
 }
-.id{
+
+.id {
   text-align: center;
   width: 35px;
   padding-left: 5px;
   padding-right: 5px;
   border: groove;
-  color: rgba(0,0,0,.87);
-  background: cadetblue;  
-  font-family: 'Times New Roman';
-  font-size: 16px;
-  font-weight: bold;
-}
-.id2{
-  text-align: center;
-  width: 75px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border: groove;
-  color: rgba(0,0,0,.87);
-  background: cadetblue;  
+  color: rgba(0, 0, 0, .87);
+  background: cadetblue;
   font-family: 'Times New Roman';
   font-size: 16px;
   font-weight: bold;
 }
 
-.logic{
+.id2 {
+  text-align: center;
+  width: 75px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border: groove;
+  color: rgba(0, 0, 0, .87);
+  background: cadetblue;
+  font-family: 'Times New Roman';
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.logic {
   text-align: center;
   width: 115px;
   padding-left: 5px;
   padding-right: 5px;
   border: groove;
-  color: rgba(0,0,0,.87);
-  background: cadetblue;  
+  color: rgba(0, 0, 0, .87);
+  background: cadetblue;
   font-family: 'Times New Roman';
   font-size: 16px;
   font-weight: bold;

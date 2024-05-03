@@ -27,6 +27,7 @@ import { Aksiok } from '../../Inventory/AksiokSupport/Aksiok/View/Aksiok';
 import { Descrepancies } from '../../Inventory/Descrepancies/View/Descrepancies';
 import { FileServer } from '../../Inventory/FileServer/View/FileServer';
 
+
 const appRoutes: Routes = [
     {
         path: '',

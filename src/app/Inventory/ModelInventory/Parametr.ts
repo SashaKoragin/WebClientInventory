@@ -4,3 +4,4 @@ export class ModelParametr {
     }
     IdParamSelect: number;
 }
+

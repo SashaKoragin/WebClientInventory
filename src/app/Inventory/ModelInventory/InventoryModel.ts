@@ -4,6 +4,7 @@ import { ElementRef } from '@angular/core';
 import { Book } from './ViewInventory';
 import { AuthIdentification } from '../../Post RequestService/PostRequest';
 import { Expose } from 'class-transformer';
+import { moment } from '../AllSelectModel/GenerateParametrFront';
 
 
 
@@ -94,6 +95,7 @@ export class FullSelectedModel {
     SettingDepartmentCaseGetServer: SettingDepartmentCaseGetServer[];
     RegulationsDepartment: RegulationsDepartment[];
     Rb_Holiday: Rb_Holiday[];
+    StatusHolyday: StatusHolyday[];
     CategoryPhoneHeader: CategoryPhoneHeader[];
     Otdels: Otdel[];
     Users: Users[];
@@ -115,6 +117,7 @@ export class FullSelectedModel {
     Telephon: Telephon[];
     BlockPower: BlockPower[];
     Supply: Supply[];
+    ModelPhone: ModelPhone[];
     ServerEquipment: ServerEquipment[];
     ModelSeverEquipment: ModelSeverEquipment[];
     ManufacturerSeverEquipment: ManufacturerSeverEquipment[];
@@ -481,6 +484,8 @@ export class Swithe {
     public ServiceNum: string;
     public SerNum: string;
     public InventarNum: string;
+    public NameSwithes: string;
+    public IpAdress: string;
     public Coment: string;
     public IdStatus: number;
     public WriteOffSign: boolean;
@@ -591,8 +596,8 @@ export class FullModel {
 export class CopySave {
     public IdCopySave: number;
     public NameCopySave: string;
-    public SerNum: string;
-    public InventarNum: string;
+    public SerNumCopySave: string;
+    public InventarNumCopySave: string;
     public ModelIsEdit?: boolean = false;
 }
 
@@ -629,6 +634,8 @@ export class BlockPower {
     public ZavNumber?: string;
     public ServiceNumber?: string;
     public InventarNumber?: string;
+    public NameBlockPowers?: string;
+    public IpAdress?: string;
     public Coment?: string;
     public IdStatus?: number;
     public WriteOffSign: boolean;
@@ -669,9 +676,9 @@ export class Supply {
 export class Telephon {
     public IdTelephon: number;
     public IdUser?: number;
+    public IdModelPhone?: number;
     public IdSupply?: number;
     public IdNumberKabinet?: number;
-    public NameTelephone: string;
     public Telephon_: string;
     public TelephonUndeground: string;
     public ServiceNum: string;
@@ -683,11 +690,20 @@ export class Telephon {
     public IdStatus: number;
     public IdCategoryHeaders: number;
     public WriteOffSign: boolean;
+    public IdHistory?: string;
     public User?: Users;
     public CategoryPhoneHeader?: CategoryPhoneHeader;
     public Statusing?: Statusing;
     public Supply: Supply;
     public Kabinet?: Kabinet;
+    public ModelPhone?: ModelPhone;
+    public ModelIsEdit?: boolean = false;
+}
+
+export class ModelPhone {
+    public IdModelPhone: number;
+    public NameModel: string;
+    public IdFullCategoria: number;
     public ModelIsEdit?: boolean = false;
 }
 
@@ -710,6 +726,7 @@ export class ServerEquipment {
     public InventarNum: string;
     public NameServer: string;
     public IpAdress: string;
+    public IpIlo: string;
     public Coment: string;
     public IdStatus: number;
     public WriteOffSign: boolean;
@@ -734,6 +751,8 @@ export class OtherAll {
     public ServiceNumber: string;
     public SerNum: string;
     public InventarNum: string;
+    public NameOther: string;
+    public IpOther: string;
     public Coment: string;
     public IdStatus: number;
     public WriteOffSign: boolean;
@@ -864,7 +883,8 @@ export class ModelParametrSupport {
         IdScanner: number = 0,
         IdTelephon: number = 0,
         IdCalendarVks: number = 0,
-        IdAnalisysEpo: number = 0) {
+        IdAnalisysEpo: number = 0,
+        AksiokAddAndEdit: AksiokAddAndEdit = null) {
         this.loginField = Login;
         this.passwordField = Password;
         this.idTemplateField = IdTemplate;
@@ -878,6 +898,7 @@ export class ModelParametrSupport {
         this.idTelephonField = IdTelephon;
         this.idCalendarVksField = IdCalendarVks;
         this.idAnalisysEpoField = IdAnalisysEpo;
+        this.aksiokAddAndEditField = AksiokAddAndEdit;
     }
     public loginField: string;
     public passwordField: string;
@@ -895,6 +916,7 @@ export class ModelParametrSupport {
     public errorField: string = null;
     public step3ResponseSupportField: string = null;
     public templateSupportField: TemplateSupport[] = null;
+    public aksiokAddAndEditField: AksiokAddAndEdit = null
 }
 //Шаблон параметров заглушка
 export class TemplateSupport {
@@ -982,8 +1004,14 @@ export class TemplateIfnsAndRuleIfns {
 export class Rb_Holiday {
     public Id: number;
     public DateTime_Holiday: any;
-    public IS_HOLIDAY: boolean;
+    public IdStatusHolidays: number;
+    public StatusHolyday: StatusHolyday;
     public ModelIsEdit?: boolean = false;
+}
+
+export class StatusHolyday {
+    public IdStatusHolidays: number;
+    public NameStatus: string;
 }
 
 export class AnalysisEpoAndInventarka {
@@ -1111,7 +1139,7 @@ export class ValueCharacteristicJson {
 
 export class AksiokAddAndEdit {
     public parametersModelField: ParametersModel = new ParametersModel();
-    public kitsEquipmentField: KitsEquipment = null;
+    public kitsEquipmentField: KitsEquipment = new KitsEquipment();
     public parametersRequestAksiokField: ParametersRequestAksiok = null;
     public uploadFileAksiokField: UploadFileAksiok = null;
 }
@@ -1122,19 +1150,25 @@ export class ParametersModel {
     public idStateStoField: number = 0;
     public idExpertiseField: number = 0;
     public modelRequestField: string;
+    public nameProducerField: string = null;
+    public nameModelField: string = null;
     public serNumberField: string;
     public inventoryNumField: string;
     public codeErrorField: number = 0;
     public errorServerField: string = null;
     public yearOfIssueField: number = 0;
     public exploitationStartYearField: number = 0;
-    public loginUserField: string = null;;
-    public passwordField: string = null;;
+    public guaranteeField: any = `/Date(${moment(new Date(), 'DD-MM-YYYY').valueOf()})/`;
+    public isKitField: boolean = false;
+    public loginUserField: string = null;
+    public passwordField: string = null;
 }
 
 export class KitsEquipment {
-    public inventoryNumField: string;
+    public inventoryNumField: string = null;
     public errorServerField: string = null;
+    public isCheckedKitsField: boolean = false; //Скомплектовать 
+    public isNotCheckedKitsField: boolean = false; //Разукомплектовать
     public kitsEquipmentServerField: KitsEquipmentServer[] = null
 }
 
@@ -1142,7 +1176,6 @@ export class KitsEquipmentServer {
     public idField: number;
     public serialNumberField: string;
     public inventoryNumberField: string;
-    public isKitField: boolean;
 }
 
 export class ParametersRequestAksiok {

@@ -359,7 +359,7 @@ class GenerateFullCommand {
             case 4:
                 return this.generateStringAndNumber(select, isparam, `'${select.paramvalue.trim()}'`);
             case 5:
-                return this.generateStringAndNumber(select, isparam, `'${select.paramvalue.trim()}'`);
+                return this.generateStringAndNumber(select, isparam, `'${select.paramvalue.trim()}%'`);
             case 6:
                 return this.generateStringAndNumber(select, isparam, `'${select.paramvalue.trim()}%'`);
             case 7:

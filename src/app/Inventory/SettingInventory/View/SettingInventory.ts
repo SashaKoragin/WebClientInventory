@@ -26,10 +26,6 @@ export class SettingInventory implements OnInit {
         public selectAll: PostInventar,
         public SignalR: AuthIdentificationSignalR) { }
 
-    public returnTextHoliday(value: boolean): string {
-        return this.holiday.modelIsHoliday.find(x => x.HolidayBoolean === value).HolidayText
-    }
-
     @ViewChild('TEMPLATESETTINGDEPARTMENT', { static: true }) templatesettingDepartment: ElementRef;
     @ViewChild('TEMPLATEHOLIDAY', { static: true }) templateHoliday: ElementRef;
     @ViewChild('TEMPLATEREGULATIONSDEPARTMENT', { static: true }) templateregulationsDepartment: ElementRef;
@@ -67,6 +63,7 @@ export class SettingInventory implements OnInit {
         var message = null;
         await this.selectAll.settingOrganization();
         await this.selectAll.settingDepartamentCase();
+        await this.selectAll.statusHoliday();
         await this.selectAll.holidayDays();
         await this.selectAll.settingDepartmentRegulations();
         await this.selectAll.settingCategoryPhoneHeader();

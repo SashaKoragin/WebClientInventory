@@ -16,7 +16,7 @@ import { deserialize } from 'class-transformer';
 import { FormControl } from '@angular/forms';
 import { ModelDialog, DialogDiscription } from '../ModelDialogDiscription/View/DialogDiscription';
 import { SelectionModel } from '@angular/cdk/collections';
-import { INewLogicaTable, SettingDepartmentCaseGetServer, SettingDepartmentCaseToServer, Rb_Holiday, CategoryPhoneHeader, RegulationsDepartment, RegulationsDepartmentToServer, ResourceIt, TaskAis3, ModelOther, ProizvoditelOther, TypeOther, AksiokAddAndEdit, ModelBlockPower, ModelSwithes, SelectDayOfTheWeek } from '../../ModelInventory/InventoryModel';
+import { INewLogicaTable, SettingDepartmentCaseGetServer, SettingDepartmentCaseToServer, Rb_Holiday, CategoryPhoneHeader, RegulationsDepartment, RegulationsDepartmentToServer, ResourceIt, TaskAis3, ModelOther, ProizvoditelOther, TypeOther, AksiokAddAndEdit, ModelBlockPower, ModelSwithes, SelectDayOfTheWeek, StatusHolyday, ModelPhone } from '../../ModelInventory/InventoryModel';
 import { ModelSelect, ParametrsAct } from '../../AllSelectModel/ParametrModel';
 import { DialogAksiokEditAndAdd } from '../DialogAksiokEditAndAdd/DialogAksiokEditAndAddTs/DialogAksiokEditAndAdd';
 const moment = _rollupMoment || _moment;
@@ -619,29 +619,38 @@ export class SwitchTableModel implements INewLogicaTable<Swithe>{
     this.editandadd.isBeginTask(6).toPromise().then((isCheck: boolean) => {
       var isBeginTask = isCheck
       if (isBeginTask) {
-        var aksiokAddAndEdit = new AksiokAddAndEdit();
-        aksiokAddAndEdit.parametersModelField.modelRequestField = modelRequest;
-        aksiokAddAndEdit.parametersModelField.inventoryNumField = model.InventarNum;
-        aksiokAddAndEdit.parametersModelField.serNumberField = model.SerNum;
-        if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'Edit' || aksiokAddAndEdit.parametersModelField.modelRequestField === 'Add') {
-          this.editandadd.validationModelAksiok(aksiokAddAndEdit).toPromise().then((modelAksiok: AksiokAddAndEdit) => {
-            if (modelAksiok.parametersModelField.errorServerField) {
-              alert(modelAksiok.parametersModelField.errorServerField);
-              return;
-            }
-            else {
-              const dialogRef = dialog.open(DialogAksiokEditAndAdd, {
-                width: "1000px",
-                height: "750px",
-                data: modelAksiok
-              })
-            }
-          });
+        if (model.SerNum) {
+          var aksiokAddAndEdit = new AksiokAddAndEdit();
+          aksiokAddAndEdit.parametersModelField.modelRequestField = modelRequest;
+          aksiokAddAndEdit.parametersModelField.inventoryNumField = model.InventarNum;
+          aksiokAddAndEdit.parametersModelField.serNumberField = model.SerNum;
+          if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'Edit' || aksiokAddAndEdit.parametersModelField.modelRequestField === 'Add') {
+            this.editandadd.validationModelAksiok(aksiokAddAndEdit).toPromise().then((modelAksiok: AksiokAddAndEdit) => {
+              if (modelAksiok.parametersModelField.errorServerField) {
+                alert(modelAksiok.parametersModelField.errorServerField);
+                return;
+              }
+              else {
+                const dialogRef = dialog.open(DialogAksiokEditAndAdd, {
+                  width: "1000px",
+                  height: "750px",
+                  data: modelAksiok
+                })
+              }
+            });
+          }
+          if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'CardEquipment') {
+            aksiokAddAndEdit.parametersModelField.guaranteeField = null;
+            this.editandadd.uploadCardAksiokAndInventory(aksiokAddAndEdit);
+          }
+          if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'ExpertiseFile' || aksiokAddAndEdit.parametersModelField.modelRequestField === 'FileAct') {
+            aksiokAddAndEdit.parametersModelField.loginUserField = authService.autorization.loginField;
+            aksiokAddAndEdit.parametersModelField.passwordField = authService.autorization.passwordField;
+            this.editandadd.uploadFileAksiok(aksiokAddAndEdit);
+          }
         }
         else {
-          aksiokAddAndEdit.parametersModelField.loginUserField = authService.autorization.loginField;
-          aksiokAddAndEdit.parametersModelField.passwordField = authService.autorization.passwordField;
-          this.editandadd.uploadFileAksiok(aksiokAddAndEdit);
+          alert('Отсутствует серийный номер ' + model.SerNum);
         }
       }
       else {
@@ -658,7 +667,7 @@ export class SwitchTableModel implements INewLogicaTable<Swithe>{
   public supples: Supply[]
   public user: Users[];
 
-  displayedColumns = ['Logic', 'IdSwithes', 'User.NameUser', 'Supply.DatePostavki', 'ModelSwithe.NameModel', 'ModelSwithe.CountPort', 'ServiceNum', 'SerNum', 'InventarNum', 'Coment', 'Kabinet.NumberKabinet', 'Statusing.NameStatus', 'WriteOffSign', 'ActionsColumn'];
+  displayedColumns = ['Logic', 'IdSwithes', 'User.NameUser', 'Supply.DatePostavki', 'ModelSwithe.NameModel', 'ModelSwithe.CountPort', 'ServiceNum', 'SerNum', 'InventarNum', 'NameSwithes', 'IpAdress', 'Coment', 'Kabinet.NumberKabinet', 'Statusing.NameStatus', 'WriteOffSign', 'ActionsColumn'];
   dataSource: MatTableDataSource<Swithe> = new MatTableDataSource<Swithe>();
   isAdd: boolean;
   isEdit: boolean;
@@ -938,29 +947,38 @@ export class ServerEquipmentTableModel implements INewLogicaTable<ServerEquipmen
     this.editandadd.isBeginTask(6).toPromise().then((isCheck: boolean) => {
       var isBeginTask = isCheck
       if (isBeginTask) {
-        var aksiokAddAndEdit = new AksiokAddAndEdit();
-        aksiokAddAndEdit.parametersModelField.modelRequestField = modelRequest;
-        aksiokAddAndEdit.parametersModelField.inventoryNumField = model.InventarNum;
-        aksiokAddAndEdit.parametersModelField.serNumberField = model.SerNum;
-        if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'Edit' || aksiokAddAndEdit.parametersModelField.modelRequestField === 'Add') {
-          this.editandadd.validationModelAksiok(aksiokAddAndEdit).toPromise().then((modelAksiok: AksiokAddAndEdit) => {
-            if (modelAksiok.parametersModelField.errorServerField) {
-              alert(modelAksiok.parametersModelField.errorServerField);
-              return;
-            }
-            else {
-              const dialogRef = dialog.open(DialogAksiokEditAndAdd, {
-                width: "1000px",
-                height: "750px",
-                data: modelAksiok
-              })
-            }
-          });
+        if (model.SerNum) {
+          var aksiokAddAndEdit = new AksiokAddAndEdit();
+          aksiokAddAndEdit.parametersModelField.modelRequestField = modelRequest;
+          aksiokAddAndEdit.parametersModelField.inventoryNumField = model.InventarNum;
+          aksiokAddAndEdit.parametersModelField.serNumberField = model.SerNum;
+          if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'Edit' || aksiokAddAndEdit.parametersModelField.modelRequestField === 'Add') {
+            this.editandadd.validationModelAksiok(aksiokAddAndEdit).toPromise().then((modelAksiok: AksiokAddAndEdit) => {
+              if (modelAksiok.parametersModelField.errorServerField) {
+                alert(modelAksiok.parametersModelField.errorServerField);
+                return;
+              }
+              else {
+                const dialogRef = dialog.open(DialogAksiokEditAndAdd, {
+                  width: "1000px",
+                  height: "750px",
+                  data: modelAksiok
+                })
+              }
+            });
+          }
+          if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'CardEquipment') {
+            aksiokAddAndEdit.parametersModelField.guaranteeField = null;
+            this.editandadd.uploadCardAksiokAndInventory(aksiokAddAndEdit);
+          }
+          if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'ExpertiseFile' || aksiokAddAndEdit.parametersModelField.modelRequestField === 'FileAct') {
+            aksiokAddAndEdit.parametersModelField.loginUserField = authService.autorization.loginField;
+            aksiokAddAndEdit.parametersModelField.passwordField = authService.autorization.passwordField;
+            this.editandadd.uploadFileAksiok(aksiokAddAndEdit);
+          }
         }
         else {
-          aksiokAddAndEdit.parametersModelField.loginUserField = authService.autorization.loginField;
-          aksiokAddAndEdit.parametersModelField.passwordField = authService.autorization.passwordField;
-          this.editandadd.uploadFileAksiok(aksiokAddAndEdit);
+          alert('Отсутствует серийный номер ' + model.SerNum);
         }
       }
       else {
@@ -977,7 +995,7 @@ export class ServerEquipmentTableModel implements INewLogicaTable<ServerEquipmen
   public modelSeverEquipment: ModelSeverEquipment[];
   public manufacturerSeverEquipment: ManufacturerSeverEquipment[];
 
-  displayedColumns = ['Logic', 'Id', 'Supply.DatePostavki', 'TypeServer.NameType', 'ModelSeverEquipment.NameModel', 'ManufacturerSeverEquipment.NameManufacturer', 'ServiceNum', 'SerNum', 'InventarNum', 'NameServer', 'IpAdress', 'Coment', 'Kabinet.NumberKabinet', 'Statusing.NameStatus', 'WriteOffSign', 'ActionsColumn'];
+  displayedColumns = ['Logic', 'Id', 'Supply.DatePostavki', 'TypeServer.NameType', 'ModelSeverEquipment.NameModel', 'ManufacturerSeverEquipment.NameManufacturer', 'ServiceNum', 'SerNum', 'InventarNum', 'NameServer', 'IpAdress', 'IpIlo', 'Coment', 'Kabinet.NumberKabinet', 'Statusing.NameStatus', 'WriteOffSign', 'ActionsColumn'];
 
   dataSource: MatTableDataSource<ServerEquipment> = new MatTableDataSource<ServerEquipment>();
   isAdd: boolean;
@@ -1267,29 +1285,38 @@ export class OtherAllTableModel implements INewLogicaTable<OtherAll>{
     this.editandadd.isBeginTask(6).toPromise().then((isCheck: boolean) => {
       var isBeginTask = isCheck
       if (isBeginTask) {
-        var aksiokAddAndEdit = new AksiokAddAndEdit();
-        aksiokAddAndEdit.parametersModelField.modelRequestField = modelRequest;
-        aksiokAddAndEdit.parametersModelField.inventoryNumField = model.InventarNum;
-        aksiokAddAndEdit.parametersModelField.serNumberField = model.SerNum;
-        if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'Edit' || aksiokAddAndEdit.parametersModelField.modelRequestField === 'Add') {
-          this.editandadd.validationModelAksiok(aksiokAddAndEdit).toPromise().then((modelAksiok: AksiokAddAndEdit) => {
-            if (modelAksiok.parametersModelField.errorServerField) {
-              alert(modelAksiok.parametersModelField.errorServerField);
-              return;
-            }
-            else {
-              const dialogRef = dialog.open(DialogAksiokEditAndAdd, {
-                width: "1000px",
-                height: "750px",
-                data: modelAksiok
-              })
-            }
-          });
+        if (model.SerNum) {
+          var aksiokAddAndEdit = new AksiokAddAndEdit();
+          aksiokAddAndEdit.parametersModelField.modelRequestField = modelRequest;
+          aksiokAddAndEdit.parametersModelField.inventoryNumField = model.InventarNum;
+          aksiokAddAndEdit.parametersModelField.serNumberField = model.SerNum;
+          if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'Edit' || aksiokAddAndEdit.parametersModelField.modelRequestField === 'Add') {
+            this.editandadd.validationModelAksiok(aksiokAddAndEdit).toPromise().then((modelAksiok: AksiokAddAndEdit) => {
+              if (modelAksiok.parametersModelField.errorServerField) {
+                alert(modelAksiok.parametersModelField.errorServerField);
+                return;
+              }
+              else {
+                const dialogRef = dialog.open(DialogAksiokEditAndAdd, {
+                  width: "1000px",
+                  height: "750px",
+                  data: modelAksiok
+                })
+              }
+            });
+          }
+          if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'CardEquipment') {
+            aksiokAddAndEdit.parametersModelField.guaranteeField = null;
+            this.editandadd.uploadCardAksiokAndInventory(aksiokAddAndEdit);
+          }
+          if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'ExpertiseFile' || aksiokAddAndEdit.parametersModelField.modelRequestField === 'FileAct') {
+            aksiokAddAndEdit.parametersModelField.loginUserField = authService.autorization.loginField;
+            aksiokAddAndEdit.parametersModelField.passwordField = authService.autorization.passwordField;
+            this.editandadd.uploadFileAksiok(aksiokAddAndEdit);
+          }
         }
         else {
-          aksiokAddAndEdit.parametersModelField.loginUserField = authService.autorization.loginField;
-          aksiokAddAndEdit.parametersModelField.passwordField = authService.autorization.passwordField;
-          this.editandadd.uploadFileAksiok(aksiokAddAndEdit);
+          alert('Отсутствует серийный номер ' + model.SerNum);
         }
       }
       else {
@@ -1309,7 +1336,7 @@ export class OtherAllTableModel implements INewLogicaTable<OtherAll>{
   public typeOther: TypeOther[];
   public user: Users[];
 
-  displayedColumns = ['Logic', 'IdOtherAll', 'User.NameUser', 'Supply.DatePostavki', 'TypeOther.Name', 'ModelOther.Name', 'ProizvoditelOther.Name', 'ServiceNumber', 'SerNum', 'InventarNum', 'Coment', 'Kabinet.NumberKabinet', 'Statusing.NameStatus', 'WriteOffSign', 'ActionsColumn'];
+  displayedColumns = ['Logic', 'IdOtherAll', 'User.NameUser', 'Supply.DatePostavki', 'TypeOther.Name', 'ProizvoditelOther.Name', 'ModelOther.Name', 'ServiceNumber', 'SerNum', 'InventarNum', 'NameOther', 'IpOther', 'Coment', 'Kabinet.NumberKabinet', 'Statusing.NameStatus', 'WriteOffSign', 'ActionsColumn'];
   dataSource: MatTableDataSource<OtherAll> = new MatTableDataSource<OtherAll>();
   isAdd: boolean;
   isEdit: boolean;
@@ -1960,34 +1987,44 @@ export class PrinterTableModel implements INewLogicaTable<Printer> {
     this.editandadd.isBeginTask(6).toPromise().then((isCheck: boolean) => {
       var isBeginTask = isCheck
       if (isBeginTask) {
-        var aksiokAddAndEdit = new AksiokAddAndEdit();
-        aksiokAddAndEdit.parametersModelField.modelRequestField = modelRequest;
-        aksiokAddAndEdit.parametersModelField.inventoryNumField = model.InventarNumber;
-        aksiokAddAndEdit.parametersModelField.serNumberField = model.ZavNumber;
-        if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'Edit' || aksiokAddAndEdit.parametersModelField.modelRequestField === 'Add') {
-          this.editandadd.validationModelAksiok(aksiokAddAndEdit).toPromise().then((modelAksiok: AksiokAddAndEdit) => {
-            if (modelAksiok.parametersModelField.errorServerField) {
-              alert(modelAksiok.parametersModelField.errorServerField);
-              return;
-            }
-            else {
-              const dialogRef = dialog.open(DialogAksiokEditAndAdd, {
-                width: "1000px",
-                height: "750px",
-                data: modelAksiok
-              })
-            }
-          });
+        if (model.ZavNumber) {
+          var aksiokAddAndEdit = new AksiokAddAndEdit();
+          aksiokAddAndEdit.parametersModelField.modelRequestField = modelRequest;
+          aksiokAddAndEdit.parametersModelField.inventoryNumField = model.InventarNumber;
+          aksiokAddAndEdit.parametersModelField.serNumberField = model.ZavNumber;
+          if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'Edit' || aksiokAddAndEdit.parametersModelField.modelRequestField === 'Add') {
+            this.editandadd.validationModelAksiok(aksiokAddAndEdit).toPromise().then((modelAksiok: AksiokAddAndEdit) => {
+              if (modelAksiok.parametersModelField.errorServerField) {
+                alert(modelAksiok.parametersModelField.errorServerField);
+                return;
+              }
+              else {
+                const dialogRef = dialog.open(DialogAksiokEditAndAdd, {
+                  width: "1000px",
+                  height: "750px",
+                  data: modelAksiok
+                })
+              }
+            });
+          }
+          if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'CardEquipment') {
+            aksiokAddAndEdit.parametersModelField.guaranteeField = null;
+            this.editandadd.uploadCardAksiokAndInventory(aksiokAddAndEdit);
+          }
+          if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'ExpertiseFile' || aksiokAddAndEdit.parametersModelField.modelRequestField === 'FileAct') {
+            aksiokAddAndEdit.parametersModelField.loginUserField = authService.autorization.loginField;
+            aksiokAddAndEdit.parametersModelField.passwordField = authService.autorization.passwordField;
+            this.editandadd.uploadFileAksiok(aksiokAddAndEdit);
+          }
         }
         else {
-          aksiokAddAndEdit.parametersModelField.loginUserField = authService.autorization.loginField;
-          aksiokAddAndEdit.parametersModelField.passwordField = authService.autorization.passwordField;
-          this.editandadd.uploadFileAksiok(aksiokAddAndEdit);
+          alert('Отсутствует серийный номер ' + model.ZavNumber);
         }
       }
       else {
         alert("Процесс по синхронизации данных ещё не завершён!!!")
       }
+
     });
   }
 
@@ -2319,29 +2356,38 @@ export class ScanerAndCamerTableModel implements INewLogicaTable<ScanerAndCamer>
     this.editandadd.isBeginTask(6).toPromise().then((isCheck: boolean) => {
       var isBeginTask = isCheck
       if (isBeginTask) {
-        var aksiokAddAndEdit = new AksiokAddAndEdit();
-        aksiokAddAndEdit.parametersModelField.modelRequestField = modelRequest;
-        aksiokAddAndEdit.parametersModelField.inventoryNumField = model.InventarNumber;
-        aksiokAddAndEdit.parametersModelField.serNumberField = model.ZavNumber;
-        if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'Edit' || aksiokAddAndEdit.parametersModelField.modelRequestField === 'Add') {
-          this.editandadd.validationModelAksiok(aksiokAddAndEdit).toPromise().then((modelAksiok: AksiokAddAndEdit) => {
-            if (modelAksiok.parametersModelField.errorServerField) {
-              alert(modelAksiok.parametersModelField.errorServerField);
-              return;
-            }
-            else {
-              const dialogRef = dialog.open(DialogAksiokEditAndAdd, {
-                width: "1000px",
-                height: "750px",
-                data: modelAksiok
-              })
-            }
-          });
+        if (model.ZavNumber) {
+          var aksiokAddAndEdit = new AksiokAddAndEdit();
+          aksiokAddAndEdit.parametersModelField.modelRequestField = modelRequest;
+          aksiokAddAndEdit.parametersModelField.inventoryNumField = model.InventarNumber;
+          aksiokAddAndEdit.parametersModelField.serNumberField = model.ZavNumber;
+          if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'Edit' || aksiokAddAndEdit.parametersModelField.modelRequestField === 'Add') {
+            this.editandadd.validationModelAksiok(aksiokAddAndEdit).toPromise().then((modelAksiok: AksiokAddAndEdit) => {
+              if (modelAksiok.parametersModelField.errorServerField) {
+                alert(modelAksiok.parametersModelField.errorServerField);
+                return;
+              }
+              else {
+                const dialogRef = dialog.open(DialogAksiokEditAndAdd, {
+                  width: "1000px",
+                  height: "750px",
+                  data: modelAksiok
+                })
+              }
+            });
+          }
+          if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'CardEquipment') {
+            aksiokAddAndEdit.parametersModelField.guaranteeField = null;
+            this.editandadd.uploadCardAksiokAndInventory(aksiokAddAndEdit);
+          }
+          if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'ExpertiseFile' || aksiokAddAndEdit.parametersModelField.modelRequestField === 'FileAct') {
+            aksiokAddAndEdit.parametersModelField.loginUserField = authService.autorization.loginField;
+            aksiokAddAndEdit.parametersModelField.passwordField = authService.autorization.passwordField;
+            this.editandadd.uploadFileAksiok(aksiokAddAndEdit);
+          }
         }
         else {
-          aksiokAddAndEdit.parametersModelField.loginUserField = authService.autorization.loginField;
-          aksiokAddAndEdit.parametersModelField.passwordField = authService.autorization.passwordField;
-          this.editandadd.uploadFileAksiok(aksiokAddAndEdit);
+          alert('Отсутствует серийный номер ' + model.ZavNumber);
         }
       }
       else {
@@ -2676,29 +2722,38 @@ export class MfuTableModel implements INewLogicaTable<Mfu>  {
     this.editandadd.isBeginTask(6).toPromise().then((isCheck: boolean) => {
       var isBeginTask = isCheck
       if (isBeginTask) {
-        var aksiokAddAndEdit = new AksiokAddAndEdit();
-        aksiokAddAndEdit.parametersModelField.modelRequestField = modelRequest;
-        aksiokAddAndEdit.parametersModelField.inventoryNumField = model.InventarNumber;
-        aksiokAddAndEdit.parametersModelField.serNumberField = model.ZavNumber;
-        if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'Edit' || aksiokAddAndEdit.parametersModelField.modelRequestField === 'Add') {
-          this.editandadd.validationModelAksiok(aksiokAddAndEdit).toPromise().then((modelAksiok: AksiokAddAndEdit) => {
-            if (modelAksiok.parametersModelField.errorServerField) {
-              alert(modelAksiok.parametersModelField.errorServerField);
-              return;
-            }
-            else {
-              const dialogRef = dialog.open(DialogAksiokEditAndAdd, {
-                width: "1000px",
-                height: "750px",
-                data: modelAksiok
-              })
-            }
-          });
+        if (model.ZavNumber) {
+          var aksiokAddAndEdit = new AksiokAddAndEdit();
+          aksiokAddAndEdit.parametersModelField.modelRequestField = modelRequest;
+          aksiokAddAndEdit.parametersModelField.inventoryNumField = model.InventarNumber;
+          aksiokAddAndEdit.parametersModelField.serNumberField = model.ZavNumber;
+          if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'Edit' || aksiokAddAndEdit.parametersModelField.modelRequestField === 'Add') {
+            this.editandadd.validationModelAksiok(aksiokAddAndEdit).toPromise().then((modelAksiok: AksiokAddAndEdit) => {
+              if (modelAksiok.parametersModelField.errorServerField) {
+                alert(modelAksiok.parametersModelField.errorServerField);
+                return;
+              }
+              else {
+                const dialogRef = dialog.open(DialogAksiokEditAndAdd, {
+                  width: "1000px",
+                  height: "750px",
+                  data: modelAksiok
+                })
+              }
+            });
+          }
+          if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'CardEquipment') {
+            aksiokAddAndEdit.parametersModelField.guaranteeField = null;
+            this.editandadd.uploadCardAksiokAndInventory(aksiokAddAndEdit);
+          }
+          if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'ExpertiseFile' || aksiokAddAndEdit.parametersModelField.modelRequestField === 'FileAct') {
+            aksiokAddAndEdit.parametersModelField.loginUserField = authService.autorization.loginField;
+            aksiokAddAndEdit.parametersModelField.passwordField = authService.autorization.passwordField;
+            this.editandadd.uploadFileAksiok(aksiokAddAndEdit);
+          }
         }
         else {
-          aksiokAddAndEdit.parametersModelField.loginUserField = authService.autorization.loginField;
-          aksiokAddAndEdit.parametersModelField.passwordField = authService.autorization.passwordField;
-          this.editandadd.uploadFileAksiok(aksiokAddAndEdit);
+          alert('Отсутствует серийный номер ' + model.ZavNumber);
         }
       }
       else {
@@ -3047,29 +3102,38 @@ export class SysBlockTableModel implements INewLogicaTable<SysBlock>  {
     this.editandadd.isBeginTask(6).toPromise().then((isCheck: boolean) => {
       var isBeginTask = isCheck
       if (isBeginTask) {
-        var aksiokAddAndEdit = new AksiokAddAndEdit();
-        aksiokAddAndEdit.parametersModelField.modelRequestField = modelRequest;
-        aksiokAddAndEdit.parametersModelField.inventoryNumField = model.InventarNumSysBlok;
-        aksiokAddAndEdit.parametersModelField.serNumberField = model.SerNum;
-        if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'Edit' || aksiokAddAndEdit.parametersModelField.modelRequestField === 'Add') {
-          this.editandadd.validationModelAksiok(aksiokAddAndEdit).toPromise().then((modelAksiok: AksiokAddAndEdit) => {
-            if (modelAksiok.parametersModelField.errorServerField) {
-              alert(modelAksiok.parametersModelField.errorServerField);
-              return;
-            }
-            else {
-              const dialogRef = dialog.open(DialogAksiokEditAndAdd, {
-                width: "1000px",
-                height: "750px",
-                data: modelAksiok
-              })
-            }
-          });
+        if (model.SerNum) {
+          var aksiokAddAndEdit = new AksiokAddAndEdit();
+          aksiokAddAndEdit.parametersModelField.modelRequestField = modelRequest;
+          aksiokAddAndEdit.parametersModelField.inventoryNumField = model.InventarNumSysBlok;
+          aksiokAddAndEdit.parametersModelField.serNumberField = model.SerNum;
+          if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'Edit' || aksiokAddAndEdit.parametersModelField.modelRequestField === 'Add') {
+            this.editandadd.validationModelAksiok(aksiokAddAndEdit).toPromise().then((modelAksiok: AksiokAddAndEdit) => {
+              if (modelAksiok.parametersModelField.errorServerField) {
+                alert(modelAksiok.parametersModelField.errorServerField);
+                return;
+              }
+              else {
+                const dialogRef = dialog.open(DialogAksiokEditAndAdd, {
+                  width: "1000px",
+                  height: "750px",
+                  data: modelAksiok
+                })
+              }
+            });
+          }
+          if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'CardEquipment') {
+            aksiokAddAndEdit.parametersModelField.guaranteeField = null;
+            this.editandadd.uploadCardAksiokAndInventory(aksiokAddAndEdit);
+          }
+          if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'ExpertiseFile' || aksiokAddAndEdit.parametersModelField.modelRequestField === 'FileAct') {
+            aksiokAddAndEdit.parametersModelField.loginUserField = authService.autorization.loginField;
+            aksiokAddAndEdit.parametersModelField.passwordField = authService.autorization.passwordField;
+            this.editandadd.uploadFileAksiok(aksiokAddAndEdit);
+          }
         }
         else {
-          aksiokAddAndEdit.parametersModelField.loginUserField = authService.autorization.loginField;
-          aksiokAddAndEdit.parametersModelField.passwordField = authService.autorization.passwordField;
-          this.editandadd.uploadFileAksiok(aksiokAddAndEdit);
+          alert('Отсутствует серийный номер ' + model.SerNum);
         }
       }
       else {
@@ -3415,29 +3479,38 @@ export class MonitorsTableModel implements INewLogicaTable<Monitor>  {
     this.editandadd.isBeginTask(6).toPromise().then((isCheck: boolean) => {
       var isBeginTask = isCheck
       if (isBeginTask) {
-        var aksiokAddAndEdit = new AksiokAddAndEdit();
-        aksiokAddAndEdit.parametersModelField.modelRequestField = modelRequest;
-        aksiokAddAndEdit.parametersModelField.inventoryNumField = model.InventarNumMonitor;
-        aksiokAddAndEdit.parametersModelField.serNumberField = model.SerNum;
-        if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'Edit' || aksiokAddAndEdit.parametersModelField.modelRequestField === 'Add') {
-          this.editandadd.validationModelAksiok(aksiokAddAndEdit).toPromise().then((modelAksiok: AksiokAddAndEdit) => {
-            if (modelAksiok.parametersModelField.errorServerField) {
-              alert(modelAksiok.parametersModelField.errorServerField);
-              return;
-            }
-            else {
-              const dialogRef = dialog.open(DialogAksiokEditAndAdd, {
-                width: "1000px",
-                height: "750px",
-                data: modelAksiok
-              })
-            }
-          });
+        if (model.SerNum) {
+          var aksiokAddAndEdit = new AksiokAddAndEdit();
+          aksiokAddAndEdit.parametersModelField.modelRequestField = modelRequest;
+          aksiokAddAndEdit.parametersModelField.inventoryNumField = model.InventarNumMonitor;
+          aksiokAddAndEdit.parametersModelField.serNumberField = model.SerNum;
+          if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'Edit' || aksiokAddAndEdit.parametersModelField.modelRequestField === 'Add') {
+            this.editandadd.validationModelAksiok(aksiokAddAndEdit).toPromise().then((modelAksiok: AksiokAddAndEdit) => {
+              if (modelAksiok.parametersModelField.errorServerField) {
+                alert(modelAksiok.parametersModelField.errorServerField);
+                return;
+              }
+              else {
+                const dialogRef = dialog.open(DialogAksiokEditAndAdd, {
+                  width: "1000px",
+                  height: "750px",
+                  data: modelAksiok
+                })
+              }
+            });
+          }
+          if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'CardEquipment') {
+            aksiokAddAndEdit.parametersModelField.guaranteeField = null;
+            this.editandadd.uploadCardAksiokAndInventory(aksiokAddAndEdit);
+          }
+          if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'ExpertiseFile' || aksiokAddAndEdit.parametersModelField.modelRequestField === 'FileAct') {
+            aksiokAddAndEdit.parametersModelField.loginUserField = authService.autorization.loginField;
+            aksiokAddAndEdit.parametersModelField.passwordField = authService.autorization.passwordField;
+            this.editandadd.uploadFileAksiok(aksiokAddAndEdit);
+          }
         }
         else {
-          aksiokAddAndEdit.parametersModelField.loginUserField = authService.autorization.loginField;
-          aksiokAddAndEdit.parametersModelField.passwordField = authService.autorization.passwordField;
-          this.editandadd.uploadFileAksiok(aksiokAddAndEdit);
+          alert('Отсутствует серийный номер ' + model.SerNum);
         }
       }
       else {
@@ -3732,11 +3805,13 @@ export class TelephonsTableModel implements INewLogicaTable<Telephon> {
 
   createSTO(model: Telephon, template: FullTemplateSupport, authService: AuthIdentification, dialog: MatDialog): void {
     var modelDialog = new ModelDialog();
+    var modelEdit = JSON.parse(JSON.stringify(model));
+    modelEdit.User = null;
     modelDialog.discription = template.Description;
     modelDialog.info = template.InfoTemplate;
     modelDialog.name = template.Name;
     modelDialog.idTemplate = template.IdTemplate;
-    modelDialog.rowModel = model;
+    modelDialog.rowModel = modelEdit;
     const dialogRef = dialog.open(DialogDiscription, {
       width: "800px",
       height: "500px",
@@ -3764,11 +3839,12 @@ export class TelephonsTableModel implements INewLogicaTable<Telephon> {
     });
   }
 
-  public displayedColumns = ['Logic', 'IdTelephone', 'User.NameUser', 'Supply.DatePostavki', 'NameTelephone', 'Telephon_', 'TelephonUndeground', 'ServiceNum', 'SerNumber', 'InventarNumberTelephone', 'IpTelephon', 'MacTelephon', 'Kabinet.NumberKabinet', 'Coment', 'Statusing.NameStatus', 'CategoryPhoneHeader.NameHeaders', 'WriteOffSign', 'ActionsColumn'];
+  public displayedColumns = ['Logic', 'IdTelephone', 'User.NameUser', 'Supply.DatePostavki', 'ModelPhone.NameModel', 'Telephon_', 'TelephonUndeground', 'ServiceNum', 'SerNumber', 'InventarNumberTelephone', 'IpTelephon', 'MacTelephon', 'Kabinet.NumberKabinet', 'Coment', 'Statusing.NameStatus', 'CategoryPhoneHeader.NameHeaders', 'WriteOffSign', 'ActionsColumn'];
   public dataSource: MatTableDataSource<Telephon> = new MatTableDataSource<Telephon>();
   public modelvalid: ModelValidation = new ModelValidation()
 
   public users: Users[];
+  public modelPhone: ModelPhone[];
   public supples: Supply[]
   public kabinet: Kabinet[];
   public statusing: Statusing[];
@@ -3782,6 +3858,7 @@ export class TelephonsTableModel implements INewLogicaTable<Telephon> {
   modeltable: Telephon[];
   modelToServer: Telephon;
   public filteredUsers: any;
+  public filteredModelPhone: any;
   public filteredKabinet: any;
   public filteredSupples: any;
   public filteredStatusing: any;
@@ -3822,6 +3899,7 @@ export class TelephonsTableModel implements INewLogicaTable<Telephon> {
       try {
         if (indexzero) {
           ///Для изменявшего
+          this.dataSource.data.find(x => x.IdTelephon === 0).IdHistory = submodel.IdHistory;
           this.dataSource.data.find(x => x.IdTelephon === 0).IdTelephon = submodel.IdTelephon;
         }
         else {
@@ -3881,6 +3959,7 @@ export class TelephonsTableModel implements INewLogicaTable<Telephon> {
     this.filteredKabinet = this.kabinet.slice();
     this.filteredSupples = this.supples.slice();
     this.filteredStatusing = this.statusing.slice();
+    this.filteredModelPhone = this.modelPhone.slice();
   }
 
   newmodel(): Telephon {
@@ -3989,6 +4068,7 @@ export class TelephonsTableModel implements INewLogicaTable<Telephon> {
     this.model.Kabinet ? this.model.IdNumberKabinet = this.model.Kabinet.IdNumberKabinet : this.model.IdNumberKabinet = null;
     this.model.Statusing ? this.model.IdStatus = this.model.Statusing.IdStatus : this.model.IdStatus = null;
     this.model.User ? this.model.IdUser = this.model.User.IdUser : this.model.IdUser = null;
+    this.model.ModelPhone ? this.model.IdModelPhone = this.model.ModelPhone.IdModelPhone : this.model.IdModelPhone = null;
     this.model.CategoryPhoneHeader ? this.model.IdCategoryHeaders = this.model.CategoryPhoneHeader.IdCategoryHeaders : this.model.IdCategoryHeaders = null;
     if (this.model.Supply) {
       this.model.IdSupply = this.model.Supply.IdSupply
@@ -4014,11 +4094,13 @@ export class TelephonsTableModel implements INewLogicaTable<Telephon> {
     this.dataSource.sort = sort
     this.castomefiltermodel();
     this.users = model.Users;
+    this.modelPhone = model.ModelPhone;
     this.kabinet = model.Kabinet;
     this.statusing = model.Statusing;
     this.supples = model.Supply;
     this.categoryPhoneHeader = model.CategoryPhoneHeader;
     this.filteredUsers = this.users.slice();
+    this.filteredModelPhone = this.modelPhone.slice();
     this.filteredKabinet = this.kabinet.slice();
     this.filteredSupples = this.supples.slice();
     this.filteredStatusing = this.statusing.slice();
@@ -4050,29 +4132,39 @@ export class BlockPowerTableModel implements INewLogicaTable<BlockPower> {
     this.editandadd.isBeginTask(6).toPromise().then((isCheck: boolean) => {
       var isBeginTask = isCheck
       if (isBeginTask) {
-        var aksiokAddAndEdit = new AksiokAddAndEdit();
-        aksiokAddAndEdit.parametersModelField.modelRequestField = modelRequest;
-        aksiokAddAndEdit.parametersModelField.inventoryNumField = model.InventarNumber;
-        aksiokAddAndEdit.parametersModelField.serNumberField = model.ZavNumber;
-        if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'Edit' || aksiokAddAndEdit.parametersModelField.modelRequestField === 'Add') {
-          this.editandadd.validationModelAksiok(aksiokAddAndEdit).toPromise().then((modelAksiok: AksiokAddAndEdit) => {
-            if (modelAksiok.parametersModelField.errorServerField) {
-              alert(modelAksiok.parametersModelField.errorServerField);
-              return;
-            }
-            else {
-              const dialogRef = dialog.open(DialogAksiokEditAndAdd, {
-                width: "1000px",
-                height: "750px",
-                data: modelAksiok
-              })
-            }
-          });
+        if (model.ZavNumber) {
+          var aksiokAddAndEdit = new AksiokAddAndEdit();
+          aksiokAddAndEdit.parametersModelField.modelRequestField = modelRequest;
+          aksiokAddAndEdit.parametersModelField.inventoryNumField = model.InventarNumber;
+          aksiokAddAndEdit.parametersModelField.serNumberField = model.ZavNumber;
+          if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'Edit' || aksiokAddAndEdit.parametersModelField.modelRequestField === 'Add') {
+            this.editandadd.validationModelAksiok(aksiokAddAndEdit).toPromise().then((modelAksiok: AksiokAddAndEdit) => {
+              if (modelAksiok.parametersModelField.errorServerField) {
+                alert(modelAksiok.parametersModelField.errorServerField);
+                return;
+              }
+              else {
+                const dialogRef = dialog.open(DialogAksiokEditAndAdd, {
+                  width: "1000px",
+                  height: "750px",
+                  data: modelAksiok
+                })
+              }
+            });
+          }
+          if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'CardEquipment') {
+            aksiokAddAndEdit.parametersModelField.guaranteeField = null;
+            this.editandadd.uploadCardAksiokAndInventory(aksiokAddAndEdit);
+
+          }
+          if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'ExpertiseFile' || aksiokAddAndEdit.parametersModelField.modelRequestField === 'FileAct') {
+            aksiokAddAndEdit.parametersModelField.loginUserField = authService.autorization.loginField;
+            aksiokAddAndEdit.parametersModelField.passwordField = authService.autorization.passwordField;
+            this.editandadd.uploadFileAksiok(aksiokAddAndEdit);
+          }
         }
         else {
-          aksiokAddAndEdit.parametersModelField.loginUserField = authService.autorization.loginField;
-          aksiokAddAndEdit.parametersModelField.passwordField = authService.autorization.passwordField;
-          this.editandadd.uploadFileAksiok(aksiokAddAndEdit);
+          alert('Отсутствует серийный номер ' + model.ZavNumber);
         }
       }
       else {
@@ -4082,7 +4174,7 @@ export class BlockPowerTableModel implements INewLogicaTable<BlockPower> {
   }
 
 
-  public displayedColumns = ['Logic', 'IdBlockPowers', 'User.NameUser', 'Supply.DatePostavki', 'ProizvoditelBlockPower.Name', 'ModelBlockPower.Name', 'ZavNumber', 'ServiceNumber', 'InventarNumber', 'Coment', 'Kabinet.NumberKabinet', 'Statusing.NameStatus', 'WriteOffSign', 'ActionsColumn'];
+  public displayedColumns = ['Logic', 'IdBlockPowers', 'User.NameUser', 'Supply.DatePostavki', 'ProizvoditelBlockPower.Name', 'ModelBlockPower.Name', 'ZavNumber', 'ServiceNumber', 'InventarNumber', 'NameBlockPowers', 'IpAdress', 'Coment', 'Kabinet.NumberKabinet', 'Statusing.NameStatus', 'WriteOffSign', 'ActionsColumn'];
   public dataSource: MatTableDataSource<BlockPower> = new MatTableDataSource<BlockPower>();
   public modelvalid: ModelValidation = new ModelValidation()
 
@@ -5682,7 +5774,7 @@ export class NameCopySaveTableModel implements INewLogicaTable<CopySave> {
     throw new Error("Method not implemented.");
   }
 
-  public displayedColumns = ['IdCopySave', 'NameCopySave', 'SerNum', 'InventarNum', 'ActionsColumn'];
+  public displayedColumns = ['IdCopySave', 'NameCopySave', 'SerNumCopySave', 'InventarNumCopySave', 'ActionsColumn'];
   public dataSource: MatTableDataSource<CopySave> = new MatTableDataSource<CopySave>();
   public modelvalid: ModelValidation = new ModelValidation()
 
@@ -7655,7 +7747,7 @@ export class AllTechnicsLkModel implements INewLogicaTable<AllTechnics>{
     });
   }
 
-  public displayedColumns: any[] = ['Logic', 'Item', 'Users', 'NameManufacturer', 'NameModel', 'SerNum', 'ServiceNum', 'NameServer', 'IpAdress', 'NumberKabinet', 'NameStatus'];
+  public displayedColumns: any[] = ['Logic', 'Item', 'Users', 'NameManufacturer', 'NameModel', 'SerNum', 'ServiceNum', 'NameServer', 'IpAdress', 'NumberKabinet', 'Coment', 'NameStatus'];
   public dataSource: MatTableDataSource<AllTechnics> = new MatTableDataSource<AllTechnics>();
 
   isAdd: boolean;
@@ -8097,7 +8189,7 @@ export class HolidayTableModel implements INewLogicaTable<Rb_Holiday>  {
   }
 
 
-  public displayedColumns = ['Id', 'DateTime_Holiday', 'IS_HOLIDAY', 'ActionsColumn'];
+  public displayedColumns = ['Id', 'DateTime_Holiday', 'IdStatusHolidays', 'ActionsColumn'];
   public dataSource: MatTableDataSource<Rb_Holiday> = new MatTableDataSource<Rb_Holiday>();
 
   isAdd: boolean;
@@ -8106,12 +8198,12 @@ export class HolidayTableModel implements INewLogicaTable<Rb_Holiday>  {
   model: Rb_Holiday = new Rb_Holiday();
   index: number;
   modeltable: Rb_Holiday[];
+  modelToServer: Rb_Holiday;
 
-  public modelIsHoliday: any[] = [{ HolidayText: "Праздничный день", HolidayBoolean: true, },
-  { HolidayText: "Рабочий праздничный день", HolidayBoolean: false, }];
+  public modelStatusHolyday: StatusHolyday[];
 
   public filteredHoliday: any;
-  models: any = this.modelIsHoliday[1];
+
 
   date = new FormControl(new Date());
 
@@ -8176,7 +8268,7 @@ export class HolidayTableModel implements INewLogicaTable<Rb_Holiday>  {
   }
 
   calbackfiltersAll(): void {
-    this.filteredHoliday = this.modelIsHoliday.slice();
+    this.filteredHoliday = this.modelStatusHolyday.slice();
   }
 
   filterstable(filterValue: string): void {
@@ -8203,14 +8295,16 @@ export class HolidayTableModel implements INewLogicaTable<Rb_Holiday>  {
     this.modelCancelError = JSON.parse(JSON.stringify(model));
     this.model = JSON.parse(JSON.stringify(model));
     model.DateTime_Holiday.match(/T/g) !== null ? this.date = new FormControl(new Date(model.DateTime_Holiday.split("T")[0])) : this.date = new FormControl(new Date(model.DateTime_Holiday.split("-").reverse().join("-")));
-    this.models = this.modelIsHoliday.find(x => x.HolidayBoolean === this.model.IS_HOLIDAY);
     this.addtemplate(model.Id);
     this.isEditAndAddTrue();
   }
 
   public save(): void {
     this.modifimethod();
-    this.editandadd.addandeditHolyday(this.model, this.SignalR.iduser).toPromise().then((model: ModelReturn<Rb_Holiday>) => {
+    this.model.StatusHolyday ? this.model.IdStatusHolidays = this.model.StatusHolyday.IdStatusHolidays : this.model.IdStatusHolidays = 3;
+    var converter = new ConvertDate();
+    this.modelToServer = converter.convertDateToServer<Rb_Holiday>(JSON.parse(JSON.stringify(this.model)));
+    this.editandadd.addandeditHolyday(this.modelToServer, this.SignalR.iduser).toPromise().then((model: ModelReturn<Rb_Holiday>) => {
       if (model.Model === null) {
         alert(model.Message);
         this.cancel(this.modelCancelError);
@@ -8246,7 +8340,7 @@ export class HolidayTableModel implements INewLogicaTable<Rb_Holiday>  {
 
   newmodel(): Rb_Holiday {
     var newmodel: Rb_Holiday = new Rb_Holiday()
-    newmodel.IS_HOLIDAY = true;
+    newmodel.IdStatusHolidays = 3;
     newmodel.DateTime_Holiday = new Date();
     newmodel.ModelIsEdit = true;
     newmodel.Id = 0;
@@ -8282,7 +8376,6 @@ export class HolidayTableModel implements INewLogicaTable<Rb_Holiday>  {
 
   modifimethod(): void {
     this.isEdit = true;
-    this.model.IS_HOLIDAY = this.models.HolidayBoolean;
     this.model.DateTime_Holiday = `/Date(${moment(this.date.value, 'DD-MM-YYYY').local().valueOf()})/`
     this.model.ModelIsEdit = false;
   }
@@ -8294,7 +8387,8 @@ export class HolidayTableModel implements INewLogicaTable<Rb_Holiday>  {
     this.dataSource.paginator = paginator;
     this.dataSource.sort = sort;
     this.dataSource.data = model.Rb_Holiday;
-    this.filteredHoliday = this.modelIsHoliday.slice();
+    this.modelStatusHolyday = model.StatusHolyday;
+    this.filteredHoliday = model.StatusHolyday.slice();
     return "Таблица с праздничными днями загружена!";
   }
 
@@ -10087,6 +10181,196 @@ export class SettingCategoryPhoneHeader implements INewLogicaTable<CategoryPhone
     this.dataSource.paginator = paginator;
     this.dataSource.sort = sort;
     return "Справочник категорий телефонов заполнен";
+  }
+
+  isEditAndAddTrue(): void {
+    this.isEdit = true;
+    this.isAdd = true;
+  }
+
+  isEditAndAddFalse(): void {
+    this.isAdd = false;
+    this.isEdit = false;
+  }
+}
+export class ModelPhoneTableModel implements INewLogicaTable<ModelPhone>{
+
+  constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
+    this.subscribeservers();
+  }
+
+  createSTO(model: ModelPhone, template: FullTemplateSupport, authService: AuthIdentification, dialog: MatDialog): void {
+    throw new Error("Method not implemented.");
+  }
+
+  public displayedColumns = ['IdModelPhone', 'NameModel', 'ActionsColumn'];
+  public dataSource: MatTableDataSource<ModelPhone> = new MatTableDataSource<ModelPhone>();
+
+  isAdd: boolean;
+  isEdit: boolean;
+  modelCancelError: ModelPhone = new ModelPhone();
+  model: ModelPhone = new ModelPhone();
+  index: number;
+  modeltable: ModelPhone[];
+
+  //Подписка
+  public subscribeAddAndUpdate: any = null;
+  //Шаблоны для манипулирования DOM
+  temlateList: any;
+  rowList: any;
+  fulltemplate: ElementRef<any>;
+  table: ElementRef<any>;
+
+  public subscribeservers() {
+    this.subscribeAddAndUpdate = new BroadcastEventListener<ModelPhone>('SubscribeModelPhone');
+    this.SignalR.conect.listen(this.subscribeAddAndUpdate);
+    this.subscribeAddAndUpdate.subscribe((substring: string) => {
+      var submodel = deserialize<ModelPhone>(ModelPhone, substring);
+      this.index = 0;
+      if (this.isEdit) {
+        this.isEditAndAddFalse();
+        this.removetemplate();
+        this.model = submodel
+      }
+      var index = this.dataSource.data.find(x => x.IdModelPhone === submodel.IdModelPhone);
+      var indexzero = this.dataSource.data.find(x => x.IdModelPhone === 0);
+      try {
+        if (indexzero) {
+          ///Для изменявшего
+          this.dataSource.data.find(x => x.IdModelPhone === 0).IdModelPhone = submodel.IdModelPhone;
+        }
+        else {
+          if (index) {
+            ///Для остальных пользователей изменение
+            this.dataSource.data[this.dataSource.data.indexOf(index)] = submodel;
+            this.modeltable[this.modeltable.indexOf(index)] = submodel;
+          }
+          else {
+            ///Для остальных пользователей добавление
+            this.dataSource.data.push(submodel);
+            this.modeltable.push(submodel);
+          }
+        }
+        this.dataSource._updateChangeSubscription();
+      }
+      catch (e) {
+        console.log(e);
+      }
+    });
+  }
+
+  calbackfiltersAll(): void {
+    throw new Error("Method not implemented.");
+  }
+
+  filterstable(filterValue: string): void {
+    filterValue = filterValue.trim(); // Remove whitespace
+    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
+    this.dataSource.filter = filterValue;
+  }
+
+  public async add(): Promise<void> {
+    this.isEditAndAddTrue();
+    var newmodel = this.newmodel();
+    this.dataSource.data.push(newmodel);
+    this.modeltable.push(newmodel);
+    this.index = this.dataSource.data.length;
+    this.model = newmodel;
+    await this.dataSource._updateChangeSubscription();
+    await this.dataSource.paginator.lastPage();
+    this.addtemplate(newmodel.IdModelPhone);
+  }
+
+  edit(model: ModelPhone): void {
+    model.ModelIsEdit = true;
+    this.modelCancelError = JSON.parse(JSON.stringify(model));
+    this.model = JSON.parse(JSON.stringify(model));
+    this.addtemplate(model.IdModelPhone)
+    this.isEditAndAddTrue();
+  }
+
+  public save(): void {
+    this.modifimethod();
+    var converter = new ConvertDate();
+    this.model = converter.convertDateToServer<ModelPhone>(JSON.parse(JSON.stringify(this.model)));
+    this.editandadd.addAndEditModelPhone(this.model).toPromise().then((model: ModelReturn<ModelPhone>) => {
+      if (model.Model === null) {
+        alert(model.Message)
+        this.cancel(this.modelCancelError);
+      }
+    });
+    //Запрос на сохранение и обновление данных
+  }
+
+  ///Удаление
+  delete(): void {
+    throw new Error("Method not implemented.");
+  }
+
+  ///Отмена
+  cancel(model: ModelPhone): void {
+    model.ModelIsEdit = false;
+    this.isEditAndAddFalse();
+    if (this.index > 0) {
+      this.dataSource.data.pop();
+      this.index = 0;
+    }
+    else {
+      var userdefault = this.modeltable.find(x => x.IdModelPhone === this.model.IdModelPhone);
+      this.dataSource.data[this.modeltable.indexOf(userdefault)] = model;
+      this.index = 0;
+    }
+    this.dataSource._updateChangeSubscription();
+    this.removetemplate();
+  }
+
+  newmodel(): ModelPhone {
+    var newuser: ModelPhone = new ModelPhone();
+    newuser.ModelIsEdit = true;
+    newuser.IdModelPhone = 0;
+    return newuser;
+  }
+
+  //Костыль дожидаемся обновление DOM
+  async delay(ms: number): Promise<void> {
+    await new Promise(resolve => setTimeout(() => resolve(null), ms)).then(() => console.log("Задержка подгрузки DOM!!!"));
+  }
+
+  ///Добавить шаблон в строку это просто жесть
+  async addtemplate(index: number): Promise<void> {
+    var i = 0;
+    await this.delay(10);
+    this.temlateList = this.fulltemplate.nativeElement.querySelectorAll("mat-form-field[id=template]");
+    this.rowList = this.table.nativeElement.querySelectorAll("div[class='" + index + "']");
+    for (var row of this.rowList) {
+      row.append(this.temlateList[i])
+      i++;
+    }
+  }
+
+  ///Удалить шаблон из строки и востановить текущий шаблон
+  removetemplate(): void {
+    var i = 0;
+    for (var row of this.rowList) {
+      row.removeChild(this.temlateList[i]);
+      this.fulltemplate.nativeElement.append(this.temlateList[i])
+      i++;
+    }
+  }
+
+  modifimethod(): void {
+    this.isEdit = true;
+    this.model.ModelIsEdit = false;
+  }
+
+  public async addtableModel(model: FullSelectedModel, paginator: MatPaginator, sort: MatSort, table: ElementRef<any>, template: ElementRef<any>): Promise<string> {
+    this.table = table;  //Таблица
+    this.fulltemplate = template; //Заложенный шаблон
+    this.modeltable = JSON.parse(JSON.stringify(model.ModelPhone));
+    this.dataSource.data = model.ModelPhone;
+    this.dataSource.paginator = paginator;
+    this.dataSource.sort = sort;
+    return "Модели телефонов заполнены";
   }
 
   isEditAndAddTrue(): void {

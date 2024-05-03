@@ -6,6 +6,7 @@ import { JournalAis3TableModel } from '../../../AddFullModel/ModelTable/TableMod
 import { ImportToExcel } from '../../../AddFullModel/ModelTable/PublicFunction';
 import { ModelDialogSelectYear } from '../../../AddFullModel/DialogSelectYear/DialogYearTs/dialogSelectYear';
 import { YearModeReport } from '../../../AddFullModel/DialogSelectYear/ModelYear/ModelYear';
+import { AllUsersFilters } from '../../../ModelInventory/InventoryModel';
 
 
 @Component(({
@@ -53,7 +54,9 @@ export class JournalAis3 implements OnInit {
     }
 
     async modelJournal() {
-        await this.selectAll.alluser();
+        var allUsersFilters = new AllUsersFilters()
+        allUsersFilters.filterActualField.isFilterField = true;
+        await this.selectAll.alluser(allUsersFilters);
         await this.selectAll.allotdel();
         await this.selectAll.allResourceIt();
         await this.selectAll.allTaskAis3();
