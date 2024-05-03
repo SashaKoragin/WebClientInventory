@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router, NavigationExtras } from '@angular/router';
-import { AuthIdentification, PostInventar, AuthIdentificationSignalR } from '../../../Post RequestService/PostRequest';
+import { AuthIdentification, AuthIdentificationSignalR } from '../../../Post RequestService/PostRequest';
 import { Autorization } from '../../../Inventory/ModelInventory/InventoryModel';
 
 
@@ -15,7 +15,6 @@ export class LoginInventarization {
 
     login() {
         try {
-
             this.authService.login().subscribe((model: Autorization) => {
                 this.authService.autorization = model;
                 if (this.authService.autorization.errorAutorizationField === null) {

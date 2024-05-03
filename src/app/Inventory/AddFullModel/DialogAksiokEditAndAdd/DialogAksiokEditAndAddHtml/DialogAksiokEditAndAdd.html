@@ -16,9 +16,9 @@
                         [(ngModel)]="modelAksiok.selectedEquipmentType" name="type">
                         <mat-select-filter class="filter" [placeholder]="modelAksiok.selectedEquipmentType?.NameType"
                             [displayMember]="'NameType'" [array]="modelAksiok.equipmentType"
-                            (filteredReturn)="modelAksiok.filteredeEquipmentType =$event;">
+                            (filteredReturn)="modelAksiok.filteredEquipmentType =$event;">
                         </mat-select-filter>
-                        <mat-option class="text-primary" *ngFor="let type of modelAksiok.filteredeEquipmentType"
+                        <mat-option class="text-primary" *ngFor="let type of modelAksiok.filteredEquipmentType"
                             [value]="type">
                             {{type.NameType}}
                         </mat-option>
@@ -39,9 +39,9 @@
                         [(ngModel)]="modelAksiok.selectedProducer" name="producer">
                         <mat-select-filter class="filter" [placeholder]="modelAksiok.selectedProducer?.NameProducer"
                             [displayMember]="'NameProducer'" [array]="modelAksiok.producer"
-                            (filteredReturn)="modelAksiok.filteredeProducer = $event">
+                            (filteredReturn)="modelAksiok.filteredProducer = $event">
                         </mat-select-filter>
-                        <mat-option class="text-primary" *ngFor="let producer of modelAksiok.filteredeProducer"
+                        <mat-option class="text-primary" *ngFor="let producer of modelAksiok.filteredProducer"
                             [value]="producer">
                             {{producer.NameProducer}}
                         </mat-option>
@@ -61,9 +61,9 @@
                         [(ngModel)]="modelAksiok.selectedEquipmentModel" name="model">
                         <mat-select-filter class="filter" [placeholder]="modelAksiok.selectedEquipmentModel?.NameModel"
                             [displayMember]="'NameModel'" [array]="modelAksiok.equipmentModel"
-                            (filteredReturn)="modelAksiok.filteredeEquipmentModel = $event">
+                            (filteredReturn)="modelAksiok.filteredEquipmentModel = $event">
                         </mat-select-filter>
-                        <mat-option class="text-primary" *ngFor="let model of modelAksiok.filteredeEquipmentModel"
+                        <mat-option class="text-primary" *ngFor="let model of modelAksiok.filteredEquipmentModel"
                             [value]="model">
                             {{model.NameModel}}
                         </mat-option>
@@ -83,9 +83,9 @@
                         [(ngModel)]="modelAksiok.selectedState" name="state">
                         <mat-select-filter class="filter" [placeholder]="modelAksiok.selectedState?.NameState"
                             [displayMember]="'NameState'" [array]="modelAksiok.state"
-                            (filteredReturn)="modelAksiok.filteredeState = $event">
+                            (filteredReturn)="modelAksiok.filteredState = $event">
                         </mat-select-filter>
-                        <mat-option class="text-primary" *ngFor="let state of modelAksiok.filteredeState"
+                        <mat-option class="text-primary" *ngFor="let state of modelAksiok.filteredState"
                             [value]="state">
                             {{state.NameState}}
                         </mat-option>
@@ -113,9 +113,9 @@
                         [(ngModel)]="modelAksiok.selectedStateSto" name="stateSto">
                         <mat-select-filter class="filter" [placeholder]="modelAksiok.selectedStateSto?.NameStateSto"
                             [displayMember]="'NameStateSto'" [array]="modelAksiok.stateSto"
-                            (filteredReturn)="modelAksiok.filteredeStateSto = $event">
+                            (filteredReturn)="modelAksiok.filteredStateSto = $event">
                         </mat-select-filter>
-                        <mat-option class="text-primary" *ngFor="let stateSto of modelAksiok.filteredeStateSto"
+                        <mat-option class="text-primary" *ngFor="let stateSto of modelAksiok.filteredStateSto"
                             [value]="stateSto">
                             {{stateSto.NameStateSto}}
                         </mat-option>
@@ -135,9 +135,9 @@
                         [(ngModel)]="modelAksiok.selectedExpertise" name="stateExpertise">
                         <mat-select-filter class="filter" [placeholder]="modelAksiok.selectedExpertise?.NameExpertise"
                             [displayMember]="'NameExpertise'" [array]="modelAksiok.stateExpertise"
-                            (filteredReturn)="modelAksiok.filteredeExpertise = $event">
+                            (filteredReturn)="modelAksiok.filteredExpertise = $event">
                         </mat-select-filter>
-                        <mat-option class="text-primary" *ngFor="let stateExpertis of modelAksiok.filteredeExpertise"
+                        <mat-option class="text-primary" *ngFor="let stateExpertis of modelAksiok.filteredExpertise"
                             [value]="stateExpertis">
                             {{stateExpertis.NameExpertise}}
                         </mat-option>
@@ -184,16 +184,43 @@
                 <mat-form-field class="selectin_sql text-primary w-100">
                     <input placeholder="Год ввода в эксплуатацию" matInput type="number"
                         [(ngModel)]="data.parametersModelField.exploitationStartYearField" />
-               </mat-form-field>
+                </mat-form-field>
             </div>
         </div>
         <div class="row w-100">
+            <div class="col d-flex align-items-center">
+                <b class="h3 text-primary ">Гарантия:</b>
+            </div>
+            <div class="col w-100">
+                <mat-form-field id="template" class="validation">
+                    <input matInput readonly [matDatepicker]="picker1" placeholder="Гарантия"
+                        [formControl]="modelValid?.getRowValidatorModel[16].get('Guarantee')"
+                        [(ngModel)]="modelValid?.getRowValidatorModel[16].get('Guarantee').value">
+                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                    <mat-datepicker #picker1 disabled="false"></mat-datepicker>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row w-100" [style.display]="data.parametersModelField.isKitField === false ? 'inline-flex':'none'">
             <div class="col d-flex align-items-center w-100">
                 <b class="h3 text-primary ">Комплектовать?:</b>
             </div>
             <div class="col">
                 <div class="check">
-                    <mat-checkbox placeholder="Комплектовать?" [checked]="isCheckedKits" (change)="changed($event)">
+                    <mat-checkbox placeholder="Комплектовать?" [(ngModel)]="data.kitsEquipmentField.isCheckedKitsField"
+                        (change)="changed($event)">
+                    </mat-checkbox>
+                </div>
+            </div>
+        </div>
+        <div class="row w-100" [style.display]="data.parametersModelField.isKitField === true ? 'inline-flex': 'none'">
+            <div class="col d-flex align-items-center w-100">
+                <b class="h3 text-primary ">Разукомплектовать?:</b>
+            </div>
+            <div class="col">
+                <div class="check">
+                    <mat-checkbox placeholder="Разукомплектовать?"
+                        [(ngModel)]="data.kitsEquipmentField.isNotCheckedKitsField" (change)="changed($event)">
                     </mat-checkbox>
                 </div>
             </div>
@@ -202,8 +229,9 @@
     <div [style.display]="kitsError !== null ? 'grid' : 'none'">
         <b class="h3 text-danger ">{{kitsError}}</b>
     </div>
-    <div [style.display]="isCheckedKits ? 'grid' : 'none' ">
-        <b class="h3 text-primary">Найденно соответствие:</b>
+    <div
+        [style.display]="data.kitsEquipmentField.isCheckedKitsField || data.kitsEquipmentField.isNotCheckedKitsField ? 'grid' : 'none' ">
+        <b class="h3 text-primary">Найдено соответствие:</b>
         <table mat-table [dataSource]="dataSourceKits">
             <ng-container matColumnDef="IdField">
                 <th class="id" *matHeaderCellDef>Id</th>
@@ -243,9 +271,26 @@
                 matTooltip="Добавить" type="submit" (click)="add()">Добавить</button>
         </div>
         <div class="pane">
+            <button class=" mt-2 btn btn-rn btn-info" (click)="createSupportApplicationAndView()"
+                [disabled]="modelValid?.getRowValidatorModel[16].invalid" mat-button>Просмотр карточки</button>
+        </div>
+        <div class="pane">
+            <button class=" mt-2 btn btn-rn btn-success" [matMenuTriggerFor]="menu"
+                [disabled]="modelValid?.getRowValidatorModel[16].invalid">Создать заявку
+                <mat-menu #menu="matMenu" yPosition="above" xPosition="after" [overlapTrigger]="false">
+                    <div class="MenuButton"
+                        *ngFor="let template of selectAll.select.FullTemplateSupport | filters:[10]">
+                        <button mat-menu-item (click)="createSTO(template)" [matTooltip]="template.InfoTemplate">
+                            <mat-icon>input</mat-icon>
+                            {{template.Name}}
+                        </button>
+                    </div>
+                </mat-menu>
+            </button>
+        </div>
+        <div class="pane">
             <button class=" mt-2 btn btn-rn btn-danger" (click)="closeDialog()" mat-button>Закрыть (Отменить)</button>
         </div>
-
     </div>
 </div>
 <div [style.display]="loadModelServer ? 'inline':'none'">

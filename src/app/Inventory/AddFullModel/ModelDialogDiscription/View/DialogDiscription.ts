@@ -22,7 +22,6 @@ export class DialogDiscription {
 
     constructor(public dialogDataBase: MatDialogRef<DialogDiscription>,
         @Inject(MAT_DIALOG_DATA) public data: ModelDialog) {
-        console.log(data.rowModel);
         data.discription = this.propertyToDescription(data.rowModel, data.discription).replace(new RegExp(/(\[\w+\])/, 'g'), '');
         if (new Array(28, 34, 35).some(x => x === data.idTemplate)) {
             data.isUserCreater = true;

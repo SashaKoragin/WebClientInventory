@@ -149,6 +149,7 @@ export class Inventar {
         }
 
         ], types: null, pages: null, fullpath: null, model: null, isrule: null
+
     }]);
 }
 

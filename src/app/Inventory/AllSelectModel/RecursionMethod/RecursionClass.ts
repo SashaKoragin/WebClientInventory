@@ -9,6 +9,7 @@ export class Recursion {
 
    public methodModelAksiok(EquipmentType: EquipmentType[]) {
       var i;
+      this.modelAksiok = [];
       for (const type of EquipmentType) {
          i = 0;
          var use = new ModelAksiok();
@@ -121,7 +122,7 @@ export class Recursion {
          if (user.Telephon != null || typeof user.Telephon != 'undefined') {
             use.Children.push({ Name: "Телефон", IdUser: null, Types: null, InputServer: false, Children: [{ Children: [], Name: null, IdUser: null, Types: [], InputServer: false }] })
             use.Children[i].Children[0].Types.push({
-               Name: user.Telephon.NameTelephone, NameModel: null,
+               Name: user.Telephon.ModelPhone.NameModel, NameModel: null,
                SerNumber: user.Telephon.SerNumber, ServiceNumber: null, InventerNumber: null,
                Status: user.Telephon.Coment,
                Kabinet: user.Telephon.Kabinet ? user.Telephon.Kabinet.NumberKabinet : null, NameComputer: user.Telephon.MacTelephon,
@@ -272,7 +273,7 @@ export class Recursion {
                   if (user.Telephon != null || typeof user.Telephon != 'undefined') {
                      otd.Children[j].Children.push({ Name: "Телефон", IdUser: null, Types: null, InputServer: false, Children: [{ Children: [], Name: null, IdUser: null, Types: [], InputServer: false }] })
                      otd.Children[j].Children[i].Children[0].Types.push({
-                        Name: user.Telephon.NameTelephone, NameModel: null,
+                        Name: user.Telephon.ModelPhone.NameModel, NameModel: null,
                         SerNumber: user.Telephon.SerNumber, ServiceNumber: null, InventerNumber: null,
                         Status: user.Telephon.Coment,
                         Kabinet: user.Telephon.Kabinet ? user.Telephon.Kabinet.NumberKabinet : null, NameComputer: user.Telephon.MacTelephon, IpAdress: user.Telephon.IpTelephon

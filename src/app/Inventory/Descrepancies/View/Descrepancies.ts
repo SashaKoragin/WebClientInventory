@@ -5,6 +5,7 @@ import { DynamicTableColumnModel, Table } from '../../AddFullModel/ModelTable/Dy
 import { LogicaDataBase, GenerateParametrs } from '../../AllSelectModel/GenerateParametrFront';
 import { ModelSelect } from '../../AllSelectModel/ParametrModel';
 import { ModeleReturn } from '../../ModelInventory/InventoryModel';
+import { SelectProcess } from '../../ModelInventory/SelectProcess';
 
 
 @Component(({
@@ -35,7 +36,7 @@ export class Descrepancies implements OnInit {
         this.select.addselectallparametrs(new ModelSelect(this.dinamicmodel.mainselectComparableUser.indexsevr)).subscribe((model: ModelSelect) => {
             this.selecting = new GenerateParametrs(model);
             this.columns = this.dinamicmodel.columnsComparableUser[this.dinamicmodel.mainselectComparableUser.indexcolumnmodel]
-      
+
         })
     }
 
@@ -49,7 +50,8 @@ export class Descrepancies implements OnInit {
 
     ///Запуск процесса актуализации АКСИОК
     startProcessComparableUser() {
-        this.select.startProcessInventory(7);
+        var select = new SelectProcess(7);
+        this.select.startProcessInventory(select);
     }
 
     ///Выгрузка отчетов из БД

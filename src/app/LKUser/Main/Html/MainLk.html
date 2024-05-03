@@ -95,6 +95,13 @@
             </td>
           </ng-container>
 
+          <ng-container matColumnDef="Coment">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Комментарий</th>
+            <td [style.background]="row.Color" mat-cell *matCellDef="let row" [matTooltip]="row.Coment">
+              {{row.Coment}}
+            </td>
+          </ng-container>
+
           <ng-container matColumnDef="NameStatus">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Статус</th>
             <td [style.background]="row.Color" mat-cell *matCellDef="let row" [matTooltip]="row.NameStatus">
@@ -150,7 +157,8 @@
 
           <ng-container matColumnDef="NameUser">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Имя пользователя</th>
-            <td [style.background]="row.StatusUser?.ColorStatus" mat-cell *matCellDef="let row" [matTooltip]="row.NameUser">
+            <td [style.background]="row.StatusUser?.ColorStatus" mat-cell *matCellDef="let row"
+              [matTooltip]="row.NameUser">
               <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.NameUser}}</Label>
               <div [ngClass]=row.IdUser.toString() id="{{row.IdUser}}"
                 [style.display]="!row.ModelIsEdit ? 'none':'block'">

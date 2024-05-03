@@ -104,14 +104,24 @@ export class Equipment implements OnInit {
   }
 
   ///Создание QR Code Model SerialNumber
-  createQRCode(serialNumber: string, isAll: boolean = false) {
+  createQRCode(serialNumber: string, inventoryNumber: string, isAll: boolean = false) {
     if (serialNumber) {
-      this.editandadd.createQRCode(serialNumber, isAll);
+      this.editandadd.createQRCode(serialNumber, inventoryNumber, isAll);
     }
     else {
       alert(`У оборудования отсутствует серийный номер - ${serialNumber}!`)
     }
   }
+  ///Формирование наклейки этикетки
+  createLabel(serialNumber: string, inventoryNumber: string, isAll: boolean = false) {
+    if (serialNumber) {
+      this.editandadd.createTicketCode128(serialNumber, inventoryNumber, isAll);
+    }
+    else {
+      alert(`У оборудования отсутствует серийный номер - ${serialNumber}!`)
+    }
+  }
+
 
   async start() {
     var message = null;

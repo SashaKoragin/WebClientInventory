@@ -11,7 +11,6 @@
       </form>
       <div class="tables" #TABLEPRINTERS>
         <table mat-table [dataSource]="printer.dataSource" matSort>
-
           <ng-container matColumnDef="Logic">
             <th class="logic" mat-header-cell *matHeaderCellDef mat-sort-header>Заявки</th>
             <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
@@ -29,9 +28,20 @@
                   </mat-menu>
                 </button>
               </ng-template>
-              <button mat-icon-button color="primary" matTooltip="Сформировать QR код"
-                (click)="createQRCode(row.ZavNumber)">
-                <i class="material-icons">print</i>
+              <button mat-icon-button [matMenuTriggerFor]="menu" color="primary" matTooltip="Печать этикеток">
+                <mat-icon>print</mat-icon>
+                <mat-menu #menu="matMenu">
+                  <button mat-menu-item matTooltip="Сформировать этикетку"
+                    (click)="createLabel(row.ZavNumber, row.InventarNumber)">
+                    <mat-icon>input</mat-icon>
+                    Сформировать наклейку этикетку
+                  </button>
+                  <button mat-menu-item matTooltip="Сформировать QR код"
+                    (click)="createQRCode(row.ZavNumber, row.InventarNumber)">
+                    <mat-icon>input</mat-icon>
+                    Сформировать QR код
+                  </button>
+                </mat-menu>
               </button>
               <ng-template [ngxPermissionsExcept]="['Просмотр','Оператор','Редактор','Безопасность']">
                 <button mat-icon-button [matMenuTriggerFor]="menu" color="primary" matTooltip="Аксиок">
@@ -386,9 +396,20 @@
                   </mat-menu>
                 </button>
               </ng-template>
-              <button mat-icon-button color="primary" matTooltip="Сформировать QR код"
-                (click)="createQRCode(row.ZavNumber)">
-                <i class="material-icons">print</i>
+              <button mat-icon-button [matMenuTriggerFor]="menu" color="primary" matTooltip="Печать этикеток">
+                <mat-icon>print</mat-icon>
+                <mat-menu #menu="matMenu">
+                  <button mat-menu-item matTooltip="Сформировать этикетку"
+                    (click)="createLabel(row.ZavNumber, row.InventarNumber)">
+                    <mat-icon>input</mat-icon>
+                    Сформировать наклейку этикетку
+                  </button>
+                  <button mat-menu-item matTooltip="Сформировать QR код"
+                    (click)="createQRCode(row.ZavNumber, row.InventarNumber)">
+                    <mat-icon>input</mat-icon>
+                    Сформировать QR код
+                  </button>
+                </mat-menu>
               </button>
               <ng-template [ngxPermissionsExcept]="['Просмотр','Оператор','Редактор','Безопасность']">
                 <button mat-icon-button [matMenuTriggerFor]="menu" color="primary" matTooltip="Аксиок">
@@ -730,9 +751,20 @@
                   </mat-menu>
                 </button>
               </ng-template>
-              <button mat-icon-button color="primary" matTooltip="Сформировать QR код"
-                (click)="createQRCode(row.ZavNumber)">
-                <i class="material-icons">print</i>
+              <button mat-icon-button [matMenuTriggerFor]="menu" color="primary" matTooltip="Печать этикеток">
+                <mat-icon>print</mat-icon>
+                <mat-menu #menu="matMenu">
+                  <button mat-menu-item matTooltip="Сформировать этикетку"
+                    (click)="createLabel(row.ZavNumber, row.InventarNumber)">
+                    <mat-icon>input</mat-icon>
+                    Сформировать наклейку этикетку
+                  </button>
+                  <button mat-menu-item matTooltip="Сформировать QR код"
+                    (click)="createQRCode(row.ZavNumber, row.InventarNumber)">
+                    <mat-icon>input</mat-icon>
+                    Сформировать QR код
+                  </button>
+                </mat-menu>
               </button>
               <ng-template [ngxPermissionsExcept]="['Просмотр','Оператор','Редактор','Безопасность']">
                 <button mat-icon-button [matMenuTriggerFor]="menu" color="primary" matTooltip="Аксиок">
@@ -1103,9 +1135,20 @@
                   </mat-menu>
                 </button>
               </ng-template>
-              <button mat-icon-button color="primary" matTooltip="Сформировать QR код"
-                (click)="createQRCode(row.SerNum)">
-                <i class="material-icons">print</i>
+              <button mat-icon-button [matMenuTriggerFor]="menu" color="primary" matTooltip="Печать этикеток">
+                <mat-icon>print</mat-icon>
+                <mat-menu #menu="matMenu">
+                  <button mat-menu-item matTooltip="Сформировать этикетку"
+                    (click)="createLabel(row.SerNum, row.InventarNumSysBlok)">
+                    <mat-icon>input</mat-icon>
+                    Сформировать наклейку этикетку
+                  </button>
+                  <button mat-menu-item matTooltip="Сформировать QR код"
+                    (click)="createQRCode(row.SerNum, row.InventarNumSysBlok)">
+                    <mat-icon>input</mat-icon>
+                    Сформировать QR код
+                  </button>
+                </mat-menu>
               </button>
               <button mat-icon-button color="primary" matTooltip="Акт списания" (click)="sysblok.createAct(row)">
                 <i class="material-icons">build</i>
@@ -1435,9 +1478,20 @@
                   </mat-menu>
                 </button>
               </ng-template>
-              <button mat-icon-button color="primary" matTooltip="Сформировать QR код"
-                (click)="createQRCode(row.SerNum)">
-                <i class="material-icons">print</i>
+              <button mat-icon-button [matMenuTriggerFor]="menu" color="primary" matTooltip="Печать этикеток">
+                <mat-icon>print</mat-icon>
+                <mat-menu #menu="matMenu">
+                  <button mat-menu-item matTooltip="Сформировать этикетку"
+                    (click)="createLabel(row.SerNum, row.InventarNumMonitor)">
+                    <mat-icon>input</mat-icon>
+                    Сформировать наклейку этикетку
+                  </button>
+                  <button mat-menu-item matTooltip="Сформировать QR код"
+                    (click)="createQRCode(row.SerNum, row.InventarNumMonitor)">
+                    <mat-icon>input</mat-icon>
+                    Сформировать QR код
+                  </button>
+                </mat-menu>
               </button>
               <ng-template [ngxPermissionsExcept]="['Просмотр','Оператор','Редактор','Безопасность']">
                 <button mat-icon-button [matMenuTriggerFor]="menu" color="primary" matTooltip="Аксиок">
@@ -1738,9 +1792,20 @@
           <ng-container matColumnDef="Logic">
             <th class="logic" mat-header-cell *matHeaderCellDef mat-sort-header>Заявки</th>
             <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
-              <button mat-icon-button color="primary" matTooltip="Сформировать QR код"
-                (click)="createQRCode(row.ZavNumber)">
-                <i class="material-icons">print</i>
+              <button mat-icon-button [matMenuTriggerFor]="menu" color="primary" matTooltip="Печать этикеток">
+                <mat-icon>print</mat-icon>
+                <mat-menu #menu="matMenu">
+                  <button mat-menu-item matTooltip="Сформировать этикетку"
+                    (click)="createLabel(row.ZavNumber, row.InventarNumber)">
+                    <mat-icon>input</mat-icon>
+                    Сформировать наклейку этикетку
+                  </button>
+                  <button mat-menu-item matTooltip="Сформировать QR код"
+                    (click)="createQRCode(row.ZavNumber, row.InventarNumber)">
+                    <mat-icon>input</mat-icon>
+                    Сформировать QR код
+                  </button>
+                </mat-menu>
               </button>
               <ng-template [ngxPermissionsExcept]="['Просмотр','Оператор','Редактор','Безопасность']">
                 <button mat-icon-button [matMenuTriggerFor]="menu" color="primary" matTooltip="Аксиок">
@@ -1837,6 +1902,27 @@
             <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row"
               [matTooltip]="row.InventarNumber">
               <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.InventarNumber}}</Label>
+              <div [ngClass]=row.IdBlockPowers.toString() id="{{row.IdBlockPowers}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="NameBlockPowers">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Наименование ИБП</th>
+            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row"
+              [matTooltip]="row.NameBlockPowers">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.NameBlockPowers}}</Label>
+              <div [ngClass]=row.IdBlockPowers.toString() id="{{row.IdBlockPowers}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="IpAdress">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Ip Адрес</th>
+            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row.IpAdress">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.IpAdress}}</Label>
               <div [ngClass]=row.IdBlockPowers.toString() id="{{row.IdBlockPowers}}"
                 [style.display]="!row.ModelIsEdit ? 'none':'block'">
               </div>
@@ -1999,6 +2085,14 @@
           (ngModelChange)="blockpower.model.InventarNumber = $event" />
       </mat-form-field>
       <mat-form-field id="template" class="validation">
+        <input matInput placeholder="Наименование ИБП" [ngModel]="blockpower.model?.NameBlockPowers"
+          (ngModelChange)="blockpower.model.NameBlockPowers = $event" />
+      </mat-form-field>
+      <mat-form-field id="template" class="validation">
+        <input matInput placeholder="Ip адресс" [ngModel]="blockpower.model?.IpAdress"
+          (ngModelChange)="blockpower.model.IpAdress = $event" />
+      </mat-form-field>
+      <mat-form-field id="template" class="validation">
         <input matInput placeholder="Комментарий" [ngModel]="blockpower.model?.Coment"
           (ngModelChange)="blockpower.model.Coment = $event" />
       </mat-form-field>
@@ -2050,9 +2144,20 @@
           <ng-container matColumnDef="Logic">
             <th class="logic" mat-header-cell *matHeaderCellDef mat-sort-header>Заявки</th>
             <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
-              <button mat-icon-button color="primary" matTooltip="Сформировать QR код"
-                (click)="createQRCode(row.SerNum)">
-                <i class="material-icons">print</i>
+              <button mat-icon-button [matMenuTriggerFor]="menu" color="primary" matTooltip="Печать этикеток">
+                <mat-icon>print</mat-icon>
+                <mat-menu #menu="matMenu">
+                  <button mat-menu-item matTooltip="Сформировать этикетку"
+                    (click)="createLabel(row.SerNum, row.InventarNum)">
+                    <mat-icon>input</mat-icon>
+                    Сформировать наклейку этикетку
+                  </button>
+                  <button mat-menu-item matTooltip="Сформировать QR код"
+                    (click)="createQRCode(row.SerNum, row.InventarNum)">
+                    <mat-icon>input</mat-icon>
+                    Сформировать QR код
+                  </button>
+                </mat-menu>
               </button>
               <ng-template [ngxPermissionsExcept]="['Просмотр','Оператор','Редактор','Безопасность']">
                 <button mat-icon-button [matMenuTriggerFor]="menu" color="primary" matTooltip="Аксиок">
@@ -2147,6 +2252,26 @@
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Инвентарный номер</th>
             <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row.InventarNum">
               <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.InventarNum}}</Label>
+              <div [ngClass]=row.IdSwithes.toString() id="{{row.IdSwithes}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="NameSwithes">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Наименование коммутатора</th>
+            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row.NameSwithes">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.NameSwithes}}</Label>
+              <div [ngClass]=row.IdSwithes.toString() id="{{row.IdSwithes}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="IpAdress">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Ip Адрес</th>
+            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row.IpAdress">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.IpAdress}}</Label>
               <div [ngClass]=row.IdSwithes.toString() id="{{row.IdSwithes}}"
                 [style.display]="!row.ModelIsEdit ? 'none':'block'">
               </div>
@@ -2291,6 +2416,14 @@
           (ngModelChange)="switch.model.InventarNum = $event" />
       </mat-form-field>
       <mat-form-field id="template" class="validation">
+        <input matInput placeholder="Наименование коммутатора" [ngModel]="switch.model?.NameSwithes"
+          (ngModelChange)="switch.model.NameSwithes = $event" />
+      </mat-form-field>
+      <mat-form-field id="template" class="validation">
+        <input matInput placeholder="Ip адресс" [ngModel]="switch.model?.IpAdress"
+          (ngModelChange)="switch.model.IpAdress = $event" />
+      </mat-form-field>
+      <mat-form-field id="template" class="validation">
         <input matInput placeholder="Комментарий" [ngModel]="switch.model?.Coment"
           (ngModelChange)="switch.model.Coment = $event" />
       </mat-form-field>
@@ -2345,9 +2478,20 @@
           <ng-container matColumnDef="Logic">
             <th class="logic" mat-header-cell *matHeaderCellDef mat-sort-header>Заявки</th>
             <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
-              <button mat-icon-button color="primary" matTooltip="Сформировать QR код"
-                (click)="createQRCode(row.SerNum)">
-                <i class="material-icons">print</i>
+              <button mat-icon-button [matMenuTriggerFor]="menu" color="primary" matTooltip="Печать этикеток">
+                <mat-icon>print</mat-icon>
+                <mat-menu #menu="matMenu">
+                  <button mat-menu-item matTooltip="Сформировать этикетку"
+                    (click)="createLabel(row.SerNum, row.InventarNum)">
+                    <mat-icon>input</mat-icon>
+                    Сформировать наклейку этикетку
+                  </button>
+                  <button mat-menu-item matTooltip="Сформировать QR код"
+                    (click)="createQRCode(row.SerNum, row.InventarNum)">
+                    <mat-icon>input</mat-icon>
+                    Сформировать QR код
+                  </button>
+                </mat-menu>
               </button>
               <ng-template [ngxPermissionsExcept]="['Просмотр','Оператор','Редактор','Безопасность']">
                 <button mat-icon-button [matMenuTriggerFor]="menu" color="primary" matTooltip="Аксиок">
@@ -2455,6 +2599,15 @@
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Ip Адрес</th>
             <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row.IpAdress">
               <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.IpAdress}}</Label>
+              <div [ngClass]=row.Id.toString() id="{{row.Id}}" [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="IpIlo">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Ip адрес iLo</th>
+            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row.IpIlo">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.IpIlo}}</Label>
               <div [ngClass]=row.Id.toString() id="{{row.Id}}" [style.display]="!row.ModelIsEdit ? 'none':'block'">
               </div>
             </td>
@@ -2633,6 +2786,11 @@
       </mat-form-field>
 
       <mat-form-field id="template" class="validation">
+        <input matInput placeholder="Ip адрес iLo" [ngModel]="serverEquipment.model?.IpIlo"
+          (ngModelChange)="serverEquipment.model.IpIlo = $event" />
+      </mat-form-field>
+
+      <mat-form-field id="template" class="validation">
         <input matInput placeholder="Комментарий" [ngModel]="serverEquipment.model?.Coment"
           (ngModelChange)="serverEquipment.model.Coment = $event" />
       </mat-form-field>
@@ -2690,9 +2848,20 @@
           <ng-container matColumnDef="Logic">
             <th class="logic" mat-header-cell *matHeaderCellDef mat-sort-header>Заявки</th>
             <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row">
-              <button mat-icon-button color="primary" matTooltip="Сформировать QR код"
-                (click)="createQRCode(row.SerNum)">
-                <i class="material-icons">print</i>
+              <button mat-icon-button [matMenuTriggerFor]="menu" color="primary" matTooltip="Печать этикеток">
+                <mat-icon>print</mat-icon>
+                <mat-menu #menu="matMenu">
+                  <button mat-menu-item matTooltip="Сформировать этикетку"
+                    (click)="createLabel(row.SerNum, row.InventarNum)">
+                    <mat-icon>input</mat-icon>
+                    Сформировать наклейку этикетку
+                  </button>
+                  <button mat-menu-item matTooltip="Сформировать QR код"
+                    (click)="createQRCode(row.SerNum, row.InventarNum)">
+                    <mat-icon>input</mat-icon>
+                    Сформировать QR код
+                  </button>
+                </mat-menu>
               </button>
               <ng-template [ngxPermissionsExcept]="['Просмотр','Оператор','Редактор','Безопасность']">
                 <button mat-icon-button [matMenuTriggerFor]="menu" color="primary" matTooltip="Аксиок">
@@ -2753,22 +2922,22 @@
             </td>
           </ng-container>
 
-          <ng-container matColumnDef="ModelOther.Name">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Модель</th>
+          <ng-container matColumnDef="ProizvoditelOther.Name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Производитель</th>
             <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row"
-              [matTooltip]="row.ModelOther?.Name">
-              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.ModelOther?.Name}}</Label>
+              [matTooltip]="row.ProizvoditelOther?.Name">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.ProizvoditelOther?.Name}}</Label>
               <div [ngClass]=row.IdOtherAll.toString() id="{{row.IdOtherAll}}"
                 [style.display]="!row.ModelIsEdit ? 'none':'block'">
               </div>
             </td>
           </ng-container>
 
-          <ng-container matColumnDef="ProizvoditelOther.Name">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Производитель</th>
+          <ng-container matColumnDef="ModelOther.Name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Модель</th>
             <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row"
-              [matTooltip]="row.ProizvoditelOther?.Name">
-              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.ProizvoditelOther?.Name}}</Label>
+              [matTooltip]="row.ModelOther?.Name">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.ModelOther?.Name}}</Label>
               <div [ngClass]=row.IdOtherAll.toString() id="{{row.IdOtherAll}}"
                 [style.display]="!row.ModelIsEdit ? 'none':'block'">
               </div>
@@ -2800,6 +2969,26 @@
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Инвентарный номер</th>
             <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row.InventarNum">
               <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.InventarNum}}</Label>
+              <div [ngClass]=row.IdOtherAll.toString() id="{{row.IdOtherAll}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="NameOther">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Наименование оборудования</th>
+            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row.NameOther">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.NameOther}}</Label>
+              <div [ngClass]=row.IdOtherAll.toString() id="{{row.IdOtherAll}}"
+                [style.display]="!row.ModelIsEdit ? 'none':'block'">
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="IpOther">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Ip адрес</th>
+            <td [style.background]="row.Statusing?.Color" mat-cell *matCellDef="let row" [matTooltip]="row.IpOther">
+              <Label [style.display]="row.ModelIsEdit ? 'none':'inline'">{{row.IpOther}}</Label>
               <div [ngClass]=row.IdOtherAll.toString() id="{{row.IdOtherAll}}"
                 [style.display]="!row.ModelIsEdit ? 'none':'block'">
               </div>
@@ -2936,19 +3125,6 @@
 
       <mat-form-field id="template" class="validation">
         <mat-select (click)="otherall.calbackfiltersAll()"
-          [formControl]="otherall.modelvalid?.getRowValidatorModel[14].get('ModelOther')"
-          [placeholder]="otherall.model.ModelOther?.Name" [(ngModel)]="otherall.model.ModelOther" name="models">
-          <mat-select-filter class="filter" [placeholder]="otherall.model.ModelOther?.Name" [displayMember]="'Name'"
-            [array]="otherall.modelOther" (filteredReturn)="otherall.filteredModelOther =$event">
-          </mat-select-filter>
-          <mat-option *ngFor="let models of otherall.filteredModelOther" [value]="models">
-            {{models.Name}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field id="template" class="validation">
-        <mat-select (click)="otherall.calbackfiltersAll()"
           [formControl]="otherall.modelvalid?.getRowValidatorModel[14].get('ProizvoditelOther')"
           [placeholder]="otherall.model.ProizvoditelOther?.Name" [(ngModel)]="otherall.model.ProizvoditelOther"
           name="models">
@@ -2957,6 +3133,19 @@
             (filteredReturn)="otherall.filteredProizvoditelOther =$event">
           </mat-select-filter>
           <mat-option *ngFor="let models of otherall.filteredProizvoditelOther" [value]="models">
+            {{models.Name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field id="template" class="validation">
+        <mat-select (click)="otherall.calbackfiltersAll()"
+          [formControl]="otherall.modelvalid?.getRowValidatorModel[14].get('ModelOther')"
+          [placeholder]="otherall.model.ModelOther?.Name" [(ngModel)]="otherall.model.ModelOther" name="models">
+          <mat-select-filter class="filter" [placeholder]="otherall.model.ModelOther?.Name" [displayMember]="'Name'"
+            [array]="otherall.modelOther" (filteredReturn)="otherall.filteredModelOther =$event">
+          </mat-select-filter>
+          <mat-option *ngFor="let models of otherall.filteredModelOther" [value]="models">
             {{models.Name}}
           </mat-option>
         </mat-select>
@@ -2977,6 +3166,16 @@
         <input matInput [formControl]="otherall.modelvalid?.getRowValidatorModel[14].get('InventarNum')"
           placeholder="Инвентарный номер" [ngModel]="otherall.model?.InventarNum"
           (ngModelChange)="otherall.model.InventarNum = $event" />
+      </mat-form-field>
+
+      <mat-form-field id="template" class="validation">
+        <input matInput placeholder="Наименование оборудования" [ngModel]="otherall.model?.NameOther"
+          (ngModelChange)="otherall.model.NameOther = $event" />
+      </mat-form-field>
+
+      <mat-form-field id="template" class="validation">
+        <input matInput placeholder="Ip адрес" [ngModel]="otherall.model?.IpOther"
+          (ngModelChange)="otherall.model.IpOther = $event" />
       </mat-form-field>
 
       <mat-form-field id="template" class="validation">

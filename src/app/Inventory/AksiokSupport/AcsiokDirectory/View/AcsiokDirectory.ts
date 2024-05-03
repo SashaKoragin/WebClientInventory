@@ -67,6 +67,7 @@ export class AksiokDirectory implements OnInit {
     updateAksiokAllModel() {
         try {
             if (this.selectingTemplate.errorModel()) {
+                
                 this.logicaTemplate.logicaselect(); //Закрываем логику выбора
                 this.logicaTemplate.logicaprogress();  //Открываем логику загрузки
                 this.select.selectusersql(this.selectingTemplate.generatecommand()).toPromise().then(async (model) => {
