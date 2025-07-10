@@ -16,7 +16,7 @@ import { DocumentReport } from '../Inventory/AllSelectModel/Report/ReportModel';
 import { UploadFile } from '../Inventory/AddFullModel/ModelTable/FileModel';
 import { BookModels } from '../Inventory/ModelInventory/ViewInventory';
 import { NgxPermissionsService } from 'ngx-permissions';
-import { WebMailModel, FullTemplateSupport, ModelParametrSupport, ServerEquipment, ModelSeverEquipment, ManufacturerSeverEquipment, TypeServer, RuleUsers, Token, Organization, SettingDepartmentCaseGetServer, Rb_Holiday, RegulationsDepartmentToServer, ResourceIt, TaskAis3, JournalAis3, AllUsersFilters, OtherAll, ModelOther, TypeOther, ProizvoditelOther, AnalysisEpoAndInventarka, EventProcess, CategoryPhoneHeader, AksiokAddAndEdit, EquipmentType, FullCategories, KitsEquipment, UploadFileAksiok, ParameterEventProcess, SelectDayOfTheWeek, DownloadFileServer, StatusHolyday, ModelPhone } from '../Inventory/ModelInventory/InventoryModel';
+import { WebMailModel, FullTemplateSupport, ModelParametrSupport, ServerEquipment, ModelSeverEquipment, ManufacturerSeverEquipment, TypeServer, RuleUsers, Token, Organization, SettingDepartmentCaseGetServer, Rb_Holiday, RegulationsDepartmentToServer, ResourceIt, TaskAis3, JournalAis3, AllUsersFilters, OtherAll, ModelOther, TypeOther, ProizvoditelOther, AnalysisEpoAndInventarka, EventProcess, CategoryPhoneHeader, AksiokAddAndEdit, EquipmentType, FullCategories, KitsEquipment, UploadFileAksiok, ParameterEventProcess, SelectDayOfTheWeek, DownloadFileServer, StatusHolyday, ModelPhone, ModelDocumentType, ContractOnSto, ContractSpecification, CountGroupAddingAndEditing } from '../Inventory/ModelInventory/InventoryModel';
 import { Router, NavigationExtras } from '@angular/router';
 import { ReportCardModel } from '../Inventory/AddFullModel/DialogReportCard/ReportCardModel/ReportCardModel';
 import { ModelMemoReport } from '../LKUser/Main/Model/ReportMemo';
@@ -787,13 +787,35 @@ export class EditAndAdd {
             window.URL.revokeObjectURL(url);
         });
     }
-
+    ///Поиск всех групп оборудования для массового добавления
+    validationCountingGroupAddingAksiok(сountGroupAddingAndEditing: CountGroupAddingAndEditing) {
+        return this.http.post(url.validationCountingGroupAddingAksiok, сountGroupAddingAndEditing, httpOptionsJson);
+    }
+    ///Поиск всех групп для редактирования
+    validationCountingGroupEditingAksiok(сountGroupAddingAndEditing: CountGroupAddingAndEditing) {
+        return this.http.post(url.ValidationCountingGroupEditingAksiok, сountGroupAddingAndEditing, httpOptionsJson);
+    }
     ///Проверка на комплектность оборудования
     validationKitsEquipment(kitsEquipment: KitsEquipment) {
         return this.http.post(url.kitsEquipmentValidation, kitsEquipment, httpOptionsJson);
     }
     ///Получить все типы АКСИОК
     async selectAllAksiok(modelAksiok: ModelAksiok) {
+        modelAksiok.modelDocumentType = await this.http.get(url.selectAllModelDocumentType, httpOptionsJson).toPromise().then(model => {
+            if (model) {
+                return deserializeArray<ModelDocumentType>(ModelDocumentType, model.toString())
+            }
+        });
+        modelAksiok.contractOnSto = await this.http.get(url.selectAllContractOnSto, httpOptionsJson).toPromise().then(model => {
+            if (model) {
+                return deserializeArray<ContractOnSto>(ContractOnSto, model.toString())
+            }
+        });
+        modelAksiok.contractSpecification = await this.http.get(url.selectAllDeliveryContract, httpOptionsJson).toPromise().then(model => {
+            if (model) {
+                return deserializeArray<ContractSpecification>(ContractSpecification, model.toString())
+            }
+        });
         modelAksiok.equipmentType = await this.http.get(url.selectAllEquipmentType, httpOptionsJson).toPromise().then(model => {
             if (model) {
                 return deserializeArray<EquipmentType>(EquipmentType, model.toString())

@@ -48,7 +48,7 @@
     "popper.js": "1.14.4",
     "raw-loader": "^0.5.1",
     "rxjs": "6.3.2",
-    "signalr": "2.4.0",
+    "signalr": "^2.4.0",
     "source-map-loader": "^0.2.4",
     "style-loader": "0.23.0",
     "typescript": "^3.5.3",
@@ -57,7 +57,7 @@
     "web-animations-js": "2.3.1",
     "webpack": "^4.39.1",
     "webpack-cli": "3.3.0",
-    "webpack-dev-server": "^3.2.1",
+    "webpack-dev-server": "^3.11.3",
     "xlsx": "^0.12.12",
     "zone.js": "^0.8.26"
   },

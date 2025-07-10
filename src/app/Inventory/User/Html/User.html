@@ -474,6 +474,21 @@
                                     </button>
                                 </mat-menu>
                             </button>
+                            <ng-template [ngxPermissionsExcept]="['Просмотр','Оператор','Редактор','Безопасность']">
+                                <button mat-icon-button [matMenuTriggerFor]="menu" color="primary" matTooltip="Аксиок">
+                                  <mat-icon>more_vert</mat-icon>
+                                  <mat-menu #menu="matMenu">
+                                    <div class="MenuButton" *ngFor="let template of MenuAksiok.ModelMenuAksiok">
+                                      <button mat-menu-item
+                                        (click)="telephone.aksiokEditAndAdd(row, template.ModelMenu, dialog, authService)"
+                                        [matTooltip]="template.NameMenu">
+                                        <mat-icon>input</mat-icon>
+                                        {{template.NameMenu}}
+                                      </button>
+                                    </div>
+                                  </mat-menu>
+                                </button>
+                              </ng-template>
                         </td>
                     </ng-container>
 

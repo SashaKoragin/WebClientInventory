@@ -1,9 +1,10 @@
-export const ServerHost: string = '77068-APP065';  //localhost
+export const ServerHost: string = '77068-APP065';
 //export const ServerHost: string = 'localhost'
 export const ServerPort: string = '8182';
 
 //К примеру новая структура
 //http://77068-APP065:8182/Inventarka/AllRules
+//http://77068-APP065:8182/Inventarka/AllUsers
 export class AdressInventarka {
     public autificationInventar = `http://${ServerHost}:${ServerPort}/Inventarka/Authorization`;
     public alluser = `http://${ServerHost}:${ServerPort}/Inventarka/AllUsers`;
@@ -208,8 +209,15 @@ export class AdressInventarka {
 
     ///Аксиок модели и категории для анализа редактирования или удаления
     public aksiokAddAndEditModelValidation = `http://${ServerHost}:${ServerPort}/Inventarka/AksiokAddAndEditModelValidation`;
+    public validationCountingGroupAddingAksiok = `http://${ServerHost}:${ServerPort}/Inventarka/ValidationCountingGroupAddingAksiok`;
+    public ValidationCountingGroupEditingAksiok = `http://${ServerHost}:${ServerPort}/Inventarka/ValidationCountingGroupEditingAksiok`;
     public kitsEquipmentValidation = `http://${ServerHost}:${ServerPort}/Inventarka/KitsEquipmentValidation`;
     public selectAllFullСategories = `http://${ServerHost}:${ServerPort}/Inventarka/SelectAllFullСategories`;
+    ///Контракты
+    public selectAllContractOnSto = `http://${ServerHost}:${ServerPort}/Inventarka/SelectAllContractOnSto`;
+    public selectAllDeliveryContract = `http://${ServerHost}:${ServerPort}/Inventarka/SelectAllDeliveryContract`;
+
+    public selectAllModelDocumentType = `http://${ServerHost}:${ServerPort}/Inventarka/SelectAllModelDocumentType`;
     public selectAllEquipmentType = `http://${ServerHost}:${ServerPort}/Inventarka/SelectAllEquipmentType`;
     public selectAllProducer = `http://${ServerHost}:${ServerPort}/Inventarka/SelectAllProducer`;
     public selectAllEquipmentModel = `http://${ServerHost}:${ServerPort}/Inventarka/SelectAllEquipmentModel`;

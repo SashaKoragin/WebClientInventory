@@ -9,6 +9,7 @@ import { ReportCardModel } from '../../AddFullModel/DialogReportCard/ReportCardM
 import { ReportCard } from '../../AddFullModel/DialogReportCard/DialogReportCardTs/DialogReportCard';
 import { DatePipe } from '@angular/common';
 import { Template, ModelMemo } from '../../../LKUser/Main/Model/ReportMemo';
+import { MenuAksiok } from '../../AddFullModel/DialogAksiokEditAndAdd/DialogAksiokModel/DialogAksiokMenu';
 
 
 @Component(({
@@ -58,7 +59,7 @@ export class User implements OnInit {
     @ViewChild('userRoles', { static: true }) paginatorRoles: MatPaginator;
 
 
-
+    public MenuAksiok: MenuAksiok = new MenuAksiok()
     filterActual: AllUsersFilters = new AllUsersFilters();
     user: UserTableModel = new UserTableModel(this.editandadd, this.SignalR);
     otdel: OtdelTableModel = new OtdelTableModel(this.editandadd, this.SignalR);

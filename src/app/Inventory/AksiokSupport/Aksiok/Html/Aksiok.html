@@ -3,7 +3,8 @@
 
 
 <ng-template class="panel" #TOOLPANEL>
-    <button class="panelbutton" mat-button (click)="synchronization()">Запуск синхронизации с АКСИОК</button>
+    <button class="panelbutton" mat-button (click)="synchronizationFullAksiok()">Запуск синхронизации с АКСИОК</button>
+    <button class="panelbutton" mat-button (click)="synchronizationDirectoryAksiokToInventory()">Запуск синхронизации справочников (Поставка-Контракты) с АКСИОК (ФКУ)</button>
     <button class="panelbutton" mat-button (click)="getAllAksiok()">Выгрузка АКСИОК</button>
     <label>{{statusProcessInfo}}</label>
 </ng-template>

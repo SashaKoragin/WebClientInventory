@@ -32,7 +32,6 @@ import { EquipmentSto } from '../../Inventory/EquipmentSto/View/EquipmentSto';
 import { ModelProcess } from '../../Inventory/Process/ProcessParameter/View/Process';
 import { AksiokDirectory } from '../../Inventory/AksiokSupport/AcsiokDirectory/View/AcsiokDirectory';
 import { Aksiok } from '../../Inventory/AksiokSupport/Aksiok/View/Aksiok';
-import { DragAndDrop } from '../../Inventory/AddFullModel/UploadFilleDragAndDrop/Ts/UploadFilleDragAndDrop';
 import { Descrepancies } from '../../Inventory/Descrepancies/View/Descrepancies';
 import { FileServer } from '../../Inventory/FileServer/View/FileServer';
 import { SelectFormSql } from '../../Inventory/AddFullModel/ModelFileServerSelect/View/FileServerSelect';

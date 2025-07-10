@@ -1,7 +1,9 @@
 import { Component, ViewChild, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SelectAllParametrs, AuthIdentification, PostInventar, EditAndAdd } from '../../../../Post RequestService/PostRequest';
-import { MatPaginator, MatTableDataSource, MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
 import { AnalysisEpoAndInventarka, FullTemplateSupport, ModelParametrSupport } from '../../../ModelInventory/InventoryModel';
 import { SelectionModel } from '@angular/cdk/collections';
 import { ModelDialog, DialogDiscription } from '../../ModelDialogDiscription/View/DialogDiscription';

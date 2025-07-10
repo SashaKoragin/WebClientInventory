@@ -95,7 +95,7 @@ export class AddAndDeleteRuleUser {
 
 
 
-export class OtdelTableModel implements INewLogicaTable<Otdel>{
+export class OtdelTableModel implements INewLogicaTable<Otdel> {
 
   constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
     this.subscribeservers();
@@ -290,7 +290,7 @@ export class OtdelTableModel implements INewLogicaTable<Otdel>{
   }
 }
 
-export class UserTableModel implements INewLogicaTable<Users>  {
+export class UserTableModel implements INewLogicaTable<Users> {
 
   constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
     if (SignalR !== null) {
@@ -607,7 +607,7 @@ export class UserTableModel implements INewLogicaTable<Users>  {
   }
 }
 
-export class SwitchTableModel implements INewLogicaTable<Swithe>{
+export class SwitchTableModel implements INewLogicaTable<Swithe> {
   constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
     this.subscribeservers();
   }
@@ -933,7 +933,7 @@ export class SwitchTableModel implements INewLogicaTable<Swithe>{
   }
 }
 
-export class ServerEquipmentTableModel implements INewLogicaTable<ServerEquipment>{
+export class ServerEquipmentTableModel implements INewLogicaTable<ServerEquipment> {
 
   constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
     this.subscribeservers();
@@ -1271,7 +1271,7 @@ export class ServerEquipmentTableModel implements INewLogicaTable<ServerEquipmen
 }
 
 
-export class OtherAllTableModel implements INewLogicaTable<OtherAll>{
+export class OtherAllTableModel implements INewLogicaTable<OtherAll> {
 
   constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
     this.subscribeservers();
@@ -1610,7 +1610,7 @@ export class OtherAllTableModel implements INewLogicaTable<OtherAll>{
 }
 
 
-export class TokenTableModel implements INewLogicaTable<Token>{
+export class TokenTableModel implements INewLogicaTable<Token> {
 
   constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
     this.subscribeservers();
@@ -1755,10 +1755,10 @@ export class TokenTableModel implements INewLogicaTable<Token>{
     if (value != null) {
       this.model.SysBlock = null
       this.filteredSysBlock = null
-      this.sysblock = this.SysBlockAllModel.filter(x => x.IdUser === value.IdUser && x.IdStatus !== 16)
+      this.sysblock = this.SysBlockAllModel.filter(x => x.IdUser === value.IdUser)
     }
     else {
-      this.sysblock = this.SysBlockAllModel.filter(x => x.IdUser === this.modelCancelError.IdUser && x.IdStatus !== 16)
+      this.sysblock = this.SysBlockAllModel.filter(x => x.IdUser === this.modelCancelError.IdUser)
     }
     this.filteredSysBlock = this.sysblock;
   }
@@ -1784,7 +1784,7 @@ export class TokenTableModel implements INewLogicaTable<Token>{
   }
 
   public edit(model: Token): void {
-    this.sysblock = this.SysBlockAllModel.filter(x => x.IdUser === model.IdUser && new Array(undefined, null, 16).some(y => y === x.IdStatus))
+    this.sysblock = this.SysBlockAllModel.filter(x => x.IdUser === model.IdUser && new Array(undefined, null).some(y => y === x.IdStatus))
     model.ModelIsEdit = true;
     this.modelCancelError = JSON.parse(JSON.stringify(model));
     this.filterSysBlokToken(null);
@@ -1885,6 +1885,13 @@ export class TokenTableModel implements INewLogicaTable<Token>{
     this.model.Statusing ? this.model.IdStatus = this.model.Statusing.IdStatus : this.model.IdStatus = null;
     this.model.User ? this.model.IdUser = this.model.User.IdUser : this.model.IdUser = null;
     this.model.SysBlock ? this.model.IdSysBlock = this.model.SysBlock.IdSysBlock : this.model.IdSysBlock = null;
+    if (this.model.User) {
+      this.model.User.Telephon = null;
+
+    }
+    if (this.model.SysBlock) {
+      this.model.SysBlock.User.Telephon = null;
+    }
     if (this.model.Supply) {
       this.model.IdSupply = this.model.Supply.IdSupply
       this.model.Supply.DataCreate = null;
@@ -2675,7 +2682,7 @@ export class ScanerAndCamerTableModel implements INewLogicaTable<ScanerAndCamer>
   }
 }
 
-export class MfuTableModel implements INewLogicaTable<Mfu>  {
+export class MfuTableModel implements INewLogicaTable<Mfu> {
 
   constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
     this.subscribeservers();
@@ -3050,7 +3057,7 @@ export class MfuTableModel implements INewLogicaTable<Mfu>  {
   }
 }
 
-export class SysBlockTableModel implements INewLogicaTable<SysBlock>  {
+export class SysBlockTableModel implements INewLogicaTable<SysBlock> {
   constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
     this.subscribeservers();
   }
@@ -3431,7 +3438,7 @@ export class SysBlockTableModel implements INewLogicaTable<SysBlock>  {
   }
 }
 
-export class MonitorsTableModel implements INewLogicaTable<Monitor>  {
+export class MonitorsTableModel implements INewLogicaTable<Monitor> {
   constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
     this.subscribeservers();
   }
@@ -3836,6 +3843,51 @@ export class TelephonsTableModel implements INewLogicaTable<Telephon> {
             }
           });
       }
+    });
+  }
+
+  public aksiokEditAndAdd(model: Telephon, modelRequest: string, dialog: MatDialog, authService: AuthIdentification) {
+    this.editandadd.isBeginTask(6).toPromise().then((isCheck: boolean) => {
+      var isBeginTask = isCheck
+      if (isBeginTask) {
+        if (model.SerNumber) {
+          var aksiokAddAndEdit = new AksiokAddAndEdit();
+          aksiokAddAndEdit.parametersModelField.modelRequestField = modelRequest;
+          aksiokAddAndEdit.parametersModelField.inventoryNumField = model.InventarNumberTelephone;
+          aksiokAddAndEdit.parametersModelField.serNumberField = model.SerNumber;
+          if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'Edit' || aksiokAddAndEdit.parametersModelField.modelRequestField === 'Add') {
+            this.editandadd.validationModelAksiok(aksiokAddAndEdit).toPromise().then((modelAksiok: AksiokAddAndEdit) => {
+              if (modelAksiok.parametersModelField.errorServerField) {
+                alert(modelAksiok.parametersModelField.errorServerField);
+                return;
+              }
+              else {
+                const dialogRef = dialog.open(DialogAksiokEditAndAdd, {
+                  width: "1000px",
+                  height: "750px",
+                  data: modelAksiok
+                })
+              }
+            });
+          }
+          if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'CardEquipment') {
+            aksiokAddAndEdit.parametersModelField.guaranteeField = null;
+            this.editandadd.uploadCardAksiokAndInventory(aksiokAddAndEdit);
+          }
+          if (aksiokAddAndEdit.parametersModelField.modelRequestField === 'ExpertiseFile' || aksiokAddAndEdit.parametersModelField.modelRequestField === 'FileAct') {
+            aksiokAddAndEdit.parametersModelField.loginUserField = authService.autorization.loginField;
+            aksiokAddAndEdit.parametersModelField.passwordField = authService.autorization.passwordField;
+            this.editandadd.uploadFileAksiok(aksiokAddAndEdit);
+          }
+        }
+        else {
+          alert('Отсутствует серийный номер ' + model.SerNumber);
+        }
+      }
+      else {
+        alert("Процесс по синхронизации данных ещё не завершён!!!")
+      }
+
     });
   }
 
@@ -6719,7 +6771,7 @@ export class NameModelSwitheTableModel implements INewLogicaTable<ModelSwithes> 
   }
 }
 
-export class ModelSeverEquipmenTableModel implements INewLogicaTable<ModelSeverEquipment>{
+export class ModelSeverEquipmenTableModel implements INewLogicaTable<ModelSeverEquipment> {
 
   constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
     this.subscribeservers();
@@ -6904,7 +6956,7 @@ export class ModelSeverEquipmenTableModel implements INewLogicaTable<ModelSeverE
   }
 }
 
-export class ManufacturerSeverEquipmentTableModel implements INewLogicaTable<ManufacturerSeverEquipment>{
+export class ManufacturerSeverEquipmentTableModel implements INewLogicaTable<ManufacturerSeverEquipment> {
 
   constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
     this.subscribeservers();
@@ -7090,7 +7142,7 @@ export class ManufacturerSeverEquipmentTableModel implements INewLogicaTable<Man
   }
 }
 
-export class TypeServerTableModel implements INewLogicaTable<TypeServer>{
+export class TypeServerTableModel implements INewLogicaTable<TypeServer> {
 
   constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
     this.subscribeservers();
@@ -7283,7 +7335,7 @@ export class TypeServerTableModel implements INewLogicaTable<TypeServer>{
 
 
 
-export class MailIdentifiersTableModel implements INewLogicaTable<MailIdentifier>{
+export class MailIdentifiersTableModel implements INewLogicaTable<MailIdentifier> {
 
   constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
     this.subscribeservers();
@@ -7507,7 +7559,7 @@ export class MailIdentifiersTableModel implements INewLogicaTable<MailIdentifier
 }
 
 
-export class MailGroupTableModel implements INewLogicaTable<MailGroup>{
+export class MailGroupTableModel implements INewLogicaTable<MailGroup> {
 
   constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
     this.subscribeservers();
@@ -7701,7 +7753,7 @@ export class MailGroupTableModel implements INewLogicaTable<MailGroup>{
   }
 }
 
-export class AllTechnicsLkModel implements INewLogicaTable<AllTechnics>{
+export class AllTechnicsLkModel implements INewLogicaTable<AllTechnics> {
 
   constructor(public editandadd: EditAndAdd) { }
 
@@ -7820,7 +7872,7 @@ export class AllTechnicsLkModel implements INewLogicaTable<AllTechnics>{
 
 }
 
-export class SettingDepartmentCaseTableModel implements INewLogicaTable<SettingDepartmentCaseGetServer>  {
+export class SettingDepartmentCaseTableModel implements INewLogicaTable<SettingDepartmentCaseGetServer> {
 
   constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
     this.subscribeservers();
@@ -8000,7 +8052,7 @@ export class SettingDepartmentCaseTableModel implements INewLogicaTable<SettingD
   }
 }
 
-export class SettingDepartmentRegulations implements INewLogicaTable<RegulationsDepartment>  {
+export class SettingDepartmentRegulations implements INewLogicaTable<RegulationsDepartment> {
 
   constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
     this.subscribeservers();
@@ -8178,7 +8230,7 @@ export class SettingDepartmentRegulations implements INewLogicaTable<Regulations
   }
 }
 
-export class HolidayTableModel implements INewLogicaTable<Rb_Holiday>  {
+export class HolidayTableModel implements INewLogicaTable<Rb_Holiday> {
 
   constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
     this.subscribeservers();
@@ -8789,7 +8841,7 @@ export class TaskAis3TableModel implements INewLogicaTable<TaskAis3> {
 
 }
 
-export class JournalAis3TableModel implements INewLogicaTable<JournalAis3>  {
+export class JournalAis3TableModel implements INewLogicaTable<JournalAis3> {
 
   constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
     this.subscribeservers();
@@ -9043,7 +9095,7 @@ export class JournalAis3TableModel implements INewLogicaTable<JournalAis3>  {
 }
 
 
-export class TypeOtherTableModel implements INewLogicaTable<TypeOther>{
+export class TypeOtherTableModel implements INewLogicaTable<TypeOther> {
 
   constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
     this.subscribeservers();
@@ -9233,7 +9285,7 @@ export class TypeOtherTableModel implements INewLogicaTable<TypeOther>{
   }
 }
 
-export class ProizvoditelOtherTableModel implements INewLogicaTable<ProizvoditelOther>{
+export class ProizvoditelOtherTableModel implements INewLogicaTable<ProizvoditelOther> {
 
   constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
     this.subscribeservers();
@@ -9423,7 +9475,7 @@ export class ProizvoditelOtherTableModel implements INewLogicaTable<Proizvoditel
   }
 }
 
-export class ModelOtherTableModel implements INewLogicaTable<ModelOther>{
+export class ModelOtherTableModel implements INewLogicaTable<ModelOther> {
 
   constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
     this.subscribeservers();
@@ -9612,7 +9664,7 @@ export class ModelOtherTableModel implements INewLogicaTable<ModelOther>{
     this.isEdit = false;
   }
 }
-export class EventProcessTableModel implements INewLogicaTable<EventProcess>{
+export class EventProcessTableModel implements INewLogicaTable<EventProcess> {
 
   constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
     this.subscribeservers();
@@ -9815,7 +9867,7 @@ export class EventProcessTableModel implements INewLogicaTable<EventProcess>{
   }
 }
 
-export class ParameterEventProcessTableModel implements INewLogicaTable<ParameterEventProcess>{
+export class ParameterEventProcessTableModel implements INewLogicaTable<ParameterEventProcess> {
 
   constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
     this.subscribeservers();
@@ -10004,7 +10056,7 @@ export class ParameterEventProcessTableModel implements INewLogicaTable<Paramete
 
 
 
-export class SettingCategoryPhoneHeader implements INewLogicaTable<CategoryPhoneHeader>  {
+export class SettingCategoryPhoneHeader implements INewLogicaTable<CategoryPhoneHeader> {
 
   constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
     this.subscribeservers();
@@ -10193,7 +10245,7 @@ export class SettingCategoryPhoneHeader implements INewLogicaTable<CategoryPhone
     this.isEdit = false;
   }
 }
-export class ModelPhoneTableModel implements INewLogicaTable<ModelPhone>{
+export class ModelPhoneTableModel implements INewLogicaTable<ModelPhone> {
 
   constructor(public editandadd: EditAndAdd, public SignalR: AuthIdentificationSignalR) {
     this.subscribeservers();

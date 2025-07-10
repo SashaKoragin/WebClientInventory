@@ -2735,7 +2735,7 @@
           [(ngModel)]="serverEquipment.model.ModelSeverEquipment" name="models">
           <mat-select-filter class="filter" [placeholder]="serverEquipment.model.ModelSeverEquipment?.NameModel"
             [displayMember]="'NameModel'" [array]="serverEquipment.modelSeverEquipment"
-            (filteredReturn)="serverEquipment.filteredModels =$event">
+            (filteredReturn)="serverEquipment.filteredModelSeverEquipment =$event">
           </mat-select-filter>
           <mat-option [value]='null'>None</mat-option>
           <mat-option *ngFor="let models of serverEquipment.filteredModelSeverEquipment" [value]="models">

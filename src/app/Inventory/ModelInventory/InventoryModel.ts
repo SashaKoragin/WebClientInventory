@@ -1076,6 +1076,47 @@ export class FilterActual {
     public isFilterField: boolean = false
 }
 
+export class ModelDocumentType {
+    public Id: number;
+    public Soun: number;
+    public DocumentType: number;
+    public KindEquipmentName: string;
+    public EquipmentTypeName: string;
+    public CategoriesTruName: string;
+    public Number: string;
+    public Author: string;
+    public CanDelete: string;
+    public AgencyName: string;
+}
+
+export class ContractOnSto {
+    public Id: number;
+    public Number: string;
+    public Name: string;
+    public ContractDate: any;
+    public Executor: string;
+}
+
+export class ContractSpecification {
+    public Id: number;
+    public EpoContractId: number;
+    public Number: string;
+    public Name: string;
+    public ContractDate: any;
+    public Executor: string;
+    public Soun: string;
+    public DocumentTypeId: number;
+    public EquipmentType: string;
+    public Producer: string;
+    public ProducerId: number;
+    public EquipmentModel: string;
+    public EquipmentModelId: number;
+    public Garanty: any;
+    public Quantity: number;
+    public ContractSpecificationText: string;
+    public CountInEpoRegistry: number;
+}
+
 export class EquipmentType {
     public Id: number;
     @Expose({ name: "Name" })
@@ -1139,16 +1180,21 @@ export class ValueCharacteristicJson {
 
 export class AksiokAddAndEdit {
     public parametersModelField: ParametersModel = new ParametersModel();
+    public countGroupAddingAndEditingField: CountGroupAddingAndEditing = new CountGroupAddingAndEditing();
     public kitsEquipmentField: KitsEquipment = new KitsEquipment();
     public parametersRequestAksiokField: ParametersRequestAksiok = null;
     public uploadFileAksiokField: UploadFileAksiok = null;
+
 }
 
 export class ParametersModel {
+    public idCardField: number = 0;
     public idFullCategoriaField: number = 0;
     public idStateField: number = 0;
     public idStateStoField: number = 0;
     public idExpertiseField: number = 0;
+    public idContractOnStoField: number = 0;
+    public idDeliveryContractField: number = 0;
     public modelRequestField: string;
     public nameProducerField: string = null;
     public nameModelField: string = null;
@@ -1160,8 +1206,18 @@ export class ParametersModel {
     public exploitationStartYearField: number = 0;
     public guaranteeField: any = `/Date(${moment(new Date(), 'DD-MM-YYYY').valueOf()})/`;
     public isKitField: boolean = false;
+    public isMassAddingField: boolean = false;
+    public isMassEditingField: boolean = false;
+    public isMassEditFirstModelField: boolean = false;
+    public isSmallCostField: boolean = false;
+    public isOffBalanceAccountField: boolean = false;
     public loginUserField: string = null;
     public passwordField: string = null;
+}
+
+export class CountGroupAddingAndEditing {
+    public serNumberField: string = null;
+    public messageCountGroupField: string = null;
 }
 
 export class KitsEquipment {

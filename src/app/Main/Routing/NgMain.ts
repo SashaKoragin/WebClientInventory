@@ -4,19 +4,18 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 import { BrowserModule } from '@angular/platform-browser';
-import { AppRoutingModule } from './RoutingMain';
+import { AppRoutingModule } from "./RoutingMain";
 
-import { Root} from '../Main/ModelMain/Main';
+import { Root } from '../Main/ModelMain/Main';
 
 import { AuthModule } from './RouteLogin/RoutingAuth';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
-import { AngularMaterialModule} from '../MaterialLibary/MaterialLibary';
+import { AngularMaterialModule } from '../MaterialLibary/MaterialLibary';
 import { SignalRConfiguration, SignalRModule } from 'ng2-signalr';
 import { AuthIdentificationSignalR } from '../../Post RequestService/PostRequest';
 import { ServerHost } from '../../AdressGetPost/AdressInventory';
 import { NgxPermissionsModule } from 'ngx-permissions';
-
 
 export function createConfig(): SignalRConfiguration {
     const c = new SignalRConfiguration();
@@ -25,31 +24,33 @@ export function createConfig(): SignalRConfiguration {
     return c;
 }
 
+
+
 @NgModule({
     imports: [
         BrowserModule,
         BrowserAnimationsModule,
         CommonModule,
         FormsModule,
-        AuthModule,
         AngularMaterialModule,
         HttpClientModule,
         AppRoutingModule,
+        AuthModule,
         NgxPermissionsModule.forRoot(),
-        SignalRModule.forRoot(createConfig),
+        SignalRModule.forRoot(createConfig)
     ],
 
     declarations: [
-        Root,
+        Root
     ],
-     bootstrap: [Root],
-     providers:[AuthIdentificationSignalR]
+    bootstrap: [Root],
+    providers: [AuthIdentificationSignalR]
 
 })
 export class Maining {
     constructor(router: Router) {
-        //console.log(router.url)
-        
+        console.log(router.url)
+
         //Для Debuger
     }
 

@@ -89,13 +89,7 @@ export class MailPop3 implements OnInit {
   ///Удалить письмо и клендарь
   deleteRow(row: any) {
     var modelServer = new WebMailModel();
-    if (this.columns.Type === "CalendarVksStpView") {
-      modelServer.nameGroupModelField = "MailIn";
-    }
-    else {
-      modelServer.nameGroupModelField = this.columns.Type;
-    }
-    console.log(row);
+    modelServer.nameGroupModelField = this.columns.Type;
     modelServer.idMailField = row.IdMail;
     this.select.deleteMail(modelServer).subscribe((data: string) => {
       this.statusText = data;

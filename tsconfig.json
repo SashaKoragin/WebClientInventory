@@ -10,8 +10,7 @@
       "es2015",
       "dom"
     ],
-    "noImplicitAny": true,
-    "suppressImplicitAnyIndexErrors": true,
+    "noImplicitAny": false,
     "types": [
       "node",
       "jasmine"
@@ -22,5 +21,9 @@
   ],
   "exclude": [
     "./node_modules"
-  ]
+  ],
+  "angularCompilerOptions": {
+    "strictTemplates": true,
+    "enableIvy": false,
+  }
 }

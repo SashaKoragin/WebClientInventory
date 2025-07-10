@@ -73,8 +73,13 @@ export class Aksiok implements OnInit {
     }
 
     ///Запуск процесса актуализации АКСИОК
-    synchronization() {
+    synchronizationFullAksiok() {
         var select = new SelectProcess(6, this.authService.autorization.loginField, this.authService.autorization.passwordField);
+        this.select.startProcessInventory(select);
+    }
+    ///Синхронизация справочников поставки для ФКУ
+    synchronizationDirectoryAksiokToInventory(){
+        var select = new SelectProcess(10, this.authService.autorization.loginField, this.authService.autorization.passwordField);
         this.select.startProcessInventory(select);
     }
 

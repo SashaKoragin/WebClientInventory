@@ -1,15 +1,16 @@
 import { Component, OnInit, Inject, ViewChild } from '@angular/core';
-import { EditAndAdd, AuthIdentification, PostInventar } from '../../../../Post RequestService/PostRequest';
+import { EditAndAdd, AuthIdentification, PostInventar, AuthIdentificationSignalR } from '../../../../Post RequestService/PostRequest';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { AksiokAddAndEdit, KitsEquipment, KitsEquipmentServer, ParametersRequestAksiok, FileExpertise, FileAkt, FullTemplateSupport, ModelParametrSupport } from '../../../ModelInventory/InventoryModel';
+import { AksiokAddAndEdit, KitsEquipment, KitsEquipmentServer, ParametersRequestAksiok, FileExpertise, FileAkt, FullTemplateSupport, ModelParametrSupport, CountGroupAddingAndEditing } from '../../../ModelInventory/InventoryModel';
 import { ModelAksiok } from '../DialogAksiokModel/DialogAksiokModel';
 import { ModelValidation } from '../../ValidationModel/UserValidation';
 import { MatTableDataSource, DateAdapter, MAT_DATE_FORMATS } from '@angular/material';
 import { DragAndDrop } from '../../UploadFilleDragAndDrop/Ts/UploadFilleDragAndDrop';
 import { DialogDiscription, ModelDialog } from '../../ModelDialogDiscription/View/DialogDiscription';
 import { APP_DATE_FORMATS, AppDateAdapter } from '../../../AddFunctionConvertDate/ConvertDateModel';
-import { FormControl } from '@angular/forms';
 import { moment } from '../../../AllSelectModel/GenerateParametrFront';
+import { BroadcastEventListener } from 'ng2-signalr';
+
 
 @Component(({
     selector: 'reportCard',
@@ -27,9 +28,13 @@ export class DialogAksiokEditAndAdd implements OnInit {
         @Inject(MAT_DIALOG_DATA) public data: AksiokAddAndEdit,
         public authService: AuthIdentification,
         public dialog: MatDialog,
-        public selectAll: PostInventar) {
+        public selectAll: PostInventar,
+        public SignalR: AuthIdentificationSignalR,) {
 
     }
+
+    public subscribeMessageAksiok: any = null;
+    public messageServer: string = "Сообщение с сервера!"
 
     ///Файл Акта
     public fileAkt: any;
@@ -54,6 +59,8 @@ export class DialogAksiokEditAndAdd implements OnInit {
     public displayedColumnsKits = ['IdField', 'SerialNumberField', 'InventoryNumberField', 'IsKitField'];
     public dataSourceKits: MatTableDataSource<KitsEquipmentServer> = new MatTableDataSource<KitsEquipmentServer>();
 
+    public isProcessEdit: boolean = true;
+    public isProcessAdd: boolean = true;
 
     ///Валидация
     public modelValid: ModelValidation = new ModelValidation(new Date(moment(this.data.parametersModelField.guaranteeField).format("DD MMMM YYYY")))
@@ -65,9 +72,14 @@ export class DialogAksiokEditAndAdd implements OnInit {
         this.modelAksiok.startModel();
         this.loadModelServer = false;
         this.data.parametersRequestAksiokField = new ParametersRequestAksiok();
+        this.subscribeMessageAksiok = new BroadcastEventListener<string>('SubscribeMessageAksiok');
+        this.SignalR.conect.listen(this.subscribeMessageAksiok);
+        this.subscribeMessageAksiok.subscribe((message: string) => {
+            this.messageServer = message;
+        })
     }
 
-    public changed(event: any) {
+    public validationKitsEquipment(event: any) {
         var kitsEquipment: KitsEquipment = new KitsEquipment();
         kitsEquipment.inventoryNumField = this.data.parametersModelField.inventoryNumField
         if (this.data.kitsEquipmentField.isCheckedKitsField) {
@@ -98,6 +110,26 @@ export class DialogAksiokEditAndAdd implements OnInit {
         }
     }
 
+    ///Считаем количество групп для добавления 
+    public findGroupAddTechnical(event: any) {
+        this.data.countGroupAddingAndEditingField.serNumberField = this.data.parametersModelField.serNumberField
+        if (this.data.parametersModelField.isMassAddingField) {
+            this.editandadd.validationCountingGroupAddingAksiok(this.data.countGroupAddingAndEditingField).toPromise().then((сountGroupAddingAndEditing: CountGroupAddingAndEditing) => {
+                this.data.countGroupAddingAndEditingField = сountGroupAddingAndEditing;
+            });
+        }
+    }
+
+    ///Считаем количество групп для редактирования
+    public findGroupEditTechnical(event: any) {
+        this.data.countGroupAddingAndEditingField.serNumberField = this.data.parametersModelField.serNumberField
+        if (this.data.parametersModelField.isMassEditingField) {
+            this.editandadd.validationCountingGroupEditingAksiok(this.data.countGroupAddingAndEditingField).toPromise().then((сountGroupAddingAndEditing: CountGroupAddingAndEditing) => {
+                this.data.countGroupAddingAndEditingField = сountGroupAddingAndEditing;
+            });
+        }
+    }
+
     public async createServerModel() {
         this.data.parametersRequestAksiokField.idTypeField = this.modelAksiok.selectedEquipmentType.Id;
         this.data.parametersRequestAksiokField.idProducerField = this.modelAksiok.selectedProducer.Id;
@@ -105,22 +137,31 @@ export class DialogAksiokEditAndAdd implements OnInit {
         this.data.parametersRequestAksiokField.idStateField = this.modelAksiok.selectedState.Id;
         this.data.parametersRequestAksiokField.idStateStoField = this.modelAksiok.selectedStateSto.Id;
         this.data.parametersRequestAksiokField.idExpertiseField = this.modelAksiok.selectedExpertise.Id;
+        this.data.parametersModelField.idCardField = this.modelAksiok.selectedModelDocumentType.Id;
+        this.modelAksiok.selectedContractSpecification ? this.data.parametersModelField.idDeliveryContractField = this.modelAksiok.selectedContractSpecification.Id : this.data.parametersModelField.idDeliveryContractField = null;
+        this.modelAksiok.selectedContractOnSto ? this.data.parametersModelField.idContractOnStoField = this.modelAksiok.selectedContractOnSto.Id : this.data.parametersModelField.idContractOnStoField = null;
         this.data.parametersModelField.nameProducerField = this.modelAksiok.selectedProducer.NameProducer;
         this.data.parametersModelField.nameModelField = this.modelAksiok.selectedEquipmentModel.NameModel
         this.data.parametersModelField.guaranteeField = `/Date(${moment(this.modelValid.getRowValidatorModel[16].get('Guarantee').value, 'DD-MM-YYYY').valueOf()})/`;
         this.data.parametersModelField.loginUserField = this.authService.autorization.loginField;
         this.data.parametersModelField.passwordField = this.authService.autorization.passwordField;
-
-
     }
 
 
     public edit(): void {
         if (this.data.parametersModelField.exploitationStartYearField >= this.data.parametersModelField.yearOfIssueField) {
             this.createServerModel();
-            this.editandadd.aksiokAddAndEditModel(this.data).toPromise().then((str: string) => {
-                alert(str)
-            });
+            if (this.isProcessEdit) {
+                this.isProcessEdit = false;
+                this.editandadd.aksiokAddAndEditModel(this.data).toPromise().then((str: string) => {
+                    alert(str)
+                    this.isProcessEdit = true;
+                });
+            }
+            else {
+                alert('Процесс редактирования запущен дождитесь окончания!!!')
+            }
+
         }
         else {
             alert("Редактирование не возможно дата эксплуатации быть больше даты ввода!!!");
@@ -232,9 +273,26 @@ export class DialogAksiokEditAndAdd implements OnInit {
     }
 
 
-
+    //Добавление в АКСИОК
     public add(): void {
-        alert("В процессе реализации!")
+        //alert("Данный функционал пока не реализован!")
+        if (this.data.parametersModelField.exploitationStartYearField >= this.data.parametersModelField.yearOfIssueField) {
+            this.createServerModel();
+            if (this.isProcessAdd) {
+                this.isProcessAdd = false;
+                console.log(this.data);
+                this.editandadd.aksiokAddAndEditModel(this.data).toPromise().then((str: string) => {
+                    alert(str)
+                    this.isProcessAdd = true;
+                });
+            }
+            else {
+                alert('Процесс добавления запущен дождитесь окончания!!!')
+            }
+        }
+        else {
+            alert("Редактирование не возможно дата эксплуатации быть больше даты ввода!!!");
+        }
     }
 
     public closeDialog(): void {

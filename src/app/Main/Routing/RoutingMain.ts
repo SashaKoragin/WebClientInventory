@@ -3,9 +3,10 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { AuthInventar } from '../../Secyrity/Inventarka/ModelSecurity/AuthInventory';
 
+
+import { AuthLk } from '../../Secyrity/LKInventarka/ModelSecurityLK/AuthLK';
 import { InventarModule } from '../Inventory/Inventory';
 import { LkModule } from '../LkUser/Lk';
-import { AuthLk } from '../../Secyrity/LKInventarka/ModelSecurityLK/AuthLK';
 
 const appRoutes: Routes = [
     {
@@ -31,8 +32,9 @@ const appRoutes: Routes = [
             }
         )
     ],
+    
     exports: [
         RouterModule
-    ]
+    ],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

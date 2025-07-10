@@ -1,5 +1,5 @@
 import { FormGroup, FormControl, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
-import { Otdel, Position, FullProizvoditel, FullModel, NameSysBlock, NameMonitor, ProizvoditelBlockPower, ModelBlockPower, ModelSwithes, TypeServer, Users, TaskAis3, ResourceIt, TypeOther, ProizvoditelOther, ModelOther, EquipmentType, Producer, EquipmentModel, ModelPhone } from '../../ModelInventory/InventoryModel';
+import { Otdel, Position, FullProizvoditel, FullModel, NameSysBlock, NameMonitor, ProizvoditelBlockPower, ModelBlockPower, ModelSwithes, TypeServer, Users, TaskAis3, ResourceIt, TypeOther, ProizvoditelOther, ModelOther, EquipmentType, Producer, EquipmentModel, ModelPhone, ModelDocumentType, ContractSpecification } from '../../ModelInventory/InventoryModel';
 import { EquipmentState, EquipmentStateSto, EquipmentExpertise } from '../DialogAksiokEditAndAdd/DialogAksiokModel/DialogAksiokModel';
 import { View, Type, Mouth } from '../DialogReportCard/ReportCardModel/ReportCardModel';
 
@@ -122,6 +122,16 @@ export class ModelValidation {
         else {
             return { 'error': true };
         }
+    }
+
+    public validationModelDocumentType(control: AbstractControl): ValidationErrors {
+        var nameModelDocumentType = control.value as ModelDocumentType;
+        return (nameModelDocumentType == undefined || nameModelDocumentType.EquipmentTypeName) == undefined ? { 'error': true } : null
+    }
+    ///Валидация контракта
+    public validationDeliveryContract(control: AbstractControl): ValidationErrors {
+        var nameDeliveryContract = control.value as ContractSpecification;
+        return (nameDeliveryContract == undefined || nameDeliveryContract.Number) == undefined ? { 'error': true } : null
     }
 
     //Валидация типа оборудования
@@ -247,6 +257,8 @@ export class ModelValidation {
             'MinutesX': new FormControl(null, [Validators.min(0), Validators.max(60)]),
         }),
         new FormGroup({
+            'ModelDocumentType': new FormControl(null, [Validators.required, this.validationModelDocumentType]),
+            'ContractSpecification': new FormControl(null, [Validators.required, this.validationDeliveryContract]),
             'EquipmentType': new FormControl(null, [Validators.required, this.validationEquipmentType]),
             'Producer': new FormControl(null, [Validators.required, this.validationProducer]),
             'EquipmentModel': new FormControl(null, [Validators.required, this.validationEquipmentModel]),

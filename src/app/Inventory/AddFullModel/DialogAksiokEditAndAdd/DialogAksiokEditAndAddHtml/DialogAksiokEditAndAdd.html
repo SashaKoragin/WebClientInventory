@@ -5,18 +5,88 @@
     <div class="container">
         <div class="row w-100">
             <div class="col d-flex align-items-center">
+                <b class="h3 text-primary ">Карточка:</b>
+            </div>
+            <div class="col-9 w-100">
+                <mat-form-field class="selectin_sql text-primary w-100">
+                    <mat-label class="text-primary">Карточка</mat-label>
+                    <mat-select class="text-primary"
+                        [disabled]=" data.parametersModelField.modelRequestField === 'Edit' ? true:false"
+                        [placeholder]="modelAksiok.selectedModelDocumentType?.EquipmentTypeName"
+                        (selectionChange)="modelAksiok.filterModelDocumentType()"
+                        [formControl]="modelValid?.getRowValidatorModel[16].get('ModelDocumentType')"
+                        [(ngModel)]="modelAksiok.selectedModelDocumentType" name="type">
+                        <mat-select-filter class="filter"
+                            [placeholder]="modelAksiok.selectedModelDocumentType?.EquipmentTypeName"
+                            [displayMember]="'EquipmentTypeName'" [array]="modelAksiok.modelDocumentType"
+                            (filteredReturn)="modelAksiok.filteredModelDocumentType = $event;">
+                        </mat-select-filter>
+                        <mat-option class="text-primary" *ngFor="let type of modelAksiok.filteredModelDocumentType"
+                            [value]="type">
+                            <span>{{type.KindEquipmentName}}</span>
+                            <span> {{type.EquipmentTypeName}}</span>
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row w-100">
+            <div class="col d-flex align-items-center">
+                <b class="h3 text-primary ">Поставка:</b>
+            </div>
+            <div class="col-9 w-100">
+                <mat-form-field class="selectin_sql text-primary w-100">
+                    <mat-label class="text-primary">Поставка</mat-label>
+                    <mat-select class="text-primary" [placeholder]="modelAksiok.selectedContractSpecification?.Number"
+                        [formControl]="modelValid?.getRowValidatorModel[16].get('ContractSpecification')"
+                        [(ngModel)]="modelAksiok.selectedContractSpecification" name="delivery">
+                        <mat-select-filter class="filter" [placeholder]="modelAksiok.selectedContractSpecification?.Number"
+                            [displayMember]="'Number'" [array]="modelAksiok.contractSpecification"
+                            (filteredReturn)="modelAksiok.filteredContractSpecification = $event;">
+                        </mat-select-filter>
+                        <mat-option class="text-primary" *ngFor="let delivery of modelAksiok.filteredContractSpecification"
+                            [value]="delivery">
+                            {{delivery.Number}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row w-100">
+            <div class="col d-flex align-items-center">
+                <b class="h3 text-primary ">СТО:</b>
+            </div>
+            <div class="col-9 w-100">
+                <mat-form-field class="selectin_sql text-primary w-100">
+                    <mat-label class="text-primary">СТО</mat-label>
+                    <mat-select class="text-primary" [placeholder]="modelAksiok.selectedContractOnSto?.Number"
+                        [(ngModel)]="modelAksiok.selectedContractOnSto" name="sto">
+                        <mat-select-filter class="filter" [placeholder]="modelAksiok.selectedContractOnSto?.Number"
+                            [displayMember]="'Number'" [array]="modelAksiok.contractOnSto"
+                            (filteredReturn)="modelAksiok.filteredContractOnSto = $event;">
+                        </mat-select-filter>
+                        <mat-option class="text-primary" *ngFor="let sto of modelAksiok.filteredContractOnSto"
+                            [value]="sto">
+                            {{sto.Number}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row w-100">
+            <div class="col d-flex align-items-center">
                 <b class="h3 text-primary ">Тип оборудования:</b>
             </div>
             <div class="col w-100">
                 <mat-form-field class="selectin_sql text-primary w-100">
                     <mat-label class="text-primary">Тип оборудования</mat-label>
                     <mat-select class="text-primary" [placeholder]="modelAksiok.selectedEquipmentType?.NameType"
-                        (selectionChange)="modelAksiok.filterEquipmentType()"
+                        [disabled]="true" (selectionChange)="modelAksiok.filterEquipmentType()"
                         [formControl]="modelValid?.getRowValidatorModel[16].get('EquipmentType')"
                         [(ngModel)]="modelAksiok.selectedEquipmentType" name="type">
                         <mat-select-filter class="filter" [placeholder]="modelAksiok.selectedEquipmentType?.NameType"
                             [displayMember]="'NameType'" [array]="modelAksiok.equipmentType"
-                            (filteredReturn)="modelAksiok.filteredEquipmentType =$event;">
+                            (filteredReturn)="modelAksiok.filteredEquipmentType = $event;">
                         </mat-select-filter>
                         <mat-option class="text-primary" *ngFor="let type of modelAksiok.filteredEquipmentType"
                             [value]="type">
@@ -26,6 +96,7 @@
                 </mat-form-field>
             </div>
         </div>
+
         <div class="row w-100">
             <div class="col d-flex align-items-center w-100">
                 <b class="h3 text-primary ">Производитель оборудования:</b>
@@ -201,14 +272,86 @@
                 </mat-form-field>
             </div>
         </div>
-        <div class="row w-100" [style.display]="data.parametersModelField.isKitField === false ? 'inline-flex':'none'">
+        <div class="row w-100">
+            <div class="col d-flex align-items-center w-100">
+                <b class="h3 text-primary ">Стоимость до 10 т.р.:</b>
+            </div>
+            <div class="col">
+                <div class="check">
+                    <mat-checkbox placeholder="Стоимость до 10 т.р."
+                        [(ngModel)]="data.parametersModelField.isSmallCostField"></mat-checkbox>
+                </div>
+            </div>
+        </div>
+        <div class="row w-100">
+            <div class="col d-flex align-items-center w-100">
+                <b class="h3 text-primary ">На забалансовом счете:</b>
+            </div>
+            <div class="col">
+                <div class="check">
+                    <mat-checkbox placeholder="На забалансовом счете"
+                        [(ngModel)]="data.parametersModelField.isOffBalanceAccountField"></mat-checkbox>
+                </div>
+            </div>
+        </div>
+        <div class="row w-100"
+            [style.display]="data.parametersModelField.modelRequestField === 'Edit' ? 'none' : 'inline-flex'">
+            <div class="col d-flex align-items-center w-100">
+                <b class="h3 text-primary ">Массовое создание?:</b>
+            </div>
+            <div class="col">
+                <div class="check">
+                    <mat-checkbox placeholder="Массовое создание?"
+                        [(ngModel)]="data.parametersModelField.isMassAddingField"
+                        (change)="findGroupAddTechnical($event)">
+                    </mat-checkbox>
+                </div>
+            </div>
+        </div>
+        <div [style.display]="data.parametersModelField.isMassAddingField ? 'grid' : 'none' ">
+            <b class="h4 text-danger">{{data.countGroupAddingAndEditingField.messageCountGroupField}}</b>
+        </div>
+
+        <div class="row w-100"
+            [style.display]="data.parametersModelField.modelRequestField === 'Add' ? 'none' : 'inline-flex'">
+            <div class="col d-flex align-items-center w-100">
+                <b class="h3 text-primary ">Массовое редактирование?:</b>
+            </div>
+            <div class="col">
+                <div class="check">
+                    <mat-checkbox placeholder="Массовое редактирование?"
+                        [(ngModel)]="data.parametersModelField.isMassEditingField"
+                        (change)="findGroupEditTechnical($event)">
+                    </mat-checkbox>
+                </div>
+            </div>
+        </div>
+        <div [style.display]="data.parametersModelField.isMassEditingField ? 'grid' : 'none' ">
+            <b class="h4 text-danger">{{data.countGroupAddingAndEditingField.messageCountGroupField}}</b>
+        </div>
+        <div class="row w-100"
+            [style.display]="data.parametersModelField.modelRequestField === 'Add' ? 'none' : 'inline-flex'">
+            <div class="col d-flex align-items-center w-100">
+                <b class="h3 text-primary ">Полная массовая обработка?:</b>
+            </div>
+            <div class="col">
+                <div class="check">
+                    <mat-checkbox placeholder="Полная массовая обработка?"
+                        [(ngModel)]="data.parametersModelField.isMassEditFirstModelField">
+                    </mat-checkbox>
+                </div>
+            </div>
+        </div>
+        <div class="row w-100"
+            [style.display]="data.parametersModelField.isKitField === false && data.parametersModelField.modelRequestField === 'Edit' ? 'inline-flex':'none'">
             <div class="col d-flex align-items-center w-100">
                 <b class="h3 text-primary ">Комплектовать?:</b>
             </div>
             <div class="col">
                 <div class="check">
                     <mat-checkbox placeholder="Комплектовать?" [(ngModel)]="data.kitsEquipmentField.isCheckedKitsField"
-                        (change)="changed($event)">
+                        [disabled]="data.parametersModelField.modelRequestField === 'Edit' && data.parametersModelField.isMassEditingField === false ? false : true"
+                        (change)="validationKitsEquipment($event)">
                     </mat-checkbox>
                 </div>
             </div>
@@ -220,14 +363,16 @@
             <div class="col">
                 <div class="check">
                     <mat-checkbox placeholder="Разукомплектовать?"
-                        [(ngModel)]="data.kitsEquipmentField.isNotCheckedKitsField" (change)="changed($event)">
+                        [(ngModel)]="data.kitsEquipmentField.isNotCheckedKitsField"
+                        [disabled]="data.parametersModelField.isMassEditingField === false ? false : true"
+                        (change)="validationKitsEquipment($event)">
                     </mat-checkbox>
                 </div>
             </div>
         </div>
     </div>
     <div [style.display]="kitsError !== null ? 'grid' : 'none'">
-        <b class="h3 text-danger ">{{kitsError}}</b>
+        <b class="h3 text-danger">{{kitsError}}</b>
     </div>
     <div
         [style.display]="data.kitsEquipmentField.isCheckedKitsField || data.kitsEquipmentField.isNotCheckedKitsField ? 'grid' : 'none' ">
@@ -258,8 +403,13 @@
                 </td>
             </ng-container>
             <tr mat-header-row *matHeaderRowDef="displayedColumnsKits; sticky: true"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumnsKits;"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumnsKits; "></tr>
         </table>
+    </div>
+    <div class="row w-100">
+        <div class="col d-flex align-items-center">
+            <b class="text-success">{{messageServer}}</b>
+        </div>
     </div>
     <div class="panelButton">
         <div class="pane" [style.display]="data.parametersModelField.modelRequestField === 'Edit' ? 'inline':'none'">
@@ -275,7 +425,7 @@
                 [disabled]="modelValid?.getRowValidatorModel[16].invalid" mat-button>Просмотр карточки</button>
         </div>
         <div class="pane">
-            <button class=" mt-2 btn btn-rn btn-success" [matMenuTriggerFor]="menu"
+            <!-- <button class=" mt-2 btn btn-rn btn-success" [matMenuTriggerFor]="menu"
                 [disabled]="modelValid?.getRowValidatorModel[16].invalid">Создать заявку
                 <mat-menu #menu="matMenu" yPosition="above" xPosition="after" [overlapTrigger]="false">
                     <div class="MenuButton"
@@ -286,7 +436,7 @@
                         </button>
                     </div>
                 </mat-menu>
-            </button>
+            </button> -->
         </div>
         <div class="pane">
             <button class=" mt-2 btn btn-rn btn-danger" (click)="closeDialog()" mat-button>Закрыть (Отменить)</button>

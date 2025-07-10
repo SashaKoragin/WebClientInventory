@@ -17,7 +17,7 @@ import { ErrorRules } from '../../../Secyrity/ErrorRule/ViewError/ErrorRule';
         AngularMaterialModule
     ],
     declarations: [
-         LoginInventarization,LoginLk,ErrorRules
+         LoginInventarization, LoginLk, ErrorRules
     ]
 })
 export class AuthModule { }
