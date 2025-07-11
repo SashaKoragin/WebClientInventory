@@ -32,7 +32,6 @@ const appRoutes: Routes = [
             }
         )
     ],
-    
     exports: [
         RouterModule
     ],

@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 import { BrowserModule } from '@angular/platform-browser';
@@ -34,8 +34,8 @@ export function createConfig(): SignalRConfiguration {
         FormsModule,
         AngularMaterialModule,
         HttpClientModule,
-        AppRoutingModule,
         AuthModule,
+        AppRoutingModule,
         NgxPermissionsModule.forRoot(),
         SignalRModule.forRoot(createConfig)
     ],
@@ -44,7 +44,7 @@ export function createConfig(): SignalRConfiguration {
         Root
     ],
     bootstrap: [Root],
-    providers: [AuthIdentificationSignalR]
+    providers: [AuthIdentificationSignalR],
 
 })
 export class Maining {
